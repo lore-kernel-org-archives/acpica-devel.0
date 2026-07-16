@@ -1,67 +1,68 @@
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012003.outbound.protection.outlook.com [40.107.209.3])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012017.outbound.protection.outlook.com [40.93.195.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32DA31328E
-	for <acpica-devel@lists.linux.dev>; Thu, 16 Jul 2026 15:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0DE33372A
+	for <acpica-devel@lists.linux.dev>; Thu, 16 Jul 2026 15:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.17
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784216355; cv=fail; b=qFmoH/xvB1nyq9Z5I2XZB/4MqqM8QDAD5XnOCoEqODdUnEwzo3AZGGcNmg4XJgIepHthX0goVJGUclZNVjc9CfTXSNqmQjYX+cM4Y2GxnUI3tl9FAeYiNiBwuq6f2THHxR0qgERhAFqZobp6jCw19BJZlHmP7n6g0Jr79kEE6a0=
+	t=1784216365; cv=fail; b=d5Xa0YtNwHH3OEUTW+MPhuF0NPoELg3BhWzcJ8rYuPD1sUSlxW9Wh7orfTJ7FDLqlr900px+DVGy4dODgLrjZ00qxkA8Zb6veZFBo4FRVPUuUDmqpbKMW37WMsyA9TWPtyVH4zaCzlvC+31SnWAGOtR8J2BV/qMcMgmqHLwmIjA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784216355; c=relaxed/simple;
-	bh=d2PSAbTmjWx6RT0Yg/Lp19MhxeVFqCVplsu/5ocYk1c=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ubiAHtNlBVq5SBdyoBUoS6lxUuzpTNgX/NQIFyjFAP9wF4TOa5k4OlpaU7Lt3vOS5+DvR1/1wDhuJhr5QgVk7TPsHbesRVj9tbNvxa9Kp3/lY8Aq1X4UCBS9kDUsGp4H9GUwjc5gpFn17O3WkZVnCSIgQSMP09gNiZY4dT37pCA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WyxTlSg5; arc=fail smtp.client-ip=40.107.209.3
+	s=arc-20240116; t=1784216365; c=relaxed/simple;
+	bh=hbuqKV+RAPfPXquG/SYUIQxg6v+G+F1hAAzEcATKZVw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mTPUjGQymi5LyR0AzHnZIaX4dEcx6/xLbKwMcunmWpabLfTsh8THVHt2u6D3Vjena9I1iWyAqY+zB0jP7cWiWGfr5YfFbo3IbGMMgi4ctf/kk2v7BEkfUx/sMwlGf6kGI8C7SV9Ni7+MMiefP4JmfPFggIQ47MjEIJT+ecT58g8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZAwvS1bM; arc=fail smtp.client-ip=40.93.195.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WyxTlSg5"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZAwvS1bM"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=yXh1P4zDegrqcPvU8bKDHz30UHDLd/x+eaxTj1SR3wKnum/Z+It/U2oMeMF8+nsCvvjXB4Gd71BFGN5O7kwNii/pnBdJXGIALNfVCYwEbDSicwZCtwRfurDgVt+1l1tBho/DEosJKUEndRTWX7t+odGO3CLKZUe76gvXV1zHVq2vshZura/O4dMfYQpADkeD6/DuHaMh9xQqFvjP/TcRl2QH8Eo/tad0nsa+ga29yJL0b8GJGSW7g7urMdwTykQiJskzQh9/Wk8SPY2sXmLe/lML1d29sSHea5BvJnQ9Wfk190pBmcCIG+AmCVegxhteY85vwwrINAJndb/IoCR/zA==
+ b=tIStR4tr/JjX58JGu+OudFnx/7OrQZxWyse9/V3+gPkT1ZmIJLCbuNsZePWy1b12Qa39NCkJr/Dt1/qJF/R83aRLJH2pNyhPMLbKSmSwBEKEq16INciQv8P6ipPpc6VKinLm88gl/L3J+WPEIuETbUnlOL4s1VvOPWLERNH8V6V491/yS13Wy8+zlwarDttJGnan1Ba9xLhclNMbOSiDpfzMx54jeaWcqWXZcgA+prQBqMTQujMz0a+N73bG2BxhVJOBv4omUNNY/t171n36sor6Rp9SjCU7gwA082EjkAWGPUDZzYLqxs0DMVQMDYCfHSP06Obl4FdvLHsrUcMsOw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o9aQ0FKviIrwAU1z9r0zpqhw2RVOVJjbEE1wFNmDAAo=;
- b=NC4316o42vNUInXXkF9HVFwoVLeIPALsbpEWdbA/LEkWP4IqnlT5iujXClwcBmaOjBqUxftM/dzWqohYUP+Tpalgzi4EMqZdVCfxfvA6rFK6MbMlf1TAr2EcrzDCJY0XCJb4zV9unk/Zd8CzuGXqxtK+LNuelTkJ51BmqNu1WewQ8jNcZdFtdsIPGvOtd3J7VWJWoyqMxDfSepQxy6yak8Ala++zMruqlr/Vyj3mNyklLGTmgZ41ZGjtGjYb7mj5syM7vsAPGqJg4LSKuoN9ULEsWiu/bpfg4l1wVFOsqeolmOtX/0EPv56pFGUn1sPlGwZTLp4ZxOH9vpeeG6kmBg==
+ bh=mI7hfxx4xdVusRZ9Vg+gVsQAvKxEbnzuueppyHbUVu8=;
+ b=G38CRQ8wQbNhTa+GR6kMAyqsYe5F/hqIaLCZVo9J562wWDT1OL6A+CTR+9KietpmhzLJcIlbI7HZQpBf2/O43BJv2o+2FEZZQxpeYwbAldfNdWbsmc7AsUPDfCjeqTyC7b1IKFIZ5JAFslcDRNkNlA8m/iDRuy9vL8xyNkc60NAW0F03yrZqe1dHCnpj6hJfxfi0BCSwKSHZVwHYh2gdAipZ4cExqnOQhHR0YzTWndDfKXylSy43BjizcI8ooF3KdoXf8w5EIghqgNaXePNqBuQ9lf2i9HCGnQiaF2WenZ8bBGWBh17RPUHLoxPiS+L5Z52jndURpfVDVBM4FztJyw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o9aQ0FKviIrwAU1z9r0zpqhw2RVOVJjbEE1wFNmDAAo=;
- b=WyxTlSg5tlzGhKtllAEDmN0iR2uAf7HVMlclHtcT3BgDGfDqqpg996WJGZSw6qyE45eoxfyZV/EE+1Hk9NjKBY5j00bNSzCPxdvxdEUoud5SG0SWousNAacURWX6yMaCBWHPZkahb70uo8rk3uR+38Ditv2ZYBDqAX/w7dSnxE0HWTUzUuu0pX9NzVSPdKcjTgGqGmeq/fKqAS/XUTXp9tEg7rJT0iYqBnuuFWu4DPUwQiQYdmTJBHxzzJ/9nPXBL9keUHXKp9mOHLZ32AEkfEPFhqwHNpGRGVt58sc+N91HRrBtg/3ueWFBgW3UX62ulXQg5t2RCeFe3RpqWQn6RQ==
-Received: from MN2PR07CA0028.namprd07.prod.outlook.com (2603:10b6:208:1a0::38)
- by PH0PR12MB7929.namprd12.prod.outlook.com (2603:10b6:510:284::5) with
+ bh=mI7hfxx4xdVusRZ9Vg+gVsQAvKxEbnzuueppyHbUVu8=;
+ b=ZAwvS1bM511xjPUWVYGrpeD7lsk8pK051003F5Inmt1EjxGM4E6J73yK3eqswC9WEbT9IvAxyjxqsJvfa7gG8gRAsqYsnJYmhQEsHPH9SGp2nR0lDE7TOg9Yje/h/7ca1HibcCnEl1qPPrv81X3yCAIArzbS/dIopO4qlAn44YabyAqACv58a0wApSjmAV2E5iYvG6PcWQUdALNNKEkoy72491NRue//LlvGjEnQa2P3AZZRFrgPBV/SjxaW5CPawzgr9sMOuhvxQVMSsF81X/jOR9stTrXlqi8IdCWB7mFXMouq3p3co7/7dLkVCoWYwCTXROmQIs6FSbbQDaVsAw==
+Received: from SJ0PR05CA0133.namprd05.prod.outlook.com (2603:10b6:a03:33d::18)
+ by LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.12; Thu, 16 Jul
- 2026 15:39:01 +0000
-Received: from BL6PEPF0001AB57.namprd02.prod.outlook.com
- (2603:10b6:208:1a0:cafe::92) by MN2PR07CA0028.outlook.office365.com
- (2603:10b6:208:1a0::38) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.223.12 via Frontend Transport; Thu,
- 16 Jul 2026 15:39:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.202.18; Thu, 16 Jul
+ 2026 15:39:14 +0000
+Received: from MWH0EPF000A672E.namprd04.prod.outlook.com
+ (2603:10b6:a03:33d:cafe::43) by SJ0PR05CA0133.outlook.office365.com
+ (2603:10b6:a03:33d::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.223.11 via Frontend Transport; Thu,
+ 16 Jul 2026 15:39:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL6PEPF0001AB57.mail.protection.outlook.com (10.167.241.9) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ MWH0EPF000A672E.mail.protection.outlook.com (10.167.249.20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.245.5 via Frontend Transport; Thu, 16 Jul 2026 15:39:00 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.21.245.5 via Frontend Transport; Thu, 16 Jul 2026 15:39:13 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 16 Jul
- 2026 08:38:29 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 08:38:46 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 16 Jul
- 2026 08:38:29 -0700
+ 2026 08:38:45 -0700
 Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Thu, 16 Jul 2026 08:38:24 -0700
+ Transport; Thu, 16 Jul 2026 08:38:40 -0700
 From: Sumit Gupta <sumitg@nvidia.com>
 To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
 	<ionela.voinescu@arm.com>, <zhenglifeng1@huawei.com>,
@@ -72,10 +73,12 @@ To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
 CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
 	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
 	<bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [PATCH v2 0/3] cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
-Date: Thu, 16 Jul 2026 21:08:17 +0530
-Message-ID: <20260716153820.2007095-1-sumitg@nvidia.com>
+Subject: [PATCH v2 2/3] ACPI: CPPC: Add u64 wrappers for the autonomous selection register
+Date: Thu, 16 Jul 2026 21:08:19 +0530
+Message-ID: <20260716153820.2007095-3-sumitg@nvidia.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260716153820.2007095-1-sumitg@nvidia.com>
+References: <20260716153820.2007095-1-sumitg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -88,70 +91,128 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB57:EE_|PH0PR12MB7929:EE_
-X-MS-Office365-Filtering-Correlation-Id: a3102bb9-d1b7-4e1b-69b2-08dee3505b78
+X-MS-TrafficTypeDiagnostic: MWH0EPF000A672E:EE_|LV8PR12MB9620:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe87c0c5-019f-497f-1e3a-08dee3506323
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|7416014|376014|36860700016|82310400026|1800799024|13003099007|921020|10067099003|56012099006|11063799006|18002099003;
+	BCL:0;ARA:13230040|82310400026|7416014|376014|36860700016|23010399003|1800799024|921020|22082099003|18002099003|10067099003|11063799006|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	BK3yEEr0Vrv4JKTn9LVFubtYVrp2B3VQmY0H8YGTMHhDVWz09p3XFbMc17qnN2c3Zp2lLf4YaOimxAQckUYoG5EQXS+99lSXNEkXGjAR019GWrIK0VLWjvo6zYBDbYAENmrQHNWjEyslRlKazxMCvwHDLx/HgiuSM6iewWPgBcyO6dJ3Gueo32isXWwQeKkcY5Qd1dPGnXkcX6wMYdWmcTZ0RTgTMAl7lq9Tbuthm4CSEvgkT3APd7JkmmhDljf0KPYaLN4nnMqRYM7hRa73EbW/qNwuI29JwVCRxWYtyTXmESHH5A5zpAw9GqBSfMoxJTTzJEl7vL4eRenQV0gGLtxoYIth+tMriVwUrdzBI9aCMfyipaFviXePTvcgAvXBSTYSwxZ+xHEMk5FonjyS10Ucojn4BzOx3o50A5i9FT1I3R0Gpy9BzdfwXI1veJdq0xEcXhLS7OPgXfu55JR60ojHwlerxCxjrKL74QgiDbRaVqY8hBO18lnFu+2nRkngmFyluONARYpNzYs/tsqF9gBGRaQxvYZpFezY2banwFDezhPo4tBsVUcBN09q7v6p6BSyZSICZL5l+aFqLEE/YgMF9NQyvya9daR+cJtoH3n2LcCMLXaot73M6tY5tPcd//UAZR6RLfmKhx27MnAdDO1FG1f8XfWUnU5iXUf4l9vh+6NVvjoXWXE9OClrtC/NYydTc7gxouxV09TuOBlpxQmGB+BzjOva0WiFEFMCaXVMqo4eoAfszM3CN9SZlAsC
+	n0WcQl2xC0XI5KzkTasX/7QTubz8cix9t5rbEfI0UgqNzRNtu7ekosfn7TlqgOKJgaloPQCcOb4LTBm6n0FFhPdPXxb0EusnghULs7EcRJ3xapY9MnTfUOSeiHYFSIYI4tsWjzzcJ4bXckLqJMXYzW0WD/DSp21qYgYDzUmWJbw7G/KD+vPHYiks62sSyMXHr17EVr3AGMLhEBGIgiIENDKsPcNQsbJHC37MqhqN4oaEyHMq0stp9aiTCxg5UBrU8xsRXTIqXX97Li1keXBLZ+sf8YyL1Kt2XEBphNVpr8CAinGjzqIp8BgiNbH7g+iw+ftsIsDJxR/UI8JXtQpqHTCrEfheWq5htspIIm5H/giM/Lp5kW5rz/JzLlEa1gGkQtBJJbOItHzi8kprmrnU5bPQef7ITsN8t7/nJYXzEJRSMQj6BI8V/DFhNEtUoZ4jylIWqSkQLWq6BY8n69yrNWfjYB6cLsdtuzzMKGtBWr9pI5oqCWIkWjzkv9F7/xNBr0nMsZFu2bbyunk4QpdLcnHb+ULur+3ADuUPN4sN5i4VrelT/WxqKYM3PtxXysS5XIyIgTLo/okp7aDR8oIqnxLaAYMChFl8Nc3qqMkRpL1LcEuSbWkd3E2hX2vJNzwa5i/7QM/ff2BPNjQ/SVR4tVhKNEbBlyTQe4oFg1u5i0uH7QLEIOOAgaFQQFWfm7KtJCn5Pank9VABH+l6DEtUHowhlC94bMvQgmx0vFYk2eS+HuNrtaZ7dGWJ+AKEqEEV
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(23010399003)(7416014)(376014)(36860700016)(82310400026)(1800799024)(13003099007)(921020)(10067099003)(56012099006)(11063799006)(18002099003);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(36860700016)(23010399003)(1800799024)(921020)(22082099003)(18002099003)(10067099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	mJ3uox+V/S0Cwn+SrmuO2koBgpRDMsO+mWvqgQSmScbsZY/+T0uDpEM+dDBooN84rZosnNqxopyg5zBqE4/hqs2vnYJAh48S85IsxoBw8CYIHSIAJqg/HkOjhegLc2+lLxBSGBwdI63zE5bojtYmCpQGNykBJdQIntKkmI9IrAdmEWp7lwDP/s8YJVi2sVVZ5zDcClXoa0qUuKpIl0SqopnYR0lh3BY2b+4Zvii6OsmsG+7tVZSaQ5aLU5S0jZJOn+QAHWz6vgwsRrrqw5N9ate0LNUc1eYozCztnjREJ8ciFgRPRHjZt67pDUts7g0tsnx2wMzhogSzvxzKXBLFyTz2cT/756S0v5sfwvUouT+1d3JWHNfqKZ+p8lKt65TtjdL2wY/yKZ0wvNQ/eVMcPHsYjMPF8Mccn4qRogaHTZ0C+i8e0BXtFcOC+dB/jCyn
+	NoAizYaF1YPBUgaVjnW6V/ip3XpE74zpnzp3hcJMQEThHs389L0G7jzRcYfdJi3Z3WUw40JSVUEjtHRvBpMW1G4MB8MWPIwvmVEvuPKmfC0ZogPR1tgeh1wnLAwc65vaScZGOefHFS34eiHpf8nSdy6FFvgoXvJ4B44f0qr9iOI3TzJYtQYxXY44jWth7Zzjf5/RU4ZyT53F/LlFWIvLPFwspLMFdt2no2N/GXzHqkNw9DxIShw57GHe831c9C+bGyZ7ZWvO7zm/E4jV9sq30QynCAX86X5G37reXeKdYeGfvJ/puY1S3kBbISKOpIA48tD/oQuncm2AxqXqiJvysYzQNSl2cm3vKgsAYuroa/z7CkEgzkaCvVyKtsICDgihHikWQJZPjrH+9YuX9Iqx+lXhabFJ7lJzSHGR+G9u1vddTVdWbXmXx8ydlItZGHcf
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2026 15:39:00.2330
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2026 15:39:13.1896
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3102bb9-d1b7-4e1b-69b2-08dee3505b78
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe87c0c5-019f-497f-1e3a-08dee3506323
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB57.namprd02.prod.outlook.com
+	MWH0EPF000A672E.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7929
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9620
 
-CPPC registers that OSPM programs at runtime, via sysfs (auto_sel,
-energy_performance_preference, auto_act_window) or via the autonomous
-mode boot parameter, can be silently lost across CPU hotplug or left
-behind on driver unload:
+cppc_get_auto_sel()/cppc_set_auto_sel() use a bool, unlike the other
+CPPC register get/set helpers which use a u64.
 
- - Across CPU hotplug: the cpufreq core tears the policy down and the
-   platform may reset the registers while the CPU is offline.
- - On driver unload: the value the driver wrote is left in the register
-   instead of returning to its pre-driver state.
+The next patch in this series saves and restores the OSPM-set registers
+across CPU hotplug using a common table of get/set helpers typed as
+int (*)(int, u64 *) and int (*)(int, u64), which the bool autonomous
+selection helpers do not fit.
 
-This series makes cppc_cpufreq keep these values consistent:
+Add cppc_get_auto_sel_u64()/cppc_set_auto_sel_u64() wrappers with the u64
+signature so the autonomous selection register fits alongside the others.
 
- - Patch 1: adds online()/offline() callbacks so core keeps the policy
-   alive across CPU hotplug instead of tearing it down and rebuilding it.
- - Patch 2: adds u64 wrappers for the autonomous selection register.
- - Patch 3: adds a table-driven mechanism that captures each register's
-   firmware value, restores it when the policy goes down, and reapplies
-   the OSPM-set value when the policy comes back online.
+Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+---
+ drivers/acpi/cppc_acpi.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ include/acpi/cppc_acpi.h | 10 ++++++++++
+ 2 files changed, 50 insertions(+)
 
-v[1] -> v2:
- - New patch 1: keep policy across hotplug by adding online()/offline().
- - New patch 2: move the auto_sel u64 wrappers into cppc_acpi.c.
- - Restore fw values from offline(), which covers both hotplug and unload
- - Drop cppc_cache_perf_ctrls() and read reg values at offline() instead
-   of caching them.
- - Add auto_act_window and defer OSPM Nominal Perf to a later series.
-
-Sumit Gupta (3):
-  cpufreq: CPPC: Keep the policy across CPU hotplug
-  ACPI: CPPC: Add u64 wrappers for the autonomous selection register
-  cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
-
- drivers/acpi/cppc_acpi.c       |  40 +++++++++
- drivers/cpufreq/cppc_cpufreq.c | 156 +++++++++++++++++++++++++++++++++
- include/acpi/cppc_acpi.h       |  10 +++
- 3 files changed, 206 insertions(+)
-
-[1] v1: https://lore.kernel.org/lkml/20260623095403.3407436-1-sumitg@nvidia.com/
-
+diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+index 9f572f481241..a7fec6c93178 100644
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -1788,6 +1788,46 @@ int cppc_set_auto_sel(int cpu, bool enable)
+ }
+ EXPORT_SYMBOL_GPL(cppc_set_auto_sel);
+ 
++/**
++ * cppc_get_auto_sel_u64 - Read the autonomous selection register as a u64.
++ * @cpu: CPU from which to read the register.
++ * @val: Return address, set to 0 or 1.
++ *
++ * u64-typed wrapper around cppc_get_auto_sel() for callers that keep CPPC
++ * register accessors in a common table.
++ *
++ * Return: 0 for success, -ERRNO otherwise.
++ */
++int cppc_get_auto_sel_u64(int cpu, u64 *val)
++{
++	bool enable;
++	int ret;
++
++	ret = cppc_get_auto_sel(cpu, &enable);
++	if (ret)
++		return ret;
++
++	*val = enable;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cppc_get_auto_sel_u64);
++
++/**
++ * cppc_set_auto_sel_u64 - Write the autonomous selection register from a u64.
++ * @cpu: CPU to which to write the register.
++ * @val: Value to write, any non-zero value enables autonomous selection.
++ *
++ * u64-typed wrapper around cppc_set_auto_sel().
++ *
++ * Return: 0 for success, -ERRNO otherwise.
++ */
++int cppc_set_auto_sel_u64(int cpu, u64 val)
++{
++	return cppc_set_auto_sel(cpu, !!val);
++}
++EXPORT_SYMBOL_GPL(cppc_set_auto_sel_u64);
++
+ /**
+  * cppc_set_enable - Set to enable CPPC on the processor by writing the
+  * Continuous Performance Control package EnableRegister field.
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 8693890a7275..cd07e1e92bf4 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -184,6 +184,8 @@ extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
+ extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
+ extern int cppc_get_auto_sel(int cpu, bool *enable);
+ extern int cppc_set_auto_sel(int cpu, bool enable);
++extern int cppc_get_auto_sel_u64(int cpu, u64 *val);
++extern int cppc_set_auto_sel_u64(int cpu, u64 val);
+ extern int cppc_get_perf_limited(int cpu, u64 *perf_limited);
+ extern int cppc_set_perf_limited(int cpu, u64 bits_to_clear);
+ extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
+@@ -282,6 +284,14 @@ static inline int cppc_set_auto_sel(int cpu, bool enable)
+ {
+ 	return -EOPNOTSUPP;
+ }
++static inline int cppc_get_auto_sel_u64(int cpu, u64 *val)
++{
++	return -EOPNOTSUPP;
++}
++static inline int cppc_set_auto_sel_u64(int cpu, u64 val)
++{
++	return -EOPNOTSUPP;
++}
+ static inline int cppc_get_perf_limited(int cpu, u64 *perf_limited)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.34.1
 
