@@ -1,137 +1,123 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B708B274B3B
-	for <acpica-devel@lists.linux.dev>; Fri, 17 Jul 2026 01:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EDC01ACED5
+	for <acpica-devel@lists.linux.dev>; Fri, 17 Jul 2026 02:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784251482; cv=none; b=n/p0sub2+2jsTpE4QyQ0XgSQk+XtxucJ/mSuCZGSiAvD4GQ729AwijeYPJxwgsduQFZj02WLQ93+9ik0Vlnh+2mTVp99w1dbxC2bYLL9ZYzRImyD36hkjLGv4NlpzfwvI7ZCPQNpHN98hTGAwXSOr+S0yWr4ijOwzss7C3Vpe2E=
+	t=1784256419; cv=none; b=M6NV7Bi2d4QRSp8GHknargUM5HOqfKhkgck4V94P90Qom4UozfX6tAfQfB2Ija7/tOjQiwkDGjeMu10nGUKhRZ1Z5kYc1mAh/5k44jaoKNw0HNQQ1vkCDi8lU3ncPvXZIwJtpxLTMcuri3cjqBpijS/nGXBnXhlyIreM54hUi5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784251482; c=relaxed/simple;
-	bh=pHXNTKbXJTBG/BABfTPnzc62yMveXx2geBRWMXkLfsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZSYxD116xCtfkCAKUHXmIuya5Dx2tLoXuef3RBc9fuinu3aI41J5IL3uahlUiY7/yJ7R6kcs8vgYnTBT4CHYcKPFOGxcbovtxL8349LdDU8lLlupIgk99Gci29iHA8zmgHXWYY1j8OCP3o1BVfpFIw3eVKaEer/zndioTkpqME8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=kxGSgzcA; arc=none smtp.client-ip=113.46.200.219
+	s=arc-20240116; t=1784256419; c=relaxed/simple;
+	bh=+gwv/YdXtyyuBCvt8mKVABm4jTBGmrYVmrdRCjc2Y4E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O7PtMpZqczRrgIf24GkWO1yzPoX7lyxoVtssr4pmfSM5SxsRnce68M2c6nttYIqs896uQIHhMqM86esBJ1G8//curwQHnjJ6ibG8AwQKJa/S/E7BODPqOjjYaoFm0Aytk4918h5YKBlPVBntYS7BRAiXhxy2wdb+l9TjMQpSFG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=qSdUmurI; arc=none smtp.client-ip=113.46.200.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="kxGSgzcA"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="qSdUmurI"
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=SXoeLzz0joNDaurArO4fsXPyADL0JdoAhkTv0ebLgpA=;
-	b=kxGSgzcAVEnTkZ+VJacFArpr5p48N0MwJrODTo7eCHO5onknMoIdiCpZMUJWcU9qEQPcFzM5Y
-	Y7GN6f8J9bQDIP1QPthCGJDk5Q9vsKoyHBRxYELelNm14X8cNdPVHbRQHF4rZHKGlEOnI2oC9et
-	utTFBzxExpve7QfWkUCyH6c=
-Received: from mail.maildlp.com (unknown [172.19.162.223])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4h1X5T2dChz1prQs;
-	Fri, 17 Jul 2026 09:15:09 +0800 (CST)
-Received: from kwepemr200004.china.huawei.com (unknown [7.202.195.241])
-	by mail.maildlp.com (Postfix) with ESMTPS id BD1CB40577;
-	Fri, 17 Jul 2026 09:24:30 +0800 (CST)
-Received: from [10.67.121.62] (10.67.121.62) by kwepemr200004.china.huawei.com
- (7.202.195.241) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 17 Jul
- 2026 09:24:29 +0800
-Message-ID: <4d235a1b-41e1-4797-ad56-467d8d840b03@huawei.com>
-Date: Fri, 17 Jul 2026 09:24:29 +0800
+	bh=taOEHieoAmnmZe92hrNPclFpwDHjy1cJ8iio6ST/EAs=;
+	b=qSdUmurIrQFeZ9KUi89ruciNvfqVFE0KSVLNNkAmn/cBoxGeCFJu4RhfkW3kmDkVDu/NbVs7S
+	ai1lxHO9qUBC5QUmZzLidYP/Plh+F33arvrD/hkfD9gCMmL1yukfnmw6XqLXA5/epbsJ8l4d7wP
+	1uui03JkHSHHos8NdNOw19A=
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4h1YwY58CHzcZy9;
+	Fri, 17 Jul 2026 10:37:33 +0800 (CST)
+Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
+	by mail.maildlp.com (Postfix) with ESMTPS id D38ED4058C;
+	Fri, 17 Jul 2026 10:46:52 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Fri, 17 Jul 2026 10:46:52 +0800
+From: Lifeng Zheng <zhenglifeng1@huawei.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
+	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
+	<sumitg@nvidia.com>
+CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
+	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
+	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
+Subject: [PATCH 0/8] ACPI: CPPC: Resource Priority Register support and sysfs interface
+Date: Fri, 17 Jul 2026 10:44:54 +0800
+Message-ID: <20260717024502.3520445-1-zhenglifeng1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] CPPC: reduce FFH feedback-counter sampling skew on
- arm64
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <rafael@kernel.org>,
-	<lenb@kernel.org>, <saket.dumbre@intel.com>, <zhenglifeng1@huawei.com>,
-	<sumitg@nvidia.com>, <zhanjie9@hisilicon.com>, <geert+renesas@glider.be>,
-	<cuiyunhui@bytedance.com>, <vanshikonda@os.amperecomputing.com>,
-	<ionela.voinescu@arm.com>, <jeremy.linton@arm.com>,
-	<viresh.kumar@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linuxarm@huawei.com>,
-	<prime.zeng@hisilicon.com>, <wanghuiqiang@huawei.com>, <xuwei5@huawei.com>,
-	<lihuisong@huawei.com>, <yubowen8@huawei.com>, <wangzhi12@huawei.com>, Beata
- Michalska <beata.michalska@arm.com>
-References: <20260708082818.808041-1-zhangpengjie2@huawei.com>
- <alD2qU4FNoGvP7SN@arm.com>
-From: Pengjie Zhang <zhangpengjie2@huawei.com>
-In-Reply-To: <alD2qU4FNoGvP7SN@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- kwepemr200004.china.huawei.com (7.202.195.241)
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemf100001.china.huawei.com (7.202.181.215)
 
-Hi Rafael,
+This series implements support for the CPPC v4 Resource Priority Register
+mechanism defined in ACPI 6.6, Section 8.4.6.1.2.7, and exposes it to
+userspace via sysfs.
 
-Just a gentle ping on this patch. It has been a week and Beata has taken
-a look at it. Could you please let me know if you have any comments or
-concerns regarding this change?
+Resource Priority allows OSPM to control the relative priority among
+processors for shared resources.  The controlled resource types include
+processor boost, throttle, L2 cache, L3 cache, and memory bandwidth.
+Each Resource Priority group consists of:
 
-Thanks,
-     Pengjie
+  - CONTROLLED_RESOURCES: which resource types the group affects
+  - ENABLE_VALUE / ENABLE_REGISTER: enable/disable the group
+  - PRIORITY_COUNT / PRIORITY_REGISTER: read/write the priority level
 
-On 7/10/2026 9:42 PM, Beata Michalska wrote:
-> Looks good to me, though I guess you might need an ack from Rafael (?)
->
-> Thank you for the patches.
->
-> ---
-> BR
-> Beata
-> On Wed, Jul 08, 2026 at 04:28:16PM +0800, Pengjie Zhang wrote:
->> The legacy CPPC feedback-counter path reads the delivered and reference
->> performance counters separately.
->>
->> On arm64 systems using AMU-backed CPPC FFH counters, each FFH read is
->> served through a cross-CPU counter read helper. Reading the counters
->> separately therefore widens the sampling window between them and can
->> skew the delivered/reference ratio used by cpuinfo_cur_freq. Under heavy
->> load, the skew is observable as transient values that may exceed the
->> platform maximum, as discussed in [1] and [2].
->>
->> This series adds a small generic hook for architectures that can obtain
->> both FFH feedback counters in one operation, while preserving the
->> existing per-register read path as the fallback.
->>
->> Patch 1 adds the generic CPPC hook and uses it from cppc_get_perf_ctrs().
->> Patch 2 implements the hook on arm64 by sampling both AMU counters in a
->> single operation on the target CPU.
->>
->> For detailed test results and data demonstrating the observable skew and
->> the improvements brought by this series, please refer to [3] and [4].
->>
->> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei.com/
->> [2] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
->> [3] https://lore.kernel.org/all/443104e2-ba6e-454e-8469-909f35817a99@huawei.com/
->> [4] https://lore.kernel.org/all/317d33d5-8279-4aa8-84b7-6ae1976636ac@huawei.com/
->>
->> Tested-by: Sumit Gupta <sumitg@nvidia.com>
->> Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
->> Tested-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->> Reviewed-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->> Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
->> ---
->> Changes in v2:
->> - Simplified the CPPC generic layer fallback logic to prevent pointless single-read retries.
->> - Added upfront register validation in the arm64 hook to avoid unnecessary IPI overhead.
->> - Explicitly flipped the -EOPNOTSUPP error to -ENODEV in the arm64 hook when AMU is unsupported, cleanly bypassing redundant CPPC generic fallbacks.
->> - Addressed other kernel-doc and naming feedbacks from Beata.
->> - Added Reviewed-by and Tested-by tags from Vanshidhar and Sumit
->> - Link to v1: https://lore.kernel.org/all/20260410094145.4132082-1-zhangpengjie2@huawei.com/
->>
->> Pengjie Zhang (2):
->>    ACPI: CPPC: add paired FFH feedback-counter read hook
->>    arm64: topology: read CPPC FFH feedback counters in one operation
->>
->>   arch/arm64/kernel/topology.c | 92 ++++++++++++++++++++++++++++++++----
->>   drivers/acpi/cppc_acpi.c     | 50 ++++++++++++++++++--
->>   include/acpi/cppc_acpi.h     |  7 +++
->>   3 files changed, 136 insertions(+), 13 deletions(-)
->>
->> -- 
->> 2.33.0
->>
+The patch series is organized in three parts:
+
+  - patches 1-4 extend the CPPC data structures and _CPC parser to handle
+    Package-type entries and parse Resource Priority sub-packages into
+    structured descriptors.
+
+  - patches 5-7 refactor existing register I/O helpers to support direct
+    register access and add accessor functions for Resource Priority
+    attributes (enable, priority count, priority value).
+
+  - patch 8 creates a "resource_priority" sysfs hierarchy under each
+    cpufreq policy to expose the Resource Priority attributes to userspace.
+
+---
+
+RFC: sysfs placement
+
+The sysfs interface is currently placed under /sys/devices/system/cpu/cpufreq/
+(i.e. the cpufreq policy directory). I am unsure whether this is the best
+location and would appreciate reviewer feedback.
+
+The concern is that Resource Priority covers resource types beyond CPU
+frequency control:
+
+  - PROCESSOR_BOOST, PROCESSOR_THROTTLE -- clearly CPU-frequency related
+  - L2_CACHE, L3_CACHE -- cache partitioning, not frequency
+  - MEMORY_BANDWIDTH -- memory QoS, not frequency
+
+Placing the attributes under cpufreq makes sense for boost/throttle but
+feels semantically wrong for cache and memory bandwidth resources.
+
+I would appreciate feedback on whether cpufreq is the right home for
+this interface, or whether a different location would be more appropriate.
+
+Lifeng Zheng (8):
+  ACPI: CPPC: Prepare cpc_register_resource for Package-type entries
+  ACPI: CPPC: Refactor element parsing into parse_cpc_element()
+  ACPI: CPPC: Refactor resource cleanup into free_reg_resource()
+  ACPI: CPPC: Parse Resource Priority Register entries from _CPC package
+  ACPI: CPPC: Store optional flag in cpc_register_resource
+  ACPI: CPPC: Factor out cpc_read_reg() and cpc_write_reg()
+  ACPI: CPPC: Add Resource Priority accessors
+  cpufreq: cppc: Expose Resource Priority attributes via sysfs
+
+ drivers/acpi/cppc_acpi.c       | 729 +++++++++++++++++++++++++++------
+ drivers/cpufreq/cppc_cpufreq.c | 270 ++++++++++++
+ include/acpi/cppc_acpi.h       |  60 +++
+ 3 files changed, 927 insertions(+), 132 deletions(-)
+
+-- 
+2.33.0
+
