@@ -1,39 +1,41 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A08A3B8D7E;
-	Fri, 17 Jul 2026 06:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA2E3E00A6;
+	Fri, 17 Jul 2026 08:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784270705; cv=none; b=eq0OniTiwaWwF3TKOTtbZsks4Bjy09gJKdQD7+xk165w/Xf6X+1sDJgdIm0K5ZA9L7Kn0DSSTK5JnTr1Y39gAIxxRkQbXJFrFqB301hOrzBRUtZDbM7cuuxjL+GFU4eHgYt2sIZffTWsL+rIHCN0jVwt1IOh5Ec3zinqmwj3B1w=
+	t=1784275811; cv=none; b=M4jcfcqLsxAWeDnvrjJDW/MsnkpXJtY/WoJ8G+/srxdDrkbMHxmbvaiOGOh5BCAp/XngoTh/GBt2sEcMygHmuhdIo14RdiYxuHEPlr0V3HGlYjf5yelKV3eVu9T86qlJf2v9K4oKpufKLUlYPxf9eAufgibvzSvfyHPa5yIdrts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784270705; c=relaxed/simple;
-	bh=WOL0l221EVL0EQLvBdanmj6khszyikYykIOgdHGUeiA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uFUiEaQlLLnqwkjWMMQX7Lob+9NHS/5EsJfYpQcA/ONEWIzM3/Om2XxzwOASR/et5V32AgvvJwb+CJ5z52dt3hGmLcWWIsFWK+MYx4ViZmdSqqV+PGHGkYqRtsTX9YAxFpCGv4l5Ax4Tso91EGdt4SRDK6HBvGpsG8ew0vf4uoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8AxBOpaz1lqNXYEAA--.12743S3;
-	Fri, 17 Jul 2026 14:44:42 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowJAxDcVYz1lqiMoPAA--.17706S2;
-	Fri, 17 Jul 2026 14:44:40 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>,
-	Saket Dumbre <saket.dumbre@intel.com>,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org,
+	s=arc-20240116; t=1784275811; c=relaxed/simple;
+	bh=Da2AXGVFJbSksGED4oE22PUx/yI1OATDo0VSOnym7Us=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rvq9UVCT+vbcwX9SIJ8iXpnSzaMhbDKVD5Tv1h7TqnZ/IdA2aYILdLUqQZ37wYCUy9fVM8Ygx+Is5fVVmck5jVCt9g86OR9NtVjO+Gu0P2k4OfL653Z4lNNbFtz6KZjzxfpCQJiHOtsln2+g7h5L3RjFezanY+fmfGjtEAXxibo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GK6Q2afw; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GK6Q2afw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D67781F00A3A;
+	Fri, 17 Jul 2026 08:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784275810;
+	bh=hJKuDi7+Mg/XV2aA/qUGIAThj4AZS3oxuuDTDUqi/WI=;
+	h=From:To:Cc:Subject:Date;
+	b=GK6Q2afw/CHgjE5ddpxpW5ekfsANjUQyCogIsMOycZPhQ3L+5FsQ/YIzE00E5pfw7
+	 xvexMmQJ1ecIe7BLDmSiN8OL7/xWxYQyzZWeokYl4lsWqwuT0NFICgHNsRQP/aCNtV
+	 7giNnNfEJBNNtLgnPO1bX9/X86EccVNx/yzDaQFdLBkzZ2p58L5U/EQcxMcIAzHebz
+	 TeDahPAvMhE/3F+g/iwSJkxd/ra4xJlrqQp+//n0F6eIYhrFj+72DZ5Yaip3VaCu/1
+	 8iqu8eOBW2pa5wEsazpyjrJx6+r8BGkV9gFPhbIKnGj89ZvHLeKl+P20vigbKhPm2S
+	 Mn32SNEYEp2PA==
+From: Sudeep Holla <sudeep.holla@kernel.org>
+To: linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Sudeep Holla <sudeep.holla@kernel.org>,
 	acpica-devel@lists.linux.dev,
-	lixianglai@loongson.cn
-Subject: [PATCH v2 4/4] MAINTAINERS: Add entry for drivers/acpi/loongarch
-Date: Fri, 17 Jul 2026 14:37:13 +0800
-Message-Id: <20260717063713.3638059-5-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20260717063713.3638059-1-maobibo@loongson.cn>
-References: <20260717063713.3638059-1-maobibo@loongson.cn>
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>
+Subject: [PATCH 0/4] ACPI/PCC: Correct PCC OperationRegion handling
+Date: Fri, 17 Jul 2026 09:10:01 +0100
+Message-ID: <20260717081005.470013-1-sudeep.holla@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -41,54 +43,50 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAxDcVYz1lqiMoPAA--.17706S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
 
-ACPI defines few LoongArch specific tables which need parsing code
-added in drivers/acpi/loongarch. Add maintainer entries for this newly
-created folder.
+Hi,
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- MAINTAINERS            | 9 +++++++++
- arch/loongarch/Kconfig | 1 +
- 2 files changed, 10 insertions(+)
+This series corrects the handling of PCC OperationRegions and their
+shared memory.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ce5c5185c773..d741f87fcf8c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -348,6 +348,15 @@ S:	Maintained
- F:	drivers/acpi/riscv/
- F:	include/linux/acpi_rimt.h
- 
-+ACPI FOR LoongArch (ACPI/LoongArch)
-+M:	Bibo Mao <maobibo@loongson.cn>
-+R:	Huacai Chen <chenhuacai@kernel.org>
-+L:	linux-acpi@vger.kernel.org
-+L:	loongarch@lists.linux.dev
-+S:	Maintained
-+F:	drivers/acpi/loongarch/
-+F:	include/linux/acpi_iovt.h
-+
- ACPI PCC(Platform Communication Channel) MAILBOX DRIVER
- M:	Sudeep Holla <sudeep.holla@kernel.org>
- L:	linux-acpi@vger.kernel.org
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index d8d252325017..ee3d591ace04 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -6,6 +6,7 @@ config LOONGARCH
- 	select ACPI_GENERIC_GSI if ACPI
- 	select ACPI_MCFG if ACPI
- 	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-+	select ACPI_IOVT if ACPI
- 	select ACPI_PPTT if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_BINFMT_ELF_STATE
+ACPI 6.3 states that a PCC OperationRegion describes the shared memory
+following the PCC signature. Consequently, COMMAND fields at raw shared
+memory offsets 4 and 12 appear at OperationRegion offsets 0 and 8.
+
+The first patch corrects those offsets in ACPICA. This change has already
+been submitted upstream:
+
+  https://github.com/acpica/acpica/pull/1205
+
+The ACPICA patch is included here only to document the complete
+dependency and aid review and testing. It must enter the kernel through
+the ACPICA pull/import process and will not be merged directly through
+the Linux ACPI tree.
+
+The remaining Linux patches:
+
+- Preserve the platform-populated PCC signature when copying
+  OperationRegion data.
+- Release the mailbox channel and region context when ACPICA
+  deactivates an OperationRegion.
+- Compute and cache the command timeout during channel setup.
+
+There is no strict build dependency in case ACPICA and other 3 changes
+need to be merged at different timeline or via different branch.
+
+Regards,
+Sudeep
+
+Sudeep Holla (4):
+  ACPICA: Fix PCC OperationRegion command offsets
+  ACPI: PCC: Preserve shared memory signature in OpRegion handler
+  ACPI: PCC: Free channel on OpRegion deactivation
+  ACPI: PCC: Cache OpRegion command timeout
+
+ drivers/acpi/acpi_pcc.c       | 55 ++++++++++++++++++++++++++---------
+ drivers/acpi/acpica/exfield.c | 11 +++----
+ 2 files changed, 48 insertions(+), 18 deletions(-)
+
 -- 
-2.39.3
+2.43.0
 
