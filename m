@@ -1,108 +1,91 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420B22BF3F3;
-	Tue, 21 Jul 2026 12:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA16046AA60
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 15:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784636829; cv=none; b=D+vr2utc8D2wGu5ISzTL60uZQD9IhiZb2os3oV0Ax5Ph3p8Z0qkgpkW9RJResEagCw5HqxYLurlaRnjK8FfaXB+Xchv+qSSP4uZdwVWDinHB7dC5urfn0DlLDbIVY6wV+mvZERDmoc2opOdwJoF41rFbh6fbl4bxjZQ7EhQ6npU=
+	t=1784648066; cv=none; b=mhXrv6V8SpJmn23ZRjw75jivk5C6VY5TE4OX0w9j5wZUntCJAZ4CDjif1Y73ZHNopa8RdpJAaN9Wz9jjz5vTqbfRd2v1FpM8t8A40xOqNDh6c39+w8k5zFC/i5kyEYVdo0f17CSyosWrf5tOzlFaj3DnmzV04Au/pepRS0iSONA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784636829; c=relaxed/simple;
-	bh=kS7pGa7W9ggTxkUS7tLCEMaxQyQhib+HIbsZm4WFvh4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uw/9lTIqRdE6kZzjf7o33Z/1z5YSMsrCYR2Wun32Fc7EUZLbrRoH+AvsJZQNLi3aBkj7CY6rvEGpYX+1690nGUC/YjCMEpt07MV/X0UNn8tq5dECohBjNl6h2YL9mIAN/ZG27ZoHunUtu0ScUNHmi+hW75tZuSW1cup/5lvKvxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a3QmwPYI; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784648066; c=relaxed/simple;
+	bh=rdRrZWMw6XQ0DnO09ka2+OtkvEEzz3gTsu4XlbQjHj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FqKiBlVvPkUemEemePaboBLkLLUGkRcUwWN5Vlzg1z1ZrDTpGPA6YEe/eXL82h6XB3/kY/8WUc3qY/ZTGZPhV66g/8HWIw38qn0w2F52KZs9WDtQx4Bg5/uTxQuU37sL3BaZTV7CajItu+SIOPC8Xa0AsP+kJ+P9UuJB5E1Y28A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwYU7c20; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a3QmwPYI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DDB1F000E9;
-	Tue, 21 Jul 2026 12:27:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwYU7c20"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B20711F00ACA
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 15:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784636827;
-	bh=0FeaAJPknYRzqr3lr/xI99C+B9GaP/MgRADlP+jJ6O0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=a3QmwPYI5GDLG5DuxTtMPyE4MvlJSLT624waeRaiepN2lhFnBvREoinNX3TZv9L81
-	 ONxnFS1VOVVUnXS2B/DBHIYXzWrwiJ1az6qwoQcj0ky0TeOdshs6LtzBVEoYsQs/EB
-	 a+EEy4y+/Z1vdJ5lvq6HkYRp+bpb6Y1EztcUeXlo8iGB6ly5yTQiCfV24RDs2pFT5f
-	 ubbycxibv5hr0WZ7Bm64pixTVtrZ8tiwv4dkBbHFvXfNDeMbHX8Nw3TGfRWgspHcOi
-	 Wz+JAPHqr25x1Bo0/QDScn1EXhafCOBKzkbETzSdit6yumh5DKdpiw/SsT5siW8biN
-	 F1i3BPvsX+DaA==
-Date: Tue, 21 Jul 2026 13:27:04 +0100
-From: Sudeep Holla <sudeep.holla@kernel.org>
-To: "lihuisong (C)" <lihuisong@huawei.com>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@kernel.org>,
-	acpica-devel@lists.linux.dev,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Saket Dumbre <saket.dumbre@intel.com>
-Subject: Re: [PATCH 2/4] ACPI: PCC: Preserve shared memory signature in
- OpRegion handler
-Message-ID: <20260721-honest-shiny-teal-da9d6d@sudeepholla>
-References: <20260717081005.470013-1-sudeep.holla@kernel.org>
- <20260717081005.470013-3-sudeep.holla@kernel.org>
- <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
+	s=k20260515; t=1784648065;
+	bh=rdRrZWMw6XQ0DnO09ka2+OtkvEEzz3gTsu4XlbQjHj8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=YwYU7c20iyRHlUEvv19GLx0Cd2Xowt+g80i2Ddj624/G/Q8YONChEezzO2OMY6TER
+	 gSOngS5Q5fzBB66dF2iSa7zoCB/cQj1Vd6g/AfLf0s72OeXuOBCjbI+BBybXwb8Fj3
+	 AZtkPRM/XOMJUz9/PuwU7mXYb0F6aLMMQM5wi6oypQDySgNo/5uAtmXi9+FS8QIj7j
+	 FmSSG3gpRZEM/xhI/NFd647deEHwTMHBuavLrZbW38Ib6Ipr614pyoQtVEPWHtmKfd
+	 7c6BM3AZ1nKEGEu7wo+LO3VppINx/ta0qRdIWU6keCO8YnnKgwGpcxceUjdOlJdPEs
+	 zRzMeBY6IM4Ng==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-39c9a3acd40so81352351fa.3
+        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 08:34:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rrk7L8wogpqZVbErFGOejs16FSqmLGD5OdpX9n1pmCfmVeVSdKMUmH8ZkPAtKU8m0IvqhMzThmpwpxp7nE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzmUT4BYHVAGLMrx4oq74RIKfuoWFU3a3pYEbHib6Uv6478YUAw
+	lDhxgdhOXaYCgn3Iw8zb2HAs69UDhjjCYFDbu1p7KDeXtRU3ZqF/q4lDpzx45ztY+b3XpBnUSL0
+	YXTa4E9JoS9zVTJKOYu1ghcJ5HIMuQ08=
+X-Received: by 2002:a05:6512:61d8:20b0:5b0:190a:5b6b with SMTP id
+ 2adb3069b0e04-5b28f9ac2a0mr2732898e87.32.1784648064148; Tue, 21 Jul 2026
+ 08:34:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
+References: <20260716153820.2007095-1-sumitg@nvidia.com> <20260716153820.2007095-3-sumitg@nvidia.com>
+ <31525db3-a7a6-48fa-bea9-5de28a4332c4@huawei.com>
+In-Reply-To: <31525db3-a7a6-48fa-bea9-5de28a4332c4@huawei.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Tue, 21 Jul 2026 17:34:10 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jGJ8HDjmnKP8HvPRqm6NKL1mzxd6=z-xDyxe6=SoNCCA@mail.gmail.com>
+X-Gm-Features: AUfX_mwG9ZdYy0LRhhbEyhBL30Qkgwd4M-EOK3higeVMTPvWhi7syJpKzMc0LkY
+Message-ID: <CAJZ5v0jGJ8HDjmnKP8HvPRqm6NKL1mzxd6=z-xDyxe6=SoNCCA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] ACPI: CPPC: Add u64 wrappers for the autonomous
+ selection register
+To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>, Sumit Gupta <sumitg@nvidia.com>
+Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com, 
+	zhanjie9@hisilicon.com, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, treding@nvidia.com, 
+	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
+	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 21, 2026 at 07:43:53PM +0800, lihuisong (C) wrote:
-> 
-> On 7/17/2026 4:10 PM, Sudeep Holla wrote:
-> > ACPI 6.3 introduced PCC OperationRegions. Section 5.5.2.4.7.3,
-> > "Declaring message fields within a PCC OperationRegion", states that,
-> > for all PCC subspace types, the PCC Operation Region pertains to the
-> > region of PCC subspace that succeeds the PCC signature.
-> > 
-> > The PCC address space handler currently copies the OperationRegion
-> > buffer to and from the start of the PCC shared memory region. That can
-> > overwrite or expose the signature at byte offset 0, and it also misses
-> > the last 4 bytes of the actual PCC OperationRegion data.
-> > 
-> > Offset OperationRegion copies by the size of the signature and reject
-> > regions that do not fit in the shared memory after that signature. AML
-> > that sizes the PCC OperationRegion to include the signature is not
-> > conforming to the PCC OperationRegion definition.
-> > 
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Fixes: 77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype")
-> > Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
-> > ---
-> The below commit description said the PCC operationRegion contains the
-> signature field.
-> "77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC
-> Type 3 subtype")"
-> And I find that the definition of this OperationRegion in ACPI spec 6.3 is
-> the same with spec 6.5 and 6.6.
-> That is, the original implementation already didn't comply with ACPI spec.
-> 
-> Patch 1/4 also requires the change of platform AML about PCC
-> OperationRegion.
-> These modification may lead to the existed PCC OperationRegion method in
-> some drivers doesn't work.
-> Because the platform AML still contains signature field in PCC
-> OperationRegion method.
-> I don't know how many drivers in linux have used this method.
-> IMO, we at least need to reclarify this usage change and provide a new usage
-> example in the commit log like the original commit did.
-> 
+On Fri, Jul 17, 2026 at 5:47=E2=80=AFAM zhenglifeng (A) <zhenglifeng1@huawe=
+i.com> wrote:
+>
+> On 7/16/2026 11:38 PM, Sumit Gupta wrote:
+> > cppc_get_auto_sel()/cppc_set_auto_sel() use a bool, unlike the other
+> > CPPC register get/set helpers which use a u64.
+> >
+> > The next patch in this series saves and restores the OSPM-set registers
+> > across CPU hotplug using a common table of get/set helpers typed as
+> > int (*)(int, u64 *) and int (*)(int, u64), which the bool autonomous
+> > selection helpers do not fit.
+> >
+> > Add cppc_get_auto_sel_u64()/cppc_set_auto_sel_u64() wrappers with the u=
+64
+> > signature so the autonomous selection register fits alongside the other=
+s.
+> >
+> > Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+> > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>
+> If this is necessary, I think it is better to just change the input param=
+eter
+> of the original cppc_get/set_auto_sel() to u64.
 
-Good point, I didn't realise I had wrong example in the original commit.
-I will add the example of correct usage in this change. Thanks for pointing
-it out.
+Agreed.
 
-> Anyway, this patch also makes the driver more compliant with the
-> specifications.
-> So I agree.
-> Reviewed-by: Huisong Li <lihuisong@huawei.com>
-> 
-
-Thanks again for all the review.
-
--- 
-Regards,
-Sudeep
+Sumit, why don't you just make cppc_get_auto_sel()/cppc_set_auto_sel()
+take a u64 argument?
