@@ -1,128 +1,85 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C4346A60E
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAC046F499
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:28:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784661630; cv=none; b=a3lgXV8JHHchtDQKZ1pDuioJJB3D4vWE8K9AtNQnDF3/Q2VfPHCw8u9gOXCRff5kXIqr2PXrWz8P09NXHXr6a7BsSlKyqLJVMQA9wvFwujLdctRoeU4SYdIZ8H/8Ogfnud1n6wBPIVrObLD6QlKP4XHqd0mgwTvlR1n9RF1YCps=
+	t=1784662139; cv=none; b=tXUA/3CV3r4Zs2uxfV3Kbvt3dyzthFspChZVdcQ8JUjaSbmn2RC1LutYUo7n+k6/vXNL8nLwFRd4EPcZkLZgzpy81qCrUivdWSRUk6TjseValNGnF4UQJch/9ZwmkfUscIxBXYIRhXQLGK5+/1IPqxCYZr0BlLzs3P7c/+xP1Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784661630; c=relaxed/simple;
-	bh=/Tlq+AwXEl3Bn6dm5NQihs1DVIqNYoTX7gTKZup2T+I=;
+	s=arc-20240116; t=1784662139; c=relaxed/simple;
+	bh=ACvjltgEpqbSP9ZceuIzPy9fJBiUl+tkbgu7EKRAvDo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=McSynDGeETlc2+gaBq06TmFcttwsKwhkFXwjmPsHqCYcPYy9D+u8a6U0Jlt3UYIk8e+LMurHpKibE0BK5AFvD1YOJ9xPT1ZHbZcAOiGgbHBuk/KzcuyM9XHggxkbz+s41gqET1HehaZRp/uqv96z/I5Gt1jz4oEp6iZpfIX/IuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sa4QVvys; arc=none smtp.client-ip=100.103.45.18
+	 To:Cc:Content-Type; b=Bgnu/HHSbneF1m/9CAfFq7qghc4rQaTaPoCtdCF5iOvd/2TSw8Eq+NLcqgMf+NC84zsh4jh+mahmT3V798GmSVFGZcDHLf33RBawwr/7fj1KB8ZxThr/CtM1LSGcisUqiKvSOupwmqQIR04vDsctpd4ujYTEmp11WfMmRHxrWiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YtUvO4L/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sa4QVvys"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BBC81F00A3F
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:20:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YtUvO4L/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D9DB1F00AC4
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784661629;
-	bh=/Tlq+AwXEl3Bn6dm5NQihs1DVIqNYoTX7gTKZup2T+I=;
+	s=k20260515; t=1784662138;
+	bh=+wO7sHrpdTteU3Brt5qKC9yAAPgd4tp4zqCms16ybrE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=Sa4QVvysWnI78facCK72zv5aRdXQu60ZiQ8YYRfC0ucTqsWb5j/PwKPVzG0OYMvyG
-	 yKbyPpHAYfYvV+jSp2Pny0qTI1ivSdwh7aroPJ6xR/nrPSf2fHOnLSIr8m3t8+JOxw
-	 P8LZHHAToL+H14WtgVFSMDt+qGvS6k5tz/GR+m5pDFxp7ZgWkUV+SIuOWOpuJm7ycM
-	 Lm3hg40viLJgpOGoMioLi40McwIH15lPMAtiKYngTq5yBFTC5XwjAleZIuRdqh0uoV
-	 YgUkk5QlkObjdUTsjum+MUEtArQQnrUBbBvU5Ps+PxNuJ7JU2cKqccLSRo67doA4J7
-	 c0uGp9B1/NtZg==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-39c7fd21b63so89375431fa.0
-        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 12:20:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rq8WtOn/dor2O/6PsgjmF99bztgyBxk/YINHi5DVRNtIaINL9lXCV8Id/opGYOh+z0uHPo85CSjG0tRVV4=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyFh5ql5XfvsxE39HDqtjerwx9KFKb+kjTeKE+nJNxKvcx+wcWn
-	O/D6egB4ps2njI5GPPp0Kv10SMUaYb5hm+be5QMDWZYnsepSoJJqQNQkQHX0g1m6csRYx71N1y2
-	PruVWvXxn9ycAYsnGT2EzkQgXzav3AiU=
-X-Received: by 2002:ac2:43b6:0:b0:5b0:20b0:9589 with SMTP id
- 2adb3069b0e04-5b28f9ac1c6mr3048489e87.38.1784661627798; Tue, 21 Jul 2026
- 12:20:27 -0700 (PDT)
+	b=YtUvO4L/8HRU+09F4knrn6KcB7cnArCflwJL0LBhCwGV7glMs9c1GrMLAHjhDrQ6Z
+	 3dqMQ7ZgozBnOQsrGpU5j7FrcCvQvE/K9SZBjK2MJP9UM73gmpc+ff/PDE5aGlp1ha
+	 xNVol/OSAN+ps9nH7iyvL6RLMoAJcyBB1364hyXTWwFW5hAfQ0PObCtLdhmvPGvY8I
+	 FvN8/Pch+iF7+N1swI39fuj1bOotlOpeDZn/y7pmaihRMp7xZ3gmFA/YegI8kGUBLT
+	 A5/YG0ikFZ5+6vKv4H6/KzH70NKrJUBTLiQ67s90JjPiEKyvIjufhP/UY+llF0vjre
+	 9Fg+XIYgghTlA==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5b2a3166398so1585652e87.3
+        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 12:28:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RqQ72g21acQX8CmHckMWKcvRBvhX1Gh6QGRrdcBdOGeh5BGpxOPa5upNZ+czxpIvijafw4B+wXan6TXlMg=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yx4wZYaIGz6CeSBv6Cll9oTdVKs9h/2DmZD8kkhSX8q0Ecx6AP+
+	Fomdj2N2iIt9iD6y4SDx0m0LJuE7JG+Z8wuAlDp16mMoj5S5xeG8p6OhdGNLiXI/vXMg7CoPAXY
+	nsLGUrvl8QtAG8OF3dz74EBi79MDN4oI=
+X-Received: by 2002:a05:6512:3dab:b0:5b0:17e7:67d0 with SMTP id
+ 2adb3069b0e04-5b28fad39f4mr4517292e87.62.1784662136588; Tue, 21 Jul 2026
+ 12:28:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260717081005.470013-1-sudeep.holla@kernel.org>
- <20260717081005.470013-3-sudeep.holla@kernel.org> <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
- <20260721-honest-shiny-teal-da9d6d@sudeepholla>
-In-Reply-To: <20260721-honest-shiny-teal-da9d6d@sudeepholla>
+References: <20260717171635.1783543-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20260717171635.1783543-1-andriy.shevchenko@linux.intel.com>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Tue, 21 Jul 2026 21:20:15 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jAOA3iQB6htExJNAtLu5oVJB9nZGzh=0+uaerVwgHMxQ@mail.gmail.com>
-X-Gm-Features: AUfX_mxSpC_xdcI5_twiMHwGPOC3zkvoOHY131Ph4xSSNKgBgXNYH6V65y553Ew
-Message-ID: <CAJZ5v0jAOA3iQB6htExJNAtLu5oVJB9nZGzh=0+uaerVwgHMxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ACPI: PCC: Preserve shared memory signature in
- OpRegion handler
-To: Sudeep Holla <sudeep.holla@kernel.org>
-Cc: "lihuisong (C)" <lihuisong@huawei.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>
+Date: Tue, 21 Jul 2026 21:28:43 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0ga2mZ_S0nO8Q-NSN7ZuF9qwhUZ2opxUX_2XGMdg9qFag@mail.gmail.com>
+X-Gm-Features: AUfX_mzydc3UWeDKdYi2wyHCHg60BRi_uT3lpOQOWTbMUbjmAo8RHZGACaFwxZs
+Message-ID: <CAJZ5v0ga2mZ_S0nO8Q-NSN7ZuF9qwhUZ2opxUX_2XGMdg9qFag@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ACPI: NHLT: Remove always included kconfig.h
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Len Brown <lenb@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 21, 2026 at 2:27=E2=80=AFPM Sudeep Holla <sudeep.holla@kernel.o=
-rg> wrote:
+On Fri, Jul 17, 2026 at 7:16=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Tue, Jul 21, 2026 at 07:43:53PM +0800, lihuisong (C) wrote:
-> >
-> > On 7/17/2026 4:10 PM, Sudeep Holla wrote:
-> > > ACPI 6.3 introduced PCC OperationRegions. Section 5.5.2.4.7.3,
-> > > "Declaring message fields within a PCC OperationRegion", states that,
-> > > for all PCC subspace types, the PCC Operation Region pertains to the
-> > > region of PCC subspace that succeeds the PCC signature.
-> > >
-> > > The PCC address space handler currently copies the OperationRegion
-> > > buffer to and from the start of the PCC shared memory region. That ca=
-n
-> > > overwrite or expose the signature at byte offset 0, and it also misse=
-s
-> > > the last 4 bytes of the actual PCC OperationRegion data.
-> > >
-> > > Offset OperationRegion copies by the size of the signature and reject
-> > > regions that do not fit in the shared memory after that signature. AM=
-L
-> > > that sizes the PCC OperationRegion to include the signature is not
-> > > conforming to the PCC OperationRegion definition.
-> > >
-> > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > Fixes: 77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler fo=
-r the PCC Type 3 subtype")
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
-> > > ---
-> > The below commit description said the PCC operationRegion contains the
-> > signature field.
-> > "77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PC=
-C
-> > Type 3 subtype")"
-> > And I find that the definition of this OperationRegion in ACPI spec 6.3=
- is
-> > the same with spec 6.5 and 6.6.
-> > That is, the original implementation already didn't comply with ACPI sp=
-ec.
-> >
-> > Patch 1/4 also requires the change of platform AML about PCC
-> > OperationRegion.
-> > These modification may lead to the existed PCC OperationRegion method i=
-n
-> > some drivers doesn't work.
-> > Because the platform AML still contains signature field in PCC
-> > OperationRegion method.
-> > I don't know how many drivers in linux have used this method.
-> > IMO, we at least need to reclarify this usage change and provide a new =
-usage
-> > example in the commit log like the original commit did.
-> >
+> The inclusion of <linux/kconfig.h> is unneeded as it's guaranteed by
+> the build starting from the commit 2a11c8ea20bf ("kconfig: Introduce
+> IS_ENABLED(), IS_BUILTIN() and IS_MODULE()"). Remove it here.
 >
-> Good point, I didn't realise I had wrong example in the original commit.
-> I will add the example of correct usage in this change. Thanks for pointi=
-ng
-> it out.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/acpi/nhlt.h | 1 -
+>  1 file changed, 1 deletion(-)
 >
-> > Anyway, this patch also makes the driver more compliant with the
-> > specifications.
-> > So I agree.
-> > Reviewed-by: Huisong Li <lihuisong@huawei.com>
-> >
+> diff --git a/include/acpi/nhlt.h b/include/acpi/nhlt.h
+> index 2108aa6d0207..370958d93706 100644
+> --- a/include/acpi/nhlt.h
+> +++ b/include/acpi/nhlt.h
+> @@ -10,7 +10,6 @@
+>  #define __ACPI_NHLT_H__
 >
-> Thanks again for all the review.
+>  #include <linux/acpi.h>
+> -#include <linux/kconfig.h>
+>  #include <linux/overflow.h>
+>  #include <linux/types.h>
+>
+> --
 
-I gather that there will be a v2 then.
+Applied as 7.3 material, thanks!
