@@ -1,209 +1,108 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873E91D9A5F
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 12:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420B22BF3F3;
+	Tue, 21 Jul 2026 12:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784636283; cv=none; b=jvgYgvExxuc7Q2C6qpryMdgElYDg3faYq8iczHwnap3nmSlNTNNZAyMylnf7Tfo5Xv7B0UZzGfGn8cNSJPqglapQxlUsULAblFO+oCSPeKQZi96uneln1euBoxZCqw2Yv3iYFii29a2K2X1iveE7/NVdElKYTVPU81NiMROiGLw=
+	t=1784636829; cv=none; b=D+vr2utc8D2wGu5ISzTL60uZQD9IhiZb2os3oV0Ax5Ph3p8Z0qkgpkW9RJResEagCw5HqxYLurlaRnjK8FfaXB+Xchv+qSSP4uZdwVWDinHB7dC5urfn0DlLDbIVY6wV+mvZERDmoc2opOdwJoF41rFbh6fbl4bxjZQ7EhQ6npU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784636283; c=relaxed/simple;
-	bh=eYIHHwrdPqq6KBvWPj3snaQkgEgsoy1HbYGBc10094Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lLYBjacSrg+3c1TiizcL2NK41Y+2QEogqHej58AGfPqJwqTHqmfiahKnHPn7aXZ11vQoKVMzvxq9YBYIoRY+jD+hi6E72XrACwqUlZFQZyinB+BVVZxTFO6eTl14XIR76OzbpYPhIpsKfkKqinfVYETc6IW5vDa1yrVO3p9jVaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PUtcA9S/; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784636829; c=relaxed/simple;
+	bh=kS7pGa7W9ggTxkUS7tLCEMaxQyQhib+HIbsZm4WFvh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uw/9lTIqRdE6kZzjf7o33Z/1z5YSMsrCYR2Wun32Fc7EUZLbrRoH+AvsJZQNLi3aBkj7CY6rvEGpYX+1690nGUC/YjCMEpt07MV/X0UNn8tq5dECohBjNl6h2YL9mIAN/ZG27ZoHunUtu0ScUNHmi+hW75tZuSW1cup/5lvKvxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a3QmwPYI; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUtcA9S/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58E041F01561
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 12:18:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a3QmwPYI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DDB1F000E9;
+	Tue, 21 Jul 2026 12:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784636282;
-	bh=7QZEPKLTpNwbB5JngCQVJO2bfUymmruYyPGkLEFAll4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=PUtcA9S//mv1skOXlqKzBQGeWGc7FM7g7MRKrwLb3WDbNSa1W5GhmFJogpbz/qkbI
-	 gjuDuPMRnINeNgjFQlEK81tGmraWKFMfCuaLQwNHXDxqMkFLsXD0WEipmOA3CWivZ0
-	 Iq6uTNvluG7i9CQoYHwt5MeGTY1Ruex0X1mS9b00jRkM/FpJ4U9J9UTAZVpPxvs0cI
-	 iFCTTiZw1QODic7aKPEXD/MXjkjJTjt7eRixMFjztrpz9kgjiwngJxQHGSzAJ+WyXh
-	 +Zb4+Hb3zujgb4rJkrcj8QLh1+VjpUb2ghe4gBprDnKVy5wFPqvGGMQb6M4soVxuI6
-	 DVSvmcrVzjcDQ==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5b28c91fba5so5776759e87.1
-        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 05:18:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrZNKa1+1Jc9MFmbjKDNvAHs/dpOpufuqf/es+CcA+t3jKyZGn9U6eEhxaT84R9Ng9kZHgXTvetw8RaiMk=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yy96KJFTKyvySnmNVDOzKi/JbYtKwJYSzYF2ybItmL+BVTrfX8Z
-	xbsS6PEz6n85MsqVtBfy56rVjIQ6tgiVe/4TNyeQGLePYBuDyr0RYmjFSwO6/jHsdh7LCSNvN6O
-	sBqducMHOG3I7reJh02BZrK5mTrXzhc8=
-X-Received: by 2002:a05:6512:2349:b0:5ae:a4a4:b6ca with SMTP id
- 2adb3069b0e04-5b28ff880a4mr2711254e87.14.1784636280154; Tue, 21 Jul 2026
- 05:18:00 -0700 (PDT)
+	s=k20260515; t=1784636827;
+	bh=0FeaAJPknYRzqr3lr/xI99C+B9GaP/MgRADlP+jJ6O0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=a3QmwPYI5GDLG5DuxTtMPyE4MvlJSLT624waeRaiepN2lhFnBvREoinNX3TZv9L81
+	 ONxnFS1VOVVUnXS2B/DBHIYXzWrwiJ1az6qwoQcj0ky0TeOdshs6LtzBVEoYsQs/EB
+	 a+EEy4y+/Z1vdJ5lvq6HkYRp+bpb6Y1EztcUeXlo8iGB6ly5yTQiCfV24RDs2pFT5f
+	 ubbycxibv5hr0WZ7Bm64pixTVtrZ8tiwv4dkBbHFvXfNDeMbHX8Nw3TGfRWgspHcOi
+	 Wz+JAPHqr25x1Bo0/QDScn1EXhafCOBKzkbETzSdit6yumh5DKdpiw/SsT5siW8biN
+	 F1i3BPvsX+DaA==
+Date: Tue, 21 Jul 2026 13:27:04 +0100
+From: Sudeep Holla <sudeep.holla@kernel.org>
+To: "lihuisong (C)" <lihuisong@huawei.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sudeep Holla <sudeep.holla@kernel.org>,
+	acpica-devel@lists.linux.dev,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>
+Subject: Re: [PATCH 2/4] ACPI: PCC: Preserve shared memory signature in
+ OpRegion handler
+Message-ID: <20260721-honest-shiny-teal-da9d6d@sudeepholla>
+References: <20260717081005.470013-1-sudeep.holla@kernel.org>
+ <20260717081005.470013-3-sudeep.holla@kernel.org>
+ <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260708082818.808041-1-zhangpengjie2@huawei.com> <20260708082818.808041-2-zhangpengjie2@huawei.com>
-In-Reply-To: <20260708082818.808041-2-zhangpengjie2@huawei.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Tue, 21 Jul 2026 14:17:40 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gK6Eyt79NNUwiKhjTKyqGFyV+xd0qbXh=H9LKq-KPwCQ@mail.gmail.com>
-X-Gm-Features: AUfX_myA8teaH5y5c3TVDWKLB214sqkMZR3aAiSmyynhvTzz9QApTt5JZeUCam8
-Message-ID: <CAJZ5v0gK6Eyt79NNUwiKhjTKyqGFyV+xd0qbXh=H9LKq-KPwCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ACPI: CPPC: add paired FFH feedback-counter read hook
-To: Pengjie Zhang <zhangpengjie2@huawei.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org, 
-	lenb@kernel.org, saket.dumbre@intel.com, beata.michalska@arm.com, 
-	zhenglifeng1@huawei.com, sumitg@nvidia.com, zhanjie9@hisilicon.com, 
-	geert+renesas@glider.be, cuiyunhui@bytedance.com, 
-	vanshikonda@os.amperecomputing.com, ionela.voinescu@arm.com, 
-	jeremy.linton@arm.com, viresh.kumar@linaro.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linuxarm@huawei.com, 
-	prime.zeng@hisilicon.com, wanghuiqiang@huawei.com, xuwei5@huawei.com, 
-	lihuisong@huawei.com, yubowen8@huawei.com, wangzhi12@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
 
-On Wed, Jul 8, 2026 at 10:28=E2=80=AFAM Pengjie Zhang <zhangpengjie2@huawei=
-.com> wrote:
->
-> cppc_get_perf_ctrs() reads the delivered and reference performance
-> counters one at a time.
->
-> Allow architectures to provide both FFH feedback counters in one
-> operation when that either narrows the sampling window or avoids extra
-> cross-CPU reads. Add a small FFH-specific hook for that case and fall
-> back to the existing per-register reads when unsupported.
->
-> Tested-by: Sumit Gupta <sumitg@nvidia.com>
-> Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
-> Tested-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> Reviewed-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> Signed-off-by: Pengjie Zhang <zhangpengjie2@huawei.com>
+On Tue, Jul 21, 2026 at 07:43:53PM +0800, lihuisong (C) wrote:
+> 
+> On 7/17/2026 4:10 PM, Sudeep Holla wrote:
+> > ACPI 6.3 introduced PCC OperationRegions. Section 5.5.2.4.7.3,
+> > "Declaring message fields within a PCC OperationRegion", states that,
+> > for all PCC subspace types, the PCC Operation Region pertains to the
+> > region of PCC subspace that succeeds the PCC signature.
+> > 
+> > The PCC address space handler currently copies the OperationRegion
+> > buffer to and from the start of the PCC shared memory region. That can
+> > overwrite or expose the signature at byte offset 0, and it also misses
+> > the last 4 bytes of the actual PCC OperationRegion data.
+> > 
+> > Offset OperationRegion copies by the size of the signature and reject
+> > regions that do not fit in the shared memory after that signature. AML
+> > that sizes the PCC OperationRegion to include the signature is not
+> > conforming to the PCC OperationRegion definition.
+> > 
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Fixes: 77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype")
+> > Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
+> > ---
+> The below commit description said the PCC operationRegion contains the
+> signature field.
+> "77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC
+> Type 3 subtype")"
+> And I find that the definition of this OperationRegion in ACPI spec 6.3 is
+> the same with spec 6.5 and 6.6.
+> That is, the original implementation already didn't comply with ACPI spec.
+> 
+> Patch 1/4 also requires the change of platform AML about PCC
+> OperationRegion.
+> These modification may lead to the existed PCC OperationRegion method in
+> some drivers doesn't work.
+> Because the platform AML still contains signature field in PCC
+> OperationRegion method.
+> I don't know how many drivers in linux have used this method.
+> IMO, we at least need to reclarify this usage change and provide a new usage
+> example in the commit log like the original commit did.
+> 
 
-This is fine with me, so
+Good point, I didn't realise I had wrong example in the original commit.
+I will add the example of correct usage in this change. Thanks for pointing
+it out.
 
-Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org>
+> Anyway, this patch also makes the driver more compliant with the
+> specifications.
+> So I agree.
+> Reviewed-by: Huisong Li <lihuisong@huawei.com>
+> 
 
-and please route it along with the second patch in the series.
+Thanks again for all the review.
 
-Thanks!
-
-> ---
->  drivers/acpi/cppc_acpi.c | 50 ++++++++++++++++++++++++++++++++++++----
->  include/acpi/cppc_acpi.h |  7 ++++++
->  2 files changed, 52 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 9f572f481241..b6356476a46e 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1004,6 +1004,22 @@ int __weak cpc_read_ffh(int cpunum, struct cpc_reg=
- *reg, u64 *val)
->         return -ENOTSUPP;
->  }
->
-> +/**
-> + * cpc_read_ffh_fb_ctrs() - Read FFH feedback counters together
-> + * @cpunum:    Target CPU
-> + * @reg1:      first CPPC register information
-> + * @val1:      place holder for first return value
-> + * @reg2:      second CPPC register information
-> + * @val2:      place holder for second return value
-> + *
-> + * Return: 0 on success, error code otherwise
-> + */
-> +int __weak cpc_read_ffh_fb_ctrs(int cpunum, struct cpc_reg *reg1,
-> +                               u64 *val1, struct cpc_reg *reg2, u64 *val=
-2)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
->  /**
->   * cpc_write_ffh() - Write FFH register
->   * @cpunum:    CPU number to write
-> @@ -1496,6 +1512,33 @@ bool cppc_perf_ctrs_in_pcc_cpu(unsigned int cpu)
->  }
->  EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc_cpu);
->
-> +static int cppc_read_fb_ctrs(int cpunum,
-> +                            struct cpc_register_resource *delivered_reg,
-> +                            struct cpc_register_resource *reference_reg,
-> +                            u64 *delivered, u64 *reference)
-> +{
-> +       int ret;
-> +
-> +       /*
-> +        * For FFH feedback counters, try a paired read first to reduce
-> +        * sampling skew between delivered and reference counters. Fall
-> +        * back to the existing per-register reads if unsupported.
-> +        */
-> +       if (CPC_IN_FFH(delivered_reg) && CPC_IN_FFH(reference_reg)) {
-> +               ret =3D cpc_read_ffh_fb_ctrs(cpunum,
-> +                                       &delivered_reg->cpc_entry.reg, de=
-livered,
-> +                                       &reference_reg->cpc_entry.reg, re=
-ference);
-> +               if (ret !=3D -EOPNOTSUPP)
-> +                       return ret;
-> +       }
-> +
-> +       ret =3D cpc_read(cpunum, delivered_reg, delivered);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return cpc_read(cpunum, reference_reg, reference);
-> +}
-> +
->  /**
->   * cppc_perf_ctrs_in_pcc - Check if any perf counters are in a PCC regio=
-n.
->   *
-> @@ -1561,11 +1604,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_per=
-f_fb_ctrs *perf_fb_ctrs)
->                 }
->         }
->
-> -       ret =3D cpc_read(cpunum, delivered_reg, &delivered);
-> -       if (ret)
-> -               goto out_err;
-> -
-> -       ret =3D cpc_read(cpunum, reference_reg, &reference);
-> +       ret =3D cppc_read_fb_ctrs(cpunum, delivered_reg, reference_reg,
-> +                               &delivered, &reference);
->         if (ret)
->                 goto out_err;
->
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 8693890a7275..5acebe62feac 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -176,6 +176,8 @@ extern int cppc_get_transition_latency(int cpu);
->  extern bool cpc_ffh_supported(void);
->  extern bool cpc_supported_by_cpu(void);
->  extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
-> +extern int cpc_read_ffh_fb_ctrs(int cpu, struct cpc_reg *reg1, u64 *val1=
-,
-> +                               struct cpc_reg *reg2, u64 *val2);
->  extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
->  extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->  extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls=
-, bool enable);
-> @@ -250,6 +252,11 @@ static inline int cpc_read_ffh(int cpunum, struct cp=
-c_reg *reg, u64 *val)
->  {
->         return -EOPNOTSUPP;
->  }
-> +static inline int cpc_read_ffh_fb_ctrs(int cpu, struct cpc_reg *reg1, u6=
-4 *val1,
-> +                                      struct cpc_reg *reg2, u64 *val2)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
->  static inline int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val=
-)
->  {
->         return -EOPNOTSUPP;
-> --
-> 2.33.0
->
+-- 
+Regards,
+Sudeep
