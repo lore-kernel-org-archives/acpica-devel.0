@@ -1,91 +1,183 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA16046AA60
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 15:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC3D46EC8E
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784648066; cv=none; b=mhXrv6V8SpJmn23ZRjw75jivk5C6VY5TE4OX0w9j5wZUntCJAZ4CDjif1Y73ZHNopa8RdpJAaN9Wz9jjz5vTqbfRd2v1FpM8t8A40xOqNDh6c39+w8k5zFC/i5kyEYVdo0f17CSyosWrf5tOzlFaj3DnmzV04Au/pepRS0iSONA=
+	t=1784660676; cv=none; b=Yo5yYT2gTybX5U8WIS0PPYQkcY++CmzSh614WstaEzhla++y+eBPt9C2iefgv7Ygg4D8L8mhBiMs7hHnXyi6fsg0/u4KghoPOSh1d3n7Fy3/QWSFTnQxoHiFbDPSLcu0BK9A6p1rFl35R6imAp2Oln09iA+U7nkuBlW4mQ2+4pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784648066; c=relaxed/simple;
-	bh=rdRrZWMw6XQ0DnO09ka2+OtkvEEzz3gTsu4XlbQjHj8=;
+	s=arc-20240116; t=1784660676; c=relaxed/simple;
+	bh=XmrxWTkcjVspufkodyx+ge4eYe4VLMyPyPEm+0gNY1E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FqKiBlVvPkUemEemePaboBLkLLUGkRcUwWN5Vlzg1z1ZrDTpGPA6YEe/eXL82h6XB3/kY/8WUc3qY/ZTGZPhV66g/8HWIw38qn0w2F52KZs9WDtQx4Bg5/uTxQuU37sL3BaZTV7CajItu+SIOPC8Xa0AsP+kJ+P9UuJB5E1Y28A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwYU7c20; arc=none smtp.client-ip=100.103.45.18
+	 To:Cc:Content-Type; b=BhIlfmqcL3TCtOYUeGBwLNfPnnykzTHH33hHxPEj5+s+L7DSChMpUb0/KZFprfq2ZL5MJBrQNnLBO6765f9PZzMIDFK41zdP4CaxP45ZK4GfXG7FRZlhCeo+U1J0NyrcNLYFSNyhfazPMga6ZKdFujCAUyR6biYwsx7AZg5Gm20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kU2ucBuS; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwYU7c20"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B20711F00ACA
-	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 15:34:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kU2ucBuS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 351D11F00A3D
+	for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 19:04:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784648065;
-	bh=rdRrZWMw6XQ0DnO09ka2+OtkvEEzz3gTsu4XlbQjHj8=;
+	s=k20260515; t=1784660675;
+	bh=3dioA8pf9XHWq9/2SVxSD3KAwITdY7k4nNvRgGtvA/Q=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=YwYU7c20iyRHlUEvv19GLx0Cd2Xowt+g80i2Ddj624/G/Q8YONChEezzO2OMY6TER
-	 gSOngS5Q5fzBB66dF2iSa7zoCB/cQj1Vd6g/AfLf0s72OeXuOBCjbI+BBybXwb8Fj3
-	 AZtkPRM/XOMJUz9/PuwU7mXYb0F6aLMMQM5wi6oypQDySgNo/5uAtmXi9+FS8QIj7j
-	 FmSSG3gpRZEM/xhI/NFd647deEHwTMHBuavLrZbW38Ib6Ipr614pyoQtVEPWHtmKfd
-	 7c6BM3AZ1nKEGEu7wo+LO3VppINx/ta0qRdIWU6keCO8YnnKgwGpcxceUjdOlJdPEs
-	 zRzMeBY6IM4Ng==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-39c9a3acd40so81352351fa.3
-        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 08:34:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rrk7L8wogpqZVbErFGOejs16FSqmLGD5OdpX9n1pmCfmVeVSdKMUmH8ZkPAtKU8m0IvqhMzThmpwpxp7nE=@lists.linux.dev
-X-Gm-Message-State: AOJu0YzmUT4BYHVAGLMrx4oq74RIKfuoWFU3a3pYEbHib6Uv6478YUAw
-	lDhxgdhOXaYCgn3Iw8zb2HAs69UDhjjCYFDbu1p7KDeXtRU3ZqF/q4lDpzx45ztY+b3XpBnUSL0
-	YXTa4E9JoS9zVTJKOYu1ghcJ5HIMuQ08=
-X-Received: by 2002:a05:6512:61d8:20b0:5b0:190a:5b6b with SMTP id
- 2adb3069b0e04-5b28f9ac2a0mr2732898e87.32.1784648064148; Tue, 21 Jul 2026
- 08:34:24 -0700 (PDT)
+	b=kU2ucBuSU1sHkOZMJsE52DPzCkyBf/i1Yy20edMov4yvyzGYP9z96ZE8s4y9yL0vu
+	 RzQD3o6SdalgXGK/xXN18Y/Xz8ie3Hn+NalHxdGsdWSX1eRBvu8JRk3prksZbiqfvr
+	 Z4FWrkd10jYLSbnYne/wCBnytgiT3UOZmYfsZolahVMhCLXaou4eCHyKd4nU4gCa2D
+	 vs9vTeaF4vFutlpWfrjlYQavLycEe2DJ7dCrauzpQhA3JsXMShOGULe/LBxcdQie6W
+	 6ZFhkFWk6oyggG/6h2HZlNV+G24PlLz13BWmVX7MBacksnzhdGmZTIHBw1k4ccrFFY
+	 uGf0sIcv0Jq6g==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5b2a44a3b66so1538481e87.1
+        for <acpica-devel@lists.linux.dev>; Tue, 21 Jul 2026 12:04:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RpkmC4HrUzWEjHn+hjVhwsl1EABOBxH3km9N6kJGxIjPq67LDOQk+q89N2J4OyBJO4m/j2citwPWpadXzA=@lists.linux.dev
+X-Gm-Message-State: AOJu0Yy3XKycIGgqf2P6FH0e3Os6VK3N1MynMcj/PSadsQ3dBQrwIfeq
+	++u2mVZENU+ajFLpEeWy+bsesZ4dofw15M9BRXd0rwm5lHFPaPqY7ku6CnJc1aoA6N2/qtq3hOO
+	rlMmSisgZ+/ICLfzckShhZb17xaR/6bM=
+X-Received: by 2002:a05:6512:63ce:10b0:5b1:4c6f:92f9 with SMTP id
+ 2adb3069b0e04-5b28f864239mr2769254e87.20.1784660673659; Tue, 21 Jul 2026
+ 12:04:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260716153820.2007095-1-sumitg@nvidia.com> <20260716153820.2007095-3-sumitg@nvidia.com>
- <31525db3-a7a6-48fa-bea9-5de28a4332c4@huawei.com>
-In-Reply-To: <31525db3-a7a6-48fa-bea9-5de28a4332c4@huawei.com>
+References: <20260717024502.3520445-1-zhenglifeng1@huawei.com> <20260717024502.3520445-2-zhenglifeng1@huawei.com>
+In-Reply-To: <20260717024502.3520445-2-zhenglifeng1@huawei.com>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Tue, 21 Jul 2026 17:34:10 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jGJ8HDjmnKP8HvPRqm6NKL1mzxd6=z-xDyxe6=SoNCCA@mail.gmail.com>
-X-Gm-Features: AUfX_mwG9ZdYy0LRhhbEyhBL30Qkgwd4M-EOK3higeVMTPvWhi7syJpKzMc0LkY
-Message-ID: <CAJZ5v0jGJ8HDjmnKP8HvPRqm6NKL1mzxd6=z-xDyxe6=SoNCCA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] ACPI: CPPC: Add u64 wrappers for the autonomous
- selection register
-To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>, Sumit Gupta <sumitg@nvidia.com>
-Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com, 
-	zhanjie9@hisilicon.com, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, treding@nvidia.com, 
-	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
-	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+Date: Tue, 21 Jul 2026 21:04:21 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0ggjYqUe+J97=iSBQ5UzqLixQaXKXf=tNre2unPZOvUyQ@mail.gmail.com>
+X-Gm-Features: AUfX_mxafGdaDCgZYKegX2mf7sM8WihZClUjxldyeNLi8YDSRdv8TxjVkSFhHTs
+Message-ID: <CAJZ5v0ggjYqUe+J97=iSBQ5UzqLixQaXKXf=tNre2unPZOvUyQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] ACPI: CPPC: Prepare cpc_register_resource for
+ Package-type entries
+To: Lifeng Zheng <zhenglifeng1@huawei.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, saket.dumbre@intel.com, 
+	lenb@kernel.org, zhanjie9@hisilicon.com, pierre.gondois@arm.com, 
+	sumitg@nvidia.com, linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, acpica-devel@lists.linux.dev, linuxarm@huawei.com, 
+	lihuisong@huawei.com, yubowen8@huawei.com, zhangpengjie2@huawei.com, 
+	wangzhi12@huawei.com, linhongye@h-partners.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 17, 2026 at 5:47=E2=80=AFAM zhenglifeng (A) <zhenglifeng1@huawe=
-i.com> wrote:
+On Fri, Jul 17, 2026 at 4:46=E2=80=AFAM Lifeng Zheng <zhenglifeng1@huawei.c=
+om> wrote:
 >
-> On 7/16/2026 11:38 PM, Sumit Gupta wrote:
-> > cppc_get_auto_sel()/cppc_set_auto_sel() use a bool, unlike the other
-> > CPPC register get/set helpers which use a u64.
-> >
-> > The next patch in this series saves and restores the OSPM-set registers
-> > across CPU hotplug using a common table of get/set helpers typed as
-> > int (*)(int, u64 *) and int (*)(int, u64), which the bool autonomous
-> > selection helpers do not fit.
-> >
-> > Add cppc_get_auto_sel_u64()/cppc_set_auto_sel_u64() wrappers with the u=
-64
-> > signature so the autonomous selection register fits alongside the other=
-s.
-> >
-> > Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
-> > Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> CPPC v4 (ACPI 6.6, Section 8.4.6.1.2.7) introduces the Resource
+> Priority entry, which is a Package of sub-packages rather than a
+> plain Integer or Buffer register.  The existing cpc_register_resource
+> union only accommodates Integer and Buffer (register descriptor)
+> fields.
 >
-> If this is necessary, I think it is better to just change the input param=
-eter
-> of the original cppc_get/set_auto_sel() to u64.
+> Add a Package variant to the cpc_entry union so that nested
+> structures such as RESOURCE_PRIORITY can store their element count
+> and a dynamically allocated array of child cpc_register_resource
+> descriptors.
+>
+> Update the CPC_SUPPORTED() macro to recognise Package-type entries
+> with a non-zero element count, and switch the unsupported-Package
+> fallback from a zero Integer to an empty Package (count =3D 0,
+> elements =3D NULL) so that CPC_SUPPORTED() correctly reports such
+> entries as unsupported.
+>
+> No functional change intended; the new Package fields are not yet
+> consumed by any caller.
+>
+> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+> ---
+>  drivers/acpi/cppc_acpi.c | 19 +++++++++++++------
+>  include/acpi/cppc_acpi.h |  8 ++++++++
+>  2 files changed, 21 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 9f572f481241..d7e654f2a66c 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -124,10 +124,16 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_p=
+tr);
+>                                 (reg)->bit_offset =3D=3D 0 &&            =
+   \
+>                                 (reg)->access_width =3D=3D 0)
+>
+> -/* Evaluates to True if an optional cpc field is supported */
+> -#define CPC_SUPPORTED(cpc) ((cpc)->type =3D=3D ACPI_TYPE_INTEGER ?      =
+   \
+> -                               !!(cpc)->cpc_entry.int_value :          \
+> -                               !IS_NULL_REG(&(cpc)->cpc_entry.reg))
+> +/*
+> + * Evaluates to True if an optional cpc field is supported.
+> + * Integer: non-zero value; Buffer: non-NULL register; Package: non-empt=
+y.
+> + */
+> +#define CPC_SUPPORTED(cpc) (((cpc)->type =3D=3D ACPI_TYPE_INTEGER &&    =
+   \
+> +                            !!(cpc)->cpc_entry.int_value) ||           \
+> +                           ((cpc)->type =3D=3D ACPI_TYPE_BUFFER &&      =
+   \
+> +                            !IS_NULL_REG(&(cpc)->cpc_entry.reg)) ||    \
+> +                           ((cpc)->type =3D=3D ACPI_TYPE_PACKAGE &&     =
+   \
+> +                            (cpc)->cpc_entry.package.count !=3D 0))
 
-Agreed.
+My immediate concern regarding this change in particular is that it
+potentially causes invalid data structures to be used as "supported".
 
-Sumit, why don't you just make cppc_get_auto_sel()/cppc_set_auto_sel()
-take a u64 argument?
+Suppose that some defective platform firmware supplies a package in a
+field that by the spec can only be a buffer and the length of that
+package is greater than zero.  The macro will produce 'true' then
+which is invalid.
+
+It looks like there should be three different macros like the above
+for the three different types of _CPC fields: the buffer/integer ones,
+the buffer-only ones and the single package field.
+
+And I'm not sure how much of a value there is in complicating the
+overall parsing of all fields just in order to be able to handle the
+last special one in a "generic" fashion.
+
+As this stands now, it is a "no" from me, sorry.
+
+>
+>  /*
+>   * Each bit indicates the optionality of the register in per-cpu
+> @@ -859,8 +865,9 @@ int acpi_cppc_processor_probe(struct acpi_processor *=
+pr)
+>                          * Mark the register as unsupported for now.
+>                          */
+>                         pr_debug("CPU:%d Resource Priority not supported\=
+n", pr->id);
+> -                       cpc_ptr->cpc_regs[i-2].type =3D ACPI_TYPE_INTEGER=
+;
+> -                       cpc_ptr->cpc_regs[i-2].cpc_entry.int_value =3D 0;
+> +                       cpc_ptr->cpc_regs[i-2].type =3D ACPI_TYPE_PACKAGE=
+;
+> +                       cpc_ptr->cpc_regs[i-2].cpc_entry.package.count =
+=3D 0;
+> +                       cpc_ptr->cpc_regs[i-2].cpc_entry.package.elements=
+ =3D NULL;
+>                 } else {
+>                         pr_debug("Invalid entry type (%d) in _CPC for CPU=
+:%d\n",
+>                                  i, pr->id);
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 8693890a7275..1839582b80be 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -71,6 +71,14 @@ struct cpc_register_resource {
+>         union {
+>                 struct cpc_reg reg;
+>                 u64 int_value;
+> +               /*
+> +                * CPPC v4: nested Package (e.g. RESOURCE_PRIORITY),
+> +                * elements dynamically allocated
+> +                */
+> +               struct {
+> +                       u32 count;
+> +                       struct cpc_register_resource *elements;
+> +               } package;
+>         } cpc_entry;
+>  };
+>
+> --
+> 2.33.0
+>
