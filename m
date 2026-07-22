@@ -1,129 +1,98 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8855C4C6EF7
-	for <acpica-devel@lists.linux.dev>; Wed, 22 Jul 2026 10:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2494933B975;
+	Wed, 22 Jul 2026 13:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784715543; cv=none; b=KpJqjQsxMDLZRDiiDxDoZ5l0u9OWXRxuxZufUhpa+MnEUaYuhtN4YZEmAo/84RzR0CIklbr6U1IsPVm3MRkY6WnipyknEGOc3xHT8zzTL+CJA+wvCb4NPc+1D5tPn9iy+spRh0/69SQfFPAeDiT5IO6KAud8/ZbaWLYDlxqQ5rk=
+	t=1784726166; cv=none; b=OZjJEpECghC5FKbesduy6EuxnuOfgi/AvzBoisJaLESMvAc7KQS9V+41/NaJSpIQ/MKUO3njgCaw8+bRsCckwXMymoL5BvqzN3QCSsHYsMEjJc6bale9tn50WkwrXEINPNZcy8FtA/tvBgepmF/ko+Mn/d7GzUDqTinfjS33Mis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784715543; c=relaxed/simple;
-	bh=6pQbfUf6qFxNFEfwCwxXQNTOh/NnINY/VwM1E/ShKZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZtoxCpWUR37xUcqpzT5iq/BPHzdTnAvj/svY+qxhf1io/GuiVqsQLdkAMPLWIWBp1c73oIVtxTgNNvEOvs4Doe6lTS1QouZw/nITcNGh2mk4cooCwU67GiqdaEstSfmZofZk1TW95ZE1WH3ZjpdTk/MPKAHGIjPh3CKNi0YeH4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=DMls2/5G; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1784726166; c=relaxed/simple;
+	bh=sT7JnwxSEOV4ie/UxpsmG3sbXdKGmyGOcjrOU8nR5ek=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B7JB90VIJ3FT/r8NAND5NZqL606xTCwaugWw0axkUy2reIU07iXJqM3ycUBwcdq8KKiaw/Yru/Lb9ZO/OHNmTbEK8WiC/CrYcixXs8hstTFwgJdMw4HS8gY8O87Aym2oIWR+KBXmtNegmC9UVBcHAVR74ehBuhEEVrRTzM9MytI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gHlpMXi0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="DMls2/5G"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7495D1595;
-	Wed, 22 Jul 2026 03:18:56 -0700 (PDT)
-Received: from [10.1.39.91] (e127648.arm.com [10.1.39.91])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10F653F58B;
-	Wed, 22 Jul 2026 03:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784715540; bh=6pQbfUf6qFxNFEfwCwxXQNTOh/NnINY/VwM1E/ShKZI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DMls2/5GZfyNtx3+Cbrf0Ma+C24h/OJpaX1LQDFpVmUjvljjIzhpH2xCeUeqkQTWJ
-	 OUtFDUyppPxMhBTljVuo+I7A8uk5Np17mmd/EtjviZXoBZnOvF1paLfcj8kBv5ST5G
-	 zCvfjYJeh60FqYqo/0RjwpJLDepSJuQy8TStWhbw=
-Message-ID: <bc0ba136-7f40-4198-8b71-557de0babc0f@arm.com>
-Date: Wed, 22 Jul 2026 11:18:56 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHlpMXi0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 198C41F000E9;
+	Wed, 22 Jul 2026 13:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784726163;
+	bh=hjxvebf63Ss/nWcXLPFKOnntcOwBImgQMh9AB+a9ADw=;
+	h=From:To:Cc:Subject:Date;
+	b=gHlpMXi0V0OU+lUcFxKwUi8Lw7aRN4pRWq3azb2Fn84UNAk7tmgup08dGVeRdQk0k
+	 pFEJApDqH0ByVh2QNnNX/lO2yBLVoi9j5JZl/T2X1EPdS2drfWxSjAuNNlW0L19vmd
+	 I48YwEmnTactyEcAAnY8AIJT165CbrO8EPoLIAZsaHpd28XDrafH4wjtG8If+0KkXc
+	 rZHO/2TpSwAj8xvu8ftJohmESOIY6ukLolmPa2Pcfi4s9rtjzbKhB/poSAGHMkl2QK
+	 osO9W1JCeiG0nJFQ4nCjZKaQ/kbIppRruAezVF4ieBVVjGcaMp6g/gzoFkLkrhxVz6
+	 MZsYzO+vMHhWw==
+From: Sudeep Holla <sudeep.holla@kernel.org>
+To: linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Sudeep Holla <sudeep.holla@kernel.org>,
+	acpica-devel@lists.linux.dev,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>
+Subject: [PATCH v2 0/4] ACPI/PCC: Correct PCC OperationRegion handling
+Date: Wed, 22 Jul 2026 14:15:49 +0100
+Message-ID: <20260722131553.2117835-1-sudeep.holla@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] cpufreq: CPPC: Keep the policy across CPU hotplug
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
- zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, saket.dumbre@intel.com,
- lenb@kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-tegra@vger.kernel.org
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-References: <20260716153820.2007095-1-sumitg@nvidia.com>
- <20260716153820.2007095-2-sumitg@nvidia.com>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <20260716153820.2007095-2-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 7/16/26 16:38, Sumit Gupta wrote:
-> Without online()/offline() callbacks, the cpufreq core fully tears
-> down a policy during exit() when its last online CPU is offlined,
-> and rebuilds it during init() when it comes back.
-> 
-> Add lightweight online()/offline() callbacks so the core instead
-> keeps the policy live and reuses the driver's cpu_data across
-> CPU hotplug. This avoids re-reading the CPPC capabilities on every
-> offline/online, making CPU hotplug faster.
-> 
-> Re-enable CPPC from online(), as it may have been disabled while
-> the CPU was offline.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->  drivers/cpufreq/cppc_cpufreq.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index f6cea0c54dd9..432c6a6288a7 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -722,6 +722,31 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	return ret;
->  }
->  
-> +/*
-> + * With offline() defined, the cpufreq core keeps the policy alive when
-> + * a CPU is hotplugged out.
-> + */
-> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
-> +{
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Re-enable CPPC when the policy's CPU comes back online, since the platform
-> + * may have disabled it while the CPU was offline.
-> + */
-> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
-> +{
-> +	unsigned int cpu = policy->cpu;
-> +	int ret;
-> +
-> +	ret = cppc_set_enable(cpu, true);
-> +	if (ret && ret != -EOPNOTSUPP)
-> +		pr_warn("Failed to re-enable CPPC for CPU%d (%d)\n", cpu, ret);
+Hi,
 
-Keeping the policy alive means cpu_data->perf_ctrls survives hotplug, but the callback does not
-reapply it. A governor restart does not guarantee an immediate target callback, so the controls
-may remain reset indefinitely.
+This series corrects the handling of PCC OperationRegions and their
+shared memory.
 
-I think the online path needs to restore a complete, current performance-control request before
-returning. MIN/MAX should be recomputed from the policy and the last requested DESIRED value
-clamped into that range.
+ACPI 6.3 states that a PCC OperationRegion describes the shared memory
+following the PCC signature. Consequently, COMMAND fields at raw shared
+memory offsets 4 and 12 appear at OperationRegion offsets 0 and 8.
 
-Also, what about suspend/resume?
+The first patch corrects those offsets in ACPICA. This change has already
+been submitted upstream:
 
-> +
-> +	return 0;
-> +}
-> +
->  static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
->  {
->  	struct cppc_cpudata *cpu_data = policy->driver_data;
-> @@ -1034,6 +1059,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->  	.fast_switch = cppc_cpufreq_fast_switch,
->  	.init = cppc_cpufreq_cpu_init,
->  	.exit = cppc_cpufreq_cpu_exit,
-> +	.online = cppc_cpufreq_cpu_online,
-> +	.offline = cppc_cpufreq_cpu_offline,
->  	.set_boost = cppc_cpufreq_set_boost,
->  	.attr = cppc_cpufreq_attr,
->  	.name = "cppc_cpufreq",
+  https://github.com/acpica/acpica/pull/1205
+
+The ACPICA patch is included here only to document the complete
+dependency and aid review and testing. It must enter the kernel through
+the ACPICA pull/import process and will not be merged directly through
+the Linux ACPI tree.
+
+The remaining Linux patches:
+
+- Preserve the platform-populated PCC signature when copying
+  OperationRegion data.
+- Release the mailbox channel and region context when ACPICA
+  deactivates an OperationRegion.
+- Compute and cache the command timeout during channel setup.
+
+There is no strict build dependency in case ACPICA and other 3 changes
+need to be merged at different timeline or via different branch.
+
+v1->v2:
+ - Updated the commit message to include correct example of PCC Opregion
+   as the example added by original commit 77e2a04745ff ("ACPI: PCC:
+   Implement OperationRegion handler for the PCC Type 3 subtype")
+   incorrectly included the signature as an OperationRegion field.
+
+Regards,
+Sudeep
+
+Sudeep Holla (4):
+  ACPICA: Fix PCC OperationRegion command offsets
+  ACPI: PCC: Preserve shared memory signature in OpRegion handler
+  ACPI: PCC: Free channel on OpRegion deactivation
+  ACPI: PCC: Cache OpRegion command timeout
+
+ drivers/acpi/acpi_pcc.c       | 55 ++++++++++++++++++++++++++---------
+ drivers/acpi/acpica/exfield.c | 11 +++----
+ 2 files changed, 48 insertions(+), 18 deletions(-)
+
+-- 
+2.43.0
 
