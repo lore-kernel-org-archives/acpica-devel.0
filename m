@@ -1,119 +1,275 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3321048123F;
-	Wed, 22 Jul 2026 08:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702AB4C6F05
+	for <acpica-devel@lists.linux.dev>; Wed, 22 Jul 2026 10:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784710039; cv=none; b=Wo5shq2IHDpul4JfNUZY1CL/eVjlI/BlJ3nmwcjsGPZmHOyDsFDta6FZx1ImGWwlcKJSJhf5u63DbddQatWSkTGFl3iQn2gu+3lBPYNtdsfvAq+cgK9YGMzbHAKj3EjSZh268tmAOWp7lLXdCWpfl+ZdTIG8zDNPvK+XzDw9ers=
+	t=1784715441; cv=none; b=BQThEeXEPm7e6FFjH/URzp4XHJlOvCcOU4TMw0qaax3HOqSNVAQuFZ2gUnd99xtZ2FcNnh2JFCoYr5BgUtZv+7BrhrvEcdFoIm30jC3xZP2rmrasQ8xE0yXJ0Xmcyb5jS7ImAakWCxx3mPP90glZ1Sr76pJWRYZouOSG3qPvTjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784710039; c=relaxed/simple;
-	bh=JL1IdaTIT0AHriy6OYKEoOpjLJ3xBJf0DYsSy3uyL+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IQU2VRH3JZ2bIkh58IUtUw+Xe4h+PofzoBMToV7dBZB3sg2IcB8I7SMlJerpyyQSGnPVWV2Bh8bhh+5sgfBHtYzRa3BH7R1LpkFaYa5q98cbshlR43CCwn9sS2jsGvS/FKHUQbYnxfh6fS1Nt2URx/RwsMYVcsgnqy1ZvmB2454=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZINaTcSn; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1784715441; c=relaxed/simple;
+	bh=2Dj1VaD4BY2dX/nTVm6jQGifDmA8qdzt/Z3Oct/vIe8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t3J9LuWLT2PoT0Fg7mkCMJ5pAaBj+aYZDvrsvMliUzQkWzaybAuLn4B+C1H8fiA89lmIg4a5ZqJ+Gzg93eANpGk7jj8QVWEZNuuum6MLOJYQKorK55o/v/V/vt7bcZr0EpWC3cKEe7HeF9YqTBKpLlVw1EGxO1ob5Urmsdmw3Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=ZRPqH4xh; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZINaTcSn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB5C1F000E9;
-	Wed, 22 Jul 2026 08:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784710037;
-	bh=O2V9EqMp/L80uF/JnlqVNY323ovkEmjYXpt1l+MoU1c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ZINaTcSnhBGoFFgtM/fKCvVPtSDKxts+onhhcZBa+hs/RgS/q/l9OC9UsVIj1Ziir
-	 l2Ca1aSFUl6x5N0w/ld3cMLmnQ19Of7CcR57xTO0xZjUPl0zj+YBBdYCGD9Wn41nWL
-	 GrHf9EYQ5FpHGNbt7Yr2y5tb+1z0jbT1ae5gYlOAFjk3FtkjB90icJVmgEwunUs32i
-	 OUFRB97nBEKltExKMtUnCpBXp883nq17ANdC0o7GyaIL4DmHvP9KPVXgxxJ4KyKFZ9
-	 iHEx+vMQdYdbmNZtCO+GRqtdx6yin+8cOVAncQVKEStv+VseCUJezUtglU7In0fuZ7
-	 dOKZvPV+65gkQ==
-Date: Wed, 22 Jul 2026 09:47:14 +0100
-From: Sudeep Holla <sudeep.holla@kernel.org>
-To: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Cc: "lihuisong (C)" <lihuisong@huawei.com>, linux-acpi@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@kernel.org>,
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Saket Dumbre <saket.dumbre@intel.com>
-Subject: Re: [PATCH 2/4] ACPI: PCC: Preserve shared memory signature in
- OpRegion handler
-Message-ID: <20260722-accomplished-exceptional-gibbon-f06ba7@sudeepholla>
-References: <20260717081005.470013-1-sudeep.holla@kernel.org>
- <20260717081005.470013-3-sudeep.holla@kernel.org>
- <b75fc80b-6d1c-44d9-986c-be2c0a6e7711@huawei.com>
- <20260721-honest-shiny-teal-da9d6d@sudeepholla>
- <CAJZ5v0jAOA3iQB6htExJNAtLu5oVJB9nZGzh=0+uaerVwgHMxQ@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="ZRPqH4xh"
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B5E61595;
+	Wed, 22 Jul 2026 03:17:13 -0700 (PDT)
+Received: from [10.1.39.91] (e127648.arm.com [10.1.39.91])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 269323F58B;
+	Wed, 22 Jul 2026 03:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1784715437; bh=2Dj1VaD4BY2dX/nTVm6jQGifDmA8qdzt/Z3Oct/vIe8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZRPqH4xhwfKTJ6KtnkAsbo9gTuLjPa74DAmNzgFG6mC13yJ39Zl9gLpC405MWGAl+
+	 Nab73R2sOYNAV7gdONDmoiEwDF1o1v/zzSpZYYgfXFmCSaP9GQb6z6MtramjwtqzwC
+	 u3Q4Ph6kYRBAHqWxWZ7LLmyJjo98cHlgd3ALVzuU=
+Message-ID: <61942bf5-2ccc-4045-95e4-7fe78615e7a9@arm.com>
+Date: Wed, 22 Jul 2026 11:17:13 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jAOA3iQB6htExJNAtLu5oVJB9nZGzh=0+uaerVwgHMxQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] cpufreq: CPPC: Preserve OSPM-set registers across
+ hotplug and unload
+To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, saket.dumbre@intel.com,
+ lenb@kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-tegra@vger.kernel.org
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+References: <20260716153820.2007095-1-sumitg@nvidia.com>
+ <20260716153820.2007095-4-sumitg@nvidia.com>
+Content-Language: en-US
+From: Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <20260716153820.2007095-4-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 21, 2026 at 09:20:15PM +0200, Rafael J. Wysocki (Intel) wrote:
-> On Tue, Jul 21, 2026 at 2:27 PM Sudeep Holla <sudeep.holla@kernel.org> wrote:
-> >
-> > On Tue, Jul 21, 2026 at 07:43:53PM +0800, lihuisong (C) wrote:
-> > >
-> > > On 7/17/2026 4:10 PM, Sudeep Holla wrote:
-> > > > ACPI 6.3 introduced PCC OperationRegions. Section 5.5.2.4.7.3,
-> > > > "Declaring message fields within a PCC OperationRegion", states that,
-> > > > for all PCC subspace types, the PCC Operation Region pertains to the
-> > > > region of PCC subspace that succeeds the PCC signature.
-> > > >
-> > > > The PCC address space handler currently copies the OperationRegion
-> > > > buffer to and from the start of the PCC shared memory region. That can
-> > > > overwrite or expose the signature at byte offset 0, and it also misses
-> > > > the last 4 bytes of the actual PCC OperationRegion data.
-> > > >
-> > > > Offset OperationRegion copies by the size of the signature and reject
-> > > > regions that do not fit in the shared memory after that signature. AML
-> > > > that sizes the PCC OperationRegion to include the signature is not
-> > > > conforming to the PCC OperationRegion definition.
-> > > >
-> > > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > > Fixes: 77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype")
-> > > > Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
-> > > > ---
-> > > The below commit description said the PCC operationRegion contains the
-> > > signature field.
-> > > "77e2a04745ff ("ACPI: PCC: Implement OperationRegion handler for the PCC
-> > > Type 3 subtype")"
-> > > And I find that the definition of this OperationRegion in ACPI spec 6.3 is
-> > > the same with spec 6.5 and 6.6.
-> > > That is, the original implementation already didn't comply with ACPI spec.
-> > >
-> > > Patch 1/4 also requires the change of platform AML about PCC
-> > > OperationRegion.
-> > > These modification may lead to the existed PCC OperationRegion method in
-> > > some drivers doesn't work.
-> > > Because the platform AML still contains signature field in PCC
-> > > OperationRegion method.
-> > > I don't know how many drivers in linux have used this method.
-> > > IMO, we at least need to reclarify this usage change and provide a new usage
-> > > example in the commit log like the original commit did.
-> > >
-> >
-> > Good point, I didn't realise I had wrong example in the original commit.
-> > I will add the example of correct usage in this change. Thanks for pointing
-> > it out.
-> >
-> > > Anyway, this patch also makes the driver more compliant with the
-> > > specifications.
-> > > So I agree.
-> > > Reviewed-by: Huisong Li <lihuisong@huawei.com>
-> > >
-> >
-> > Thanks again for all the review.
+Hi Sumit
+
+On 7/16/26 16:38, Sumit Gupta wrote:
+> Values written to OSPM-set CPPC registers (via sysfs or the autonomous
+> boot parameter) can be lost in two ways:
 > 
-> I gather that there will be a v2 then.
+>   - Across CPU hotplug: the platform may reset a CPU's registers while it
+>     is offline.
+>   - On driver unload: the value the driver wrote is left in the register
+>     instead of returning to its pre-driver state.
+> 
+> Add a small table-driven mechanism that handles both:
+> 
+>   - On init(), capture each register's firmware value before the
+>     driver programs anything.
+>   - On offline(), read back each register's current value (whatever was
+>     last set via sysfs or the boot parameter) so it can be reapplied, then
+>     restore the firmware value.
+>   - On online(), reapply the value captured at offline().
+> 
+> Cover the Autonomous Selection (auto_sel), Energy Performance Preference
+> (EPP) and Autonomous Activity Window (auto_act_window) registers.
+> 
+> Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+> Link: https://lore.kernel.org/all/86780f97-29ee-4a72-b311-38c89434b707@arm.com/
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 130 +++++++++++++++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 432c6a6288a7..9c88512d635c 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -28,6 +28,123 @@
+>  
+>  static struct cpufreq_driver cppc_cpufreq_driver;
+>  
+> +/*
+> + * OSPM-set CPPC registers tracked for save/restore. A value set via sysfs or
+> + * the autonomous boot parameter is reapplied from online() across CPU
+> + * hotplug, and the firmware value is restored from offline().
+> + */
+> +enum cppc_saved_reg_id {
+> +	CPPC_SAVED_AUTO_SEL,
+> +	CPPC_SAVED_EPP,
+> +	CPPC_SAVED_AUTO_ACT_WINDOW,
+> +	CPPC_NR_SAVED_REGS,
+> +};
+> +
+> +struct cppc_saved_reg {
+> +	int (*get)(int cpu, u64 *val);
+> +	int (*set)(int cpu, u64 val);
+> +};
+> +
+> +static const struct cppc_saved_reg cppc_saved_regs[CPPC_NR_SAVED_REGS] = {
+> +	[CPPC_SAVED_AUTO_SEL] = {
+> +		cppc_get_auto_sel_u64, cppc_set_auto_sel_u64,
+> +	},
+> +	[CPPC_SAVED_EPP] = {
+> +		cppc_get_epp_perf, cppc_set_epp,
+> +	},
+> +	[CPPC_SAVED_AUTO_ACT_WINDOW] = {
+> +		cppc_get_auto_act_window, cppc_set_auto_act_window,
+> +	},
+> +};
+> +
+> +/*
+> + * Per-policy saved state for each register in cppc_saved_regs[]:
+> + *   firmware_val  - value before the driver touched it, captured at init()
+> + *                   and restored while the policy is offline. U64_MAX if it
+> + *                   could not be read
+> + *   requested_val - value in effect when the policy last went offline,
+> + *                   reapplied at online(). U64_MAX if none
+> + */
+> +struct cppc_saved_state {
+> +	u64 firmware_val;
+> +	u64 requested_val;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct cppc_saved_state[CPPC_NR_SAVED_REGS], cppc_saved_state);
+> +
+> +/*
+> + * Return this policy's saved state. Each policy keeps a single copy, stored in
+> + * the per-CPU variable of the first CPU it manages. related_cpus (the policy's
+> + * full set of CPUs) never changes while it exists, so this CPU (unlike
+> + * policy->cpu) stays the same across CPU hotplug, and every callback reaches
+> + * the same copy.
+> + */
+> +static struct cppc_saved_state *cppc_cpufreq_policy_saved_state(struct cpufreq_policy *policy)
+> +{
+> +	const struct cpumask *policy_cpus = policy->related_cpus;
+> +
+> +	/*
+> +	 * related_cpus is empty until the core fills it in after init(). Until
+> +	 * then, fall back to policy->cpus, which has the same first CPU.
+> +	 */
+> +	if (cpumask_empty(policy_cpus))
+> +		policy_cpus = policy->cpus;
+> +
+> +	return per_cpu(cppc_saved_state, cpumask_first(policy_cpus));
+> +}
+> +
+> +/*
+> + * Capture each register's firmware value before the driver programs anything.
+> + */
+> +static void cppc_cpufreq_save_firmware_regs(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_saved_state *st = cppc_cpufreq_policy_saved_state(policy);
+> +	unsigned int cpu = policy->cpu;
+> +	u64 val;
+> +	int i;
+> +
+> +	for (i = 0; i < CPPC_NR_SAVED_REGS; i++) {
+> +		if (cppc_saved_regs[i].get(cpu, &val))
+> +			val = U64_MAX;
+> +		st[i].firmware_val = val;
+> +		st[i].requested_val = U64_MAX;
+> +	}
+> +}
+> +
+> +/*
+> + * Save each register's current value so online() can later reapply it, then
+> + * restore the firmware value to leave the platform in its pre-driver state.
+> + */
+> +static void
+> +cppc_cpufreq_save_req_and_restore_firmware_regs(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_saved_state *st = cppc_cpufreq_policy_saved_state(policy);
+> +	unsigned int cpu = policy->cpu;
+> +	u64 val;
+> +	int i;
+> +
+> +	for (i = 0; i < CPPC_NR_SAVED_REGS; i++) {
+> +		if (!cppc_saved_regs[i].get(cpu, &val))
+> +			st[i].requested_val = val;
+> +		if (st[i].firmware_val != U64_MAX)
+> +			cppc_saved_regs[i].set(cpu, st[i].firmware_val);
+> +	}
+> +}
+> +
+> +/*
+> + * Reapply each register's requested value that offline() saved.
+> + */
+> +static void cppc_cpufreq_reapply_requested_regs(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_saved_state *st = cppc_cpufreq_policy_saved_state(policy);
+> +	unsigned int cpu = policy->cpu;
+> +	int i;
+> +
+> +	for (i = 0; i < CPPC_NR_SAVED_REGS; i++)
+> +		if (st[i].requested_val != U64_MAX)
+> +			cppc_saved_regs[i].set(cpu, st[i].requested_val);
+> +}
+> +
+>  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+>  static enum {
+>  	FIE_UNSET = -1,
+> @@ -707,6 +824,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
+>  	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+>  
+> +	cppc_cpufreq_save_firmware_regs(policy);
+> +
+>  	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+>  	if (ret) {
+>  		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+> @@ -725,15 +844,24 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  /*
+>   * With offline() defined, the cpufreq core keeps the policy alive when
+>   * a CPU is hotplugged out.
+> + *
+> + * Save each register's current value so online() can reapply it, then restore
+> + * the firmware value, leaving the platform in its pre-driver state while the
+> + * policy is down (CPU hotplug or driver unload).
+>   */
+>  static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
+>  {
+> +	cppc_cpufreq_save_req_and_restore_firmware_regs(policy);
+> +
+>  	return 0;
+>  }
+>  
+>  /*
+>   * Re-enable CPPC when the policy's CPU comes back online, since the platform
+>   * may have disabled it while the CPU was offline.
+> + *
+> + * offline() reset the registers to their firmware values, so reapply the
+> + * OSPM-set values it saved.
+>   */
+>  static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>  {
+> @@ -744,6 +872,8 @@ static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>  	if (ret && ret != -EOPNOTSUPP)
+>  		pr_warn("Failed to re-enable CPPC for CPU%d (%d)\n", cpu, ret);
+>  
+> +	cppc_cpufreq_reapply_requested_regs(policy);
+> +
+>  	return 0;
+>  }
+>  
 
-Yes, just with the improved commit message giving illustration of AML code
-like the original commit that this change fixes. No change is the code as
-such.
+I had a look as well and I think the saved registers aren't enough for the stated hotplug problem.
 
--- 
-Regards,
-Sudeep
+CPPC also programs DESIRED_PERF, MIN_PERF and MAX_PERF. If the platform resets those controls
+while a policy is offline, online() your series reapplies AUTO_SEL_ENABLE, EPP and the activity
+window but leaves the main performance request unrestored.
+So autonomous selection may be re-enabled while MIN_PERF and MAX_PERF still contain
+reset values.
+
+I do not think these controls should simply be added to cppc_saved_regs[]:
+- MIN_PERF and MAX_PERF should be derived from the current policy, which may have changed.
+- After state loss, direct controls require safe ordering: establish [0, all-ones], restore
+a clamped DESIRED_PERF, then install the final bounds.
+PCC controls make this more complex, they should remain grouped in a coordinated transaction.
+
+Could the hotplug state instead retain the last requested DESIRED value, recompute the bounds
+during online(), restore the complete tuple, and only then reapply AUTO_SEL_ENABLE?
+
+
