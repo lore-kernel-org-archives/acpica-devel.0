@@ -1,183 +1,167 @@
-Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012071.outbound.protection.outlook.com [40.93.195.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04EE2F25F4
-	for <acpica-devel@lists.linux.dev>; Fri, 24 Jul 2026 06:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784876088; cv=none; b=GWzGkzGjdEp5f2XHPpSBdWUNBvTTaTtobQxxkMAjTUGJMPE+nPNCzE30Kq2i2c6X4vXtEHT8xuTyPW6eKeBGaMTP8M8P9ZtCipIZAgWFEyeGZLs6tlH1euy6E9fkWFnfhZ8Iehk51cejJ88YhuyedCQ5DXEu3lM8sOl9KjotWrE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784876088; c=relaxed/simple;
-	bh=UcYsclmSnXDuRJxtXEqaOrEFSqfjn1nfujfydkAukX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GtP615yU+iIsNAvFo1Oxvw15qsyzhTeXjpl66vfuIejKtjLjUPPEAYZa4WE5kiOqwPfTP2JliVaP2Jnjhg2mjQdwWXEfBth14nQVLS4dEman595CpVRi6I5qCnVulNffu5/Qmldg3UBh+KzxigoFA0IJ/FsF3q6cM15mqyK0Sbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=RL3cb0dI; arc=none smtp.client-ip=113.46.200.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2483C1097
+	for <acpica-devel@lists.linux.dev>; Fri, 24 Jul 2026 22:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1784930411; cv=fail; b=g+lzp17OHqqdVjrZFEvjBbjZWBrhjGpv+L2HWhTotaqSq92YlzQjyfYo1MAImZU7VsRs7Q0mjhkR+x08+NnRyy9qWMq2vHQxKqyuS6Yk25Ddxc6yICh0SyjjVbRGYKuItjBfhA/DTue0ETT4qOxVlJ0lx+XDoFRrhNd55PtDu/8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1784930411; c=relaxed/simple;
+	bh=8rh0ko5IMZcp06SSR4+X+byTOUHg/VrFiO0QuJ35qng=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MBhyukuxAvpRfD7y6GcA2eJ3h0o4WieYysJGfIRs4v59UP4nydPH/BVueuSRnuLOIBHA3cr2bNsycCJNZaYv9oSGWABdk7xOREH+KqjPjW52GFsMbhTh1q1izzNTMgHkHLAZ9RZAW4Lnk3CT4Yjy/0fzehD98d7TGG8QTjPHulM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LQCIDMkB; arc=fail smtp.client-ip=40.93.195.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="RL3cb0dI"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=ZZ9wD0bHu7C6FIU0gbjSx9ENwrDAhD2GONzun/GEI6E=;
-	b=RL3cb0dIVM2NH26gCgWpNRXxZK5ew9qpMyXKHy/GXxIHcgVBpBR43cQEbeMiUm/8SBCWVypNr
-	NQWN/Vl8KT5cFmoz0kdiyKh+C1IQXGBkRzVra2gtpnYYdrPjzu7ygVzeLge4qyE/6SuhONPm2EN
-	s4RhlKI+BPCdQxVClRu5DeE=
-Received: from mail.maildlp.com (unknown [172.19.163.15])
-	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4h5z533lFczmVWf;
-	Fri, 24 Jul 2026 14:45:11 +0800 (CST)
-Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id 852BA40586;
-	Fri, 24 Jul 2026 14:54:35 +0800 (CST)
-Received: from [10.67.121.90] (10.67.121.90) by kwepemf100001.china.huawei.com
- (7.202.181.215) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Fri, 24 Jul
- 2026 14:54:34 +0800
-Message-ID: <300d0c34-4d40-4d9b-86e6-c47ca776fc6e@huawei.com>
-Date: Fri, 24 Jul 2026 14:54:34 +0800
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LQCIDMkB"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uGAFUNRQGtPfhjZTPGgJzG+EdaR79XFKkQGI38jbxeP0Rq+ZtXC7be8mN/GufGH22P0AzYPi4MynDBSj+WH0HqY5YFWQFbmS2IzjdaNtjtRbJNBlRqucmtRoLwQAx7jNunR2wAH1884Owl8R0HXwd9hCUGMPt68l2ghUjo3KOVG8FqjNfyWrKEQZ7dPXoFhTVv0nTU5SzKVc+mVYt77q3rzd4WwatvlYj8gQ7AE5HPwL0LsFpHOm4noIsRUxKwyvkisqqEC2FJHByZscLR3yW5gmF2o6CZyomI1rIh7nGH5cZbdMTMNz/M2CAYMr4QLY1fQbF+s3YChKw+MLoasmZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Th8olKAAh4WujN4mPDuSng0+K86P/YQ6M2cI2jR/eIs=;
+ b=AgoreK6+F9AgSMuXqdfHAeiu5ozbe7U0ZgdH51SWnZrm3oNkK6Sz4zEd5x5Q9KerXQczDwht5DG19tpv518hD5ml9SodMsMXmmVgTM7kwbvoKz0d3OWenb9j/zStjiAQbaKExmi0J1Cw8KqtgP+5TX53Eunpp8pKY/uGVvVQaQ22JMWueQmO6xm5nGcmqIsc4H6Vm9M+oqhKXNIAkB/7w5E86d0vqJvNlfxQpxArF2OhklnooBQed39yd8OD++6aRTKLY87qUBo15d6mIkB4sFW1XSn2lcNCfnUCib9sIZGIrWsKmjd1dqRZqyils+5ALr4aMRp+pxd8KOh6bLQY6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Th8olKAAh4WujN4mPDuSng0+K86P/YQ6M2cI2jR/eIs=;
+ b=LQCIDMkBBRTUZ3kx5TUQk0MtJ677P8b9xj942ghspzKYLYIVD2v4sEF9mwczPr1By+pifHlwhVSLVEMYtsumd8V8UdWN2IGsqswVDtYIcUQ1ZDAr5iwYb2Tu3EF1l8/+JwVihtsqtxn/tqBmUgrKI0vZ51bntb3ZRF7ruDpxOzTSSXTpkPRZq+AxGtTEYuDmOVxBZi9zgTQRI2KGCMkpt+nHFivY1eELxk/Z3XNRHlm1rmu4K6GrTr65cuZSlQMAP94XuNjspWRNeczMz4itYJ467TJbw9C36BTNYevOrq+Rbuq7bBcQIXy1BLE3pPGHKBvolwlEK72r/k1CzHqsiw==
+Received: from SJ0PR03CA0061.namprd03.prod.outlook.com (2603:10b6:a03:331::6)
+ by DM6PR12MB4339.namprd12.prod.outlook.com (2603:10b6:5:2af::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.223.18; Fri, 24 Jul
+ 2026 21:59:59 +0000
+Received: from CO1PEPF00012E65.namprd05.prod.outlook.com
+ (2603:10b6:a03:331:cafe::5c) by SJ0PR03CA0061.outlook.office365.com
+ (2603:10b6:a03:331::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.245.11 via Frontend Transport; Fri,
+ 24 Jul 2026 21:59:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CO1PEPF00012E65.mail.protection.outlook.com (10.167.249.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.270.5 via Frontend Transport; Fri, 24 Jul 2026 21:59:58 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 24 Jul
+ 2026 14:59:46 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Fri, 24 Jul 2026 14:59:45 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Fri, 24 Jul 2026 14:59:39 -0700
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
+	<saket.dumbre@intel.co>, <ray.huang@amd.com>, <mario.limonciello@amd.com>,
+	<perry.yuan@amd.com>, <kprateek.nayak@amd.com>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-tegra@vger.kernel.org>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [PATCH v3 0/4] cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+Date: Sat, 25 Jul 2026 03:29:33 +0530
+Message-ID: <20260724215937.3368276-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] ACPI: CPPC: Prepare cpc_register_resource for
- Package-type entries
-To: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-CC: <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>, <lenb@kernel.org>,
-	<zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>, <sumitg@nvidia.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
-	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
-	<linhongye@h-partners.com>
-References: <20260717024502.3520445-1-zhenglifeng1@huawei.com>
- <20260717024502.3520445-2-zhenglifeng1@huawei.com>
- <CAJZ5v0ggjYqUe+J97=iSBQ5UzqLixQaXKXf=tNre2unPZOvUyQ@mail.gmail.com>
-From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
-In-Reply-To: <CAJZ5v0ggjYqUe+J97=iSBQ5UzqLixQaXKXf=tNre2unPZOvUyQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemf100001.china.huawei.com (7.202.181.215)
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF00012E65:EE_|DM6PR12MB4339:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ede28ef-760d-42f3-89be-08dee9cee74d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|23010399003|82310400026|36860700016|1800799024|13003099007|921020|6133799003|10067099003|11063799006|56012099006|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	yi/ISrAnMF462teD0IGdOk4g0ruG07Q6PniMjpPeb3s6mOz/7682Vr0lzqeOrUpODPcZGroFvYbfKOmLvPvaugeB1uKvDT349+Vh/GLZEKDId0j8q07UYhmjzlCMJVjrQCLf6MgJdNJQr/R8nl14Fvl9hxcqOoAxPFT79dia3d3OjI9TEtGEaeH3BsJpHkF1NHHyjdUkIsothZ5oWTv+3Fb2h0yzJroFfc/YlFXMz5vo+N5FMzXaSH7yI8NaK6bodEErkINwMRCxlIV87mGVYKV/RX/3enPFZzLn8/FwE5dbJ0Iq7FrtuoS0EcjWSreStXgRHtNeLL461k7v1SKVYSzaTSxMVTrcR5rWJFcD8RyMci6uDynhyMm/2YI5drYL/+nW0zPkXdM3VNpZJ1O/bkqpkXuCOzbXI4ditSeqqyQEmU/Wb/WriVrPKm11292Mb3UHaSaSh5NzYBTVPNnU4z49k5L+sKZqfjlcsrwSplOclmsupu/Cbg5a14jIF2xXoDAyqb3ld3aiytW3ZHzuf4reOjpZHk/p3kdmn2Xnl9tSyAgHwRo0eAOGfPV3oxE+PXLPcA39a55RD38c4FCumrMw5ZzqXvpp2v/MM71HXI6RvKiLwKlSESPPgQ9bP0cKqUK4OTS0ey71s+/KRgTwRzI97/DrGh1yp9Mp8tAeiJIVVox7AEHaoWkLgAJLrNYZc5asABbJ/ZyQSOWmNIUzJV3I6GhfJSfW44TE/TvjCdO7zxsbLdnQo54P19cLWE4C
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(23010399003)(82310400026)(36860700016)(1800799024)(13003099007)(921020)(6133799003)(10067099003)(11063799006)(56012099006)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	C4x7NFgS4H7gYF6IYuNEZiEpxbchZJq34GZ4TwdTtt0zNKmSBawagOS3Xk7/TihWme08dZxl9DnCgIeiotpcCKns/nHV5s6y44V/2xLXH+kHh8IziIxGDNwjjIQ1C+aSNZGYM0S/98pziayy3Ad6ceDAZeTyZSK0qzG0t5CwVeQF0nBpTWO+llEZ4iYHTgkgEN9ixAO/mk14pdSKA6bu9IESA7tJlU5ioZkHcSjIH+lB9779zzptKjuJTAHydKlrQgVRKohOP9nAAUkpC8TGQYZux0F0EzJrRzU2R6kNv0ugv04eq0AqfXVFQTd/4MWvVXdUcNpRw2+HecudOB118TvFG3IsuIyFMBZrdxH3ymTgXJMG7zsKT6sFEY6Kb2IJCtqQlgRt6YtfuFumg8sLEZmieTTnCjRjiADXFZclgscWed8/nkVsJ1IL2COhk7G6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2026 21:59:58.5388
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ede28ef-760d-42f3-89be-08dee9cee74d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF00012E65.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4339
 
-On 7/22/2026 3:04 AM, Rafael J. Wysocki (Intel) wrote:
-> On Fri, Jul 17, 2026 at 4:46 AM Lifeng Zheng <zhenglifeng1@huawei.com> wrote:
->>
->> CPPC v4 (ACPI 6.6, Section 8.4.6.1.2.7) introduces the Resource
->> Priority entry, which is a Package of sub-packages rather than a
->> plain Integer or Buffer register.  The existing cpc_register_resource
->> union only accommodates Integer and Buffer (register descriptor)
->> fields.
->>
->> Add a Package variant to the cpc_entry union so that nested
->> structures such as RESOURCE_PRIORITY can store their element count
->> and a dynamically allocated array of child cpc_register_resource
->> descriptors.
->>
->> Update the CPC_SUPPORTED() macro to recognise Package-type entries
->> with a non-zero element count, and switch the unsupported-Package
->> fallback from a zero Integer to an empty Package (count = 0,
->> elements = NULL) so that CPC_SUPPORTED() correctly reports such
->> entries as unsupported.
->>
->> No functional change intended; the new Package fields are not yet
->> consumed by any caller.
->>
->> Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
->> ---
->>  drivers/acpi/cppc_acpi.c | 19 +++++++++++++------
->>  include/acpi/cppc_acpi.h |  8 ++++++++
->>  2 files changed, 21 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->> index 9f572f481241..d7e654f2a66c 100644
->> --- a/drivers/acpi/cppc_acpi.c
->> +++ b/drivers/acpi/cppc_acpi.c
->> @@ -124,10 +124,16 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
->>                                 (reg)->bit_offset == 0 &&               \
->>                                 (reg)->access_width == 0)
->>
->> -/* Evaluates to True if an optional cpc field is supported */
->> -#define CPC_SUPPORTED(cpc) ((cpc)->type == ACPI_TYPE_INTEGER ?         \
->> -                               !!(cpc)->cpc_entry.int_value :          \
->> -                               !IS_NULL_REG(&(cpc)->cpc_entry.reg))
->> +/*
->> + * Evaluates to True if an optional cpc field is supported.
->> + * Integer: non-zero value; Buffer: non-NULL register; Package: non-empty.
->> + */
->> +#define CPC_SUPPORTED(cpc) (((cpc)->type == ACPI_TYPE_INTEGER &&       \
->> +                            !!(cpc)->cpc_entry.int_value) ||           \
->> +                           ((cpc)->type == ACPI_TYPE_BUFFER &&         \
->> +                            !IS_NULL_REG(&(cpc)->cpc_entry.reg)) ||    \
->> +                           ((cpc)->type == ACPI_TYPE_PACKAGE &&        \
->> +                            (cpc)->cpc_entry.package.count != 0))
-> 
-> My immediate concern regarding this change in particular is that it
-> potentially causes invalid data structures to be used as "supported".
-> 
-> Suppose that some defective platform firmware supplies a package in a
-> field that by the spec can only be a buffer and the length of that
-> package is greater than zero.  The macro will produce 'true' then
-> which is invalid.
-> 
-> It looks like there should be three different macros like the above
-> for the three different types of _CPC fields: the buffer/integer ones,
-> the buffer-only ones and the single package field.
-> 
-> And I'm not sure how much of a value there is in complicating the
-> overall parsing of all fields just in order to be able to handle the
-> last special one in a "generic" fashion.
-> 
-> As this stands now, it is a "no" from me, sorry.
+This series keeps the CPPC cpufreq policy alive across CPU hotplug and
+preserves the OSPM-set CPPC registers (Energy Performance Preference,
+Autonomous Activity Window, Autonomous Selection) set via sysfs or the
+autonomous boot parameter.
 
-See your point. Currently, this macro is used solely to check for support
-before reading or writing cpc_reg. Therefore, it doesn't need to cover the
-package type and can remain unchanged. I will remove this modification in
-the next version.
+Without online()/offline() callbacks, the core tears a policy down when
+its last CPU goes offline and rebuilds it on the way back, re-reading the
+CPPC capabilities each time. The values written to these registers can
+be lost:
 
-The remaining patches do not depend on this modification and can continue
-to be reviewed. Requesting further feedback on the remaining patches.
+ - Across CPU hotplug or suspend/resume: the platform may reset them
+   while the CPU is offline.
+ - On driver unload: the driver-written value is left in the register
+   instead of returning to its pre-driver state.
 
-Thanks.
+Handle these with:
+ - Patch 1: adds online()/offline() callbacks so the core keeps the policy
+   alive across CPU hotplug instead of tearing it down and rebuilding it.
+ - Patch 2: makes the autonomous selection register helpers take a u64.
+ - Patch 3: adds a table-driven mechanism that captures each register's
+   firmware value, restores it when the policy goes down, and reapplies
+   the OSPM-set value when the policy comes back online.
+ - Patch 4: extends the same save/restore to system suspend/resume.
 
-> 
->>
->>  /*
->>   * Each bit indicates the optionality of the register in per-cpu
->> @@ -859,8 +865,9 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
->>                          * Mark the register as unsupported for now.
->>                          */
->>                         pr_debug("CPU:%d Resource Priority not supported\n", pr->id);
->> -                       cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_INTEGER;
->> -                       cpc_ptr->cpc_regs[i-2].cpc_entry.int_value = 0;
->> +                       cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_PACKAGE;
->> +                       cpc_ptr->cpc_regs[i-2].cpc_entry.package.count = 0;
->> +                       cpc_ptr->cpc_regs[i-2].cpc_entry.package.elements = NULL;
->>                 } else {
->>                         pr_debug("Invalid entry type (%d) in _CPC for CPU:%d\n",
->>                                  i, pr->id);
->> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
->> index 8693890a7275..1839582b80be 100644
->> --- a/include/acpi/cppc_acpi.h
->> +++ b/include/acpi/cppc_acpi.h
->> @@ -71,6 +71,14 @@ struct cpc_register_resource {
->>         union {
->>                 struct cpc_reg reg;
->>                 u64 int_value;
->> +               /*
->> +                * CPPC v4: nested Package (e.g. RESOURCE_PRIORITY),
->> +                * elements dynamically allocated
->> +                */
->> +               struct {
->> +                       u32 count;
->> +                       struct cpc_register_resource *elements;
->> +               } package;
->>         } cpc_entry;
->>  };
->>
->> --
->> 2.33.0
->>
+v2[2] -> v3:
+ - Patch 1: online() now re-establishes the desired/min/max tuple.
+ - Patch 2: make cppc_get/set_auto_sel() take a u64 arg.
+ - Patch 3: skip restoring/reapplying a reg whose value couldn't be read.
+ - Patch 3: split save_req_and_restore_firmware_regs() so patch 4 can
+   reuse save_requested_regs() for save-only suspend.
+ - New patch 4: preserve the OSPM-set registers across suspend/resume.
+
+Sumit Gupta (4):
+  cpufreq: CPPC: Keep the policy across CPU hotplug
+  ACPI: CPPC: Make autonomous selection helpers take a u64
+  cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+  cpufreq: CPPC: Preserve OSPM-set registers across suspend/resume
+
+ drivers/acpi/cppc_acpi.c       |  20 +--
+ drivers/cpufreq/amd-pstate.c   |   2 +-
+ drivers/cpufreq/cppc_cpufreq.c | 223 ++++++++++++++++++++++++++++++++-
+ include/acpi/cppc_acpi.h       |   8 +-
+ 4 files changed, 230 insertions(+), 23 deletions(-)
+
+[1] v1: https://lore.kernel.org/lkml/20260623095403.3407436-1-sumitg@nvidia.com/
+[2] v2: https://lore.kernel.org/lkml/20260716153820.2007095-1-sumitg@nvidia.com/
+
+-- 
+2.34.1
 
