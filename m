@@ -1,33 +1,33 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABC943D515
-	for <acpica-devel@lists.linux.dev>; Mon, 27 Jul 2026 17:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C71637E5F7
+	for <acpica-devel@lists.linux.dev>; Mon, 27 Jul 2026 21:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785174573; cv=none; b=auZGzoNGjUTcz9GSAykTNj6pJQSzyl/MWQSFcaFzCCCRahULdkI7tUWAk433uf+6yfLGDrxrO1cbtCBWCMcibQroavLM+w8y+xWMheDw8cZ7RkVSiUR1/Y5O1gAIdd+KYb6OspTkDHK6upPBqGA3mUb1yI++vxkiJ6gjzVHB7yU=
+	t=1785187445; cv=none; b=nsaNiGND4mKbXS/mqHxgyM9Mqs0PEsAUCSMhoYxrZHK/jFDFgfBAnwCuk+XX2k22VVuNLBnrPNLw8iKX64xTYqc+CvZEQDFi01pvgNy0YSp5XvftxOg49HYX4aJZqrKueXJXeNK138y628K3N8oIG/FnbUn3w81f00toGun86fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785174573; c=relaxed/simple;
-	bh=DA7+B9YKYeH7TOdVOM1/vMFaKR/jiRWVQWLtSBrapjk=;
+	s=arc-20240116; t=1785187445; c=relaxed/simple;
+	bh=FdL6LIz/Kt2J+IpaU3NUBsRxiO6DY20+fL1C2qGHYZc=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=eBAMHiarwilwMM/qDNtJ5GDp8uTCSdUJj89o8YYY7zR2lFWSvqxL7m4Qj8KjEotGdY2M6tpT9EXRF5fPFd5427tivQfEcJpMQczi1Nn6TeYzT5xp+BXgoq11DDQ7/ay0NV+QoS1P5MBp3xawz2DiYnsFsDK87qfT5NTxGNfbnF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=toEObFLW; arc=none smtp.client-ip=217.140.110.172
+	 In-Reply-To:Content-Type; b=SyY45DQg/hcxRsXquYRxHrB4euYwldmE0BAp2AZzHLIOhuhpOdXLkxnlR5t25NF99isbicNueM/2/WA1vUlpDXKO/5ulRiWA0dy6SCWSb8LPkjKnw1HVD0FGSe0YK+uIDYaAJ3DmUJSFiyQ3G/o1zi60EShse/9w40kH0NChs7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=XK84qoHE; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="toEObFLW"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="XK84qoHE"
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BED5B1682;
-	Mon, 27 Jul 2026 10:49:14 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AC9B1691;
+	Mon, 27 Jul 2026 14:23:56 -0700 (PDT)
 Received: from [10.57.1.72] (unknown [10.57.1.72])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A86283F763;
-	Mon, 27 Jul 2026 10:49:15 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BED023F763;
+	Mon, 27 Jul 2026 14:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1785174558; bh=DA7+B9YKYeH7TOdVOM1/vMFaKR/jiRWVQWLtSBrapjk=;
+	t=1785187440; bh=FdL6LIz/Kt2J+IpaU3NUBsRxiO6DY20+fL1C2qGHYZc=;
 	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=toEObFLW8bsAC+E+HVlNUupw/MXWKwflgg1zbe+JielVe1ZdhB0/hcdTfyq9KL/1H
-	 n5eu4cJ8FZCfADXqusLRoqKYM6AlpY9rOEn82eB5u5wHWWPx6iVQvKamjMiqIPrkCg
-	 BysrsokttmMYEpl4C9LcIdUuSkzKrhyg+4Kf0JlM=
-Message-ID: <498f0051-e549-4be4-b5bf-56aba1670881@arm.com>
-Date: Mon, 27 Jul 2026 18:49:13 +0100
+	b=XK84qoHEIuZZPq3uHajxJb9nVVbJgrW6RsiG443CZzmh6BPvTh821vmKT7aZIwEHs
+	 XxtaXuA9WSGRA6EOqUzRkmKBx/x9XIVPvo6yq1puuKIqF0qexUI/46wBODIfVcnRZS
+	 vNxZnuZjzF+RDIz9vKCZlHqqAmtrcYi/pRlXem+A=
+Message-ID: <d75cbdd0-4372-48b6-8445-03f2401a6784@arm.com>
+Date: Mon, 27 Jul 2026 22:23:48 +0100
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -48,131 +48,138 @@ Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
 References: <20260717215330.2215058-1-sumitg@nvidia.com>
  <20260717215330.2215058-2-sumitg@nvidia.com>
  <436ae296-cc68-4313-bf76-86908a1e5b29@arm.com>
+ <498f0051-e549-4be4-b5bf-56aba1670881@arm.com>
 Content-Language: en-US
-In-Reply-To: <436ae296-cc68-4313-bf76-86908a1e5b29@arm.com>
+In-Reply-To: <498f0051-e549-4be4-b5bf-56aba1670881@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 7/27/26 15:01, Christian Loehle wrote:
-> On 7/17/26 22:53, Sumit Gupta wrote:
->> Expose the OSPM Nominal Performance register (ACPI 6.6, Section
->> 8.4.6.1.2.6), which conveys the desired nominal performance level
->> at which the platform may run. Unlike the existing read-only
->> Nominal Performance register, it is writable and lets OSPM
->> request a lower nominal level than the platform-reported nominal.
->> The platform classifies performance above this level as boosted
->> and below as throttled for its power/thermal decisions.
+On 7/27/26 18:49, Christian Loehle wrote:
+> On 7/27/26 15:01, Christian Loehle wrote:
+>> On 7/17/26 22:53, Sumit Gupta wrote:
+>>> Expose the OSPM Nominal Performance register (ACPI 6.6, Section
+>>> 8.4.6.1.2.6), which conveys the desired nominal performance level
+>>> at which the platform may run. Unlike the existing read-only
+>>> Nominal Performance register, it is writable and lets OSPM
+>>> request a lower nominal level than the platform-reported nominal.
+>>> The platform classifies performance above this level as boosted
+>>> and below as throttled for its power/thermal decisions.
+>>>
+>>> It is exposed as a per-policy cpufreq sysfs attribute in kHz, to
+>>> match the cpufreq sysfs unit convention:
+>>>
+>>>   /sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
+>>>
+>>> The attribute is documented in
+>>> Documentation/ABI/testing/sysfs-devices-system-cpu.
+>>>
+>>> Writes are converted to perf via cppc_khz_to_perf(), validated
+>>> against [Lowest Performance, Nominal Performance], and applied to
+>>> the policy->cpu. The register is assumed shared across the
+>>> policy->cpus.
+>>>
+>>> On read, the current register value is returned, or
+>>> "<unsupported>" if the platform does not implement the register.
+>>>
+>>> Also add the register to the OSPM-set register save/restore
+>>> table, so its value survives CPU hotplug and reverts to the
+>>> firmware value on driver unload, like the other registers in
+>>> the table.
+>>>
+>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>>> ---
+>>>  .../ABI/testing/sysfs-devices-system-cpu      | 26 ++++++++++
+>>>  drivers/acpi/cppc_acpi.c                      | 32 +++++++++++++
+>>>  drivers/cpufreq/cppc_cpufreq.c                | 47 +++++++++++++++++++
+>>>  include/acpi/cppc_acpi.h                      | 10 ++++
+>>>  4 files changed, 115 insertions(+)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> index 82d10d556cc8..a8d592c08823 100644
+>>> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> @@ -346,6 +346,32 @@ Description:	Performance Limited
+>>>  
+>>>  		This file is only present if the cppc-cpufreq driver is in use.
+>>>  
+>>> +What:		/sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
+>>> +Date:		May 2026
+>>> +Contact:	linux-pm@vger.kernel.org
+>>> +Description:	OSPM Nominal Performance (kHz)
+>>> +
+>>> +		OSPM uses this attribute to request a nominal performance
+>>> +		level lower than the platform-reported nominal. The
+>>> +		platform treats performance above this level as boost
+>>> +		and below as throttle for power and thermal decisions.
+>>> +
+>>> +		Read returns the current value in kHz, or "<unsupported>"
+>>> +		if the platform does not implement the register. Write a
+>>> +		kHz value in the range [lowest_freq, nominal_freq].
+>>> +
+>>> +		Note that tasks may be migrated from one CPU to another
+>>> +		by the scheduler's load-balancing algorithm, and if
+>>> +		different OSPM Nominal Performance values are set for
+>>> +		those CPUs (through different cpufreq policies), that may
+>>> +		lead to undesirable outcomes. To avoid such issues it is
+>>> +		better to set the same value across all policies, or to
+>>> +		pin every task potentially sensitive to it to a specific
+>>> +		CPU.
+>>> +
+>>> +		This file is only present if the cppc-cpufreq driver is
+>>> +		in use.
+>>> +
+>>>  What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
+>>>  Date:		August 2008
+>>>  KernelVersion:	2.6.27
+>>> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+>>> index a7fec6c93178..681d4fd40c11 100644
+>>> --- a/drivers/acpi/cppc_acpi.c
+>>> +++ b/drivers/acpi/cppc_acpi.c
+>>> @@ -1685,6 +1685,38 @@ int cppc_set_epp(int cpu, u64 epp_val)
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(cppc_set_epp);
+>>>  
+>>> +/**
+>>> + * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
+>>> + * @cpu: CPU on which to write register.
+>>> + * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
+>>> + *
+>>> + * OSPM Nominal Performance conveys the desired nominal performance level
+>>> + * at which the platform may run. Per ACPI 6.6, s8.4.6.1.2.6, the value
+>>> + * must lie within [Lowest Performance, Nominal Performance] and may be
+>>> + * set independently of Minimum, Maximum and Desired performance. The
+>>> + * caller is responsible for validating the range.
+>>> + *
+>>> + * Return: 0 on success or negative error code.
+>>> + */
+>>> +int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
+>>> +{
+>>> +	return cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
+>>> +
+>>> +/**
+>>> + * cppc_get_ospm_nominal_perf() - Read OSPM Nominal Performance register.
+>>> + * @cpu: CPU from which to read register.
+>>> + * @ospm_nominal_perf: Pointer to store the OSPM Nominal Performance value.
+>>> + *
+>>> + * Return: 0 on success or negative error code.
+>>> + */
+>>> +int cppc_get_ospm_nominal_perf(int cpu, u64 *ospm_nominal_perf)
+>>> +{
+>>> +	return cppc_get_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(cppc_get_ospm_nominal_perf);
 >>
->> It is exposed as a per-policy cpufreq sysfs attribute in kHz, to
->> match the cpufreq sysfs unit convention:
+>> It's a write-only register, we need to track everything in the driver.
 >>
->>   /sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
->>
->> The attribute is documented in
->> Documentation/ABI/testing/sysfs-devices-system-cpu.
->>
->> Writes are converted to perf via cppc_khz_to_perf(), validated
->> against [Lowest Performance, Nominal Performance], and applied to
->> the policy->cpu. The register is assumed shared across the
->> policy->cpus.
->>
->> On read, the current register value is returned, or
->> "<unsupported>" if the platform does not implement the register.
->>
->> Also add the register to the OSPM-set register save/restore
->> table, so its value survives CPU hotplug and reverts to the
->> firmware value on driver unload, like the other registers in
->> the table.
->>
->> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->> ---
->>  .../ABI/testing/sysfs-devices-system-cpu      | 26 ++++++++++
->>  drivers/acpi/cppc_acpi.c                      | 32 +++++++++++++
->>  drivers/cpufreq/cppc_cpufreq.c                | 47 +++++++++++++++++++
->>  include/acpi/cppc_acpi.h                      | 10 ++++
->>  4 files changed, 115 insertions(+)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
->> index 82d10d556cc8..a8d592c08823 100644
->> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
->> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
->> @@ -346,6 +346,32 @@ Description:	Performance Limited
->>  
->>  		This file is only present if the cppc-cpufreq driver is in use.
->>  
->> +What:		/sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
->> +Date:		May 2026
->> +Contact:	linux-pm@vger.kernel.org
->> +Description:	OSPM Nominal Performance (kHz)
->> +
->> +		OSPM uses this attribute to request a nominal performance
->> +		level lower than the platform-reported nominal. The
->> +		platform treats performance above this level as boost
->> +		and below as throttle for power and thermal decisions.
->> +
->> +		Read returns the current value in kHz, or "<unsupported>"
->> +		if the platform does not implement the register. Write a
->> +		kHz value in the range [lowest_freq, nominal_freq].
->> +
->> +		Note that tasks may be migrated from one CPU to another
->> +		by the scheduler's load-balancing algorithm, and if
->> +		different OSPM Nominal Performance values are set for
->> +		those CPUs (through different cpufreq policies), that may
->> +		lead to undesirable outcomes. To avoid such issues it is
->> +		better to set the same value across all policies, or to
->> +		pin every task potentially sensitive to it to a specific
->> +		CPU.
->> +
->> +		This file is only present if the cppc-cpufreq driver is
->> +		in use.
->> +
->>  What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
->>  Date:		August 2008
->>  KernelVersion:	2.6.27
->> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
->> index a7fec6c93178..681d4fd40c11 100644
->> --- a/drivers/acpi/cppc_acpi.c
->> +++ b/drivers/acpi/cppc_acpi.c
->> @@ -1685,6 +1685,38 @@ int cppc_set_epp(int cpu, u64 epp_val)
->>  }
->>  EXPORT_SYMBOL_GPL(cppc_set_epp);
->>  
->> +/**
->> + * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
->> + * @cpu: CPU on which to write register.
->> + * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
->> + *
->> + * OSPM Nominal Performance conveys the desired nominal performance level
->> + * at which the platform may run. Per ACPI 6.6, s8.4.6.1.2.6, the value
->> + * must lie within [Lowest Performance, Nominal Performance] and may be
->> + * set independently of Minimum, Maximum and Desired performance. The
->> + * caller is responsible for validating the range.
->> + *
->> + * Return: 0 on success or negative error code.
->> + */
->> +int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
->> +{
->> +	return cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
->> +}
->> +EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
->> +
->> +/**
->> + * cppc_get_ospm_nominal_perf() - Read OSPM Nominal Performance register.
->> + * @cpu: CPU from which to read register.
->> + * @ospm_nominal_perf: Pointer to store the OSPM Nominal Performance value.
->> + *
->> + * Return: 0 on success or negative error code.
->> + */
->> +int cppc_get_ospm_nominal_perf(int cpu, u64 *ospm_nominal_perf)
->> +{
->> +	return cppc_get_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
->> +}
->> +EXPORT_SYMBOL_GPL(cppc_get_ospm_nominal_perf);
 > 
-> It's a write-only register, we need to track everything in the driver.
-> 
+> So just reread Pierre's comments, TBH I don't see the point of ever
+> reading it, even for sysfs reads, but I don't think
+> reading it for cppc_cpufreq_get_effective_nominal() would be valid
+> in any case?
 
-So just reread Pierre's comments, TBH I don't see the point of ever
-reading it, even for sysfs reads, but I don't think
-reading it for cppc_cpufreq_get_effective_nominal() would be valid
-in any case?
+FWIW desired_perf was read/write up until ACPI 6.5 and only 6.6 marked
+it as write-only. I don't think we should be reading it either on
+platforms advertising 6.6.
+I will clarify and send a patch.
