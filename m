@@ -1,189 +1,153 @@
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1E238399D
-	for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 04:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C2AD370ACA
+	for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 08:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785211898; cv=none; b=G7r5RTqwadiYDwCBrfK9UgYNhPGU+IVyYqKQ3EHYPiuoYKNJxKrfCu9/lMYWlZPdfR40SFovidtEMQB/oOgIBoKs2zBZ2IgpYtAO6d+cMcQXXitp+Xd/fVzkdfKxfvGmWi4WXrBm2oCv+3JYpMfvBpg3XjnV/GpXQESGzFpN0Kg=
+	t=1785228125; cv=none; b=VX6zfLgD5qzkFGrCTWRPik1JAUPMhXZJoCHlirpA4BvHIi6Q3ShRbqDf3lwTzDWclabF7kMWdT2BOCcCUzAyODJM51CPzVN47HfeWUe+bXM0k+w0h4/U2jY4hJ5H3QPg+EOEuykIVVjSg7ORCXAdojxp8BC0CsUUP7EQ1Hjpc7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785211898; c=relaxed/simple;
-	bh=MZl83Jgb+124Y3eKh6SJrVGD842fjuW98zkg2v+QWfo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EAdLqGN0LtcOPmDG0ajE2hRmMbnO6OsEc6No++wuokQKTuMkDDE3IWANf3sMAOnUl/jaF6ZuDb1Po249FgvFTP5Y5WAXZpnyfiF89J3u2Q7FLgc+NJLjwKLhCqEp3odkVam/MQhW/qg+ATFNXLVKkM8YP/Zz3qEdIhTSq7OArGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-7eb64224fd2so4606920a34.0
-        for <acpica-devel@lists.linux.dev>; Mon, 27 Jul 2026 21:11:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785211895; x=1785816695;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=TbGGrH0cj1r6xVSHJTMQNCv359Cy4DnMO+j4jgY5Qt4=;
-        b=YIZc22oym0b+5Om3+p9YhcGq29i1yn1SDqSkDLfPpbCX3qwULDLNcgqrHuXWNSr3f5
-         oLzE/0AfICt66IgBnL8uXugo/+kJTVIv0sTkzn19EHlbyy8GxUpBf+B2suXVaEpvjq6W
-         5o6kCdHQ3g6AzmJ/aBGhqwJmyTskotCQ+6FGAJ6JnYTKyubLcBsWTopLrcxiFVpZMzi8
-         6Yfc/cUz38po4PXBPYsSLNwxO0Btae4WuRoX7M0tMqS8D+t9tYZkj03Wj2z6+vFGisKE
-         pTqif9j4UgX9PEIiQTGGRWPhBriG0La/6Hsupk0Y8xtC34xxYIrdCbsa3AdTRXaEDtVb
-         RjBg==
-X-Gm-Message-State: AOJu0YyymcwtiIh+kEfieTi3eYMSmgjTwKQb0JhgSPog4Ip4raVTwOjk
-	GS7siPCd9zu64i2hXiNub5N7R8Bm7BF0FyMWPcn5CjKFtbuscB6xrXafd5nZX6b6okncJJ8Ro+N
-	PFUbsVarFcexp/e08XfKUIoXSFX+3h8qJDRNymnJvrGrECxSqMwIhVZKZ4HpK0w==
+	s=arc-20240116; t=1785228125; c=relaxed/simple;
+	bh=vTtpfS8DsqV0yX6Abtwlukd5XiEPzcmJl2/q1btkP5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=f8TSvSOhcQ6G9NXtHyGZFMHvtVz2gYRACwgmFtehVrvZLFTvdDobzrVXjZMrwuZDEVlpBa44LlTC4Q+Q+LHb/6zKmumUozKw3CMlTwrTcwFlsWazmY1KM6WN310Su8Pr0mS3kWTRuL4vaZxlZJG86vRokqfvMc0LtOfcmj6ZBxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=YPiMycY9; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="YPiMycY9"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=b14c05HzraPU+WgxiYx6tlHbhfsQqX/AwR0LJeM5LeM=;
+	b=YPiMycY90bZd5L+hFm9wCMxlXc98Qhc6LVe1CFm2FtQqt8rvT34YvM+dfXv03J+9MIlAPyTQG
+	ZhTVAA5QtAE97tsdAHQ9gTK0oHUTLHQXqczWGaZwPYF9UyxiepW5DJETk3DddYOu8h1DeLib/fD
+	+SzOzJ72qYmwPmQzyZ2A8Eg=
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4h8TGv6dKDz1prKd;
+	Tue, 28 Jul 2026 16:32:23 +0800 (CST)
+Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5C1044057F;
+	Tue, 28 Jul 2026 16:41:52 +0800 (CST)
+Received: from [10.67.121.90] (10.67.121.90) by kwepemf100001.china.huawei.com
+ (7.202.181.215) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Tue, 28 Jul
+ 2026 16:41:51 +0800
+Message-ID: <a4891cdc-9635-4ad7-96b6-f62c39aa254a@huawei.com>
+Date: Tue, 28 Jul 2026 16:41:51 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:150a:b0:6a3:813d:c84b with SMTP id
- 006d021491bc7-6ac96d6d56emr418121eaf.63.1785211895605; Mon, 27 Jul 2026
- 21:11:35 -0700 (PDT)
-Date: Mon, 27 Jul 2026 21:11:35 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a682bf7.70955b6c.323240.0052.GAE@google.com>
-Subject: [syzbot] [acpica?] KASAN: use-after-free Read in acpi_ns_get_attached_object
-From: syzbot <syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
+To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
+	<viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhanjie9@hisilicon.com>, <lenb@kernel.org>, <saket.dumbre@intel.co>,
+	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<kprateek.nayak@amd.com>, <linux-kernel@vger.kernel.org>,
+	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-tegra@vger.kernel.org>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>
+References: <20260724215937.3368276-1-sumitg@nvidia.com>
+ <20260724215937.3368276-2-sumitg@nvidia.com>
+From: "zhenglifeng (A)" <zhenglifeng1@huawei.com>
+In-Reply-To: <20260724215937.3368276-2-sumitg@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemf100001.china.huawei.com (7.202.181.215)
 
-Hello,
+On 7/25/2026 5:59 AM, Sumit Gupta wrote:
+> Without online()/offline() callbacks, the cpufreq core fully tears
+> down a policy during exit() when its last online CPU is offlined, and
+> rebuilds it during init() when it comes back.
+> 
+> Add lightweight online()/offline() callbacks so the core instead keeps
+> the policy live and reuses the driver's cpu_data across CPU hotplug.
+> This avoids re-reading the CPPC capabilities on every offline/online,
+> making CPU hotplug faster.
+> 
+> From online(), re-enable CPPC, as the platform may have disabled it
+> while the CPU was offline. Since the policy is no longer rebuilt via
+> init(), online() also reprograms the CPPC performance controls
+> (desired/min/max).
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 44 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index f6cea0c54dd9..6dc59f99d880 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -722,6 +722,48 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  	return ret;
+>  }
+>  
+> +/*
+> + * With offline() defined, the cpufreq core keeps the policy alive when
+> + * a CPU is hotplugged out.
+> + */
+> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
+> +{
+> +	return 0;
+> +}
 
-syzbot found the following issue on:
+I am not sure if doing nothing here will cause issues. In my view, to be safe,
+we should perform the actions found in cppc_cpufreq_cpu_exit() here, except
+cppc_cpufreq_put_cpu_data().
 
-HEAD commit:    a293ec25d59d Merge tag 'linux_kselftest-fixes-7.1-rc3' of ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13ac3b26580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d0f0911eedbc130a
-dashboard link: https://syzkaller.appspot.com/bug?extid=5725792ce6a9938d1b24
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+> +
+> +/*
+> + * Re-enable CPPC when the policy's CPU comes back online, since the platform
+> + * may have disabled it while the CPU was offline.
+> + */
+> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_cpudata *cpu_data = policy->driver_data;
+> +	unsigned int cpu = policy->cpu;
+> +	int ret;
+> +
+> +	ret = cppc_set_enable(cpu, true);
+> +	if (ret && ret != -EOPNOTSUPP)
+> +		pr_warn("Failed to re-enable CPPC for CPU%d (%d)\n", cpu, ret);
+> +
+> +	/*
+> +	 * The platform may reset the controls while the CPU is offline, so
+> +	 * recompute min/max, clamp desired_perf into range, and reprogram them.
+> +	 */
+> +	cppc_cpufreq_update_perf_limits(cpu_data, policy);
+> +
+> +	cpu_data->perf_ctrls.desired_perf =
+> +		clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
+> +			cpu_data->perf_ctrls.min_perf,
+> +			cpu_data->perf_ctrls.max_perf);
+> +
+> +	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+> +	if (ret)
+> +		pr_debug("Failed to reapply perf request on CPU%d (%d)\n",
+> +			 cpu, ret);
+> +
+> +	return 0;
+> +}
+> +
+>  static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+>  {
+>  	struct cppc_cpudata *cpu_data = policy->driver_data;
+> @@ -1034,6 +1076,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
+>  	.fast_switch = cppc_cpufreq_fast_switch,
+>  	.init = cppc_cpufreq_cpu_init,
+>  	.exit = cppc_cpufreq_cpu_exit,
+> +	.online = cppc_cpufreq_cpu_online,
+> +	.offline = cppc_cpufreq_cpu_offline,
+>  	.set_boost = cppc_cpufreq_set_boost,
+>  	.attr = cppc_cpufreq_attr,
+>  	.name = "cppc_cpufreq",
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7cc7565720f7/disk-a293ec25.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3d78e9e8aa32/vmlinux-a293ec25.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5c85a1abd99/bzImage-a293ec25.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:258
-Read of size 1 at addr ffff8880216de8f8 by task syz.2.1126/11381
-
-CPU: 0 UID: 0 PID: 11381 Comm: syz.2.1126 Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0x13d/0x4b0 mm/kasan/report.c:482
- kasan_report+0xdf/0x1d0 mm/kasan/report.c:595
- acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:258
- acpi_ns_evaluate+0x158/0x1670 drivers/acpi/acpica/nseval.c:83
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
- pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
- do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:2000
- pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2091
- enable_store+0x1e1/0x260 drivers/pci/pci-sysfs.c:341
- dev_attr_store+0x58/0x80 drivers/base/core.c:2437
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:142
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:352
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1070 fs/read_write.c:688
- ksys_write+0x12a/0x250 fs/read_write.c:740
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7b35f9cdd9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7b36df4028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f7b36215fa0 RCX: 00007f7b35f9cdd9
-RDX: 0000000000000081 RSI: 0000200000000040 RDI: 0000000000000003
-RBP: 00007f7b36032d69 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f7b36216038 R14: 00007f7b36215fa0 R15: 00007ffcfd654598
- </TASK>
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x4b pfn:0x216de
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: f0(buddy)
-raw: 00fff00000000000 ffffea0000ab0808 ffffea0000a7ef48 0000000000000000
-raw: 000000000000004b 0000000000000000 00000000f0000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x100cc2(GFP_HIGHUSER), pid 10859, tgid 10858 (syz.1.1050), ts 363170141420, free_ts 364039095485
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x153/0x170 mm/page_alloc.c:1858
- prep_new_page mm/page_alloc.c:1866 [inline]
- get_page_from_freelist+0x11a6/0x33b0 mm/page_alloc.c:3946
- __alloc_frozen_pages_noprof+0x27c/0x2bc0 mm/page_alloc.c:5226
- alloc_pages_mpol+0x1fb/0x540 mm/mempolicy.c:2490
- alloc_pages_noprof+0x1a/0x160 mm/mempolicy.c:2581
- kimage_alloc_pages+0x72/0x380 kernel/kexec_core.c:284
- kimage_alloc_page+0x232/0x910 kernel/kexec_core.c:686
- kimage_load_normal_segment kernel/kexec_core.c:825 [inline]
- kimage_load_segment+0x507/0xde0 kernel/kexec_core.c:943
- do_kexec_load+0x58d/0x810 kernel/kexec.c:155
- __do_sys_kexec_load kernel/kexec.c:261 [inline]
- __se_sys_kexec_load kernel/kexec.c:242 [inline]
- __x64_sys_kexec_load+0x1bf/0x230 kernel/kexec.c:242
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-page last free pid 10859 tgid 10858 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- __free_pages_prepare mm/page_alloc.c:1402 [inline]
- __free_frozen_pages+0x747/0x1040 mm/page_alloc.c:2943
- kimage_free_entry kernel/kexec_core.c:554 [inline]
- kimage_free+0x245/0x5a0 kernel/kexec_core.c:601
- do_kexec_load+0x34c/0x810 kernel/kexec.c:175
- __do_sys_kexec_load kernel/kexec.c:261 [inline]
- __se_sys_kexec_load kernel/kexec.c:242 [inline]
- __x64_sys_kexec_load+0x1bf/0x230 kernel/kexec.c:242
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x10b/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Memory state around the buggy address:
- ffff8880216de780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880216de800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8880216de880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                                ^
- ffff8880216de900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880216de980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
