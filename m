@@ -1,265 +1,256 @@
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011054.outbound.protection.outlook.com [52.101.62.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662F11A2C0B
-	for <acpica-devel@lists.linux.dev>; Wed, 29 Jul 2026 01:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.205
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785287304; cv=none; b=YVymSwFh+EEjzTuneaGMLOmegm709AGW2rKGrnIgiXdr40s//ld4tM0IkGVJvLZjITjRzJTXSjoTzXRC0FtXYIKd3UhHoFXke8k1JLdokRD4V1LEiiUreTWzL6y7XYEb3uIL5k2icWbuzDAnW9fHzSi0826m5hjmG9eIeBXcYks=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785287304; c=relaxed/simple;
-	bh=RUzXBwgXiM/rvvP3cQSqsj764w/uV9u7Tk+ZCUtenj0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=QAGO9a62odxYN5uATmr+bugmzk0SeHh2EcYDfTcEemSIzrokUqeGp8YuGt7pwiGsN1DeWRZcOC8Mztfw+SD+Z9OCxCMhbp7qXfoIAmbFOESqIVou3Z61v3Vi3DurM3htvy7cMKT7E2oFmzaYWRzJCrR6Ow54o7TaibkPYWGrxwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-49ab6a82cd5so497669b6e.2
-        for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 18:08:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785287301; x=1785892101;
-        h=content-type:to:from:subject:message-id:in-reply-to:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=dqSMTTM6vo0zcYNgTqtEZRu9JRO5HukENklKUwy2LkI=;
-        b=fXKyoKg7AVRDeWMVNUKN/0AZ6ZzVFfV+3ikpy1F3l3o60FozFDZOHYr5uT4LhZWYHb
-         Q9WFLiMZpp+ytB1ZHcJ6OigMevU+bh12dOwGW9kfWlKLfeQxhsMtgCMXIBZqLF8CUNzG
-         x/5Z1jThG9svz9qBRw44oIG3Ur18D2/dWFxJuifZptuZNpVYuHcqKWKErfdH6WmviYHo
-         sxSjv+bRMNJpUb5TfRckjPL5HcZGpwUH0KTjpHi1tbtm1ZfJAsy9gEUdsSiXZETqrXpf
-         fQv/0Du8odjqMxCW8JumTGFnlwD1hkI2m3wQMY85PCdoPb6AT9dKOB0nkfaWjP92Ez/e
-         vGIw==
-X-Gm-Message-State: AOJu0YyPPS7L6YvCgM/SAwjEyEZ2d7mPGhITlK6x8RMSstZQ7AEY3YfR
-	R+NfUfDH1GM9SQlAOOnpcBmxMeC93OSFEoBARz8b+XH52kxTie6VA3YE03UdkByuEx/ngUNgqF/
-	dkqMa/t05kTQFebzlI0hMVokkTbGhXzHjyEiUeboNsNj1CKtLjhHFJXSBG3R4IA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6043E7652
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Jul 2026 14:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785336091; cv=fail; b=EV1O8qc+YnLFzpKoAIHJNRdzoFVnhHU1zgyGpucwXe0kCYzoKz25W/KzDsznXbKvZbQsal5lMHshPbNVNJ7811oVx/ysU53PWprKH9Vw7R2JAZoffT18NcFu7ezVFQ1tphrZmHrtRfRQR4/5M3mAzk7ds3R7Xt3hExCT9rwlWck=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785336091; c=relaxed/simple;
+	bh=8L1uABaEPy3D0Y9rBGEhbIq5wijCiKsc1ffNgKksnxw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=TGMGs+yhb2HRiwzy3Xfe1m6qfpRwxL0MsOfMyFK/IOK8f5WsYLBqnpGicFs4YSkjmRD+KD0BJTCSVl7ChM3jMnz6PvlA4Wz4Z1OJbVltTWPCeQqNdOOt/1vvnPh0dUojTe9ZQMcuNUYVXLT8NJCsMS0cxiJ+m0sWGntYcjDVgQ8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=d5H44vXV; arc=fail smtp.client-ip=52.101.62.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="d5H44vXV"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=gFL3Lyd7vyrWCPCka9RjPQZv+LC8KQ3IsPqaKjBZhKxMVnK1kUdYWPCjH/d6OVooKCnQ6fg475RZ2aIuRylMI15MTXKIxWmv0EbdO5fxAieQmY00G1ZgYATTyqq0BeM2761/O/trHJg1yLr6h6IOkITuSR3DluqpjTKvnP+762QE5di4lauj/ILPMSxr5mMe5YbjHLaDVAD/aOHJJ3Mab+4lcKZZ+xRV6hUdCDZsWAX3rWmM5cSuR3WIX7/CQMSZDxMbinm4MiWZ182BJAeJqIBkml58/q8e1u0p6u9WGkhDCsm3+zv1GJuSIgL/BnOEazwQ8pzedOVGwtMbjs2WhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ml3uZWyjIV4cukBCyKVlZ42lMx2L5mfJHXTSriVe7VE=;
+ b=uzc82PsyiTL2D1HYjoNifEPWFPgqRR8Naf5KHGL8fbz69PZ10+DBspfoS0gljCDD4rolbNUyTuLAwL3YXE79V+tkMHUL8zz4T+AhW+PzmUpscK0bdAEftevaTtzl56zokyunkFn6lir2GV5qVmy7zqkxrXJ2hYlpk+R4CmrahTKK3LC2RjPJCQGNqCOJ/XBs/Qvp83RgOIm72D30XVg7p4PSu4/BAR/QXc/xHvJ2yCZns4PgJlWxbCBDvGX+bqhtsb12ljEcXEE/DqvFs/sAGrgmqQ9Xs13Br9xDK/WAK3V3lrByrGo9iBAsyrKNpZYuH8lW/oo7CnAlyRxPwEnu/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ml3uZWyjIV4cukBCyKVlZ42lMx2L5mfJHXTSriVe7VE=;
+ b=d5H44vXV9H4KMvwK0OlFWS0sbYv72vEc63NUCSiae3sZlHKv489MA9HQyWL2kmeB3Wy4iv+uIaVTvjEBjH1oG1DM86YimrOeaT5DKI4mJQ2UVT9iQZyjh2oWRBQHQ0D8XlCcPFhJELTZW5X7kk5E6jAqqU60kEXTve4MpPFY2W8af3Pyo+NGACiMRbRYWnwjhFisQ54O7I3ZRrAMbRty3PZ8HP6h4jcH4RnN0iGHKyThrLfXKl8p3D93zk29yVABS7n8fFHtakmsgzwv4GsldXF2tMiw6OHZ/aR4VbLl39Z+OBmA6PDpdYTkD0D/t4KldYkJ5lyqkOMQFt9BT2iPig==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by LV3PR12MB9236.namprd12.prod.outlook.com (2603:10b6:408:1a5::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.13; Wed, 29 Jul
+ 2026 14:41:25 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.21.0270.012; Wed, 29 Jul 2026
+ 14:41:25 +0000
+Message-ID: <d8296b93-9bc2-49fc-b46b-d7dd37af2abd@nvidia.com>
+Date: Wed, 29 Jul 2026 20:11:13 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
+To: Christian Loehle <christian.loehle@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
+ saket.dumbre@intel.co, ray.huang@amd.com, mario.limonciello@amd.com,
+ perry.yuan@amd.com, kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20260724215937.3368276-1-sumitg@nvidia.com>
+ <20260724215937.3368276-2-sumitg@nvidia.com>
+ <40d72385-0b3f-46e5-9f32-a27be3842d7c@arm.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <40d72385-0b3f-46e5-9f32-a27be3842d7c@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0114.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::29) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1589:b0:485:48da:133d with SMTP id
- 5614622812f47-4ad5b989d25mr2652851b6e.10.1785287301288; Tue, 28 Jul 2026
- 18:08:21 -0700 (PDT)
-Date: Tue, 28 Jul 2026 18:08:21 -0700
-In-Reply-To: <6a682bf7.70955b6c.323240.0052.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a695285.e3659fcc.2a40b8.002c.GAE@google.com>
-Subject: Re: [syzbot] [acpica?] KASAN: use-after-free Read in acpi_ns_get_attached_object
-From: syzbot <syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    3b5f4b83c4ab Merge tag 'for-7.2-rc5-tag' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14dfffde580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=145fa60d73086782
-dashboard link: https://syzkaller.appspot.com/bug?extid=5725792ce6a9938d1b24
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14428aea580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13715632580000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-3b5f4b83.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ed6d6b480fd7/vmlinux-3b5f4b83.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d5a591a74024/bzImage-3b5f4b83.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com
-
-usb usb2: USB disconnect, device number 1
-ehci-pci 0000:00:1d.7: USB bus 2 deregistered
-==================================================================
-BUG: KASAN: slab-use-after-free in acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:264
-Read of size 1 at addr ffff888022b654e8 by task syz.0.19/5926
-
-CPU: 1 UID: 0 PID: 5926 Comm: syz.0.19 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0x13d/0x4b0 mm/kasan/report.c:482
- kasan_report+0xdf/0x1c0 mm/kasan/report.c:595
- acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:264
- acpi_ex_resolve_node_to_value+0xb7/0x9a0 drivers/acpi/acpica/exresnte.c:61
- acpi_ex_resolve_to_value+0x3da/0xcd0 drivers/acpi/acpica/exresolv.c:76
- acpi_ds_evaluate_name_path+0x30d/0x4a0 drivers/acpi/acpica/dsutils.c:790
- acpi_ds_exec_end_op+0xb78/0x1e60 drivers/acpi/acpica/dswexec.c:374
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x1a8/0x360 drivers/acpi/pci_irq.c:499
- pcibios_disable_device arch/x86/pci/common.c:706 [inline]
- pcibios_disable_device+0x89/0xb0 arch/x86/pci/common.c:703
- do_pci_disable_device+0x9f/0x100 drivers/pci/pci.c:2170
- pci_disable_device+0x130/0x270 drivers/pci/pci.c:2206
- usb_hcd_pci_remove+0x1ed/0x300 drivers/usb/core/hcd-pci.c:351
- pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- unbind_store+0xf8/0x110 drivers/base/bus.c:244
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fc01df9de99
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc710447d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fc01e225fa0 RCX: 00007fc01df9de99
-RDX: 000000000000000c RSI: 0000200000000240 RDI: 0000000000000003
-RBP: 00007fc01e033eaf R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fc01e225fac R14: 00007fc01e225fa0 R15: 00007fc01e225fa0
- </TASK>
-
-Allocated by task 1:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- unpoison_slab_object mm/kasan/common.c:340 [inline]
- __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4584 [inline]
- slab_alloc_node mm/slub.c:4917 [inline]
- kmem_cache_alloc_noprof+0x26b/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x173/0x790 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_create_node+0xe3/0x280 drivers/acpi/acpica/dsobject.c:281
- acpi_ds_exec_end_op+0x10cf/0x1e60 drivers/acpi/acpica/dswexec.c:594
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_parse_table+0xcb/0x160 drivers/acpi/acpica/nsparse.c:268
- acpi_ns_load_table+0xc9/0x490 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x2b0/0x8f0 drivers/acpi/acpica/tbxfload.c:158
- acpi_load_tables+0x89/0x160 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init drivers/acpi/bus.c:1479 [inline]
- acpi_init+0x146/0x840 drivers/acpi/bus.c:1592
- do_one_initcall+0x11d/0x700 init/main.c:1347
- do_initcall_level init/main.c:1409 [inline]
- do_initcalls init/main.c:1425 [inline]
- do_basic_setup init/main.c:1445 [inline]
- kernel_init_freeable+0x6ea/0x7b0 init/main.c:1658
- kernel_init+0x1f/0x1e0 init/main.c:1548
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Freed by task 5922:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:253 [inline]
- __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2677 [inline]
- slab_free mm/slub.c:6377 [inline]
- kmem_cache_free+0x127/0x6b0 mm/slub.c:6504
- acpi_os_release_object+0x1c/0x30 drivers/acpi/osl.c:1661
- acpi_ut_delete_object_desc+0xea/0x130 drivers/acpi/acpica/utobject.c:402
- acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
- acpi_ut_update_ref_count.part.0+0x510/0x2250 drivers/acpi/acpica/utdelete.c:436
- acpi_ut_update_ref_count drivers/acpi/acpica/utdelete.c:374 [inline]
- acpi_ut_update_object_reference+0x5f9/0x800 drivers/acpi/acpica/utdelete.c:632
- acpi_ut_remove_reference drivers/acpi/acpica/utdelete.c:740 [inline]
- acpi_ut_remove_reference+0x192/0x1d0 drivers/acpi/acpica/utdelete.c:710
- acpi_rs_get_prt_method_data+0xcd/0x150 drivers/acpi/acpica/rsutils.c:460
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
- pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
- do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:1998
- pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2089
- usb_hcd_pci_probe+0x56/0xcb0 drivers/usb/core/hcd-pci.c:184
- ehci_pci_probe+0x35/0x50 drivers/usb/host/ehci-pci.c:385
- local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
- pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
- __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
- pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
- call_driver_probe drivers/base/dd.c:628 [inline]
- really_probe+0x241/0xa60 drivers/base/dd.c:706
- __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
- device_driver_attach+0xd1/0x220 drivers/base/dd.c:1203
- bind_store+0xf4/0x190 drivers/base/bus.c:267
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff888022b654e0
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 8 bytes inside of
- freed 72-byte region [ffff888022b654e0, ffff888022b65528)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888022b65000 pfn:0x22b65
-flags: 0xfff00000000200(workingset|node=0|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 00fff00000000200 ffff88801bc4da40 ffffea00008aec90 ffffea00008ae550
-raw: ffff888022b65000 000000080027001d 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2576811382, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0xfd/0x120 mm/page_alloc.c:1859
- prep_new_page mm/page_alloc.c:1867 [inline]
- get_page_from_freelist+0xf48/0x3530 mm/page_alloc.c:3946
- __alloc_frozen_pages_noprof+0x299/0x2dc0 mm/page_alloc.c:5304
- alloc_slab_page mm/slub.c:3266 [inline]
- allocate_slab mm/slub.c:3380 [inline]
- new_slab+0xa2/0x640 mm/slub.c:3426
- refill_objects+0xe3/0x410 mm/slub.c:7310
- refill_sheaf mm/slub.c:2804 [inline]
- __pcs_replace_empty_main+0x376/0x680 mm/slub.c:4675
- alloc_from_pcs mm/slub.c:4773 [inline]
- slab_alloc_node mm/slub.c:4905 [inline]
- kmem_cache_alloc_noprof+0x46e/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_package_obj+0xa8c/0xe60 drivers/acpi/acpica/dspkginit.c:92
- acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888022b65380: fb fc fc fc fc 00 00 00 00 00 00 00 00 00 fc fc
- ffff888022b65400: fc fc fa fb fb fb fb fb fb fb fb fc fc fc fc fa
->ffff888022b65480: fb fb fb fb fb fb fb fb fc fc fc fc fa fb fb fb
-                                                          ^
- ffff888022b65500: fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb
- ffff888022b65580: fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc
-==================================================================
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|LV3PR12MB9236:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3fb9d78b-7b9d-4268-68ef-08deed7f7759
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|23010399003|921020|6133799003|4143699003|56012099006|11063799006|10067099003|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	Pr9d/ARvuUDcu3COhobSJl6nDnh3Mvf1mtUtViMbTNyHOqadZBqJKT2r1cVXrKilBfcyBEX7DxC5H05ljWO4hd/xDoZKHwJ0oodgNfNmSx6VhFma7cEYeyBgi6QZsE9a3NqsStf/MneEXlOdm77oEbk3cUfWH/yWQoY1UEw+2eCslEE16xIl0yiL2cOL74VOZn85PE3S+APj5pRDGOZW9woBTUHy8+oXkn4/AybN/hxddOc9rpfBdkVRuulgWwrVWPfDWo1R7W84P6NLeviVhm8H+/Fo2vzcxE/3KUHlpGFjbmvdbQvI46rRcABSMwMq2/rSz4iyJ4Y1ft2FyC5Dj6j2XZEfl874a4xRAE6oRBoDr09EbD4lN3Q+h62m9ymmuZBOax53mDYvUmLK6L3uys3shdTs8UahxM3DiTtPh7t00TVlEbdfeXdnGvrIl9lfDvMnAaggyOkC8HzPIi7F7VeJG+jseMhluhdXwgejBUZUy6WFP5vrTfF1vpHaVW8UsAHSHE2VAN4DnBST8QzjnDrlH7FI1Wf6v+76CC1AB95/b8qL1xMKQsUXUoLY9JNpoCfXvIFURnVfLJwouqIZ1+bON7kb4KijMhGKgNFX0/vh06NqgWW35rb3BHiByWwCt0pUBlE6r+P6+lIKHELHUpKxG6boxSl3bKtNDkYB+bIZkRHONxzBfeXaPUNMATOvyFPqa53y8M07M4aR2yy3hQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(23010399003)(921020)(6133799003)(4143699003)(56012099006)(11063799006)(10067099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?QjF5NnBURlZlK1p3eXBVN29EajNZdWR5UjVpbzFuZFNQRG9WanBwMndsaDFR?=
+ =?utf-8?B?YlJtbkY1cWU5dTk4UGU0dGs1K0w1OEpHM2VvUWJDaGMxN0l3K005NXBnY1ZO?=
+ =?utf-8?B?aDN0ZXJMWXJlQWpNTXJiMDRJNkRQamd0TnRyZU9EeTRaMzArb0ZNRjJ1MXNh?=
+ =?utf-8?B?TUIvOFVWK1dnMHNObUQwZE5HN3hXUjF5aGlVQWNma3oxZlZhQXAyeEp1QS9x?=
+ =?utf-8?B?V3p1bitpSlpTT000N0tiRGJoWTF6Mk1mNWRoVWh5UjRwZ21lYUlmbHI5TEh5?=
+ =?utf-8?B?a1Z5NzByTE90V01JRkJVVGN5OGo0dGVKUUd5TXFPMEVpUEVqWGpOT3ZvSXdN?=
+ =?utf-8?B?MjVqTkVJbkRzMStQeXJrTzFUdkJqWU9OZXRQZFVMa2ZMeTFZYWdrdnpVSCs4?=
+ =?utf-8?B?N3VqencxdmJmem1QQ1Y3SVh5ZUFIZHNDZkIzTkdwdkQ0QjRjMWZrTTNYNXYv?=
+ =?utf-8?B?UnBPR3ljeVB6U2ZySU9WcWVuczB6UnQ1YmRkSlZtbGtKcElOTVZ1d3BMNDZk?=
+ =?utf-8?B?UzFObkhIMVFWS2dNRXl5azF4RDMzL0hoQlNNRXVlbWFUbE5VK2orcStnbkpO?=
+ =?utf-8?B?QjlPcmZmWkdFbTZtcllqK0YySk1nZk9OTXlJU1ZSL3RTNzRUcnZaSFd2SjFH?=
+ =?utf-8?B?ZGdkMXNKTC80VXZYOS91V0tKckZkbGt4N0RwYTA3SG42RHg2bEhGS1ZKSlYw?=
+ =?utf-8?B?ZjZnMlZTSWdNVUdEMFlPaVBkZ2ZEOXZzNEJJaDBVSW90b3l5WXU5NFdpb3p5?=
+ =?utf-8?B?WVBGb20zN24wTDhtRmxjdW9EWUxidDNxdXMxV1RNai9vVFBQcVg1Si9yWFNI?=
+ =?utf-8?B?WDg4RDBQQjUzS3V3MEdUTkQ0cituQWo0Qjd6WW8rSjRkZ1pxbnR2alpFRmxG?=
+ =?utf-8?B?aUFiUVJFNEFjSFgwU0JGOHFRSEZvTlRDTnZYL242Q3NteFY3d1hxSTEzOCsz?=
+ =?utf-8?B?STIyNWtMNktDVTdRRUZwYjNQYk5wNVF3c3pCWXp5c3ZoTVhDa0Nnazl0Smha?=
+ =?utf-8?B?OHVMaGp4ZVU2Uld5aG9VV25OZU5KNWdrTWNUTS8yV0g0bERVaFhhVmFwanI3?=
+ =?utf-8?B?UGJXdUFOOUlwb0psMFNPOXRlNStaTkM5ZlN1MXdOZ3dBSkNsMmtTK2NnTHJy?=
+ =?utf-8?B?angrbnpvTE1IUmRQeXZnQW9EMGUwOFRsY2FKYUJPTEE4cXpNa2hHcjdMQnVE?=
+ =?utf-8?B?SSs2UlVFdGdwbUFiTGxvdzVFczJybTBkNzlONlVMODdzcDA4QS9RcEx5MmdT?=
+ =?utf-8?B?cHArYy9OMGxSMy8vb2ZacHUvYWlRcDN1U3J3Y0tldk5PeEtFRjA0Smg0Y0ZY?=
+ =?utf-8?B?Ujkxaldiclh6dlQ1VkRwc0MvOTRjbStPN2s1bi9VRW5vM0N2YWFMMHRpbkhh?=
+ =?utf-8?B?MVk2cTJydGFDbm85WnBibThBUVhOd3lZQVJVWUtPSkpMcFlyQTJTaVMzaUMv?=
+ =?utf-8?B?U1NCTFNINzR1alYvN0poalV5VlowTXEyWW51UXBUSElGZXpPSGk2R09UNk9r?=
+ =?utf-8?B?QmhuZUdWZkZpb0ptM000eThtaXliY3E1VWxJRS90NHlyNVNwdXg4eEh3ejA0?=
+ =?utf-8?B?czFmdHh5Z2sxRVRVcVcvYm5iVk1Xd083TkFpTlpRSk1tRlBJTUxRenB6NTNC?=
+ =?utf-8?B?ck9rN2o5Q3IyL1Y0eURSQVc5K29lZis0dFRMWWZZTmdHVEtxa1l1Y0JLMFVU?=
+ =?utf-8?B?V2JvY1hrT3FLaDYwS1pSdTRFNGxlQ1J6THJaSXlhU2xxQXpoUnFzOVN5YnFE?=
+ =?utf-8?B?TlkxL3ZRb2lidmxRVTZacEt5YmUrWm9mVnBnTk5kVW1RL05GZVlmTEYrWHRn?=
+ =?utf-8?B?NnVsemR0aTczUllyY3YydHpaTjFEcEppdzljVHZjKzVjV0s2dTlNQ3dHWXVE?=
+ =?utf-8?B?eC8wcUJYczZSbnFUcUtvY0ZKZkcweExRRGpXUmUrWkVDVFNLR0V6aGdJRys0?=
+ =?utf-8?B?MWJDSlg3amhaWjk5d3lhZC82T2pldytiMFVXQVQvZjJJZzd5aGdldWF6TkU5?=
+ =?utf-8?B?TGg0Vm1haDJ6N3RjMjNFdUVNVXVqMjJodnhVWmRDSlRjTHRkTWFlNlI1Y3Fa?=
+ =?utf-8?B?Z3ppQWJPMisrMC8wVDhzM1JYZlZ1ekJJWWttWXdBTnF6eHlJNXp2aVN6SkQr?=
+ =?utf-8?B?UXJETUw2c1daUUJXU2dkQzBvVjVsMm5KSm1NMlJNSHpDZElSUGJnVzRaRE9C?=
+ =?utf-8?B?ZlU5TnRLSW9zMVE0L2tERWJ2RTFZVEVRV0F5QmppTmpEekMraWYrYnFCMW5O?=
+ =?utf-8?B?a1grdnJ3cG5TSEhKcjdONXV3QnFHdm4vTE8xYTBrdXJaWHdoSTRTM2VnU0xU?=
+ =?utf-8?Q?QeFO7t2iNc5ERcbGmw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fb9d78b-7b9d-4268-68ef-08deed7f7759
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2026 14:41:25.5377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tvRkAN6qnJiQcMs/4nE2s6E2+Otw3clPVOORuZInhvP85V/dqGFQRJ3Qb/QauGGhXHQyp3Kf+KQ1iR9EWAQydA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9236
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+On 27/07/26 18:57, Christian Loehle wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 7/24/26 22:59, Sumit Gupta wrote:
+>> Without online()/offline() callbacks, the cpufreq core fully tears
+>> down a policy during exit() when its last online CPU is offlined, and
+>> rebuilds it during init() when it comes back.
+>>
+>> Add lightweight online()/offline() callbacks so the core instead keeps
+>> the policy live and reuses the driver's cpu_data across CPU hotplug.
+>> This avoids re-reading the CPPC capabilities on every offline/online,
+>> making CPU hotplug faster.
+>>
+>>  From online(), re-enable CPPC, as the platform may have disabled it
+>> while the CPU was offline. Since the policy is no longer rebuilt via
+>> init(), online() also reprograms the CPPC performance controls
+>> (desired/min/max).
+>>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/cpufreq/cppc_cpufreq.c | 44 ++++++++++++++++++++++++++++++++++
+>>   1 file changed, 44 insertions(+)
+>>
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+>> index f6cea0c54dd9..6dc59f99d880 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -722,6 +722,48 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>        return ret;
+>>   }
+>>
+>> +/*
+>> + * With offline() defined, the cpufreq core keeps the policy alive when
+>> + * a CPU is hotplugged out.
+>> + */
+>> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
+>> +{
+>> +     return 0;
+>> +}
+>> +
+>> +/*
+>> + * Re-enable CPPC when the policy's CPU comes back online, since the platform
+>> + * may have disabled it while the CPU was offline.
+>> + */
+>> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>> +{
+>> +     struct cppc_cpudata *cpu_data = policy->driver_data;
+>> +     unsigned int cpu = policy->cpu;
+>> +     int ret;
+>> +
+>> +     ret = cppc_set_enable(cpu, true);
+>> +     if (ret && ret != -EOPNOTSUPP)
+>> +             pr_warn("Failed to re-enable CPPC for CPU%d (%d)\n", cpu, ret);
+> What's the intention of continuing restoring CPPC register values here?
+
+Yes, there is no benefit in continuing the restore when
+cppc_set_enable() fails with anything other than -EOPNOTSUPP.
+I will stop the restore at that point and return 0 with a warning,
+since propagating the error would cause the core to tear down
+the policy.
+
+>> +
+>> +     /*
+>> +      * The platform may reset the controls while the CPU is offline, so
+>> +      * recompute min/max, clamp desired_perf into range, and reprogram them.
+>> +      */
+>> +     cppc_cpufreq_update_perf_limits(cpu_data, policy);
+>> +
+>> +     cpu_data->perf_ctrls.desired_perf =
+>> +             clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
+>> +                     cpu_data->perf_ctrls.min_perf,
+>> +                     cpu_data->perf_ctrls.max_perf);
+>> +
+>> +     ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+>> +     if (ret)
+>> +             pr_debug("Failed to reapply perf request on CPU%d (%d)\n",
+>> +                      cpu, ret);
+> I think cppc_set_perf() needs some prep first before using it on reset values.
+> We assume that reset value may be Autonomous Mode on, right? So we must never
+> write MIN>MAX and vice versa. I think we may just have to read and write
+> the 'otherwise-offending' value first on reset.
+
+You are right. cppc_set_perf() writes MIN before MAX, so restoring
+a window whose MIN is above the reset MAX can briefly produce MIN > MAX
+on registers not accessed through PCC. I will add a preparatory write
+that raises MAX in that case, followed by the full restore:
+----
+   /* min/max recomputed and desired_perf clamped, as posted */
+
+   cppc_get_perf(cpu, &cur);
+
+   if (cpu_data->perf_ctrls.min_perf > cur.max_perf) {
+     prep = cur;              /* Rewrites DESIRED with its current value. */
+     prep.min_perf = 0;  /* Zero leaves MIN unchanged. */
+     prep.max_perf = cpu_data->perf_ctrls.max_perf;
+
+     /* Raise MAX first. */
+     cppc_set_perf(cpu, &prep);
+   }
+
+   /* Then restore the full desired/min/max request. */
+   cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+----
+
+The reverse transition does not need this extra write because the
+existing MIN-before-MAX order writes the lower MIN first, so the window
+only widens before MAX comes down.
+
+Please let me know if you see any issue with this.
+
+Thanks,
+Sumit
+....
+
+
