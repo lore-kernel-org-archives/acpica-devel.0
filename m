@@ -1,54 +1,55 @@
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011053.outbound.protection.outlook.com [52.101.62.53])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012044.outbound.protection.outlook.com [40.93.195.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E7642C50C
-	for <acpica-devel@lists.linux.dev>; Wed, 29 Jul 2026 17:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C47463B7E
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Jul 2026 19:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785344747; cv=fail; b=Mrhf4ogF6c1FFu6rj1B3N+i4EyM/QIcBKYMx9xGh2djzhnjOubGD7RIvYOx9TM3/sTH8mHRXl2uoOjs+zfrT9WmggxRzHI2ZwDmfp+tKjwESR6PcFb4sNDUt5qZbIiWswmrlvgQk/ENorp/JhMXS6c7Jnjjn0YfcsGteSMMPxyY=
+	t=1785352260; cv=fail; b=a8fYJYCupXfPtov1Rv81bNcF1IcxcWH7iEFAAyFpA5VPgAZSoT73LmaEJ1lG9zka0q3txKdiDhT/43OR61x3vlZ0XrtNbP7tnu+93EUQoiu6Q/6vzAGSdLctA0/vG6VeBCU1+qUZvCgfS2cEdIh5o6PPDarYtCZo3O6nBiiQQq4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785344747; c=relaxed/simple;
-	bh=Jn/N8kmOYGopTe91U/bY5rIb+GaApduhF3geXCx0Rd8=;
+	s=arc-20240116; t=1785352260; c=relaxed/simple;
+	bh=6JAW9YpF8imCMfkvSC0pU0iZRAcxEj8IuUo6B3nPqc4=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AQgl8oa13ycHbEE34pZ8gCzlCfVIZQSlMW5V/NoazQ4Otc6Q7Xghk/e1TIglQ28tt7F3bp5vTwKlWj60XAyEg0dsVHi8mwNAdGXua2+Qx5qDEiz8KOqfGktxbKo4vhafJbtfjZHOYO9YADjC+X2IJn027nVJ5HK2xUdLKFpJBck=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=l9rSkAxy; arc=fail smtp.client-ip=52.101.62.53
+	 Content-Type:MIME-Version; b=aFSHn35j8o05fJpfFjcoJobmaSQ7R+v7NDvLJgBJVEN1H0xzpb0nVYfYB96YnB6oOCFNlz2GjoV/f305SaKnCb/d49r1JC+kX7NJGY2obLEeDToS1M0PWC8mPzX0GBABD/AUQlsuISLPlzHWcD4AopFut10Z0pjR763LLw0vMQA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lX6hCp49; arc=fail smtp.client-ip=40.93.195.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="l9rSkAxy"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lX6hCp49"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AfHSsJ0TXBdIGMOFWOXjJeSizvMZ9u2WAZogA8k5p+Qz8iFIGxDp0gzHkqllGbZbtRQR5TWLcdNJVvMHWzJipsOZ8RVcylNcEjV1e2fpZBhkySEexHB5kG28vZAkO/NAbg0qXvRAzOOJTQ1uvScNk4Mp+0TwJMLzbX3jZ+NW25DXRb1etTGmR2ux/AiXPhj3BPGHipIHC6IwpmOA4B713o4g8QngFo8r71z9KXvMOKLYIz2GifB43K7PXyQf/RcrZ69eG7My3Bnu9PPj8tikc8FTF1OeiMfN43MzQ2+e5dRSPEDOI+0sK/qG9OI1C7D6EY9jV5+Hp0pqL9zH0E5KEQ==
+ b=g2Vpknmsgu68UcJU9eDEFq/QJTfxB+OASdb2P9tAkJN4K4G0LjqDmjMLujTtsh3KG0F9TAf1SqX81/uZ9uy7JbIMCEoI0PxUlIHxWFxB4tv5sdF39kj9TWnDo6XRlXBA8n2J1qojEon09rgFw8C4po4Z1p3QfTgjV9sT01e/WJafq67S6aZs4ewISNs5o5z2YCibOPoFKMQNAZudt+4eupSbXV49gnH5yKCcCpOZhc497YRpSSj+6xessQUcK3Gu6wQUYaDN4U/zkF1BbsnKGnjW5QVpxFw3+2crk2IySY5znPBslIKw1PLFm5wXf+5bD1BPEmGbD/CYU7z/sd0yTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iEmHSZvYXrFt4/htW7zsdsROiKa1T0/hgmRSeLysJyo=;
- b=O6q1/0408BRCxEojoZfqkAJ9D7WK2StGlZN5ulvc3jO5LQflfxlXReMoswiSpIYUJfVPxqs5ia3eCImgzQE+SA63tcCLAzovHGr9PA30ZBl+KDUvepEgz7XzIg6fUL6E3k3VehuApl0TuFWrYsJKkeVHoU0fIKvIlXEqdaK/KwuMg1w+wG5W/QaFVaQZj6gfV6mb4OgBwWK+oYTLX6H1DkRUl7DPqlYKia2x/TqSinqCJ3bum7TFkdj5zf0CAx8HmjjzjTZjVU1U8YB8O9mSYKPchSa78RRADGmv5Qj89MMOVDajBauZTGCJVeieHaAU/fBhUWpyivaBxZjtL6k00Q==
+ bh=BotRfndZVPXIZQUb9cLgKWNijf/xDu8Hb3Mog8/yWao=;
+ b=TgbWAKmS5v3tkcT5Coi6oLwrX9ttN+LmsaMwC2tFY/h+1O+SL56m3IYtcsmtk9Uf+ENorXqDJgiNoC6ZJhv4uCjrLQu588dgVfulSzJK3GDFAbiPFoWwCVVgU8+CNMQUueEd9GC6wPUlKMpBERIYAD/eUX5+sGD/rEW1u551eRukHB91MCR6i2i2kLf+V1nRbp1UBydX8sp9Usv/oRVsyy8G4zRSDrwR/8fIf2Vq9oRdB/7monKEw6mt/xIL4RszSNevzLV7mj/+xPiRfKfQ9weTerQaoT5ExduoGwOGZac8NwqV6xyC0TfN37kXYx1gQERLY4Ug6V99hJngPbEOQg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iEmHSZvYXrFt4/htW7zsdsROiKa1T0/hgmRSeLysJyo=;
- b=l9rSkAxyRB3qLLTtq2mLVQ55PcZ3Q1JlkiTXUXArTc7b2C9YjbL+WR55M5EY5qtKx87vgZyycpKN23/+CiMP36WdHwG81WAELoCVnAJK1ENTReSwXPi/z89etX3NW2D8pjAWfgacNvPpyRevTx9/fbAyMe6mq6rqeEk7l8mkMb98fqfPcc55lQjI/9C2EmP3c8zDE9Gt7O169vcdgMvzjSZ06Y4yUFrbH7K+FztDiMKZ/WJZywI8hOi6zIo6KaKkol2yT2qVnnZVSk0eZk0/W5k4AQ5Kd81xNTLcigFI/VeDfL1wDDCx5rfk1LINs3miszsetYDygZRjGM36oKKC8g==
+ bh=BotRfndZVPXIZQUb9cLgKWNijf/xDu8Hb3Mog8/yWao=;
+ b=lX6hCp493bT0mQjhy9l8SSZEmEVk2SY55Z26siI0fYE27ZldN4qX3v0ItVQTJF1OrQutvJ0B1/WjfbSL11NZXB5KsF+g6cASleyYJdT4YspApX0ZdeR2PRmq8/L+zEDT7buKtbd2ToSlU38FyqldKxBpzJGn5nAU9lagozJ0Oxy20aEXslW62AqsTGI2v968XwqL/XpD1Eiuuu2+n1HW13GhgrCxogy4N3yQ+qWlZ4jhrXZM1Yf7YdQproBwFRyICRfmV9Op1m5MDtqy1p9oQJT0pE0kautqCVx3eJxCdrhgKRIblPNEn5LiZ70B4iP+Hpoa6qF7B8QscKkmRBhRFg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
- by PH7PR12MB6418.namprd12.prod.outlook.com (2603:10b6:510:1fe::18) with
+ by IA1PR12MB7615.namprd12.prod.outlook.com (2603:10b6:208:428::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.270.12; Wed, 29 Jul
- 2026 17:05:40 +0000
+ 2026 19:10:51 +0000
 Received: from BN9PR12MB5179.namprd12.prod.outlook.com
  ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
  ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.21.0270.012; Wed, 29 Jul 2026
- 17:05:40 +0000
-Message-ID: <161afe04-7d27-4e93-9ec5-db00caf99869@nvidia.com>
-Date: Wed, 29 Jul 2026 22:35:29 +0530
+ 19:10:51 +0000
+Message-ID: <ae4e72b2-36a6-4d2e-a176-83384c0292d7@nvidia.com>
+Date: Thu, 30 Jul 2026 00:40:39 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
-To: "zhenglifeng (A)" <zhenglifeng1@huawei.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, pierre.gondois@arm.com, christian.loehle@arm.com,
- ionela.voinescu@arm.com, zhanjie9@hisilicon.com, lenb@kernel.org,
+Subject: Re: [PATCH v3 3/4] cpufreq: CPPC: Preserve OSPM-set registers across
+ hotplug and unload
+To: Christian Loehle <christian.loehle@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
  saket.dumbre@intel.co, ray.huang@amd.com, mario.limonciello@amd.com,
  perry.yuan@amd.com, kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
  linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
@@ -57,15 +58,15 @@ Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
  ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com,
  bbasu@nvidia.com, sumitg@nvidia.com
 References: <20260724215937.3368276-1-sumitg@nvidia.com>
- <20260724215937.3368276-2-sumitg@nvidia.com>
- <a4891cdc-9635-4ad7-96b6-f62c39aa254a@huawei.com>
+ <20260724215937.3368276-4-sumitg@nvidia.com>
+ <c8f62b1d-4ab5-4d85-ae15-b5fc9ec2e3bc@arm.com>
 Content-Language: en-US
 From: Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <a4891cdc-9635-4ad7-96b6-f62c39aa254a@huawei.com>
+In-Reply-To: <c8f62b1d-4ab5-4d85-ae15-b5fc9ec2e3bc@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PEPF0000017A.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c04::45) To BN9PR12MB5179.namprd12.prod.outlook.com
+X-ClientProxiedBy: PN5PR01CA0036.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:260::14) To BN9PR12MB5179.namprd12.prod.outlook.com
  (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -74,170 +75,154 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|PH7PR12MB6418:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8e81bdeb-11ad-44f6-d761-08deed939e0c
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|IA1PR12MB7615:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ebe1194-03c3-419a-8545-08deeda51aa9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|23010399003|921020|6133799003|56012099006|11063799006|5023799004|4143699003|22082099003|18002099003|10067099003;
+	BCL:0;ARA:13230040|1800799024|7416014|376014|366016|23010399003|921020|6133799003|11063799006|4143699003|56012099006|10067099003|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	IXMtQrZos57uwFvRYN/Cz2Aj/sstO6dAiuBRGdJnI8jHk0MOYJaZ4cP1rJZOgmjnuXUEHCnjvNcWbn7Z7tTVKqin+vn8m5cy9sj0PWyoJ4qsWgWEzec3jknFxL87USi48HATZD6/Z9liCBA1kbsYb71d2aBRKUP4DrVrZsh3XV+XUSBl6ghtwKq25Ce7prV/FQ2niYoWiLCoLs6ExQOlNt8/vys7RQ6dV1A1zhK98h2Ii3chzlPhdSg0GLo8nnbovaCvPBv648PBDst4NPx0FvNxsCoVzjcBjznmmlBNTnQCWD3TWkhHiDBEY9JOsYisapOVMtSa5fG+rEU/5EWmTf+fLRo0OUhuzCeFh7ejnnlpYbphGvVjCTtN6dsovtzunpKdhIhkaiwG3iuZrDyHySLVVpITxe9T+cLJi5iOa0kOZ6cgTsSzwqqZMDLDSkbfqKt3ARgBIF4nTvOQApoEIYTAvVPX+tKw5vnRU3PWPF6vzatPDY6K3vamn8uXO91t9+TPt1Gf3b1oDerGXjtOSKnQ3wn+HsPRsdxDVbl2kE45pPW75MHFf/V+s8fGx/8hyU0JCmyRJWzmwJpSA8IRPaDP2Gp+9rGk6G2Q7c6U/rkp7rCZKMg8rrcNfNPTRFg+NSzBcsxlF3y0o4DgrP0kdHFx2jB8MfjeY3LMpZySfMBHEAxHzN37/D36EytdhLDBc4AToSSSmAqmjshqUGM9Jg==
+	dLIA3jRiTIEVxlmX4ckpxlPCJjOlKfzkOwpdPMXjAPndUxOx+ycObjWk8pTE+eHPXsChNXYJK5cA2a2gwBG4eVdYc/w9/x0sqtX1ceBzVHP/Ee9pK+z8z1nEvZRGaF5Ir9WKeH5HsfpDdN2sRYX5V3gFoomlaENOhPmS6WBLenlLt8ojIy9uz//daB/UIZ0TmddkONudM4iZvREgWzirpawkIhPSm7Lx1xtIRmLbtdd5369pGXO1eemcMFK2ruFQQGDfOef1kgxYOhDcS+MiwW4tGmLl4kxjRm8BtRLbkiZsA0K9N0/S2h3QoAn4IPBRWAZpy4cAoAsIiOAWGMcvOKKoqY5u6H78AvfRTcfHT4uouBCNATkDeLSED4KwRlPBnuJf1hqUFVteOOyGX/isE4uY9FOrkHLIfIM6bTwm2Kf8iQhvwcxCtXk1zp+SwxiKdeBpCebMJTi3qg+bFGcFynTP4K0eCaMW73jREDXYtcizBJDSqgXL5H+Oo8DDiKXGmxi+VZIa1J6Uimtc8gY63il/D0dYVMSzQa3tAN280Y8kvyVoY+OCxr2TEeH/Rzd0JrEvZL3dN4Aamcy6nyhOaMRSvzSj9R1bOWslMaBvLM3SGzh99k2hRxEIEH9h7WAM/13Q6jXzGIenVdyViMzhkj8Gge2lWMf0xFrgOya5tttQcuBcreAKxc0Drwq78mtLWxFdMfCDEBm54B/jrk+jWg==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(23010399003)(921020)(6133799003)(56012099006)(11063799006)(5023799004)(4143699003)(22082099003)(18002099003)(10067099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(23010399003)(921020)(6133799003)(11063799006)(4143699003)(56012099006)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V0xtNEwvRnJ0d2RDd0pvZmZrck9LU2pvdTBMUDcySEFQZC9UZlVHa2pic3kz?=
- =?utf-8?B?eExYNVJBUFNyWEZQWVg4MTFtekdiOGxSMXcwdktPWS9NN0tJR1p1T1JPWFls?=
- =?utf-8?B?L0dOZTdXTTlrNVhjMWpWYzhCdllpdlE2djc2dmJ4d3J3RFN1dWorYVNhMWdM?=
- =?utf-8?B?L2x5bUJQeFJIWFcrSWgwYi9xbit1ZXE4ZERyQ2xubGI0Y3EydkJPZ25TNTJG?=
- =?utf-8?B?NU80QXZNNzlBeWpVZXBQbGFVZHhqK0RhWU84U3VCRmoxMkxVYkRIV25XVHM4?=
- =?utf-8?B?SCtGQko1TDhyL1pkc1l5cFVjbCtDTXM2aUFQQjlSQVR5VkNQQXVidFZMMFl5?=
- =?utf-8?B?SjRRSWhRbC94ZjgrUkxVS2NpRWg4bDlsY0FsQjJFK0p3TGlvSXRod2dNcElo?=
- =?utf-8?B?OE1IcVpNQUExb2VyeEJ2bFZVaVR2WWh5Ly9OUU1FRHZSc3Zhb1NTc1dFNVN1?=
- =?utf-8?B?cmtHcVNHWVduU1dvaUg5cTQ0aTlobm5XL2FVVGxUVlhQQm1RZ0d2NnJpbmsw?=
- =?utf-8?B?d0M4NEs3TFFBWUhHMG94K1VRWFg3MmJaKy91RnF2d1BoREdRZ2pTOExPa2NE?=
- =?utf-8?B?MUxYV0tDVnJXbnRlenF4V3krbG1scGZ4Y29aMmZ5QzRCeFJnY0J6K0VHYzly?=
- =?utf-8?B?N3E0ZHArcFI0Ym9CZkNrRVBTelVrUUF1UmY0V29IVVMrUHJvOVVHYzhvVi9a?=
- =?utf-8?B?VmNLbHJCenBYTEl5S1YyRUdNU2UvaWZhRCsxc0ZJdGNQR1FSd3lpMmZyMExZ?=
- =?utf-8?B?cm9ZUkloODlBZXcvcmhreGNXYXhUOVd2b0tlM21CTTZXdEhFZ3A0RHZTeklN?=
- =?utf-8?B?aVc1d3I5SjRxQW55Qml0T2xOcjdRaHFGRWNHVlJpaTdxcXM2MEtLK3I4VERU?=
- =?utf-8?B?V3NrcmhaUzhlaVFtNVhmclFvdEVVTGN2UWRTRGRnSDVUUHI0QUNwblN0YmE3?=
- =?utf-8?B?S2pBNEpyTTZ2Ylh5S21CdXhSWjNIMXJkWjVaKzZHaUIvbkcvMkpCdWFDZ2N3?=
- =?utf-8?B?QXQ4SWtlMXdMUUJCNENrb25QRnQySEd1K2grK3luOE9tNWRGTnZkRWRpV0lv?=
- =?utf-8?B?cTdKc0hWaUVWVTl0UnBGalZ0QlpPNTlEc21zY21IMzQvNkNmNlZSRTJxT29K?=
- =?utf-8?B?cFZtand0UHVrUm56ZndqbjJuNWV1b1NWTVdpVlk5NGdKTWFjL0xzV2xEYmoz?=
- =?utf-8?B?RmZidmlSOE03aEp0cFhyV0FMNnVMYnpVWG51SEI0SXhqMVh1c0x6SGo4WTRL?=
- =?utf-8?B?OUpBZmc1WVBRY3EvSGpYSkJ0VUlBaXZCZXdMM1R6MFVDREJ6U0hJQSs3WmtF?=
- =?utf-8?B?d2NubTRpVkwrSkEyRVQ1aEJHZlRXdDdMWEdzV012RWxjdXI1SzNXb0ZxaXdQ?=
- =?utf-8?B?ajVLRWJtMTlrR2JIbkhQWHBWQTJkRlNZb01vdUlKN2VaLzZ4RXNTQm9rRTNv?=
- =?utf-8?B?dGdNQXV2T0hrNjIzMWJmRjdYbk5NSVh3a3FMUUJ0RzZTZXVqWVNmQWZ0Tklq?=
- =?utf-8?B?aGo2UTN5RisveXFSWk9pL2svYXZwam5sNWF0dkhkanJiQjlodmNDVk9Xai9P?=
- =?utf-8?B?WVJxTzBUc3NVMHBPb1ZIOHQ1MFVvc3hRSUZyRmk3b2NlZW5MY012SThWdER2?=
- =?utf-8?B?NE5FQUxUZjVvR0pCdjJUYWZESVZhME9WMUNhUmVONU1vUXNOOXB5UHJudFJX?=
- =?utf-8?B?WVdxdTM0S1FmSmRaS28vckV1SHF2QVYvWUg5cDh6SFdJZkR3S3ErL3BYUmEr?=
- =?utf-8?B?bXNCZnh4dEhCRERzNEhHc2RyeU5ESUZ0YUdmREUzY0tFbmcxa3F2WDFTRHdS?=
- =?utf-8?B?MWs5a2x4WXZwa0RmQ3VPcy9obG5rajA0TldzTjRRdVc0eENnZDd6cVpVMFpR?=
- =?utf-8?B?bURsT1hYenFiUDVuNXJXYmkwYVdFMjF2TTRRSjQ4Y0xtR2o3U3pzMi92OWZS?=
- =?utf-8?B?Ymo4c0JJb2JQMi9URlZjMHhCdGNLSnlwSWp6Z0tVS3FpcFFOVGpxRG5sOE54?=
- =?utf-8?B?MDEzaTRQSi9tYjV1a1JqWElHNzRZMi80TkxOUm9MU1U1UFNQbEpwQW05Q0lF?=
- =?utf-8?B?NDJaK0JOQWxGQitNU3FRNXV6YkM3T3VtcEU5SDQ2d3BuYmJYZk43UjllM2Vy?=
- =?utf-8?B?a2h2L3AwTEkweWx5ZmVyMGRHYjA4b01UcUFNd3JUZjYra2VZdk1mSElHM0hy?=
- =?utf-8?B?L0VIM2FZMU9QQWxGRlJ0UjUwVzhwYlVDb0xDY2JpRmRROCtOUzRPWTNlRHRF?=
- =?utf-8?B?Rml3YjJWVWRWdFJqNUo5VXN2WUd2cnNKbDZjKzN3WSs3RWMxMVF6bXNmczVI?=
- =?utf-8?B?U3cyUnpxRWZjZXAwaGYwdlVIT3RqOEhGT2pCOE9WS2x0OU0zc2t5UT09?=
+	=?utf-8?B?Zm1Yd01lSkVHWGlkK0xVV2IxSTlQNmFzekdkY3R4QTBQU01vUVhsYjAvL1RM?=
+ =?utf-8?B?N2pYNWpXeEFLSEY5M3ZTSzJnZU5IbzhaM1U3cXA4Z1ZWQ1BBdkI3NThsUUNu?=
+ =?utf-8?B?dzhSeHloMldCVWk0UG11RTEzbTZJZUoyTzFMU09LWUR2U0tyV08vUlBHNnZy?=
+ =?utf-8?B?SHc5bVZadzBzN1E4Nlh1cWNwVlRkOXluNDFKcXIxZi9MN0ZuNXFlRDdlVTgw?=
+ =?utf-8?B?OGl3THpDbVhtNGM0MEhtYk9QVzJxWGY4OCtlOXN6OWdNbFBuR2dwZE9wTEJp?=
+ =?utf-8?B?cmowZGZ2Tmk1QU5GQW5KRG95VU40SUw1Z2RDbGFIVFhhNmgzd2tuSDltaWpz?=
+ =?utf-8?B?SmxmNCtpaFFrelc4dCtVZDRVZWF6cVk5SEo3OGp3MXRLUTBjdVNDdit0ZE9i?=
+ =?utf-8?B?UmgzYllLUmQ4NzhFVlJ4ZkhVeGFNdWx0T3ZEdHN2SGEySnhrRVUraGV5MjAr?=
+ =?utf-8?B?d3lXNkhlK1BKbGxHSkgxV0hoVWdVeWJDTUo3ai9Ia042dnJpUEZrU1d1R0ky?=
+ =?utf-8?B?L1NMUGhpYW5hSE1LNTRDK3BXSURvdmUwZkpZMURsSTY5S0d2dVJjaUpaNzFv?=
+ =?utf-8?B?YkZPZVdQVHJlTVg0QnQxdldHd1dVSnJSNUIwK3lYdFFsVTZVaTk5WHlCem83?=
+ =?utf-8?B?QjljNVRoRVc2aWFtd3lwWVhSUmRsM1J5TVllZmZXd1ZUaHpRM0tiQytacVF0?=
+ =?utf-8?B?UnNPekpnbDBRSWo2eENGSEM5dEJ4Vjk2amVqOEMyYUVKN1pXa3lTZHZyWk1t?=
+ =?utf-8?B?Z2svNnM1SktQajFWNVdlWjBzYlZ5Q0xNVEpSc1c5aGZYNEdidmtLbTBRWG9S?=
+ =?utf-8?B?aGNGYUtsbXFyUk10WmdrUUl3eDRvY24ybHdLbnd1dDkzYy9aMDRvTm9mdTlF?=
+ =?utf-8?B?NEFZUFZIb2ZhTkQ0VGVJeW41N3R4SzNKY0ZZQzJ2RDZ0aWNKTWJjclFWaVow?=
+ =?utf-8?B?ejBmR05mN2ZEdktzUzgvQzNZWFkrVUFTMndIb1lnNlFJUE9wYWNyYnpvdWxa?=
+ =?utf-8?B?UkY4L2tMam5SdGlSaTN6NDNmYWJhK0orNTc1NUtxY3dwTkFpNGlub2EwbjQ5?=
+ =?utf-8?B?ZmVqd3czc1gxdkZhWjdJZ3dtbVZnV296TDJMK2l6c1VUZWMvc2dsRk13RmpR?=
+ =?utf-8?B?TTJ3M3BoZHhBR0hzREgxNXlRZnlLdlJWUG1HTENaWVJFdUhZd1AvVTdrOVlF?=
+ =?utf-8?B?b3JpVEFjQkZFbS9ISFpDVU90SW40eFZRU20zcE4yeVBsZ2N2UFBRSnY1OUNS?=
+ =?utf-8?B?V0hWNG0zcGpIeVRRdUFkNkxUb3BVWUZTUWJWZDZDenMzNE00VUlqTWxrNlNB?=
+ =?utf-8?B?MzF1cTlENE5JSFJOUTZDOG55bEJyZkJOeFgxdll6SUZZVDdaUUQ1OUU5cisr?=
+ =?utf-8?B?U2lja1FEUVV0U2x5b2srRnA0SC9OZDFIeG82SlVvalUxbVlWaWtTcjcwYlBY?=
+ =?utf-8?B?K3Q0bmdXMElmS3pCMGsxYjJsOFF1M3lYQ3lwRSt5QzA1aTNZaTlMQytDNmwv?=
+ =?utf-8?B?S1QwY2h3RGVSUHUzcUdEazhmcmg3ay84czN0dmd6SHBrRDFQMXNxMXNDamgr?=
+ =?utf-8?B?RzQ5akJoU2s0NG01eThpVVB4VDJSQXFpTHBXMkRtNnltbXZZUjAxWTZUYlE0?=
+ =?utf-8?B?TGtzSXFlS2V1Y0JBNW1SNzBpbGhGWkptWTkwZlhPYkZXRE10MWF3Y2ZOVkFt?=
+ =?utf-8?B?MjlNUWRmdk9MVmFkSnh1d2g3M3dJZm1HRUVhV0J5K2haSFRxbWNvWkhncDhn?=
+ =?utf-8?B?MmZ5UXRBRm9yV3dwUmZkSGVPV0dzL0hDcCtCOEZVblpqeXFFdmZJUFpTTHZW?=
+ =?utf-8?B?MmsyQVZqQXJORTdrNnhoTE4wZFpWMVhzNEY5ZER0UytwUWVlS09MQ2x5YVlr?=
+ =?utf-8?B?Y1A1QlRjS0NHY2FrUGFHb3RUMmlUZDhjbFZOSFJhb3BTQTNDQW5aWmx4UTFo?=
+ =?utf-8?B?OVRyWW9wdEJEYUVwZ081c245Ri9ib1FSeENzbEY2YzB3Ry81ditYWnVBMld6?=
+ =?utf-8?B?WmdaYU1seHlzZW9iL0dCMkVYVVJoaWppTmF1YmJBYUVsMWFFek14ZUd5RHN0?=
+ =?utf-8?B?dVVSUTJRWVYvWHk1MDloUlpsZ2x5bVpnc0pYcyt2aVVGdTIxZ2E5OTNBZFdk?=
+ =?utf-8?B?YTNmem1KcTBqTXF6b1c0QnVPbnRSQlNOc1FTOHhteFROL2o3UmMwN01OTjhF?=
+ =?utf-8?B?SGxsa2FjSUdDdWwwMXZlYzlNSHk3VHlkNHpCVEF6WVdvL29ZVzgzWklxKzRL?=
+ =?utf-8?B?N1RiUnpkbU1ESkt0dlFpQ0lsUXQ5ZGlXSFpxcTZrcm0vcjJPL3g3enIxMXRF?=
+ =?utf-8?B?b0FncFl0VlVxeXJxOUg2SUxUL1p6Z1ozRjBqQzFWZERIQkFNYlJZUT09?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e81bdeb-11ad-44f6-d761-08deed939e0c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ebe1194-03c3-419a-8545-08deeda51aa9
 X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2026 17:05:40.3961
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2026 19:10:50.9138
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HKftv7p3Hd5FNhoaNxN5FtbcvcnoxRVoRguuYuNO8gECHpjkbIvpIfayS8c0KJO69Q1vJr/lZpYnYxSze557ng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6418
+X-MS-Exchange-CrossTenant-UserPrincipalName: sTSmqV5uyNtId1P/oYvWwajs5OzCmHoBUdClndqcS7M2oDMTjBujq0aWcrSD/RlOpcGwmqJH5yF0XtsAjHV4RA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7615
 
 
-On 28/07/26 14:11, zhenglifeng (A) wrote:
+On 27/07/26 18:45, Christian Loehle wrote:
 > External email: Use caution opening links or attachments
 >
 >
-> On 7/25/2026 5:59 AM, Sumit Gupta wrote:
->> Without online()/offline() callbacks, the cpufreq core fully tears
->> down a policy during exit() when its last online CPU is offlined, and
->> rebuilds it during init() when it comes back.
+> On 7/24/26 22:59, Sumit Gupta wrote:
+>> Values written to OSPM-set CPPC registers (via sysfs or the autonomous
+>> boot parameter) can be lost in two ways:
 >>
->> Add lightweight online()/offline() callbacks so the core instead keeps
->> the policy live and reuses the driver's cpu_data across CPU hotplug.
->> This avoids re-reading the CPPC capabilities on every offline/online,
->> making CPU hotplug faster.
+>>    - Across CPU hotplug: the platform may reset a CPU's registers while it
+>>      is offline.
+>>    - On driver unload: the value the driver wrote is left in the register
+>>      instead of returning to its pre-driver state.
 >>
->>  From online(), re-enable CPPC, as the platform may have disabled it
->> while the CPU was offline. Since the policy is no longer rebuilt via
->> init(), online() also reprograms the CPPC performance controls
->> (desired/min/max).
+>> Add a small table-driven mechanism that handles both:
 >>
+>>    - On init(), capture each register's firmware value before the
+>>      driver programs anything.
+>>    - On offline(), read back each register's current value (whatever was
+>>      last set via sysfs or the boot parameter) so it can be reapplied, then
+>>      restore the firmware value.
+>>    - On online(), reapply the value captured at offline() after the
+>>      performance request is re-established.
+>>
+>> Keep Autonomous Selection (auto_sel) last in the table so that, on
+>> online(), its saved value is reapplied after the other registers that
+>> shape its behaviour.
+>>
+>> Cover the Autonomous Selection (auto_sel), Energy Performance Preference
+>> (EPP) and Autonomous Activity Window (auto_act_window) registers.
+>>
+>> Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+>> Link: https://lore.kernel.org/all/86780f97-29ee-4a72-b311-38c89434b707@arm.com/
 >> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 >> ---
->>   drivers/cpufreq/cppc_cpufreq.c | 44 ++++++++++++++++++++++++++++++++++
->>   1 file changed, 44 insertions(+)
+>>   drivers/cpufreq/cppc_cpufreq.c | 157 +++++++++++++++++++++++++++++++++
+>>   1 file changed, 157 insertions(+)
 >>
 >> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
->> index f6cea0c54dd9..6dc59f99d880 100644
+>> index 34cdba00e61a..8a13ec49eb9d 100644
 >> --- a/drivers/cpufreq/cppc_cpufreq.c
 >> +++ b/drivers/cpufreq/cppc_cpufreq.c
->> @@ -722,6 +722,48 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->>        return ret;
->>   }
+>> @@ -28,6 +28,150 @@
+>>
+>>   static struct cpufreq_driver cppc_cpufreq_driver;
 >>
 >> +/*
->> + * With offline() defined, the cpufreq core keeps the policy alive when
->> + * a CPU is hotplugged out.
->> + */
->> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
->> +{
->> +     return 0;
->> +}
-> I am not sure if doing nothing here will cause issues. In my view, to be safe,
-> we should perform the actions found in cppc_cpufreq_cpu_exit() here, except
-> cppc_cpufreq_put_cpu_data().
+>> + * OSPM-set CPPC registers tracked for save/restore. A value set via sysfs or
+>> + * the autonomous boot parameter is reapplied from online() across CPU
+>> + * hotplug, and the firmware value is restored from offline().
+>> + *
+>> + * Autonomous Selection (auto_sel) is kept last so its saved value is
+>> + * reapplied after the other registers that shape its behaviour.
+> While that would make sense, unfortunately:
+> "8.4.6.1.6 Autonomous Activity Window Register
+> Writes to this register only have meaning when Autonomous Selection is enabled."
+> I think restoring an inappropriate EPP/AUTO_ACT_WINDOW temporarily is okay though.
+> AFAICS it has to be:
+> 1. enable CPPC
+> 2. restore a valid DESIRED/MIN/MAX
+> 3. restore AUTO_SEL_ENABLE
+> 4. if autonomous mode is enabled, restore EPP and AUTO_ACT_WINDOW
 
-Agreed regarding the performance request. Since exit() previously set
-desired_perf to lowest_perf during hotplug, I will do the same in
-offline().
-I will keep FIE registered across the lightweight tear down, as clearing
-it on every hotplug would add tear down cost with no benefit. It does
-need the feedback counter snapshots refreshed, as init() no longer runs,
-so I will do that for the online CPUs from online().
+Right, the ordering depends on the auto_sel value being restored, so a
+single fixed table order is insufficient.
+When restoring 1, auto_sel is written before EPP/window.
+When restoring 0, EPP/window are written before disabling auto_sel,
+allowing them to take effect if autonomous selection is still enabled.
+online() already enables CPPC and restores valid desired/min/max values
+before this sequence.
+
+If autonomous selection is already disabled, the EPP/window writes may
+have no effect. Temporarily enabling it to force them through would
+introduce an observable mode change and would not work where auto_sel
+is not writable.
 
 Thanks,
 Sumit
 
 
->
->> +
->> +/*
->> + * Re-enable CPPC when the policy's CPU comes back online, since the platform
->> + * may have disabled it while the CPU was offline.
 >> + */
->> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
->> +{
->> +     struct cppc_cpudata *cpu_data = policy->driver_data;
->> +     unsigned int cpu = policy->cpu;
->> +     int ret;
->> +
->> +     ret = cppc_set_enable(cpu, true);
->> +     if (ret && ret != -EOPNOTSUPP)
->> +             pr_warn("Failed to re-enable CPPC for CPU%d (%d)\n", cpu, ret);
->> +
->> +     /*
->> +      * The platform may reset the controls while the CPU is offline, so
->> +      * recompute min/max, clamp desired_perf into range, and reprogram them.
->> +      */
->> +     cppc_cpufreq_update_perf_limits(cpu_data, policy);
->> +
->> +     cpu_data->perf_ctrls.desired_perf =
->> +             clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
->> +                     cpu_data->perf_ctrls.min_perf,
->> +                     cpu_data->perf_ctrls.max_perf);
->> +
->> +     ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
->> +     if (ret)
->> +             pr_debug("Failed to reapply perf request on CPU%d (%d)\n",
->> +                      cpu, ret);
->> +
->> +     return 0;
->> +}
->> +
->>   static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
->>   {
->>        struct cppc_cpudata *cpu_data = policy->driver_data;
->> @@ -1034,6 +1076,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->>        .fast_switch = cppc_cpufreq_fast_switch,
->>        .init = cppc_cpufreq_cpu_init,
->>        .exit = cppc_cpufreq_cpu_exit,
->> +     .online = cppc_cpufreq_cpu_online,
->> +     .offline = cppc_cpufreq_cpu_offline,
->>        .set_boost = cppc_cpufreq_set_boost,
->>        .attr = cppc_cpufreq_attr,
->>        .name = "cppc_cpufreq",
+>> +enum cppc_saved_reg_id {
+>> +     CPPC_SAVED_EPP,
+>> +     CPPC_SAVED_AUTO_ACT_WINDOW,
+>> +     CPPC_SAVED_AUTO_SEL,
+>> +     CPPC_NR_SAVED_REGS,
+>> +};
+>> [snip]
