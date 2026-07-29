@@ -1,387 +1,265 @@
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2298F41D119
-	for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 13:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662F11A2C0B
+	for <acpica-devel@lists.linux.dev>; Wed, 29 Jul 2026 01:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785245109; cv=none; b=o1jJ7VQmm0lhGMZhmBlXYH54sstZH7EnFSnhnZaJP7+T3XgBEpodJUPjCS93z3CbtMkP6DmbjJGvonqr9nWnq1w4/TFjdV+cccPs1pNtsQaDyqXcOFhTeLAe8Ca/C3kE84x5LcBj03TZV2RZ4xZMUwB3YAywqNE4378E6j7CgFs=
+	t=1785287304; cv=none; b=YVymSwFh+EEjzTuneaGMLOmegm709AGW2rKGrnIgiXdr40s//ld4tM0IkGVJvLZjITjRzJTXSjoTzXRC0FtXYIKd3UhHoFXke8k1JLdokRD4V1LEiiUreTWzL6y7XYEb3uIL5k2icWbuzDAnW9fHzSi0826m5hjmG9eIeBXcYks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785245109; c=relaxed/simple;
-	bh=AxnBcZ/fTAYNRGKDrrevsDEu3/4MslJ2Oz95DNs+rPk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SpLT7Wft7J7vxgNtXAXWAWxLay7jqdAjF7hzG6hKHREoY7xQuJBw+GSz+OBEF52KFUgh11+BAS7ujABuBuQ6aIWMD1fI0NDHp+1C+nthoOGbj0bGIwiegz8DLhBaaMhhLqok7jBwP6spoXHeQq8tC6JmkRg316M6BqSmfEFNyK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=WlfJR5hs; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=kAf73H74; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="WlfJR5hs";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="kAf73H74"
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66SDOemO2411714
-	for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 13:25:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	R5PEfpB9NVCbVrnFwLgb+8nUp0J1gUezJGpi4PwLSEA=; b=WlfJR5hstOdy1nAF
-	Ae0zMOh5O5D+JhJ7RqOdRHpSS8GdVbyvNeIAhzQ4+s67QZnwRbBv8rtb00PguLko
-	kpOl43rJEkAqbN8dXzXEMLNtA8O6HvzTRn2OpXgxHJ889cGAXKmnYvdXKJ0qb6vP
-	xEjKQiOd1Tz2QTb+xwTC5hgPXOg3PrWTsI5PxYkX9pXyRIQvjJ0PBdI2YNoJ0FkX
-	aJBStFyHug9lKecZTzVrDGRGb+N1qxTeug246HJyD88/gF78iXE5Fk0bv/myDbQ3
-	XSRYJBHalPvB5XJM9jYH9EaDb9n2j6BhpkaVtn0G5K7WyZ11IRVDTLIcXTkRwTF2
-	rqNAJA==
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4fppttsts1-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 13:25:07 +0000 (GMT)
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-38e7b87ce77so9237044a91.0
-        for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 06:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1785245107; x=1785849907; darn=lists.linux.dev;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=R5PEfpB9NVCbVrnFwLgb+8nUp0J1gUezJGpi4PwLSEA=;
-        b=kAf73H74IFFyk3hoI6EL4gw1kqXHjHUx0KWK9V6GrTvCdi+ru1CVZ1nG9G1EGHay2x
-         GG4/K4M89KYGbHsEd497Vm+SA9S4NQfR9pHmzj2WQ3BBeqWuPeytUA7fu0WTmXooRP+V
-         jb0Qt67W2nDEkCc69r3Hzin9tNkQE8JmvbTEpMbA10zueocO3dSraLr3k2BNy0ov4myP
-         GiS6rUz3ZxwetH+6anhpJWCbyCV5D7sC3nEIq24xXrJ5054ctFQ27D5Az2mkPm76IP9l
-         9/Fp1Y86Wn/BRi+QhrBXUEef4rgxbNjIpwENYospIi4yipdPttVs2g2x5VAJqM1N9qxZ
-         Q32Q==
+	s=arc-20240116; t=1785287304; c=relaxed/simple;
+	bh=RUzXBwgXiM/rvvP3cQSqsj764w/uV9u7Tk+ZCUtenj0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=QAGO9a62odxYN5uATmr+bugmzk0SeHh2EcYDfTcEemSIzrokUqeGp8YuGt7pwiGsN1DeWRZcOC8Mztfw+SD+Z9OCxCMhbp7qXfoIAmbFOESqIVou3Z61v3Vi3DurM3htvy7cMKT7E2oFmzaYWRzJCrR6Ow54o7TaibkPYWGrxwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-49ab6a82cd5so497669b6e.2
+        for <acpica-devel@lists.linux.dev>; Tue, 28 Jul 2026 18:08:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785245107; x=1785849907;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=R5PEfpB9NVCbVrnFwLgb+8nUp0J1gUezJGpi4PwLSEA=;
-        b=h2ViCXyRVdQ8x86QVZkhLJooTXAyqm+NWoZox8bVN8KOTJWOlcfKUuZCMXnZWNFZod
-         rx49Lr4s5h2OtNJ7bKpt2JctYphZhP/PsbQU9CIHryKMi7wnX7573QBkMUyTB4fmg5Jz
-         aLx2wfc8GYdqVzH8bJaTUll3YNkJSuDQ0+mu3tIgE9iNsw8ysXamqXu8dVeidqdM9GSs
-         yJMavx8eMmPGnm7ZAgd3S5SCXJ80k4Op7RM4Wht7Z1/VSlx8rqmvf76G9ihOEWdXC2e6
-         1nH+lxrXz6ovKh8iFpwRlsHAtBO0cE50tTey17LRB4ftbEzjv82K38IxvB9E05fdbwcT
-         6jQg==
-X-Forwarded-Encrypted: i=1; AHgh+RpW6Kii674ODHPZBpopnpiNIpboz5z5yYCWncZPU8CEiNEj24qkIcn+BEYUIbV+hsXmCNhXLz1K5v1cOGE=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxICcrEvBRJcsCFKj4XKQZ35vNCIdVSPmDw39fVwTEyN3Gl9Izy
-	AkwmDajdFSBzyxbhCCzjwxCea08URtT6+Az8xEGpYDeV/KGI6g/Ft1dqftTehMiSwZpGkj1Lubc
-	9h+DgviVHwcs0I3aeiJ0HC0crUSU1vNdpnj9Iv+IdFzDEGOScJWfymbeyPuh79C3BtAw=
-X-Gm-Gg: AR+sD12uUdaI+yvWypY051wm811B4WW00B6NHKfjoulbayj88FOmeEPwLddSJlukpZw
-	Vz3xB/Z73X5ClhvRepEcfc9j/S6kFXuzOAriloM9zJh7bVMhvBwK3agrRCy0zYAaQceW+nqwMly
-	1e7eIdK32rCOOGuFOE+bHMgFD8CnqXdX2lRcHpcXLAjbi5hqnKpLdlPXiO5foAgk7wCJrwKmf+Z
-	xcyi7exHbQ5ceFOYv53PAfCwjApVsBpvvveeFJ5TQUi1ynV6+E5z7WuoU8owyg17E/jDTpIM7yF
-	CJvxOY4wZAlCbt21wgQXKbfn1x0EC+d1M0kluo5o3/4r0B2/OxXaK5f0KXHlyug3ZnW8ILpNRlh
-	IdcTGfVYe1jENG0i0/Rw7DjSUpem9Qg==
-X-Received: by 2002:a17:90b:2251:b0:381:792d:f993 with SMTP id 98e67ed59e1d1-38f6a43e810mr2538814a91.17.1785245106499;
-        Tue, 28 Jul 2026 06:25:06 -0700 (PDT)
-X-Received: by 2002:a17:90b:2251:b0:381:792d:f993 with SMTP id 98e67ed59e1d1-38f6a43e810mr2538769a91.17.1785245105985;
-        Tue, 28 Jul 2026 06:25:05 -0700 (PDT)
-Received: from [10.239.133.197] ([114.94.8.21])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-38f642baeeesm1353818a91.12.2026.07.28.06.24.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2026 06:25:05 -0700 (PDT)
-Message-ID: <57a80bff-948c-449d-ad17-cb3fba89ed5f@oss.qualcomm.com>
-Date: Tue, 28 Jul 2026 21:24:57 +0800
+        d=1e100.net; s=20251104; t=1785287301; x=1785892101;
+        h=content-type:to:from:subject:message-id:in-reply-to:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=dqSMTTM6vo0zcYNgTqtEZRu9JRO5HukENklKUwy2LkI=;
+        b=fXKyoKg7AVRDeWMVNUKN/0AZ6ZzVFfV+3ikpy1F3l3o60FozFDZOHYr5uT4LhZWYHb
+         Q9WFLiMZpp+ytB1ZHcJ6OigMevU+bh12dOwGW9kfWlKLfeQxhsMtgCMXIBZqLF8CUNzG
+         x/5Z1jThG9svz9qBRw44oIG3Ur18D2/dWFxJuifZptuZNpVYuHcqKWKErfdH6WmviYHo
+         sxSjv+bRMNJpUb5TfRckjPL5HcZGpwUH0KTjpHi1tbtm1ZfJAsy9gEUdsSiXZETqrXpf
+         fQv/0Du8odjqMxCW8JumTGFnlwD1hkI2m3wQMY85PCdoPb6AT9dKOB0nkfaWjP92Ez/e
+         vGIw==
+X-Gm-Message-State: AOJu0YyPPS7L6YvCgM/SAwjEyEZ2d7mPGhITlK6x8RMSstZQ7AEY3YfR
+	R+NfUfDH1GM9SQlAOOnpcBmxMeC93OSFEoBARz8b+XH52kxTie6VA3YE03UdkByuEx/ngUNgqF/
+	dkqMa/t05kTQFebzlI0hMVokkTbGhXzHjyEiUeboNsNj1CKtLjhHFJXSBG3R4IA==
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/2] ACPI: CPPC: Add ospm_nominal_perf support
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, pierre.gondois@arm.com,
-        christian.loehle@arm.com, ionela.voinescu@arm.com,
-        zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
-        saket.dumbre@intel.co, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
-        ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com,
-        bbasu@nvidia.com, zhongqiu.han@oss.qualcomm.com
-References: <20260717215330.2215058-1-sumitg@nvidia.com>
- <20260717215330.2215058-2-sumitg@nvidia.com>
-Content-Language: en-US
-From: Zhongqiu Han <zhongqiu.han@oss.qualcomm.com>
-In-Reply-To: <20260717215330.2215058-2-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzI4MDExOSBTYWx0ZWRfX1FVjrcHC6xCM
- yOyjelvne9jk1cQFOAyZmtHfHCMrJPdpC27XdjgjD/yucoo0BGD7m5o3U1JWnjHIUO494IR/IuL
- nfo9amArPMnUmjiibJh3YwOLeH8gaE8=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzI4MDExOSBTYWx0ZWRfXwS5ylj3/pssa
- Yk+GntgNeUTYM5a+wZ3TubVy1uvaumOOHNi+NbsAiE8wVXmFzt9J+0gqeOsvEgN9756A/orZa8A
- ffe4OmqNl7VD3uBZh2OkZm8RALp/FUZjYkTjVM+T3e/lo7A5wkCjM/xIrPaD8c1aXzro2Ps5JPb
- b04acrKGEeBWwYJLb3m8Tqq+wBSMqzlk0hAs/73kKNPO8JNldBGVr6CcJQXfwx1kaVxZT2fa7Mu
- tjWVv6WXkAgFLk4tPbdOC6UtPbTC0doEcZ6uKuV6vQq4wrpKeNoH133wHoNxZXaqsXA/0k8gMTS
- Q973NRMHkhSGKd+X8EvAzph3RZ4JL4KIE3RpFiUwIlwVFDejSwQL3OVv8kDjSQDJ1wgWklPFbHa
- tgl4sLvkZL9AxWndKBoioVqTY2T+uUpuNysWhX8UkXU3HONRoAIlgXNAdT0KkKiiIjZ4l5yZaqF
- Q20IlXSXaHwwvm6o3wQ==
-X-Authority-Analysis: v=2.4 cv=aa1RWxot c=1 sm=1 tr=0 ts=6a68adb3 cx=c_pps
- a=0uOsjrqzRL749jD1oC5vDA==:117 a=Uz3yg00KUFJ2y2WijEJ4bw==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=DJpcGTmdVt4CTyJn9g5Z:22
- a=Ikd4Dj_1AAAA:8 a=VwQbUJbxAAAA:8 a=iQLh-lR14_TgILYPUVUA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=mQ_c8vxmzFEMiUWkPHU9:22
-X-Proofpoint-GUID: C7P1Pxmx3AscbWSs0xJ75WMvPt2TDBqa
-X-Proofpoint-ORIG-GUID: C7P1Pxmx3AscbWSs0xJ75WMvPt2TDBqa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-28_03,2026-07-28_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011 adultscore=0
- suspectscore=0 impostorscore=0 malwarescore=0 phishscore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607280119
+X-Received: by 2002:a05:6808:1589:b0:485:48da:133d with SMTP id
+ 5614622812f47-4ad5b989d25mr2652851b6e.10.1785287301288; Tue, 28 Jul 2026
+ 18:08:21 -0700 (PDT)
+Date: Tue, 28 Jul 2026 18:08:21 -0700
+In-Reply-To: <6a682bf7.70955b6c.323240.0052.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a695285.e3659fcc.2a40b8.002c.GAE@google.com>
+Subject: Re: [syzbot] [acpica?] KASAN: use-after-free Read in acpi_ns_get_attached_object
+From: syzbot <syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com>
+To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
+	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Sumit,
+syzbot has found a reproducer for the following issue on:
 
-On 7/18/2026 5:53 AM, Sumit Gupta wrote:
-> Expose the OSPM Nominal Performance register (ACPI 6.6, Section
-> 8.4.6.1.2.6), which conveys the desired nominal performance level
-> at which the platform may run. Unlike the existing read-only
-> Nominal Performance register, it is writable and lets OSPM
-> request a lower nominal level than the platform-reported nominal.
-> The platform classifies performance above this level as boosted
-> and below as throttled for its power/thermal decisions.
-> 
-> It is exposed as a per-policy cpufreq sysfs attribute in kHz, to
-> match the cpufreq sysfs unit convention:
-> 
->    /sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
-> 
-> The attribute is documented in
-> Documentation/ABI/testing/sysfs-devices-system-cpu.
-> 
-> Writes are converted to perf via cppc_khz_to_perf(), validated
-> against [Lowest Performance, Nominal Performance], and applied to
-> the policy->cpu. The register is assumed shared across the
-> policy->cpus.
-> 
-> On read, the current register value is returned, or
-> "<unsupported>" if the platform does not implement the register.
-> 
-> Also add the register to the OSPM-set register save/restore
-> table, so its value survives CPU hotplug and reverts to the
-> firmware value on driver unload, like the other registers in
-> the table.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->   .../ABI/testing/sysfs-devices-system-cpu      | 26 ++++++++++
->   drivers/acpi/cppc_acpi.c                      | 32 +++++++++++++
->   drivers/cpufreq/cppc_cpufreq.c                | 47 +++++++++++++++++++
->   include/acpi/cppc_acpi.h                      | 10 ++++
->   4 files changed, 115 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> index 82d10d556cc8..a8d592c08823 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> @@ -346,6 +346,32 @@ Description:	Performance Limited
->   
->   		This file is only present if the cppc-cpufreq driver is in use.
->   
-> +What:		/sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
-> +Date:		May 2026
-> +Contact:	linux-pm@vger.kernel.org
-> +Description:	OSPM Nominal Performance (kHz)
-> +
-> +		OSPM uses this attribute to request a nominal performance
-> +		level lower than the platform-reported nominal. The
-> +		platform treats performance above this level as boost
-> +		and below as throttle for power and thermal decisions.
-> +
-> +		Read returns the current value in kHz, or "<unsupported>"
-> +		if the platform does not implement the register. Write a
-> +		kHz value in the range [lowest_freq, nominal_freq].
-> +
-> +		Note that tasks may be migrated from one CPU to another
-> +		by the scheduler's load-balancing algorithm, and if
-> +		different OSPM Nominal Performance values are set for
-> +		those CPUs (through different cpufreq policies), that may
-> +		lead to undesirable outcomes. To avoid such issues it is
-> +		better to set the same value across all policies, or to
-> +		pin every task potentially sensitive to it to a specific
-> +		CPU.
-> +
-> +		This file is only present if the cppc-cpufreq driver is
-> +		in use.
-> +
->   What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
->   Date:		August 2008
->   KernelVersion:	2.6.27
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index a7fec6c93178..681d4fd40c11 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1685,6 +1685,38 @@ int cppc_set_epp(int cpu, u64 epp_val)
->   }
->   EXPORT_SYMBOL_GPL(cppc_set_epp);
->   
-> +/**
-> + * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
-> + * @cpu: CPU on which to write register.
-> + * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
-> + *
-> + * OSPM Nominal Performance conveys the desired nominal performance level
-> + * at which the platform may run. Per ACPI 6.6, s8.4.6.1.2.6, the value
-> + * must lie within [Lowest Performance, Nominal Performance] and may be
-> + * set independently of Minimum, Maximum and Desired performance. The
-> + * caller is responsible for validating the range.
-> + *
-> + * Return: 0 on success or negative error code.
-> + */
-> +int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-> +{
-> +	return cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
-> +
-> +/**
-> + * cppc_get_ospm_nominal_perf() - Read OSPM Nominal Performance register.
-> + * @cpu: CPU from which to read register.
-> + * @ospm_nominal_perf: Pointer to store the OSPM Nominal Performance value.
-> + *
-> + * Return: 0 on success or negative error code.
-> + */
-> +int cppc_get_ospm_nominal_perf(int cpu, u64 *ospm_nominal_perf)
-> +{
-> +	return cppc_get_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_get_ospm_nominal_perf);
-> +
->   /**
->    * cppc_get_auto_act_window() - Read autonomous activity window register.
->    * @cpu: CPU from which to read register.
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 9c88512d635c..eb6746810fa6 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -37,6 +37,7 @@ enum cppc_saved_reg_id {
->   	CPPC_SAVED_AUTO_SEL,
->   	CPPC_SAVED_EPP,
->   	CPPC_SAVED_AUTO_ACT_WINDOW,
-> +	CPPC_SAVED_OSPM_NOMINAL_PERF,
->   	CPPC_NR_SAVED_REGS,
->   };
->   
-> @@ -55,6 +56,9 @@ static const struct cppc_saved_reg cppc_saved_regs[CPPC_NR_SAVED_REGS] = {
->   	[CPPC_SAVED_AUTO_ACT_WINDOW] = {
->   		cppc_get_auto_act_window, cppc_set_auto_act_window,
->   	},
-> +	[CPPC_SAVED_OSPM_NOMINAL_PERF] = {
-> +		cppc_get_ospm_nominal_perf, cppc_set_ospm_nominal_perf,
-> +	},
->   };
->   
->   /*
-> @@ -1166,11 +1170,53 @@ static int cppc_get_perf_limited_filtered(int cpu, u64 *perf_limited)
->   CPPC_CPUFREQ_ATTR_RW_U64(perf_limited, cppc_get_perf_limited_filtered,
->   			 cppc_set_perf_limited)
->   
-> +static ssize_t show_ospm_nominal_freq(struct cpufreq_policy *policy, char *buf)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	u64 perf;
-> +	int ret;
-> +
-> +	ret = cppc_get_ospm_nominal_perf(policy->cpu, &perf);
-> +	if (ret == -EOPNOTSUPP)
-> +		return sysfs_emit(buf, "<unsupported>\n");
-> +	if (ret)
-> +		return ret;
-> +
-> +	return sysfs_emit(buf, "%u\n",
-> +			  cppc_perf_to_khz(&cpu_data->perf_caps, perf));
+HEAD commit:    3b5f4b83c4ab Merge tag 'for-7.2-rc5-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14dfffde580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=145fa60d73086782
+dashboard link: https://syzkaller.appspot.com/bug?extid=5725792ce6a9938d1b24
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14428aea580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13715632580000
 
-In patch 2/2, cppc_cpufreq_get_effective_nominal() reads the OSPM
-Nominal into ospm_nominal via the output pointer of
-cppc_get_ospm_nominal_perf(policy->cpu, &ospm_nominal), then checks
-ospm_nominal for zero ("A zero value means OSPM has not selected a
-nominal level") and substitutes the platform Nominal in that case.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-3b5f4b83.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ed6d6b480fd7/vmlinux-3b5f4b83.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d5a591a74024/bzImage-3b5f4b83.xz
 
-However, show_ospm_nominal_freq() passes the value read through the same
-output pointer straight into cppc_perf_to_khz() without the equivalent
-zero check. This looks a bit inconsistent — is it intentional, or
-should show() apply the same "zero means not selected" handling?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5725792ce6a9938d1b24@syzkaller.appspotmail.com
 
+usb usb2: USB disconnect, device number 1
+ehci-pci 0000:00:1d.7: USB bus 2 deregistered
+==================================================================
+BUG: KASAN: slab-use-after-free in acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:264
+Read of size 1 at addr ffff888022b654e8 by task syz.0.19/5926
 
-> +}
-> +
-> +static ssize_t store_ospm_nominal_freq(struct cpufreq_policy *policy,
-> +				       const char *buf, size_t count)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	unsigned int freq_khz;
-> +	u32 perf;
-> +	int ret;
-> +
-> +	ret = kstrtouint(buf, 0, &freq_khz);
-> +	if (ret)
-> +		return ret;
-> +
-> +	perf = cppc_khz_to_perf(&cpu_data->perf_caps, freq_khz);
-> +	if (perf < cpu_data->perf_caps.lowest_perf ||
-> +	    perf > cpu_data->perf_caps.nominal_perf)
-> +		return -EINVAL;
-> +
-> +	/* The register is assumed shared across the policy's CPUs. */
-> +	ret = cppc_set_ospm_nominal_perf(policy->cpu, perf);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +
->   cpufreq_freq_attr_ro(freqdomain_cpus);
->   cpufreq_freq_attr_rw(auto_select);
->   cpufreq_freq_attr_rw(auto_act_window);
->   cpufreq_freq_attr_rw(energy_performance_preference_val);
->   cpufreq_freq_attr_rw(perf_limited);
-> +cpufreq_freq_attr_rw(ospm_nominal_freq);
->   
->   static struct freq_attr *cppc_cpufreq_attr[] = {
->   	&freqdomain_cpus,
-> @@ -1178,6 +1224,7 @@ static struct freq_attr *cppc_cpufreq_attr[] = {
->   	&auto_act_window,
->   	&energy_performance_preference_val,
->   	&perf_limited,
-> +	&ospm_nominal_freq,
->   	NULL,
->   };
->   
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index cd07e1e92bf4..4c9e59643cc0 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -180,6 +180,8 @@ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
->   extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
->   extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
->   extern int cppc_set_epp(int cpu, u64 epp_val);
-> +extern int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf);
-> +extern int cppc_get_ospm_nominal_perf(int cpu, u64 *ospm_nominal_perf);
->   extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
->   extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
->   extern int cppc_get_auto_sel(int cpu, bool *enable);
-> @@ -268,6 +270,14 @@ static inline int cppc_set_epp(int cpu, u64 epp_val)
->   {
->   	return -EOPNOTSUPP;
->   }
-> +static inline int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline int cppc_get_ospm_nominal_perf(int cpu, u64 *ospm_nominal_perf)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->   static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
->   {
->   	return -EOPNOTSUPP;
+CPU: 1 UID: 0 PID: 5926 Comm: syz.0.19 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0x13d/0x4b0 mm/kasan/report.c:482
+ kasan_report+0xdf/0x1c0 mm/kasan/report.c:595
+ acpi_ns_get_attached_object+0x148/0x1b0 drivers/acpi/acpica/nsobject.c:264
+ acpi_ex_resolve_node_to_value+0xb7/0x9a0 drivers/acpi/acpica/exresnte.c:61
+ acpi_ex_resolve_to_value+0x3da/0xcd0 drivers/acpi/acpica/exresolv.c:76
+ acpi_ds_evaluate_name_path+0x30d/0x4a0 drivers/acpi/acpica/dsutils.c:790
+ acpi_ds_exec_end_op+0xb78/0x1e60 drivers/acpi/acpica/dswexec.c:374
+ acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
+ acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
+ acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
+ acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
+ acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
+ acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
+ acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
+ acpi_pci_irq_disable+0x1a8/0x360 drivers/acpi/pci_irq.c:499
+ pcibios_disable_device arch/x86/pci/common.c:706 [inline]
+ pcibios_disable_device+0x89/0xb0 arch/x86/pci/common.c:703
+ do_pci_disable_device+0x9f/0x100 drivers/pci/pci.c:2170
+ pci_disable_device+0x130/0x270 drivers/pci/pci.c:2206
+ usb_hcd_pci_remove+0x1ed/0x300 drivers/usb/core/hcd-pci.c:351
+ pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
+ device_remove+0xcb/0x180 drivers/base/dd.c:616
+ __device_release_driver drivers/base/dd.c:1349 [inline]
+ device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
+ unbind_store+0xf8/0x110 drivers/base/bus.c:244
+ drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
+ sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
+ kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x6ac/0x1050 fs/read_write.c:687
+ ksys_write+0x12a/0x250 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc01df9de99
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc710447d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fc01e225fa0 RCX: 00007fc01df9de99
+RDX: 000000000000000c RSI: 0000200000000240 RDI: 0000000000000003
+RBP: 00007fc01e033eaf R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fc01e225fac R14: 00007fc01e225fa0 R15: 00007fc01e225fa0
+ </TASK>
+
+Allocated by task 1:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:78
+ unpoison_slab_object mm/kasan/common.c:340 [inline]
+ __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4584 [inline]
+ slab_alloc_node mm/slub.c:4917 [inline]
+ kmem_cache_alloc_noprof+0x26b/0x6a0 mm/slub.c:4931
+ acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
+ acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
+ acpi_ds_build_internal_object+0x173/0x790 drivers/acpi/acpica/dsobject.c:94
+ acpi_ds_create_node+0xe3/0x280 drivers/acpi/acpica/dsobject.c:281
+ acpi_ds_exec_end_op+0x10cf/0x1e60 drivers/acpi/acpica/dswexec.c:594
+ acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
+ acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
+ acpi_ns_parse_table+0xcb/0x160 drivers/acpi/acpica/nsparse.c:268
+ acpi_ns_load_table+0xc9/0x490 drivers/acpi/acpica/nsload.c:71
+ acpi_tb_load_namespace+0x2b0/0x8f0 drivers/acpi/acpica/tbxfload.c:158
+ acpi_load_tables+0x89/0x160 drivers/acpi/acpica/tbxfload.c:59
+ acpi_bus_init drivers/acpi/bus.c:1479 [inline]
+ acpi_init+0x146/0x840 drivers/acpi/bus.c:1592
+ do_one_initcall+0x11d/0x700 init/main.c:1347
+ do_initcall_level init/main.c:1409 [inline]
+ do_initcalls init/main.c:1425 [inline]
+ do_basic_setup init/main.c:1445 [inline]
+ kernel_init_freeable+0x6ea/0x7b0 init/main.c:1658
+ kernel_init+0x1f/0x1e0 init/main.c:1548
+ ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Freed by task 5922:
+ kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:78
+ kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
+ poison_slab_object mm/kasan/common.c:253 [inline]
+ __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:2677 [inline]
+ slab_free mm/slub.c:6377 [inline]
+ kmem_cache_free+0x127/0x6b0 mm/slub.c:6504
+ acpi_os_release_object+0x1c/0x30 drivers/acpi/osl.c:1661
+ acpi_ut_delete_object_desc+0xea/0x130 drivers/acpi/acpica/utobject.c:402
+ acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
+ acpi_ut_update_ref_count.part.0+0x510/0x2250 drivers/acpi/acpica/utdelete.c:436
+ acpi_ut_update_ref_count drivers/acpi/acpica/utdelete.c:374 [inline]
+ acpi_ut_update_object_reference+0x5f9/0x800 drivers/acpi/acpica/utdelete.c:632
+ acpi_ut_remove_reference drivers/acpi/acpica/utdelete.c:740 [inline]
+ acpi_ut_remove_reference+0x192/0x1d0 drivers/acpi/acpica/utdelete.c:710
+ acpi_rs_get_prt_method_data+0xcd/0x150 drivers/acpi/acpica/rsutils.c:460
+ acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
+ acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
+ acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
+ acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
+ pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
+ do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:1998
+ pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2089
+ usb_hcd_pci_probe+0x56/0xcb0 drivers/usb/core/hcd-pci.c:184
+ ehci_pci_probe+0x35/0x50 drivers/usb/host/ehci-pci.c:385
+ local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
+ pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
+ __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
+ pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
+ call_driver_probe drivers/base/dd.c:628 [inline]
+ really_probe+0x241/0xa60 drivers/base/dd.c:706
+ __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
+ device_driver_attach+0xd1/0x220 drivers/base/dd.c:1203
+ bind_store+0xf4/0x190 drivers/base/bus.c:267
+ drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
+ sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
+ kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x6ac/0x1050 fs/read_write.c:687
+ ksys_write+0x12a/0x250 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff888022b654e0
+ which belongs to the cache Acpi-Operand of size 72
+The buggy address is located 8 bytes inside of
+ freed 72-byte region [ffff888022b654e0, ffff888022b65528)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888022b65000 pfn:0x22b65
+flags: 0xfff00000000200(workingset|node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000200 ffff88801bc4da40 ffffea00008aec90 ffffea00008ae550
+raw: ffff888022b65000 000000080027001d 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2576811382, free_ts 0
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0xfd/0x120 mm/page_alloc.c:1859
+ prep_new_page mm/page_alloc.c:1867 [inline]
+ get_page_from_freelist+0xf48/0x3530 mm/page_alloc.c:3946
+ __alloc_frozen_pages_noprof+0x299/0x2dc0 mm/page_alloc.c:5304
+ alloc_slab_page mm/slub.c:3266 [inline]
+ allocate_slab mm/slub.c:3380 [inline]
+ new_slab+0xa2/0x640 mm/slub.c:3426
+ refill_objects+0xe3/0x410 mm/slub.c:7310
+ refill_sheaf mm/slub.c:2804 [inline]
+ __pcs_replace_empty_main+0x376/0x680 mm/slub.c:4675
+ alloc_from_pcs mm/slub.c:4773 [inline]
+ slab_alloc_node mm/slub.c:4905 [inline]
+ kmem_cache_alloc_noprof+0x46e/0x6a0 mm/slub.c:4931
+ acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
+ acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
+ acpi_ds_build_internal_package_obj+0xa8c/0xe60 drivers/acpi/acpica/dspkginit.c:92
+ acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
+ acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
+ acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
+ acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888022b65380: fb fc fc fc fc 00 00 00 00 00 00 00 00 00 fc fc
+ ffff888022b65400: fc fc fa fb fb fb fb fb fb fb fb fc fc fc fc fa
+>ffff888022b65480: fb fb fb fb fb fb fb fb fc fc fc fc fa fb fb fb
+                                                          ^
+ ffff888022b65500: fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb
+ ffff888022b65580: fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc
+==================================================================
 
 
--- 
-Thx and BRs,
-Zhongqiu Han
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
