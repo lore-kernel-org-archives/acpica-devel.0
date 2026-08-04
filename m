@@ -1,150 +1,216 @@
-Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
+Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010030.outbound.protection.outlook.com [52.101.85.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B4F44AB79
-	for <acpica-devel@lists.linux.dev>; Tue,  4 Aug 2026 08:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785833576; cv=none; b=kkNN+Gi9xA8uKzvwa9Kg/tU8EbNJZuIBeAMRaZ3hnrgcuEgHIXL4I2QLljtmxsZfN0/HQu9zeU3/4NanWAjv48/et72OacNl39uSB5IWNxElxmxqcDDNwvkTFNYD2c3FmGcRDx3pLiNroZ82Q7vgGqg91YL3v4Xb3UUOckDSHe8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785833576; c=relaxed/simple;
-	bh=lbfyjpQGikg2fwlU4B1wBMNg9ioxsQXwBSGp1X0dAaI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hD2ed25wYIyfU/hyg3ycVynNZAYSrENVXX0J+qYSBkk0Qyah4VVOZmomQRx67xW8t54gJJM8ZdSZbKIb2oYlDzf0O2RT0RA39A+EBCsoDX5io9VTZJbZEUDWvA+K+2bTriBJaWYvE7rDmIXYZjee61M0vy7j2zdfpO5Pzog/5KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=GbqsxbM8; arc=none smtp.client-ip=113.46.200.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F754749DC
+	for <acpica-devel@lists.linux.dev>; Tue,  4 Aug 2026 16:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1785859653; cv=fail; b=HzDov90/DU/VQ4Z9yykLpgnlgU0F9iFOXJ+fTrEdsDcmFVb2HwJIPMnQZ+F2NdjtzQ6HkW5QQ2px62WHK5vULtCPJeN4EByfbMpR9bYdl++6C44ZAkDspyta1TI7aCpf1B1lSG/K0P5UgKmhfr9YwfufhmmmYSRu0+Ea8nthVkI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1785859653; c=relaxed/simple;
+	bh=+flu2lag7ZM9dwN2Pdr8CTu43kAZhjQniONqwCeJWrI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=O6tPPnCBXISJRH7FdYR9jktmkuheyPk5sX8vLr3EK27UA2rcL5fUTgtEyWs4xqLRjfiQdk7QV58usol9+BSWkLcW1Abr6Qe6GN7UNi9bSUUrPP3vLCT5t2jYrhQNPPSZ8e1vpGsgCz6fapSHQ1IOKmn3BXmex4lhXxj72B6BIYA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aymopY2y; arc=fail smtp.client-ip=52.101.85.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="GbqsxbM8"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=qnmIKmDtED1A4RTC75yukztLHMsK8E6I1/QPQ2SMS0E=;
-	b=GbqsxbM8b3I296YHsDAavRcC/UE3BLAJ2lZwoBykqlaB9MUuxtL2WddV/Gfg7n/1f1HYLaUXV
-	niWpCvvp+wJzWf+AoiYkTb2UR3Zf/tSolUNqs/gSf6QUtxzehF+losN5MQSLFAJRljZdNvjTeo0
-	exwJT6y5jHB1LO/SGHOYr9A=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4hDnB13bqKz1T4Lb;
-	Tue,  4 Aug 2026 16:43:05 +0800 (CST)
-Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7ABEC4057F;
-	Tue,  4 Aug 2026 16:52:44 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Tue, 4 Aug 2026 16:52:43 +0800
-From: Lifeng Zheng <zhenglifeng1@huawei.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
-	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
-	<sumitg@nvidia.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
-	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
-	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
-Subject: [PATCH v2 5/8] ACPI: CPPC: Store optional flag in cpc_register_resource
-Date: Tue, 4 Aug 2026 16:50:39 +0800
-Message-ID: <20260804085042.4118193-6-zhenglifeng1@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20260804085042.4118193-1-zhenglifeng1@huawei.com>
-References: <20260804085042.4118193-1-zhenglifeng1@huawei.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aymopY2y"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=u4eOc7hBFYQEThuEKk4/1CCRinZExzk8as7WOsZUG1MlIdhKsjMvEuWr65ap1FJOGeT/VjgLQ6L56Gjrrded31ooHR/fW03ePcs/QeUmwQGiLFhVoUeadQQ3dOkyse7nbcNiSNaflm3jf2bG/BvO83jp2Y2wkuFLgFrKNtS0lJewdW4fpc9RCQ6XncYNXlSp6s9c0TlSLlEUfkiIsmlUiPjJcJ2ups3elCfh5fP+5dV1CvPd64DOMKdPNoCWv0KTDbBFliNqFDDqU61aPzrJkxUv6MfQ87reCjhjcx6tMmJ4LfL52iogw1jqtO41Mfh/Paq1H7TUI4rC66HBIoTVQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yD4ys4559eA6qtQraR6o4D8iyZq2o2NVnCYQORgUytI=;
+ b=jc11l9OGv6rhTUhGV0H4W2aVKkEpF9YapWlPjxCquG+J6m1WKS0Bb1vGYR1ch1dIeA+uUTSkjDEfqw5/n0Mwj8eD4EN7oP5UaFrLDYPQ9bRjEFCKYSy3rnEOtpzgoCODaplplAvYVcQ4b+mF9VtlOMXvOrV0OarfXbzVgGFXn1NlvcPYuAlI+dr/SwrI9ep4GcFv+9IQbOOX/USn5Pt2QboC+a0y98MOZqxXBWMI2LtL3V+3sqbwIhsAAkQvuRyiNPqnLAd2+J+H48GbR9FlwTcZlyGEF73MlsIq/oW92OD9A4p2/5uWWjmR+lG7yIHdyPogi8oW1SBYMtc3tAPGTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yD4ys4559eA6qtQraR6o4D8iyZq2o2NVnCYQORgUytI=;
+ b=aymopY2ynteCWKBeVB2ASrYo12AoM4rLjxx9cLqOORuhYm6H9dfTM3qfyN4wUQiyCCu6pPMt0zl6qVvOvH7JdXdJ/FZSUTvirk/Sn+uchuOhGTBx2qyHDuGYYNrpKL4nCdiyH1tCW7eHGeoMco7vHhimj2UfUzQpmQ+7mGyg5mRD1DZDlQ7vAqYQHEfn980Na/AZ6teq6RNNeOyNhYSA4Cn3+4o+Yazl4uqxwFlk3TSaeWacqo8p7oazfJWPQ6I3rQf9XQbIKw3PknytbCnMdPWnCq+8hbp1evWNCdEN9P5/c8mizI0siPwdo8UOdMiu0044lEaKUsDzSIdul3A3AQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com (2603:10b6:408:11c::18)
+ by DS0PR12MB6558.namprd12.prod.outlook.com (2603:10b6:8:d2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.15; Tue, 4 Aug
+ 2026 16:07:21 +0000
+Received: from BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f]) by BN9PR12MB5179.namprd12.prod.outlook.com
+ ([fe80::cf08:f59b:d016:c95f%4]) with mapi id 15.21.0270.017; Tue, 4 Aug 2026
+ 16:07:21 +0000
+Message-ID: <d0869a24-55c3-41bf-af04-dadb6a86c666@nvidia.com>
+Date: Tue, 4 Aug 2026 21:37:09 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] cpufreq: CPPC: Preserve OSPM-set registers across
+ suspend/resume
+To: Christian Loehle <christian.loehle@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
+ saket.dumbre@intel.co, ray.huang@amd.com, mario.limonciello@amd.com,
+ perry.yuan@amd.com, kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org
+Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
+ ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com,
+ bbasu@nvidia.com, sumitg@nvidia.com
+References: <20260724215937.3368276-1-sumitg@nvidia.com>
+ <20260724215937.3368276-5-sumitg@nvidia.com>
+ <443cae7f-bd01-4022-9703-7a1e6ae883bb@arm.com>
+Content-Language: en-US
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <443cae7f-bd01-4022-9703-7a1e6ae883bb@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN5P287CA0020.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:c01:265::11) To BN9PR12MB5179.namprd12.prod.outlook.com
+ (2603:10b6:408:11c::18)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemf100001.china.huawei.com (7.202.181.215)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5179:EE_|DS0PR12MB6558:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ba40246-8bbe-41ad-0f05-08def24276bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|23010399003|22082099003|18002099003|56012099006|11063799006|4143699003|10067099003|921020;
+X-Microsoft-Antispam-Message-Info:
+	2Cqys1eliKEgg0sxz9Ku/HZvVBmNwECMyGZtQ8A/F21L2eMHK41okUJjKfV0atS5OfF5/A43G918YU4hjDVrJ9HDOd1CnINoDxmO0UnbegzeZia3Y7WwxwTgO9b6J3r68CeCsP5EdozXGbV9kQZjDlcP/uHJ0TvzQNRxTuI3TgU5cXgG3WApIgYsZWIXWc97QypN5jdIC7iXpFaqQMq2YYSC5aEkfl/NHcWfeO0b1Ow/HZwjtHXGX1ka/GnWGSaOC7mBuWfUtjsFJ3x/eWdFBY0bg5j4JPmf9j7mGe4ZJTQJeoL3FCHu4poD3A31vBdz5uRbXteoDUDl0Z2VRzbV+JgZzu5fg7wOo0huXv466sOs7GrKMy3SoO3VZjGNqlc5PvF6Zk4mDwFubTmyrTYfLKTWqFNn+9tAhl9etFXR2ehyM5fxYqElTB/AUTxQYkZElxXphNcyQ9rNR/PvOxzoJHbVG4ooJlnH/wKmjBGxBrzKRRgfNPfuoPnzQkOoH9H/RdhbNsiKiP/2NbShFsQvl0fQyOrmuD6tva+3jQ1gnisVTVnPXhTq3WCjomkconaxeSOecemDy2H/dnNmztXFYRVtM96PDLaKo1OUYv4jRFvBSbmJjAKo60OuBuCm+9A2NlbGNtZCrjr7QgxO/74FCXjfoWeQ40Qz5rJKFXYLcsGsIvBb6+UNgObUSF8Cuo24qdvddyuR/OQZaqEh/H2VIQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(23010399003)(22082099003)(18002099003)(56012099006)(11063799006)(4143699003)(10067099003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eTY5Um4xRkpkOWU2UldKR3BEMURRZW15Z2hmUmljaG1WYWNzYzRpaHpIRDlO?=
+ =?utf-8?B?ZStFSks0MnN2eEx1eWx1bHhkQmlWZWZnckJVQ0JiTm5BSTd5MjFKWTB5U0JP?=
+ =?utf-8?B?aVR5ejgzUDFwWkFOZTRmd0hRZWhFdEkwcG1qamVaUkE1OVAvMm84Qk0ycndQ?=
+ =?utf-8?B?Nm9DZFYrcm9kMlF1R3JMWHZYdWViby82SWZxa2ZpbUtuYjRWTWpQWS9wZDdE?=
+ =?utf-8?B?R1BwaDZMUi9GYmRzbVlzRWd6ZGFzU1NqdnlMRDU5QmpCcDlOQkdsWjE0dUM0?=
+ =?utf-8?B?cjgveldxWFlucDM2VWFpc2pwZFZhS1k5ejEyNk5XVWRTblRGZ1p5VElIRnlJ?=
+ =?utf-8?B?RTNScGJBV05OZXBUQWNwVFoyWU5TeVI5S1BrNzFoU0RFRWtnVGRrVklRNDZU?=
+ =?utf-8?B?alNER2dKTzhieU1iR2dkNVFvV3hYWVRtZlBpZVRFeXB0d3pVTld4ZlhxbVlR?=
+ =?utf-8?B?QmxZbjJDVmpZUW1JczViUVlHcFNYWnA5Y0JQcm1TOFQvMFB1YU5GeFFiRGZI?=
+ =?utf-8?B?NmsyWE8yWkRTWFBrSnJqTWRaLy9FR0c0VDlUamJhZDFRSnlYZ29hL21uOXJM?=
+ =?utf-8?B?N0g5MEMzVThSYzZDdFdGQlpuUXNncXg5LzQxSHBwV3ZJMnJjRjNPRXBWcjEr?=
+ =?utf-8?B?SXdwV1BPdWhPSWw0ZTl2L2NsZFI5N3YrMzVOa3FGSHlzb3ZVcS9GUkR5dFhX?=
+ =?utf-8?B?QjllMmhtMndSUFU2UGFoeDNKQkJKN2p3MGFUTE0vN2czSkdLVFNHYjJWaHNz?=
+ =?utf-8?B?T2NCRXF2T0ozVW1UQ0cvcE1JMmMveUc1NmVnNHNCQ1V5WVptTlRoZm0vUFoy?=
+ =?utf-8?B?ZFNvelZBclN5b28vbGo3MXhCNUR5R1FLdFJHK3BVdFFBVVNGVWJlRVM1cFF2?=
+ =?utf-8?B?TVAzRncxVWZrbU1uWnltRGQ2TVRMd2pyVHVUcnNSa3hVaXpibkRvMVRaY0Jz?=
+ =?utf-8?B?V2x2ZzhNOVVVU25vK3ZzNmJ5S25iS1VGRUxqOW5ubkZHNG9XKytBL2dmaVlt?=
+ =?utf-8?B?OG03QnhBRWFHOWNqUTk3aGxQOVd1b3lYT2Job1pkYzBoc0Y5WGQ3R2RJL2c1?=
+ =?utf-8?B?aFRKQ0U0YkpucnJadGE3VkZyczBzRkcrU2VGWWViTzFvUDFYY3o4R0d5enRs?=
+ =?utf-8?B?OW1vWVB0MkZaVlVOSUFRUTdzMjVZNVU2MkZaTlIzdnVmV3BSc3ErT1pPdnBn?=
+ =?utf-8?B?VjhNVVJUVUFOaGlOd3pjenlQVUw3RFlvTHBSeng4WFlkOWN5bFIwWkhUMUU4?=
+ =?utf-8?B?STFPUGFickx1cFpiVmlLRlphcHZvL25nVU5Nb1Q1clc2eHdBbGoyZjhOT2ZH?=
+ =?utf-8?B?VVZXS1pDa3RkSjhJU1hJRDV5VzdqZVdxUjcxejB0UERPTzVMWDhCb1hvejJB?=
+ =?utf-8?B?MFJwM1ZjdmxJaWpNYW9SeVhRTmxLRmdoZTg3bHBCSm5Tak55RXpMSklBOEgw?=
+ =?utf-8?B?dEF4WCtBWFhXK3VaQ01pSFFrSVhSb29PdytyUS9XbkpqVnoySUJyRFpGMUE0?=
+ =?utf-8?B?UEQ2K0JvRVZFQnNoem1WMTZlS0dLWHlIaVZ5U1FHQi9RQ0xVUDJFdWpIVThw?=
+ =?utf-8?B?UmlacjcyWVg2V0lacWFaOHBmd1h2d0xSSVVqK0lxRDFWMnRlNDFwT3ArTURx?=
+ =?utf-8?B?Vm9QTUQ1Q1lFRUVPODJ2Y2NrNEttMUEvQmlDUDhOMG9XQjlnS21PSzJ1dTRj?=
+ =?utf-8?B?N3JJY1YwNUZ6cmdlSTR2RUdpYTYrdVl6UWZwL3BDUnRuckFaQW1JNjdWYWZ6?=
+ =?utf-8?B?UU5zMDR0SmpmOGZqOG1WS3lzQzR0WjlyWWZGZjVZMkVOOWNsZ3FMYnJ4RGRt?=
+ =?utf-8?B?b01yN3BYV1pMbDBNSG5iWlFuVVB4dEw0Tk4rNHdzay9Lc2h0Ri85ZGxiU3Ja?=
+ =?utf-8?B?Y1psS3R0MjlieEhnRTVzcTlyd3VwaE1aalBtZDczS2htYTdDTnNHY0NTV0di?=
+ =?utf-8?B?d2FXSWNoM05FcG8xTU5hbU0xODl1QVJxbFltdDVxb0NNUWtqUHBCMThEUjkr?=
+ =?utf-8?B?Nk1EWEM4eDRyRHQ4WmJuWkVUZmRNUzFzTTJ2M1Nob3FvcmtQY1AvSUgyZlo5?=
+ =?utf-8?B?aXhsMmRwL3lEbjh3c2RkVGtacGZnRnRhbGlTNEpNbjJGQmxhV1hvSW9ldUdI?=
+ =?utf-8?B?N0RaQUNZYzhVQXNLR2hibFJ0eFJYdGZ0YnZ3bW9qeDQzc3o4Y0FZbXNWNUJk?=
+ =?utf-8?B?dHpWL2daVXNlZWdsVnVBNlppY0ZXZDZqWkoyZWZXOUNsQ0cydnZDa0Vzd3k0?=
+ =?utf-8?B?VTkzVXFsaHY5a0pwaTByY3NKQzlxMlZVTThQWHdlUmdpMWRycWVzUDF3T2xB?=
+ =?utf-8?B?SXVoSFJXRTJCNlVydDFQZy96L3dMZ0lDYkhWcnM2TmFXQ2g4V0wyZz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ba40246-8bbe-41ad-0f05-08def24276bd
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2026 16:07:21.0658
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lm9FyQOuGQaBWOzoKhxn9DoOE7uQFzCZEgAbu4KzGjDYmxmlRQHKuh3+7r7YJY15kDAQSM7tPj025NF2Yft/cA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6558
 
-The current optionality check uses a compile-time bitmask (REG_OPTIONAL)
-applied at call sites via IS_OPTIONAL_CPC_REG(reg_idx).  This requires
-every caller to know the register index, which will not work for registers
-accessed without a fixed index (e.g. entries inside Resource Priority
-sub-packages).
 
-Add a boolean 'optional' field to cpc_register_resource so that each
-register element carries its own optionality.  Populate the field during
-_CPC probe (for main registers) and parse_priority_regs() (for Resource
-Priority sub-packages), using the existing REG_OPTIONAL and
-RES_PRIO_OPTIONAL bitmasks respectively.
+On 27/07/26 19:15, Christian Loehle wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On 7/24/26 22:59, Sumit Gupta wrote:
+>> The previous patch preserves the OSPM-set registers across CPU hotplug,
+>> but system suspend/resume is a separate path. On platforms that reset
+>> those registers or the performance controls across suspend, the values
+>> are lost.
+>>
+>> Reuse the same save/restore mechanism for suspend/resume:
+>>
+>>    - suspend() only saves the current OSPM-set values. It does not revert
+>>      them to firmware, since a later offline() already does that when
+>>      system suspend offlines the secondary CPUs.
+>>    - resume() needs the same steps as online(), so .resume points at
+>>      online() directly.
+>>
+>> Suggested-by: Christian Loehle <christian.loehle@arm.com>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/cpufreq/cppc_cpufreq.c | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+>> index 8a13ec49eb9d..be2d873ccd84 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -921,6 +921,22 @@ static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>>        return 0;
+>>   }
+>>
+>> +/*
+>> + * suspend() only saves the OSPM-set values. It does not revert them to the
+>> + * firmware values.
+>> + *
+>> + * This is because system suspend may later offline the secondary CPUs.
+>> + * That runs offline(), which saves the values and then reverts to firmware.
+>> + * If suspend() had already reverted, offline() would save the firmware value
+>> + * instead of the user's request, and the request would be lost.
+>> + */
+>> +static int cppc_cpufreq_cpu_suspend(struct cpufreq_policy *policy)
+>> +{
+>> +     cppc_cpufreq_save_requested_regs(policy);
+>> +
+>> +     return 0;
+>> +}
+>> +
+> Wouldn't it be safer to commit everything here and not rely on the later
+> offline() to still need a fully usable CPPC platform (in particular for
+> PCC), as at this stage all but 2 CPUs might already be offline()d?
+> Also either the later offline() saves registers successfully, and overwrites
+> this snapshot, or it fails and overwrites them with U64, right?
+>
 
-Replace the IS_OPTIONAL_CPC_REG() check in cppc_get_reg_val() with a
-direct test of reg->optional, and remove the IS_OPTIONAL_CPC_REG() macro.
+Agreed.
+I will save the requested values and restore the firmware values in
+suspend(), while the CPPC is still fully usable.
+offline() will skip these steps when suspend() has already performed them.
 
-Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
----
- drivers/acpi/cppc_acpi.c | 13 ++++++++-----
- include/acpi/cppc_acpi.h |  1 +
- 2 files changed, 9 insertions(+), 5 deletions(-)
+Thanks,
+Sumit
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index fde51823e938..3b35c757a789 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -137,11 +137,11 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
- #define REG_OPTIONAL (0x7FC7D0)
- 
- /*
-- * Use the index of the register in per-cpu cpc_regs[] to check if
-- * it's an optional one.
-+ * Each bit indicates the optionality of the register in resource
-+ * priority register descriptor with the corresponding index. 0 means
-+ * mandatory and 1 means optional.
-  */
--#define IS_OPTIONAL_CPC_REG(reg_idx) (REG_OPTIONAL & (1U << (reg_idx)))
--
-+#define RES_PRIO_OPTIONAL (0x6)
- /*
-  * Arbitrary Retries in case the remote processor is slow to respond
-  * to PCC commands. Keeping it high enough to cover emulators where
-@@ -844,6 +844,7 @@ static int parse_priority_regs(union acpi_object *cpc_obj,
- 
- 		reg_elements[0].type = ACPI_TYPE_PACKAGE;
- 		reg_elements[0].cpc_entry.package.count = resources_count;
-+		reg_elements[0].optional = RES_PRIO_OPTIONAL & 1U;
- 
- 		for (j = 0; j < reg_elements[0].cpc_entry.package.count; j++) {
- 			reg_elements[0].cpc_entry.package.elements[j].type = ACPI_TYPE_INTEGER;
-@@ -852,6 +853,7 @@ static int parse_priority_regs(union acpi_object *cpc_obj,
- 		}
- 
- 		for (j = 1; j < RESOURCE_PRIORITY_NUM; j++) {
-+			reg_elements[j].optional = RES_PRIO_OPTIONAL & (1U << j);
- 			ret = parse_cpc_element(&reg_desc_obj.package.elements[j], &reg_elements[j],
- 						pcc_subspace_id, cpu, RESOURCE_PRIORITY);
- 			if (ret)
-@@ -990,6 +992,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 	/* Iterate through remaining entries in _CPC */
- 	for (i = 2; i < num_ent; i++) {
- 		cpc_obj = &out_obj->package.elements[i];
-+		cpc_ptr->cpc_regs[i-2].optional = REG_OPTIONAL & (1U << (i-2));
- 
- 		/*
- 		 * Package-type entries are used for nested structures such as
-@@ -1409,7 +1412,7 @@ static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
- 
- 	reg = &cpc_desc->cpc_regs[reg_idx];
- 
--	if ((reg->type == ACPI_TYPE_INTEGER && IS_OPTIONAL_CPC_REG(reg_idx) &&
-+	if ((reg->type == ACPI_TYPE_INTEGER && reg->optional &&
- 	     !reg->cpc_entry.int_value) || (reg->type != ACPI_TYPE_INTEGER &&
- 	     IS_NULL_REG(&reg->cpc_entry.reg))) {
- 		pr_debug("CPC register is not supported\n");
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index 19f8a722654b..c0b8d52016cd 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -80,6 +80,7 @@ struct cpc_register_resource {
- 			struct cpc_register_resource *elements;
- 		} package;
- 	} cpc_entry;
-+	bool optional;
- };
- 
- /* Container to hold the CPC details for each CPU */
--- 
-2.33.0
-
+>>   static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+>>   {
+>>        struct cppc_cpudata *cpu_data = policy->driver_data;
+>> @@ -1235,6 +1251,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
+>>        .exit = cppc_cpufreq_cpu_exit,
+>>        .online = cppc_cpufreq_cpu_online,
+>>        .offline = cppc_cpufreq_cpu_offline,
+>> +     .suspend = cppc_cpufreq_cpu_suspend,
+>> +     .resume = cppc_cpufreq_cpu_online,
+>>        .set_boost = cppc_cpufreq_set_boost,
+>>        .attr = cppc_cpufreq_attr,
+>>        .name = "cppc_cpufreq",
