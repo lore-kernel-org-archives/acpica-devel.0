@@ -1,287 +1,102 @@
-Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BE53F9F5C
-	for <acpica-devel@lists.linux.dev>; Tue,  4 Aug 2026 02:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53CBA44781F
+	for <acpica-devel@lists.linux.dev>; Tue,  4 Aug 2026 08:52:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785811411; cv=none; b=Ijl//ep56Kzrs4d37w31UPTsetEcmtJa+cxGuhOAdk1bsvk5QfonDYP8pTmF7tjV0DJ0w6HFJ+UFCOiGUQUMavwPf0srbzfSU5//Ge4SvZvxiv3gvRchxdC3E/jKu8MdDYul1LeJmSY4ysJ0+6cUJznO2CJ2I+H0vmsDa8KAUds=
+	t=1785833567; cv=none; b=oLOh/xsvx5RNnsP3UqNIgPA9mj6WAOdsXOlfc7mheUuj4zL2Zd9oGPzhD3xLER2m2FSJ2dsnxgixPuglqczCr/rEgj4fJuwPYB46P4eHeYAalTtCaOqb9CdXA5P6w3YaYvH1QlmvPBpE35DNT59iPVd1fJjwR9/swyoBzDUtIYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785811411; c=relaxed/simple;
-	bh=cTOhaKhrXyLIwy+GpLDnlTOfyyNkhNjcispSygVC8Hw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=g7TzEwcN2kaFRc49UNSY3I5cU3ezrZECikDSHhQaEgSssd1geapClwmQ6494XzUiDCGL5cbXMq0S7DOrirKhh9xsu5FuvES14wVcKBLdtbVjtyG/Qr2pvL4pN0wkuTHVityj+1J8e2jucxOiqVtXFqRbmd386/SvBm1QuxTuEj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-4ab4f652f9bso2724614b6e.0
-        for <acpica-devel@lists.linux.dev>; Mon, 03 Aug 2026 19:43:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1785811408; x=1786416208;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Ufmg8Psc6y1D80Euxwp1pLaOwO3gYoSbFuDaOgwDGFc=;
-        b=tSaZYsAdUtbGnJXUp5h9/zcMvsdByjuHJZrMO7sUx9kG/0gDYwDf9ifEMI4ySKZw+n
-         idA++L7zCm2cvVOlx1PSV8KnEXyhDEvjjWQ14mLm41aNcRoYOWAQ6eo8/MlwBdCf6UCn
-         HgME40CKpYPOx8JopiDqFHFUxsc0zxcSfymJQYmk+IP1gA9dmgmDrrC05qbL3NY7ck7z
-         i314iRJ6SLDjzLPb0hGD8uJMGh3NTOxhH3hMvdLb2af4QMT8wJbnqUo1FGfyO60nIpr8
-         NMugvHRsLPYTei1A7dkIxN8xavKpq7YOxVYud8V41BBHP1msd6YQzTXP6N8qU56QAgiK
-         c5tg==
-X-Gm-Message-State: AOJu0YxMkqrkbHE+nAxIroZoyhGPmYooZ6vlAqRGIlodS7yqvKa4pbpB
-	Vj91QtdcqFDRhgQV5mEQeKHoBo06JFfmO0WBCu/qxuZScQWm0S+NoBaUTuii4xL2AKyhrzMOMbp
-	XwBBJE82GPhDWmgu+6PCenBjyjkPXw57jV2V89khuzRHj0L3SUJP7lTzmKnMGWg==
+	s=arc-20240116; t=1785833567; c=relaxed/simple;
+	bh=SFifmtolDLhp7/hIPyEN4KkxrXXW9qcorg+HFcP9k3Y=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TeN6M8pFwxcwb6pi+KDVtL1+41Bcz6lamr7Rys+5GL/J2CoWFEFsMwPwntRZ6PTqDA7U9ki7mWwsiQA4+1NZEQsuG2X6iFWJdxhq3IzGzP+8kjswQnp8s5kmavzWc+sBTIbpxHoP9efW6BGuvUfjxJm2KGE8KQCoVnEaS9E5AuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=w5ItmmVB; arc=none smtp.client-ip=113.46.200.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="w5ItmmVB"
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=yKGqqQI+Uhtn74jATxL7vYZkfUPEKo/fbFgxPKC8IXg=;
+	b=w5ItmmVBe04bQA2BUp49OUOIW6odv8MFOXXRQrz3DNZbrNuf+H2Uq6ZF2mb2uNqZQ93ewKtSe
+	7SSv20mBDSXelAc8R9B94s+fV1tNPWBPk2zEixk4mDo866cNEMQBJKd72mCAUSUJwMhyQRZbXhV
+	yh16vzKwzKN3NdIJylU/BKA=
+Received: from mail.maildlp.com (unknown [172.19.163.163])
+	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4hDnB83B4Nz1K96s;
+	Tue,  4 Aug 2026 16:43:12 +0800 (CST)
+Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
+	by mail.maildlp.com (Postfix) with ESMTPS id E8D0C4057A;
+	Tue,  4 Aug 2026 16:52:41 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Tue, 4 Aug 2026 16:52:41 +0800
+From: Lifeng Zheng <zhenglifeng1@huawei.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
+	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
+	<sumitg@nvidia.com>
+CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
+	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
+	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
+Subject: [PATCH v2 1/8] ACPI: CPPC: Prepare cpc_register_resource for Package-type entries
+Date: Tue, 4 Aug 2026 16:50:35 +0800
+Message-ID: <20260804085042.4118193-2-zhenglifeng1@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20260804085042.4118193-1-zhenglifeng1@huawei.com>
+References: <20260804085042.4118193-1-zhenglifeng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1921:b0:4ab:318c:6b38 with SMTP id
- 5614622812f47-4af5dffbcfcmr20405588b6e.1.1785811408618; Mon, 03 Aug 2026
- 19:43:28 -0700 (PDT)
-Date: Mon, 03 Aug 2026 19:43:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a7151d0.13623e66.bdc14.000b.GAE@google.com>
-Subject: [syzbot] [acpica?] KASAN: slab-use-after-free Read in acpi_ex_resolve_to_value
-From: syzbot <syzbot+ddf04485ab0b8f938ed4@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemf100001.china.huawei.com (7.202.181.215)
 
-Hello,
+CPPC v4 (ACPI 6.6, Section 8.4.6.1.2.7) introduces the Resource
+Priority entry, which is a Package of sub-packages rather than a
+plain Integer or Buffer register.  The existing cpc_register_resource
+union only accommodates Integer and Buffer (register descriptor)
+fields.
 
-syzbot found the following issue on:
+Add a Package variant to the cpc_entry union so that nested
+structures such as RESOURCE_PRIORITY can store their element count
+and a dynamically allocated array of child cpc_register_resource
+descriptors.
 
-HEAD commit:    11028ab62899 Merge tag 'probes-fixes-v7.2-rc5' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c39499580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=145fa60d73086782
-dashboard link: https://syzkaller.appspot.com/bug?extid=ddf04485ab0b8f938ed4
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+No functional change intended; the new Package fields are not yet
+consumed by any caller.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-11028ab6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e2be78614a29/vmlinux-11028ab6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/301a11d315af/bzImage-11028ab6.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ddf04485ab0b8f938ed4@syzkaller.appspotmail.com
-
-BUG: KASAN: slab-use-after-free in acpi_ex_resolve_to_value+0x69b/0xcd0 drivers/acpi/acpica/exresolv.c:58
-Read of size 1 at addr ffff888022315480 by task syz.1.2/5903
-
-CPU: 2 UID: 0 PID: 5903 Comm: syz.1.2 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0x13d/0x4b0 mm/kasan/report.c:482
- kasan_report+0xdf/0x1c0 mm/kasan/report.c:595
- acpi_ex_resolve_to_value+0x69b/0xcd0 drivers/acpi/acpica/exresolv.c:58
- acpi_ds_exec_end_control_op+0x36a/0xf60 drivers/acpi/acpica/dscontrol.c:243
- acpi_ds_exec_end_op+0xff7/0x1e60 drivers/acpi/acpica/dswexec.c:462
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x1a8/0x360 drivers/acpi/pci_irq.c:499
- pcibios_disable_device arch/x86/pci/common.c:706 [inline]
- pcibios_disable_device+0x89/0xb0 arch/x86/pci/common.c:703
- do_pci_disable_device+0x9f/0x100 drivers/pci/pci.c:2170
- pci_disable_device+0x130/0x270 drivers/pci/pci.c:2206
- pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- pci_stop_dev drivers/pci/remove.c:27 [inline]
- pci_stop_bus_device+0x120/0x160 drivers/pci/remove.c:93
- pci_stop_and_remove_bus_device+0x58/0xa0 drivers/pci/remove.c:128
- pci_stop_and_remove_bus_device_locked+0x1a/0x20 drivers/pci/remove.c:136
- remove_store+0x123/0x140 drivers/pci/pci-sysfs.c:523
- dev_attr_store+0x58/0x80 drivers/base/core.c:2505
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff515b9df99
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff516a1d028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ff515e26090 RCX: 00007ff515b9df99
-RDX: 0000000000000002 RSI: 0000200000000400 RDI: 0000000000000003
-RBP: 00007ff515c34ec4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ff515e26128 R14: 00007ff515e26090 R15: 00007ffe62fd63e8
- </TASK>
-
-Allocated by task 1:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- unpoison_slab_object mm/kasan/common.c:340 [inline]
- __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4584 [inline]
- slab_alloc_node mm/slub.c:4917 [inline]
- kmem_cache_alloc_noprof+0x26b/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x173/0x790 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_create_node+0xe3/0x280 drivers/acpi/acpica/dsobject.c:281
- acpi_ds_exec_end_op+0x10cf/0x1e60 drivers/acpi/acpica/dswexec.c:594
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_parse_table+0xcb/0x160 drivers/acpi/acpica/nsparse.c:268
- acpi_ns_load_table+0xc9/0x490 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x2b0/0x8f0 drivers/acpi/acpica/tbxfload.c:158
- acpi_load_tables+0x89/0x160 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init drivers/acpi/bus.c:1479 [inline]
- acpi_init+0x146/0x840 drivers/acpi/bus.c:1592
- do_one_initcall+0x11d/0x700 init/main.c:1347
- do_initcall_level init/main.c:1409 [inline]
- do_initcalls init/main.c:1425 [inline]
- do_basic_setup init/main.c:1445 [inline]
- kernel_init_freeable+0x6ea/0x7b0 init/main.c:1658
- kernel_init+0x1f/0x1e0 init/main.c:1548
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Freed by task 5903:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:253 [inline]
- __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2677 [inline]
- slab_free mm/slub.c:6377 [inline]
- kmem_cache_free+0x127/0x6b0 mm/slub.c:6504
- acpi_os_release_object+0x1c/0x30 drivers/acpi/osl.c:1661
- acpi_ut_delete_object_desc+0xea/0x130 drivers/acpi/acpica/utobject.c:402
- acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
- acpi_ut_update_ref_count.part.0+0x510/0x2250 drivers/acpi/acpica/utdelete.c:436
- acpi_ut_update_ref_count drivers/acpi/acpica/utdelete.c:374 [inline]
- acpi_ut_update_object_reference+0x5f9/0x800 drivers/acpi/acpica/utdelete.c:632
- acpi_ut_remove_reference drivers/acpi/acpica/utdelete.c:740 [inline]
- acpi_ut_remove_reference+0x192/0x1d0 drivers/acpi/acpica/utdelete.c:710
- acpi_ds_clear_implicit_return drivers/acpi/acpica/dsutils.c:55 [inline]
- acpi_ds_clear_implicit_return+0x137/0x220 drivers/acpi/acpica/dsutils.c:34
- acpi_ds_exec_end_control_op+0x319/0xf60 drivers/acpi/acpica/dscontrol.c:226
- acpi_ds_exec_end_op+0xff7/0x1e60 drivers/acpi/acpica/dswexec.c:462
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x1a8/0x360 drivers/acpi/pci_irq.c:499
- pcibios_disable_device arch/x86/pci/common.c:706 [inline]
- pcibios_disable_device+0x89/0xb0 arch/x86/pci/common.c:703
- do_pci_disable_device+0x9f/0x100 drivers/pci/pci.c:2170
- pci_disable_device+0x130/0x270 drivers/pci/pci.c:2206
- pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- pci_stop_dev drivers/pci/remove.c:27 [inline]
- pci_stop_bus_device+0x120/0x160 drivers/pci/remove.c:93
- pci_stop_and_remove_bus_device+0x58/0xa0 drivers/pci/remove.c:128
- pci_stop_and_remove_bus_device_locked+0x1a/0x20 drivers/pci/remove.c:136
- remove_store+0x123/0x140 drivers/pci/pci-sysfs.c:523
- dev_attr_store+0x58/0x80 drivers/base/core.c:2505
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff888022315478
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 8 bytes inside of
- freed 72-byte region [ffff888022315478, ffff8880223154c0)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888022315208 pfn:0x22315
-flags: 0xfff00000000200(workingset|node=0|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 00fff00000000200 ffff88801bc4da40 ffffea000088d5d0 ffffea000088d890
-raw: ffff888022315208 000000080027001f 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2574684285, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0xfd/0x120 mm/page_alloc.c:1859
- prep_new_page mm/page_alloc.c:1867 [inline]
- get_page_from_freelist+0xf48/0x3530 mm/page_alloc.c:3946
- __alloc_frozen_pages_noprof+0x299/0x2dc0 mm/page_alloc.c:5304
- alloc_slab_page mm/slub.c:3266 [inline]
- allocate_slab mm/slub.c:3380 [inline]
- new_slab+0xa2/0x640 mm/slub.c:3426
- refill_objects+0xe3/0x410 mm/slub.c:7310
- refill_sheaf mm/slub.c:2804 [inline]
- __pcs_replace_empty_main+0x376/0x680 mm/slub.c:4675
- alloc_from_pcs mm/slub.c:4773 [inline]
- slab_alloc_node mm/slub.c:4905 [inline]
- kmem_cache_alloc_noprof+0x46e/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_create_operand+0x6be/0xc20 drivers/acpi/acpica/dsutils.c:617
- acpi_ds_eval_data_object_operands+0x125/0x640 drivers/acpi/acpica/dsopcode.c:596
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888022315380: 00 fc fc fc fc fa fb fb fb fb fb fb fb fb fc fc
- ffff888022315400: fc fc 00 00 00 00 00 00 00 00 00 fc fc fc fc fa
->ffff888022315480: fb fb fb fb fb fb fb fb fc fc fc fc fa fb fb fb
-                   ^
- ffff888022315500: fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb
- ffff888022315580: fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc
-==================================================================
-
-
+Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ include/acpi/cppc_acpi.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index 8693890a7275..1839582b80be 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -71,6 +71,14 @@ struct cpc_register_resource {
+ 	union {
+ 		struct cpc_reg reg;
+ 		u64 int_value;
++		/*
++		 * CPPC v4: nested Package (e.g. RESOURCE_PRIORITY),
++		 * elements dynamically allocated
++		 */
++		struct {
++			u32 count;
++			struct cpc_register_resource *elements;
++		} package;
+ 	} cpc_entry;
+ };
+ 
+-- 
+2.33.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
