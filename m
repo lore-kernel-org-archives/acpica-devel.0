@@ -1,117 +1,279 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010041.outbound.protection.outlook.com [40.93.198.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E083B3883
-	for <acpica-devel@lists.linux.dev>; Wed,  5 Aug 2026 16:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785948390; cv=none; b=dL1w1RKN+OFU12uI/S3vCL60NBgy/bFvnDqWKslzd80O7D7koC+3J8+XHDuagQ4Z2rWZawJtP9eDbt4By5Itq5flcSh0u0rJ9PRkE7DrxhoMEseae45ClAIUt8M7ofl4aRf3IEOY04fzXiYy5ZFQUAlaCnBLf4WRFjwYtAJyTto=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785948390; c=relaxed/simple;
-	bh=icSBlX5Bn6PnoDrrPwFCn+zO/g7q3+sDiGHwIKmhxmQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eVVsQVDSdJ29RIJErs+xRVJ9DIVKzWGuJ2uNOTiiyJ6O9PCSJFTGPS//dgUNLZHxbXq6IwcaYqodlnioMmB1/jqUUZdy+G4HZmtanph9hVnNtNENhOwq9STMV7h8gs2BIrHoMTYwj8XLT47jO+nzexViMG61bG7EKfi8HPs26GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eUUUovKw; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD6747254D
+	for <acpica-devel@lists.linux.dev>; Thu,  6 Aug 2026 12:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786019286; cv=fail; b=GDR7gIJz94gPb7zFe28qT0HbYEmN1q49xgpQ58gPf/T1j+agjBfuneRd16TshwM+YcYZAl0Jjfj0hGJ2DbnjR6laYQ2jcdDvH+E9Cx8Mz+PWZ6+jXPvk6oUs5ejr24MGlJ+tTvWcNWsqvfDOeoiv8mXg1Doijzesgx67ZyuZb+s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786019286; c=relaxed/simple;
+	bh=sXlQPhxmA7oV6XT9IkfoGGIvXXKyZIxj9zAMpdX7VIY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qWOpMNmm/+NPLpJgaf6i7rAaJqWXpN7auTLU3ABCWiximho9ucqgHdm7uOmNVHYRX0qWfbDbGH2U2dRLaiYu0wnHA0wMHxgLx7wbjQ6/ZiEKZvqdqvw/ImoF+mplPabuGLoaDjGISZoRmY/sPCH6RKWIHV5mEn/14UsW7zSFepI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=o8QJx9L0; arc=fail smtp.client-ip=40.93.198.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eUUUovKw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8351F00A3A
-	for <acpica-devel@lists.linux.dev>; Wed,  5 Aug 2026 16:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785948388;
-	bh=+Ye8b+wsZIA2qG9lNMZfJMyCZTt+P4r6Wvz905OiOMI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=eUUUovKwv9uxwqttLQAVJjeTRkikfHTamyYCz8NXkLN4cJ+zm33qmIuGvpyrbKOFl
-	 LnNtxGwRwTeOKg4alfsVK/MLJynEixLaPZAy9TzP8SI2xdSzuWu7efYXSx5M4oI63m
-	 Kpm6srWOBdc4mnqnaI++JkbDbwbWWI8JKwFzb9ai6FXCBbU6HHIhKFqhbDYgFe1kG/
-	 f+yQuUUNjdJdFuGeAMbkTwQ+kjow8FPAoTOgO+77iFyOmITTepxQ2SPe8KUmiiOcSi
-	 n5gqx6lqmMRPHVixzArW23xmmOUZibHOE/GSUmzGsLLTpLiX0K6YxlcNwM4d+t6KAH
-	 5ZyR4YKtIocaw==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5b15dcaca31so1308087e87.0
-        for <acpica-devel@lists.linux.dev>; Wed, 05 Aug 2026 09:46:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rq48R7M0h+XfP7/e3AYjE5SyAy5E5vWqIntcOxF1gpBMqSrAMcTcGggAdXe1y51nzyOLkVueEhgQGOQrOY=@lists.linux.dev
-X-Gm-Message-State: AOJu0Yy6DjjQVbC45ejRKEvA3xVGkM/yGdWU1isA7Uu8fbLhTJCyyZg/
-	zH/nBkBRtj5A/32Q1Wfo8bVFe7OkDPG1pRJdviw3nXFGaNxDdIyZc/JWsj7rVsP+1DNBu4ytDQh
-	9W3Ss/YuaAmBi0pNC93JvxQTStfj2Svg=
-X-Received: by 2002:a05:6512:b91:b0:5b2:e947:b3f9 with SMTP id
- 2adb3069b0e04-5b2f4cc9324mr1083863e87.26.1785948387055; Wed, 05 Aug 2026
- 09:46:27 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="o8QJx9L0"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=AqFdD8ycPW5rkUnPcavUFC3ejhphlrIrHQ7wSuotpjE94zdxYflFxepmSKJld6ZyjESa5+kqDm5PGQfj7fj1e9FQrV7DGoHzK7oJCfJpCZuBeAmA1h7GmRuKDz44U1PAcibDNsRXzYR2fbQoTW22J6oMcmRSwJkHWVg/5t8e8GGvcRyHr+/nEktRiySPBQfzlFTPX6as6sA4W6abK24OCPTTyCQ0iZF5RLWXOs5bYSl64Kew/8pChIiDw5LqesZDLWFf2S5dQHiyq2QG/ob6i4KVe/LAJciUSGRo0tNyqqj86z8y8N49F3ou3l8hfFVMyUg9nC9wVHm9WoNaKR7xaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UiWw0qNpX3vBEChGCu9SyB4oejHSlrQLcyqjVMnwrOM=;
+ b=rXwJiysrRJi4l3G6HuWH+GeysInfyfIZUV8TBiS9YetjCqLFrBjfilEyA+mdsx8+QipAg0/JvknQIAChSD/iCh/f9yWFmKUnmR2FxE4KWc0EBIGymaSIDm0Rj478ErUKFRQfCyO+Vlh45LER6YJRh1H4VCV2g7VNWGhx2pnkzpqQEihoZSp6+7iB5PVYvhf7uxY7FbumiZbu9pDrS8CAP1bmPmsJt0vc5XbA1xOqqlZjZVoK+jFkD7/SKZoe6wwxfgOaInnwZDfbazEtknVQXcirG/z4giMklO14uhexsZQQUzaIJV+OTpofLduYj+SpjsKaYdL7IrZ0u2SsuYMuGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UiWw0qNpX3vBEChGCu9SyB4oejHSlrQLcyqjVMnwrOM=;
+ b=o8QJx9L0+VJdKobt20P0WDsm0DGaI/amBdlLfoXl0r0PYwZzIKySVzWl8bXEf20lvi6tpCNfF7nJGfUf3s6Pb3OA1yMbzQ1xGgQnedT+Ha2ngobruMsgKPNCR67XT78B8vOJtSRzzw5OFaGvkjXs8EqvauqliKzczdYQG89AphQ=
+Received: from SJ0PR13CA0192.namprd13.prod.outlook.com (2603:10b6:a03:2c3::17)
+ by LV8PR12MB9690.namprd12.prod.outlook.com (2603:10b6:408:296::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.21; Thu, 6 Aug
+ 2026 12:27:55 +0000
+Received: from SJ5PEPF000001F6.namprd05.prod.outlook.com
+ (2603:10b6:a03:2c3:cafe::8a) by SJ0PR13CA0192.outlook.office365.com
+ (2603:10b6:a03:2c3::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.7 via Frontend Transport; Thu, 6
+ Aug 2026 12:27:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ SJ5PEPF000001F6.mail.protection.outlook.com (10.167.242.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.315.6 via Frontend Transport; Thu, 6 Aug 2026 12:27:55 +0000
+Received: from localhost.amd.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Thu, 6 Aug
+ 2026 07:27:52 -0500
+From: Baorui Liu <baorliu@amd.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>
+CC: Len Brown <lenb@kernel.org>, Mario Limonciello <superm1@kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, Baorui Liu <baorliu@amd.com>
+Subject: [PATCH] ACPI: button: Report wakeup key only for power button wakeups
+Date: Thu, 6 Aug 2026 20:27:32 +0800
+Message-ID: <20260806122732.533-1-baorliu@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260722131553.2117835-1-sudeep.holla@kernel.org> <20260722131553.2117835-2-sudeep.holla@kernel.org>
-In-Reply-To: <20260722131553.2117835-2-sudeep.holla@kernel.org>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 5 Aug 2026 18:46:15 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hdxtuEbFQdwRe=T+Q2xRki+uN9PP7PPw7AdW4Obe3fqA@mail.gmail.com>
-X-Gm-Features: AUfX_mzDCkRCv6uCTLFlvOrFSsuEeF3hnYAkpAif_GgMK46WdV30q3YbLj2U8Is
-Message-ID: <CAJZ5v0hdxtuEbFQdwRe=T+Q2xRki+uN9PP7PPw7AdW4Obe3fqA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ACPICA: Fix PCC OperationRegion command offsets
-To: Sudeep Holla <sudeep.holla@kernel.org>
-Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Saket Dumbre <saket.dumbre@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: satlexmb08.amd.com (10.181.42.217) To satlexmb07.amd.com
+ (10.181.42.216)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001F6:EE_|LV8PR12MB9690:EE_
+X-MS-Office365-Filtering-Correlation-Id: ae5e502d-c6d4-46c5-a388-08def3b62456
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700016|23010399003|11063799006|56012099006|10067099003|6133799003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	TcWiGf0n30uzaJ9V7g/JXAcG9vWCfKepUee87pPuNi/4OaH5mz+JahmaMqjBfuzcUsDPxwLJP6fIMbfIQLyKIhAcNOet7EUDL1tLpNTK+1JoasXRCiCsO4R4w6mJ8X/uqqpIUmfXZAucUm4WlIrYVBadVFFFJ2fHZDb9p7p1NpkVdmXxVaDDTzm/RyEy7p8k1SW5H79LT48wrbxh0UxNnW+1XYWFd9y6U9wVyNE1Auz/J7+RiBzDxKmpZsjzX0Ge+THxXGIxnTwrQU83kyVlGvu6uUyG0lJAi+lbQ80XIfrTqdbe4ObWwVER/sj/+3XHccx6Wxqofn88KqA91o/TJIkc0FVnRff+2cgLO5V0ntN7oErXZ3z3y53IaG1NUFfX8bevpzTI/6ZwSrfGYL1sJJH3lTyrp95i2i5PCf/MXLLq9Y3htgIZSDnGSVVz7EQk92dHjm63u5gknlyj2vZZSgPpB0yW2CHlbiMj4Q8g66N06vsNGdRP9L3PptJiF0Wi1qIeFvW4nTrRz+b/x+JiqH1JC2vymkVVw6P/y6QwaJex2Ub4qqmelf14SZGvgcyLZOM4jIEDXjT86D8D/b63BTPCH6OiyEBva4aPaN3cV9qNMIKRTqoU7jyxE7KFO8BJs+gGjEF6/ObQbRIwblc95Jj4d5Ufv2p+2IuB/NkjVknryPT8j4niCPUWEcGxYPvS9AexAikgT+mYOAZ4A7Tw3A==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700016)(23010399003)(11063799006)(56012099006)(10067099003)(6133799003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	ehKax6pDZHm18JGzTrqx+7TJqA78W4LOd664HtWT6SKDan/Y99h6hpvieHM+/IWA0Mp6ZTrQBOKebwbfkHer9TbS7GtqBMnfd2vBsp6NjEYWv+YyNfQEBW9xmOfdUKS8F7nH1lUB5wrfqVWwChJ4DvH5gI9bVfMQpvoP/ABOSHvI9Y2blKpLkBaZXqaiz0BXlpUm5hvZTf87qUJ48NGt0XEKAKq1FsSQAZWTol9tNHkajMtgObUb8bStOy7JYlfbbEOYXACl5uLRhySi/tmAUcLPl9yJbamuOGj0vLszZapFQAg15wPo7NYoDCAqEmM74pXAcshAcpQfpzEFQZ9weGk+fmeEPCcCVIch1nzpYF8n70ljxi6gGyrhIoBn3bTHKGjzKcR1m2Xqnw1PsIqsQO4lyZ1wrp94wIXILXs0HYFoi3ijl0YMZUYBkxdrKgY8
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2026 12:27:55.1050
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae5e502d-c6d4-46c5-a388-08def3b62456
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001F6.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9690
 
-On Wed, Jul 22, 2026 at 3:16=E2=80=AFPM Sudeep Holla <sudeep.holla@kernel.o=
-rg> wrote:
->
-> ACPI 6.3, section 5.5.2.4.7.3, states that the PCC Operation
-> Region is associated with the region of shared memory that follows the
-> PCC signature.
->
-> The generic and extended PCC shared memory layouts include the 4-byte
-> signature at offset 0, so their raw shared memory COMMAND fields are at
-> offsets 4 and 12 respectively. Since AML field offsets for the PCC
-> OperationRegion are relative to the region after that signature, ACPICA
-> must look for those COMMAND fields at OperationRegion offsets 0 and 8.
->
-> Adjust the generic and master subspace command checks to use those
-> OperationRegion-relative offsets. Otherwise writes to the COMMAND field
-> can fail to invoke the PCC address space handler at the offset described
-> by the PCC OperationRegion definition.
->
-> Fixes: aa6ec56b574d ("ACPICA: ACPI 6.3: add PCC operation region support =
-for AML interpreter")
-> Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
-> ---
->  drivers/acpi/acpica/exfield.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.=
-c
-> index 9a55524ed8f4..a7fac63938b3 100644
-> --- a/drivers/acpi/acpica/exfield.c
-> +++ b/drivers/acpi/acpica/exfield.c
-> @@ -45,12 +45,13 @@ static const u8 acpi_protocol_lengths[] =3D {
->
->  /*
->   * The following macros determine a given offset is a COMD field.
-> - * According to the specification, generic subspaces (types 0-2) contain=
-s a
-> - * 2-byte COMD field at offset 4 and master subspaces (type 3) contains =
-a 4-byte
-> - * COMD field starting at offset 12.
-> + * According to the specification, the PCC OperationRegion begins after
-> + * the PCC signature. The raw shared memory COMD offsets of 4 for generi=
-c
-> + * subspaces (types 0-2) and 12 for master subspaces (type 3) therefore
-> + * appear at OperationRegion offsets 0 and 8.
->   */
-> -#define GENERIC_SUBSPACE_COMMAND(a)     (4 =3D=3D a || a =3D=3D 5)
-> -#define MASTER_SUBSPACE_COMMAND(a)      (12 <=3D a && a <=3D 15)
-> +#define GENERIC_SUBSPACE_COMMAND(a)     ((a) < 2)
-> +#define MASTER_SUBSPACE_COMMAND(a)      (((a) - 8) < 4)
->
->  /***********************************************************************=
-********
->   *
-> --
+Commit 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
+makes the ACPI power button driver report KEY_WAKEUP from its resume
+callback. However, that callback is run whenever the ACPI button device
+is resumed, regardless of the actual system wakeup source.
 
-Can you please see the corresponding upstream ACPICA pull request?
-There are concerns regarding it.
+As a result, userspace may receive a KEY_WAKEUP event after resumes
+caused by unrelated wakeup sources.
 
-Thanks!
+Avoid reporting the input event from acpi_button_resume(). Instead,
+report it only when the ACPI fixed power button status indicates that
+the power button was the wakeup source.
+
+Fixes: 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
+Signed-off-by: Baorui Liu <baorliu@amd.com>
+---
+ drivers/acpi/button.c     | 23 +++++++++++++++--------
+ drivers/acpi/sleep.c      | 21 +++++++++++++++++++++
+ drivers/acpi/sleep.h      |  1 +
+ drivers/acpi/x86/s2idle.c |  4 +++-
+ include/acpi/button.h     |  5 +++++
+ 5 files changed, 45 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+index 3836ee75dd66..700510f6e5d0 100644
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -480,6 +480,21 @@ static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
+ 					event, ++button->pushed);
+ }
+ 
++void acpi_power_button_wakeup(struct acpi_device *device)
++{
++	struct acpi_button *button = acpi_driver_data(device);
++	struct input_dev *input;
++
++	if (button->type == ACPI_BUTTON_TYPE_POWER) {
++		input = button->input;
++		input_report_key(input, KEY_WAKEUP, 1);
++		input_sync(input);
++		input_report_key(input, KEY_WAKEUP, 0);
++		input_sync(input);
++	}
++}
++EXPORT_SYMBOL(acpi_power_button_wakeup);
++
+ static void acpi_button_notify_run(void *data)
+ {
+ 	acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
+@@ -503,7 +518,6 @@ static int acpi_button_suspend(struct device *dev)
+ static int acpi_button_resume(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+-	struct input_dev *input;
+ 
+ 	button->suspended = false;
+ 	if (button->type == ACPI_BUTTON_TYPE_LID) {
+@@ -512,13 +526,6 @@ static int acpi_button_resume(struct device *dev)
+ 		acpi_lid_initialize_state(button);
+ 	}
+ 
+-	if (button->type == ACPI_BUTTON_TYPE_POWER) {
+-		input = button->input;
+-		input_report_key(input, KEY_WAKEUP, 1);
+-		input_sync(input);
+-		input_report_key(input, KEY_WAKEUP, 0);
+-		input_sync(input);
+-	}
+ 	return 0;
+ }
+ #endif
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index 132a9df98471..26bbecd0c166 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -22,6 +22,7 @@
+ #include <linux/syscore_ops.h>
+ #include <asm/io.h>
+ #include <trace/events/power.h>
++#include <acpi/button.h>
+ 
+ #include "internal.h"
+ #include "sleep.h"
+@@ -518,6 +519,7 @@ static void acpi_pm_finish(void)
+ 						    NULL, -1);
+ 	if (pwr_btn_adev) {
+ 		pm_wakeup_event(&pwr_btn_adev->dev, 0);
++		acpi_power_button_wakeup(pwr_btn_adev);
+ 		acpi_dev_put(pwr_btn_adev);
+ 	}
+ }
+@@ -818,6 +820,24 @@ bool acpi_s2idle_wake(void)
+ 	return false;
+ }
+ 
++void acpi_s2idle_restore_check_powerkey(void)
++{
++	struct acpi_device *pwr_btn_adev;
++	acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
++
++	acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
++
++	if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
++		pwr_btn_adev = acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POWERF,
++							    NULL, -1);
++		if (pwr_btn_adev) {
++			pm_wakeup_event(&pwr_btn_adev->dev, 0);
++			acpi_power_button_wakeup(pwr_btn_adev);
++			acpi_dev_put(pwr_btn_adev);
++		}
++	}
++}
++
+ void acpi_s2idle_restore(void)
+ {
+ 	/*
+@@ -849,6 +869,7 @@ static const struct platform_s2idle_ops acpi_s2idle_ops = {
+ 	.begin = acpi_s2idle_begin,
+ 	.prepare = acpi_s2idle_prepare,
+ 	.wake = acpi_s2idle_wake,
++	.restore_early = acpi_s2idle_restore_check_powerkey,
+ 	.restore = acpi_s2idle_restore,
+ 	.end = acpi_s2idle_end,
+ };
+diff --git a/drivers/acpi/sleep.h b/drivers/acpi/sleep.h
+index 9c3cb109c5d2..50382c90446c 100644
+--- a/drivers/acpi/sleep.h
++++ b/drivers/acpi/sleep.h
+@@ -18,6 +18,7 @@ static inline acpi_status acpi_set_waking_vector(u32 wakeup_address)
+ extern int acpi_s2idle_begin(void);
+ extern int acpi_s2idle_prepare(void);
+ extern bool acpi_s2idle_wake(void);
++extern void acpi_s2idle_restore_check_powerkey(void);
+ extern void acpi_s2idle_restore(void);
+ extern void acpi_s2idle_end(void);
+ 
+diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+index b6b1dd76a06b..ce6663c1ef70 100644
+--- a/drivers/acpi/x86/s2idle.c
++++ b/drivers/acpi/x86/s2idle.c
+@@ -598,8 +598,10 @@ static void acpi_s2idle_restore_early_lps0(void)
+ {
+ 	struct acpi_s2idle_dev_ops *handler;
+ 
+-	if (!lps0_device_handle || sleep_no_lps0)
++	if (!lps0_device_handle || sleep_no_lps0) {
++		acpi_s2idle_restore_check_powerkey();
+ 		return;
++	}
+ 
+ 	list_for_each_entry(handler, &lps0_s2idle_devops_head, list_node)
+ 		if (handler->restore)
+diff --git a/include/acpi/button.h b/include/acpi/button.h
+index af2fce5d2ee3..3cbf3272371e 100644
+--- a/include/acpi/button.h
++++ b/include/acpi/button.h
+@@ -8,11 +8,16 @@
+ 
+ #if IS_ENABLED(CONFIG_ACPI_BUTTON)
+ extern int acpi_lid_open(void);
++extern void acpi_power_button_wakeup(struct acpi_device *device);
+ #else
+ static inline int acpi_lid_open(void)
+ {
+ 	return 1;
+ }
++
++static inline void acpi_power_button_wakeup(struct acpi_device *device)
++{
++}
+ #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
+ 
+ #endif /* ACPI_BUTTON_H */
+
+base-commit: 4d823c9d06aaa91476b58e56e4d44c4112da2811
+-- 
+2.34.1
+
