@@ -1,279 +1,157 @@
-Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010041.outbound.protection.outlook.com [40.93.198.41])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD6747254D
-	for <acpica-devel@lists.linux.dev>; Thu,  6 Aug 2026 12:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786019286; cv=fail; b=GDR7gIJz94gPb7zFe28qT0HbYEmN1q49xgpQ58gPf/T1j+agjBfuneRd16TshwM+YcYZAl0Jjfj0hGJ2DbnjR6laYQ2jcdDvH+E9Cx8Mz+PWZ6+jXPvk6oUs5ejr24MGlJ+tTvWcNWsqvfDOeoiv8mXg1Doijzesgx67ZyuZb+s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786019286; c=relaxed/simple;
-	bh=sXlQPhxmA7oV6XT9IkfoGGIvXXKyZIxj9zAMpdX7VIY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qWOpMNmm/+NPLpJgaf6i7rAaJqWXpN7auTLU3ABCWiximho9ucqgHdm7uOmNVHYRX0qWfbDbGH2U2dRLaiYu0wnHA0wMHxgLx7wbjQ6/ZiEKZvqdqvw/ImoF+mplPabuGLoaDjGISZoRmY/sPCH6RKWIHV5mEn/14UsW7zSFepI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=o8QJx9L0; arc=fail smtp.client-ip=40.93.198.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23224372EFA;
+	Thu,  6 Aug 2026 17:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786038059; cv=none; b=SY15D+Ve2btwkfU7ggsWmYFvQVbTeMkMUK7fyKVqjzliwscMO/taDK7moXQPl3gmfWjC+Dalr19Foj/wSNW1J/X5ZWrB+oa466BuVcew4mzR1d992mUiwX5Fjda/TqxFBhbXRPMnhhjdFeZDyoSuUllufKblNGvbecJFP1Rm1tA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786038059; c=relaxed/simple;
+	bh=jR6UAf+W3pRyagiBnBIthX9L1RTvVK8tgmNzQD67mJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GnxA61I61T8q3hiKRA2zTWkPq4jZoCjbelZ06oazTGLVBlSRkHxB7DOC5PTDTSBV4C07/yjbMVAfafT7IVI9tjJC9x1WbOGmFfE/HdV9bz/C7nzmeb70h0UZXyb0uethVduKy1Fq3pnyjBYrx4m9rz9gyvQy9RXBX8d5JH4yV30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lWpTxuxP; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="o8QJx9L0"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AqFdD8ycPW5rkUnPcavUFC3ejhphlrIrHQ7wSuotpjE94zdxYflFxepmSKJld6ZyjESa5+kqDm5PGQfj7fj1e9FQrV7DGoHzK7oJCfJpCZuBeAmA1h7GmRuKDz44U1PAcibDNsRXzYR2fbQoTW22J6oMcmRSwJkHWVg/5t8e8GGvcRyHr+/nEktRiySPBQfzlFTPX6as6sA4W6abK24OCPTTyCQ0iZF5RLWXOs5bYSl64Kew/8pChIiDw5LqesZDLWFf2S5dQHiyq2QG/ob6i4KVe/LAJciUSGRo0tNyqqj86z8y8N49F3ou3l8hfFVMyUg9nC9wVHm9WoNaKR7xaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UiWw0qNpX3vBEChGCu9SyB4oejHSlrQLcyqjVMnwrOM=;
- b=rXwJiysrRJi4l3G6HuWH+GeysInfyfIZUV8TBiS9YetjCqLFrBjfilEyA+mdsx8+QipAg0/JvknQIAChSD/iCh/f9yWFmKUnmR2FxE4KWc0EBIGymaSIDm0Rj478ErUKFRQfCyO+Vlh45LER6YJRh1H4VCV2g7VNWGhx2pnkzpqQEihoZSp6+7iB5PVYvhf7uxY7FbumiZbu9pDrS8CAP1bmPmsJt0vc5XbA1xOqqlZjZVoK+jFkD7/SKZoe6wwxfgOaInnwZDfbazEtknVQXcirG/z4giMklO14uhexsZQQUzaIJV+OTpofLduYj+SpjsKaYdL7IrZ0u2SsuYMuGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UiWw0qNpX3vBEChGCu9SyB4oejHSlrQLcyqjVMnwrOM=;
- b=o8QJx9L0+VJdKobt20P0WDsm0DGaI/amBdlLfoXl0r0PYwZzIKySVzWl8bXEf20lvi6tpCNfF7nJGfUf3s6Pb3OA1yMbzQ1xGgQnedT+Ha2ngobruMsgKPNCR67XT78B8vOJtSRzzw5OFaGvkjXs8EqvauqliKzczdYQG89AphQ=
-Received: from SJ0PR13CA0192.namprd13.prod.outlook.com (2603:10b6:a03:2c3::17)
- by LV8PR12MB9690.namprd12.prod.outlook.com (2603:10b6:408:296::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.21; Thu, 6 Aug
- 2026 12:27:55 +0000
-Received: from SJ5PEPF000001F6.namprd05.prod.outlook.com
- (2603:10b6:a03:2c3:cafe::8a) by SJ0PR13CA0192.outlook.office365.com
- (2603:10b6:a03:2c3::17) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.7 via Frontend Transport; Thu, 6
- Aug 2026 12:27:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- SJ5PEPF000001F6.mail.protection.outlook.com (10.167.242.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.315.6 via Frontend Transport; Thu, 6 Aug 2026 12:27:55 +0000
-Received: from localhost.amd.com (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Thu, 6 Aug
- 2026 07:27:52 -0500
-From: Baorui Liu <baorliu@amd.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>
-CC: Len Brown <lenb@kernel.org>, Mario Limonciello <superm1@kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, Baorui Liu <baorliu@amd.com>
-Subject: [PATCH] ACPI: button: Report wakeup key only for power button wakeups
-Date: Thu, 6 Aug 2026 20:27:32 +0800
-Message-ID: <20260806122732.533-1-baorliu@amd.com>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lWpTxuxP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1786038058; x=1817574058;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jR6UAf+W3pRyagiBnBIthX9L1RTvVK8tgmNzQD67mJU=;
+  b=lWpTxuxPDWz8JQzO9DOn/GoslLZ7c1UN3NkPUIy08mh9OA2HKcWIcxuy
+   ihbPUl7o8B8tjcSghoWzuPTmAZH4cZfv/ra1ox4CtUy71ep0ZUEyzJbNJ
+   Ed0cFP4tDWbTzm+7pFJfZK0+LWTm0k93ApptxeFJRDmpeNdtLKpwGPZfd
+   BcodF6DnuNYkysOLHvssREQN1nEPz1eUI0zOb3u1IkN/cc/I04ncO8Cjo
+   5nV9l5B1oifh1XR181yst5Hguru/xgQAiBIvIjZOjZYwkHYjJE3bFzPAy
+   uc8RnMtnlJ+CKjQW1u4HLwdyPWb6XgynmYpFQxlsh6OMYTlkpzGZjTWdm
+   g==;
+X-CSE-ConnectionGUID: 6LjKdj7kR/++lQbyiQ35uw==
+X-CSE-MsgGUID: HGjLAP0jQAyJhJw/jeuFFg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11867"; a="98151987"
+X-IronPort-AV: E=Sophos;i="6.25,208,1779174000"; 
+   d="scan'208";a="98151987"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2026 10:40:57 -0700
+X-CSE-ConnectionGUID: 7DB5m3cyQx2LtjOXhuPo6g==
+X-CSE-MsgGUID: 1SUtF5e8QmWqOPxccB+TSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,208,1779174000"; 
+   d="scan'208";a="300373251"
+Received: from igk-lkp-server01.igk.intel.com (HELO 3cba2a188a06) ([10.211.93.152])
+  by orviesa001.jf.intel.com with ESMTP; 06 Aug 2026 10:40:51 -0700
+Received: from kbuild by 3cba2a188a06 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1ws25I-000000004f4-1D7z;
+	Thu, 06 Aug 2026 17:40:48 +0000
+Date: Thu, 6 Aug 2026 19:40:10 +0200
+From: kernel test robot <lkp@intel.com>
+To: Markus Elfring <Markus.Elfring@web.de>, acpica-devel@lists.linux.dev,
+	bpf@vger.kernel.org, coresight@lists.linaro.org,
+	kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	mptcp@lists.linux.dev, netdev@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org, virtualization@lists.linux.dev,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alex Mastro <amastro@fb.com>, Alex Williamson <alex@shazbot.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andi Kleen <ak@linux.intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH] tools: Use fputc() calls in some functions
+Message-ID: <202608061909.wj199SHx-lkp@intel.com>
+References: <48f2d61f-d468-49b7-881e-f00777db073f@web.de>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: satlexmb08.amd.com (10.181.42.217) To satlexmb07.amd.com
- (10.181.42.216)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001F6:EE_|LV8PR12MB9690:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae5e502d-c6d4-46c5-a388-08def3b62456
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700016|23010399003|11063799006|56012099006|10067099003|6133799003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	TcWiGf0n30uzaJ9V7g/JXAcG9vWCfKepUee87pPuNi/4OaH5mz+JahmaMqjBfuzcUsDPxwLJP6fIMbfIQLyKIhAcNOet7EUDL1tLpNTK+1JoasXRCiCsO4R4w6mJ8X/uqqpIUmfXZAucUm4WlIrYVBadVFFFJ2fHZDb9p7p1NpkVdmXxVaDDTzm/RyEy7p8k1SW5H79LT48wrbxh0UxNnW+1XYWFd9y6U9wVyNE1Auz/J7+RiBzDxKmpZsjzX0Ge+THxXGIxnTwrQU83kyVlGvu6uUyG0lJAi+lbQ80XIfrTqdbe4ObWwVER/sj/+3XHccx6Wxqofn88KqA91o/TJIkc0FVnRff+2cgLO5V0ntN7oErXZ3z3y53IaG1NUFfX8bevpzTI/6ZwSrfGYL1sJJH3lTyrp95i2i5PCf/MXLLq9Y3htgIZSDnGSVVz7EQk92dHjm63u5gknlyj2vZZSgPpB0yW2CHlbiMj4Q8g66N06vsNGdRP9L3PptJiF0Wi1qIeFvW4nTrRz+b/x+JiqH1JC2vymkVVw6P/y6QwaJex2Ub4qqmelf14SZGvgcyLZOM4jIEDXjT86D8D/b63BTPCH6OiyEBva4aPaN3cV9qNMIKRTqoU7jyxE7KFO8BJs+gGjEF6/ObQbRIwblc95Jj4d5Ufv2p+2IuB/NkjVknryPT8j4niCPUWEcGxYPvS9AexAikgT+mYOAZ4A7Tw3A==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700016)(23010399003)(11063799006)(56012099006)(10067099003)(6133799003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	ehKax6pDZHm18JGzTrqx+7TJqA78W4LOd664HtWT6SKDan/Y99h6hpvieHM+/IWA0Mp6ZTrQBOKebwbfkHer9TbS7GtqBMnfd2vBsp6NjEYWv+YyNfQEBW9xmOfdUKS8F7nH1lUB5wrfqVWwChJ4DvH5gI9bVfMQpvoP/ABOSHvI9Y2blKpLkBaZXqaiz0BXlpUm5hvZTf87qUJ48NGt0XEKAKq1FsSQAZWTol9tNHkajMtgObUb8bStOy7JYlfbbEOYXACl5uLRhySi/tmAUcLPl9yJbamuOGj0vLszZapFQAg15wPo7NYoDCAqEmM74pXAcshAcpQfpzEFQZ9weGk+fmeEPCcCVIch1nzpYF8n70ljxi6gGyrhIoBn3bTHKGjzKcR1m2Xqnw1PsIqsQO4lyZ1wrp94wIXILXs0HYFoi3ijl0YMZUYBkxdrKgY8
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2026 12:27:55.1050
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae5e502d-c6d4-46c5-a388-08def3b62456
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001F6.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9690
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48f2d61f-d468-49b7-881e-f00777db073f@web.de>
 
-Commit 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
-makes the ACPI power button driver report KEY_WAKEUP from its resume
-callback. However, that callback is run whenever the ACPI button device
-is resumed, regardless of the actual system wakeup source.
+Hi Markus,
 
-As a result, userspace may receive a KEY_WAKEUP event after resumes
-caused by unrelated wakeup sources.
+kernel test robot noticed the following build errors:
 
-Avoid reporting the input event from acpi_button_resume(). Instead,
-report it only when the ACPI fixed power button status indicates that
-the power button was the wakeup source.
+[auto build test ERROR on perf-tools-next/perf-tools-next]
+[also build test ERROR on tip/perf/core perf-tools/perf-tools linus/master v7.2-rc6 next-20260806]
+[cannot apply to acme/perf/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
-Signed-off-by: Baorui Liu <baorliu@amd.com>
----
- drivers/acpi/button.c     | 23 +++++++++++++++--------
- drivers/acpi/sleep.c      | 21 +++++++++++++++++++++
- drivers/acpi/sleep.h      |  1 +
- drivers/acpi/x86/s2idle.c |  4 +++-
- include/acpi/button.h     |  5 +++++
- 5 files changed, 45 insertions(+), 9 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Markus-Elfring/tools-Use-fputc-calls-in-some-functions/20260806-165154
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+patch link:    https://lore.kernel.org/r/48f2d61f-d468-49b7-881e-f00777db073f%40web.de
+patch subject: [PATCH] tools: Use fputc() calls in some functions
+config: x86_64-kexec (https://download.01.org/0day-ci/archive/20260806/202608061909.wj199SHx-lkp@intel.com/config)
+compiler: clang version 22.1.8 (https://github.com/llvm/llvm-project ca7933e47d3a3451d81e72ac174dcb5aa28b59d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260806/202608061909.wj199SHx-lkp@intel.com/reproduce)
 
-diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-index 3836ee75dd66..700510f6e5d0 100644
---- a/drivers/acpi/button.c
-+++ b/drivers/acpi/button.c
-@@ -480,6 +480,21 @@ static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
- 					event, ++button->pushed);
- }
- 
-+void acpi_power_button_wakeup(struct acpi_device *device)
-+{
-+	struct acpi_button *button = acpi_driver_data(device);
-+	struct input_dev *input;
-+
-+	if (button->type == ACPI_BUTTON_TYPE_POWER) {
-+		input = button->input;
-+		input_report_key(input, KEY_WAKEUP, 1);
-+		input_sync(input);
-+		input_report_key(input, KEY_WAKEUP, 0);
-+		input_sync(input);
-+	}
-+}
-+EXPORT_SYMBOL(acpi_power_button_wakeup);
-+
- static void acpi_button_notify_run(void *data)
- {
- 	acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
-@@ -503,7 +518,6 @@ static int acpi_button_suspend(struct device *dev)
- static int acpi_button_resume(struct device *dev)
- {
- 	struct acpi_button *button = dev_get_drvdata(dev);
--	struct input_dev *input;
- 
- 	button->suspended = false;
- 	if (button->type == ACPI_BUTTON_TYPE_LID) {
-@@ -512,13 +526,6 @@ static int acpi_button_resume(struct device *dev)
- 		acpi_lid_initialize_state(button);
- 	}
- 
--	if (button->type == ACPI_BUTTON_TYPE_POWER) {
--		input = button->input;
--		input_report_key(input, KEY_WAKEUP, 1);
--		input_sync(input);
--		input_report_key(input, KEY_WAKEUP, 0);
--		input_sync(input);
--	}
- 	return 0;
- }
- #endif
-diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-index 132a9df98471..26bbecd0c166 100644
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -22,6 +22,7 @@
- #include <linux/syscore_ops.h>
- #include <asm/io.h>
- #include <trace/events/power.h>
-+#include <acpi/button.h>
- 
- #include "internal.h"
- #include "sleep.h"
-@@ -518,6 +519,7 @@ static void acpi_pm_finish(void)
- 						    NULL, -1);
- 	if (pwr_btn_adev) {
- 		pm_wakeup_event(&pwr_btn_adev->dev, 0);
-+		acpi_power_button_wakeup(pwr_btn_adev);
- 		acpi_dev_put(pwr_btn_adev);
- 	}
- }
-@@ -818,6 +820,24 @@ bool acpi_s2idle_wake(void)
- 	return false;
- }
- 
-+void acpi_s2idle_restore_check_powerkey(void)
-+{
-+	struct acpi_device *pwr_btn_adev;
-+	acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
-+
-+	acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
-+
-+	if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
-+		pwr_btn_adev = acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POWERF,
-+							    NULL, -1);
-+		if (pwr_btn_adev) {
-+			pm_wakeup_event(&pwr_btn_adev->dev, 0);
-+			acpi_power_button_wakeup(pwr_btn_adev);
-+			acpi_dev_put(pwr_btn_adev);
-+		}
-+	}
-+}
-+
- void acpi_s2idle_restore(void)
- {
- 	/*
-@@ -849,6 +869,7 @@ static const struct platform_s2idle_ops acpi_s2idle_ops = {
- 	.begin = acpi_s2idle_begin,
- 	.prepare = acpi_s2idle_prepare,
- 	.wake = acpi_s2idle_wake,
-+	.restore_early = acpi_s2idle_restore_check_powerkey,
- 	.restore = acpi_s2idle_restore,
- 	.end = acpi_s2idle_end,
- };
-diff --git a/drivers/acpi/sleep.h b/drivers/acpi/sleep.h
-index 9c3cb109c5d2..50382c90446c 100644
---- a/drivers/acpi/sleep.h
-+++ b/drivers/acpi/sleep.h
-@@ -18,6 +18,7 @@ static inline acpi_status acpi_set_waking_vector(u32 wakeup_address)
- extern int acpi_s2idle_begin(void);
- extern int acpi_s2idle_prepare(void);
- extern bool acpi_s2idle_wake(void);
-+extern void acpi_s2idle_restore_check_powerkey(void);
- extern void acpi_s2idle_restore(void);
- extern void acpi_s2idle_end(void);
- 
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index b6b1dd76a06b..ce6663c1ef70 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -598,8 +598,10 @@ static void acpi_s2idle_restore_early_lps0(void)
- {
- 	struct acpi_s2idle_dev_ops *handler;
- 
--	if (!lps0_device_handle || sleep_no_lps0)
-+	if (!lps0_device_handle || sleep_no_lps0) {
-+		acpi_s2idle_restore_check_powerkey();
- 		return;
-+	}
- 
- 	list_for_each_entry(handler, &lps0_s2idle_devops_head, list_node)
- 		if (handler->restore)
-diff --git a/include/acpi/button.h b/include/acpi/button.h
-index af2fce5d2ee3..3cbf3272371e 100644
---- a/include/acpi/button.h
-+++ b/include/acpi/button.h
-@@ -8,11 +8,16 @@
- 
- #if IS_ENABLED(CONFIG_ACPI_BUTTON)
- extern int acpi_lid_open(void);
-+extern void acpi_power_button_wakeup(struct acpi_device *device);
- #else
- static inline int acpi_lid_open(void)
- {
- 	return 1;
- }
-+
-+static inline void acpi_power_button_wakeup(struct acpi_device *device)
-+{
-+}
- #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
- 
- #endif /* ACPI_BUTTON_H */
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202608061909.wj199SHx-lkp@intel.com/
 
-base-commit: 4d823c9d06aaa91476b58e56e4d44c4112da2811
--- 
-2.34.1
+All errors (new ones prefixed by >>):
 
+>> builtin-check.c:300:8: error: incompatible pointer to integer conversion passing 'FILE *' (aka 'struct _IO_FILE *') to parameter of type 'int' [-Wint-conversion]
+     300 |         fputc(stderr, '\n');
+         |               ^~~~~~
+   /usr/include/stdio.h:155:16: note: expanded from macro 'stderr'
+     155 | #define stderr stderr
+         |                ^~~~~~
+   /usr/include/stdio.h:611:23: note: passing argument to parameter '__c' here
+     611 | extern int fputc (int __c, FILE *__stream) __nonnull ((2));
+         |                       ^
+>> builtin-check.c:300:16: error: incompatible integer to pointer conversion passing 'int' to parameter of type 'FILE *' (aka 'struct _IO_FILE *') [-Wint-conversion]
+     300 |         fputc(stderr, '\n');
+         |                       ^~~~
+   /usr/include/stdio.h:611:34: note: passing argument to parameter '__stream' here
+     611 | extern int fputc (int __c, FILE *__stream) __nonnull ((2));
+         |                                  ^
+   2 errors generated.
+   make[5]: *** [tools/build/Makefile.build:95: tools/objtool/builtin-check.o] Error 1
+>> disas.c:540:9: error: incompatible pointer to integer conversion passing 'FILE *' (aka 'struct _IO_FILE *') to parameter of type 'int' [-Wint-conversion]
+     540 |                 fputc(stream, '\n');
+         |                       ^~~~~~
+   /usr/include/stdio.h:611:23: note: passing argument to parameter '__c' here
+     611 | extern int fputc (int __c, FILE *__stream) __nonnull ((2));
+         |                       ^
+>> disas.c:540:17: error: incompatible integer to pointer conversion passing 'int' to parameter of type 'FILE *' (aka 'struct _IO_FILE *') [-Wint-conversion]
+     540 |                 fputc(stream, '\n');
+         |                               ^~~~
+   /usr/include/stdio.h:611:34: note: passing argument to parameter '__stream' here
+     611 | extern int fputc (int __c, FILE *__stream) __nonnull ((2));
+         |                                  ^
+   2 errors generated.
+   make[5]: *** [tools/build/Makefile.build:95: tools/objtool/disas.o] Error 1
+   make[5]: Target '__build' not remade because of errors.
+   make[4]: *** [Makefile:123: tools/objtool/objtool-in.o] Error 2
+   make[4]: Target 'all' not remade because of errors.
+   make[3]: *** [Makefile:74: objtool] Error 2
+   make[2]: *** [Makefile:1587: tools/objtool] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:248: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:248: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
