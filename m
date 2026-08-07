@@ -1,246 +1,181 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010000.outbound.protection.outlook.com [52.101.193.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F9A36A370
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Aug 2026 14:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786111969; cv=none; b=t6KOwybMCJ6DaLwXODDo4k1rj5NsUVZa/pWR3JCBxPKF1EhE6cw7ieCN+WiyVuEzDVoBMPZl4nuWTiA78BUQB8V1VrlYHK10CuIr5qBjMISfsfperCHI/apwzhcrwJ4z+KuOgqp0fW4gwW0NPC4cuCYH6xLkO1knCYzXHxShm1Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786111969; c=relaxed/simple;
-	bh=OIaD/Mi7SOlolhAA46mA4zpn6Wu8tMT9nZKkH0mlhb8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KChdmGryqKmxVNRck/DWFBo+fdcmRjbzD1cso3CVNUUm4hblZxXL1QnTTCRwtQO2ggpG9CWyecvCkvIV+PhdKwTpy+RCzvId6DkgJeExGBKtHVL6OaGe0A6m5xCuNEs0csLSX46fu1UB2h5M988O26Vi9BVPEO2dtdpfV0GYMPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfOQyojD; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B604137F300
+	for <acpica-devel@lists.linux.dev>; Fri,  7 Aug 2026 21:49:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.0
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786139364; cv=fail; b=hx51yQlQQI6/RF411TTZtMn30zWF2Sn6TeE56ksvEm3cRVB3DySSls7RzQ9fWcrcaDpWHckqDZsyRZfFWX5Vu2+m3MLmxnPqs0yPJjOy6jenfIth+Jw14s0fD5/na5IPkR66tgD1xc7V+Q5k2+okhhsJXxBE1jtKVmyEHskv1p4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786139364; c=relaxed/simple;
+	bh=+Hjgi4bILmzpM9PDpY9hg4q1Bad38plV5ie36/SNSUY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TfLF/336CaQWr4NxSc8uwP1vC/cBvkQPVnm58W1BO2LUJU0ibgrgxyzBFh0WTFLGuCM/10k5msCkJlNfXB6/ZUvIucob/MVPdXs3p9G49pX6CXmvrqN424CuO6RyWe1EJpTneah/YTCdP+IJEjbOFdEcYEvykj39ZkFx8YQPFCU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PZKMkIHu; arc=fail smtp.client-ip=52.101.193.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfOQyojD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB14D1F000E9
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Aug 2026 14:12:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786111965;
-	bh=pXvVKfNQMMuwXjlce+18+h5QJMFg5pG10/CntClGMBg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=lfOQyojDqvBooE7ANP7Gp9HdFipEf0i8/icrrEkdKpGNlbRa9dFJCYHnjCQ037BKo
-	 UiwW7YAhmLzUKN8w2BhOOIoEURzJ6QQLdIzpBUGIGMtyuHmlRpOI+k97OdJ1QOrILL
-	 KXYJWUo52r+W5RrBIHpK9XKcF/ACMX1MAZOcWl/GX8V/U6iSI1kfYEu8YjYHk9fBFt
-	 NWtEiTqhE0QRxiQcJUtkr0KDFDpLcUaG46S5dp5rq97KSFzUSRAMBnWzklV5y7G2rU
-	 GH5IWNKpCZJk2+rlReJmiEHCG8H/ux8EKrGMNCtKh3O5v9I3nUmvw7u3yZONe/pzsp
-	 DjBYg4Qt+lArg==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5b021916bd3so3603888e87.3
-        for <acpica-devel@lists.linux.dev>; Fri, 07 Aug 2026 07:12:45 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RoAG0x+IynXDv3dhqq/tSCZ59dsCQpikntpS4qPZZNX3ibtX2zpmhFEki4LNhuJvTDwpIBuydZ3JbDeSU4=@lists.linux.dev
-X-Gm-Message-State: AOJu0YyDW8jRaSPc9hf8qAs6FvtQ5JCace6vRwJGMOuPTqSiv5s2tIxh
-	FAoAd+tVAToHqdnrDx9o9AB3tLHNM+VR9/lWYFXuWlCJjf3Wu027wQZPQc0sWnKYad9gjWkRxnB
-	jrk4WdmzLviHKM142FjwClR5wQ6cJeVA=
-X-Received: by 2002:a05:6512:304a:b0:5b2:a6eb:ff2f with SMTP id
- 2adb3069b0e04-5b30b786252mr83259e87.43.1786111964210; Fri, 07 Aug 2026
- 07:12:44 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PZKMkIHu"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=A7UFUcFSP3DqCpoY+sUrbX0+mzEXljCVxY70N7FoG+bc0HNLXaOGaTwssOdwIduHWjUPw+wUezOsU8BcIY983Aojlh8QMs9nXp0qVrOAcaEo4mNQYWY6Zk0fgMfRbxR3Q3CJQrhVOFOFFMUzhBshg/k3LrGx5P9jrSncSwy9PL0SCG8ORfdpf1TXhxInJzR8OpUqGLijxU0wGSnpjVsB1XrjAdxPC04Nx7yMVtmSFclQnpLbF+XmzfkGsiQVAWBc2ZNPH0VqB087HLyXTMqRonBYgtMYDf3D0/8QsAJ/7lgHAAAhqnEqAXpLyOW4TA/p3cvM3indWCPetP/0pI+uVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XMhesy9ER0eTiVNPZIuNBUCbNR0C5eh1JKA7mMZvcYA=;
+ b=ShVIoHCtARD0jg1Qhh2kGHWxlvfK3k+w2X86EbDWSyA4CO4Hq+Jy196ooq4nK6CEQe817sa3sv+19KryoiA+pjQ21XUi2SPEbuSSH91tUA48Hm9/iyFA7C8TTOzTXmgUvW0Bn4dHxBfQ476N6boGGea6QKHGr+oDnRfezSP9nEPMlX9fBUPyfJA1PYmOI7uVsjxKPUnIpP0wdvO3GjL3TD3X+3B7iBLUaln6CawXCkPIJ0EpvIAhfaKzXWPiaEgNwftGvBKuWFVKH2Gwa2bVLngjjP+zkqW/Ozp53CaCaLiq0Ki0Ec6apwo+xm/PWftmg7KOj/i7EtPWP/JfmMUIGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XMhesy9ER0eTiVNPZIuNBUCbNR0C5eh1JKA7mMZvcYA=;
+ b=PZKMkIHu5QrswkkYHBb2nYPsUv1OYzYJ148D9Ac9W7EyL70VvmNRpkcircjUQdh1WeAi3D4ORMAd9e1SmzdaXyNdr6VG1yq6MX2KOMijVtq6NbZ7IgmIQXaVsKPJCFbMya5I7DVmbmsoGkureXQgA87e9X8m/eJQc3lRZ9iTRFVbXcWSr0xS52mli63E8FCTdM7w+DQTJJwGvBmguVugddpiQWH9JeHZcn98cguCMZUr/WWZ1F4X4hnY+Mkdy7XnAzVXHW6PFIkrrBWU1Dwq+KiZ5cQntku+VQI4LHIl96FJSPT6REUnXkqNOT7TuYN03iWiuRXUx9CeL0jmTfnpLQ==
+Received: from SJ0PR03CA0300.namprd03.prod.outlook.com (2603:10b6:a03:39e::35)
+ by CH3PR12MB8901.namprd12.prod.outlook.com (2603:10b6:610:180::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.21; Fri, 7 Aug
+ 2026 21:49:15 +0000
+Received: from BY1PEPF0001AE18.namprd04.prod.outlook.com
+ (2603:10b6:a03:39e:cafe::7b) by SJ0PR03CA0300.outlook.office365.com
+ (2603:10b6:a03:39e::35) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.292.23 via Frontend Transport; Fri, 7
+ Aug 2026 21:49:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BY1PEPF0001AE18.mail.protection.outlook.com (10.167.242.100) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.315.6 via Frontend Transport; Fri, 7 Aug 2026 21:49:15 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 7 Aug
+ 2026 14:48:58 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 7 Aug
+ 2026 14:48:58 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Fri, 7 Aug 2026 14:48:52 -0700
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
+	<saket.dumbre@intel.co>, <mario.limonciello@amd.com>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-tegra@vger.kernel.org>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [PATCH v7 0/3] ACPI / cpufreq: CPPC: Add ospm_nominal_perf support
+Date: Sat, 8 Aug 2026 03:18:34 +0530
+Message-ID: <20260807214837.863209-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260806122732.533-1-baorliu@amd.com>
-In-Reply-To: <20260806122732.533-1-baorliu@amd.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Fri, 7 Aug 2026 16:12:31 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gY8TZUDfAvj7WPfVJNyY0PXOEVO1SOSUpuZXV87mpoJA@mail.gmail.com>
-X-Gm-Features: AUfX_mzySQLWrRT5rPulQjaWJpOnss-Yt6t9hXP39p6nQVi_sW6Gk8FRSJO6tpU
-Message-ID: <CAJZ5v0gY8TZUDfAvj7WPfVJNyY0PXOEVO1SOSUpuZXV87mpoJA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: button: Report wakeup key only for power button wakeups
-To: Baorui Liu <baorliu@amd.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Mario Limonciello <superm1@kernel.org>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY1PEPF0001AE18:EE_|CH3PR12MB8901:EE_
+X-MS-Office365-Filtering-Correlation-Id: c799c5e3-b031-439b-8edf-08def4cdb99d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|36860700016|376014|7416014|82310400026|1800799024|6133799003|56012099006|10067099003|11063799006|13003099007|18002099003|921020;
+X-Microsoft-Antispam-Message-Info:
+	589Gn4iyItpUG2APRpRinaWoLnWZ/hCILNNM7qoploTZ2wmiAGOKTXDI3eNbIK9QLOb8bR9EI3ILDbtU7HI7VkJec5L4+PoCIagDTO2WQiPu3e4+m8tua5BhSDckoMPmuxCuJjhuqrDptF8Vweny+CNe10vffQ/InmDHk+MFRGcHz5mAY7mXhm39KBsFXrTonYnnmzpPfwl4Q0nZ4EjaOdt8nWS9IuL10/13p/ob8OqI/eOpE4aX8PBm0rng0aH8Rsb/tZkTOg9q6I/UW4qdQPOD5Cyjc3eUvudc664tjFA4MGo0coqpWOp4pNaTM0P0kra0z+4LzUiwZadRl+K9e4vogp4007Nff8uvNxaufgWoMnDCPO9Yh/cTKEevsNFoDr0FV96GCSIOb0E2gMmtFy7WFT47Ue2p37HVreGrwcGMaYkbkdNkygDPKvTLh7IZhUGTM47M8Yx0fl/jEIOUhoBcXILNsF3LFoWWJVZ8RLtWNRnIwh3pgK7wgDFJY4VnhMypQn8Ig5qLRJx/mVf1HV96LmfV+M/sAbzcokLnCTPsIhuOilTeJpWAWcdnivybJuhUDNLqCrMMmNm97SXREFvEn5yG2qTBUDQh2273/kMGvQSaeeSDuLkaWNn2SjJnI+8xny468O7+HpTl7FZazKAd0v1FdSLTPx4jgg/G+7OGPxZ539yB0L575VzMmnuenY3r0JUZ8Df17MKQpAcZTruEvybLfnUm+yaYvefbHnZof902LBmAWZR+0eT+bNTO
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(23010399003)(36860700016)(376014)(7416014)(82310400026)(1800799024)(6133799003)(56012099006)(10067099003)(11063799006)(13003099007)(18002099003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	Xt0F77SWXQXY4If8HfgKk7oRzBrmCy2Mhhu27Q6TFILySEEexEtwKRt2lXOMGpz9l7uNahROxXSDsCh85LVKWrd9aK4/YvZG70LEVU49DCrkJY2YHf4G+DfyZNofuM01ciYzlRW48VUYZjm7lEaimXWy7tVjzdWlvA7wL5M/TThsMmC49lPffF/uYD9ys9eOVdVER0zFizIDr6Xg8E1mbl56KkuiagOe+s2Z+cKLtXsCeI2X7Cy8akdYq0blpkokWpNFl1f4/q/VJR8yagdr+8hh5IxB1+w8Bxf9T+x6ZrFOjel6bpC/fiQY1wu3uVPHbMu8kY89nvtHQjvSttluiTNhFgtnt4nvTT5/DriL6p9uIaIKZFORkTHMRupt7f0/Qu7Le41q4MsCfLKpRQaxCPJPsZAcX9sRkHBH0iNoZ0RQe+uSvcI0Zn3I+6ij4/OJ
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2026 21:49:15.1531
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c799c5e3-b031-439b-8edf-08def4cdb99d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BY1PEPF0001AE18.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8901
 
-On Thu, Aug 6, 2026 at 2:28=E2=80=AFPM Baorui Liu <baorliu@amd.com> wrote:
->
-> Commit 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
-> makes the ACPI power button driver report KEY_WAKEUP from its resume
-> callback. However, that callback is run whenever the ACPI button device
-> is resumed, regardless of the actual system wakeup source.
->
-> As a result, userspace may receive a KEY_WAKEUP event after resumes
-> caused by unrelated wakeup sources.
+This series adds support for the OSPM Nominal Performance register
+(ACPI 6.6, Section 8.4.6.1.2.6) to the CPPC ACPI and cpufreq drivers.
 
-So why is this a problem in practice?
+Unlike the read-only Nominal Performance register, OSPM Nominal
+Performance is writable and lets OSPM request a nominal level below
+the platform-reported nominal. The platform treats performance above
+this level as boost and below as throttle for its power and thermal
+decisions.
 
-> Avoid reporting the input event from acpi_button_resume(). Instead,
-> report it only when the ACPI fixed power button status indicates that
-> the power button was the wakeup source.
+ - Patch 1: adds cppc_set_ospm_nominal_perf() and
+   cppc_ospm_nominal_perf_supported().
 
-But power buttons need not be fixed event devices and there are also
-sleep buttons that can generate KEY_WAKEUP, and what about lids?
+ - Patch 2: adds the per-policy ospm_nominal_freq attribute in kHz, and
+   tracks the register in the OSPM-set save/restore table. The register
+   cannot be read back, so the attribute is write-only.
 
-> Fixes: 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
-> Signed-off-by: Baorui Liu <baorliu@amd.com>
-> ---
->  drivers/acpi/button.c     | 23 +++++++++++++++--------
->  drivers/acpi/sleep.c      | 21 +++++++++++++++++++++
->  drivers/acpi/sleep.h      |  1 +
->  drivers/acpi/x86/s2idle.c |  4 +++-
->  include/acpi/button.h     |  5 +++++
->  5 files changed, 45 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-> index 3836ee75dd66..700510f6e5d0 100644
-> --- a/drivers/acpi/button.c
-> +++ b/drivers/acpi/button.c
-> @@ -480,6 +480,21 @@ static void acpi_button_notify(acpi_handle handle, u=
-32 event, void *data)
->                                         event, ++button->pushed);
->  }
->
-> +void acpi_power_button_wakeup(struct acpi_device *device)
-> +{
-> +       struct acpi_button *button =3D acpi_driver_data(device);
-> +       struct input_dev *input;
-> +
-> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER) {
-> +               input =3D button->input;
-> +               input_report_key(input, KEY_WAKEUP, 1);
-> +               input_sync(input);
-> +               input_report_key(input, KEY_WAKEUP, 0);
-> +               input_sync(input);
-> +       }
-> +}
-> +EXPORT_SYMBOL(acpi_power_button_wakeup);
-> +
->  static void acpi_button_notify_run(void *data)
->  {
->         acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
-> @@ -503,7 +518,6 @@ static int acpi_button_suspend(struct device *dev)
->  static int acpi_button_resume(struct device *dev)
->  {
->         struct acpi_button *button =3D dev_get_drvdata(dev);
-> -       struct input_dev *input;
->
->         button->suspended =3D false;
->         if (button->type =3D=3D ACPI_BUTTON_TYPE_LID) {
-> @@ -512,13 +526,6 @@ static int acpi_button_resume(struct device *dev)
->                 acpi_lid_initialize_state(button);
->         }
->
-> -       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER) {
-> -               input =3D button->input;
-> -               input_report_key(input, KEY_WAKEUP, 1);
-> -               input_sync(input);
-> -               input_report_key(input, KEY_WAKEUP, 0);
-> -               input_sync(input);
-> -       }
->         return 0;
->  }
->  #endif
-> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> index 132a9df98471..26bbecd0c166 100644
-> --- a/drivers/acpi/sleep.c
-> +++ b/drivers/acpi/sleep.c
-> @@ -22,6 +22,7 @@
->  #include <linux/syscore_ops.h>
->  #include <asm/io.h>
->  #include <trace/events/power.h>
-> +#include <acpi/button.h>
->
->  #include "internal.h"
->  #include "sleep.h"
-> @@ -518,6 +519,7 @@ static void acpi_pm_finish(void)
->                                                     NULL, -1);
->         if (pwr_btn_adev) {
->                 pm_wakeup_event(&pwr_btn_adev->dev, 0);
-> +               acpi_power_button_wakeup(pwr_btn_adev);
->                 acpi_dev_put(pwr_btn_adev);
->         }
->  }
-> @@ -818,6 +820,24 @@ bool acpi_s2idle_wake(void)
->         return false;
->  }
->
-> +void acpi_s2idle_restore_check_powerkey(void)
-> +{
-> +       struct acpi_device *pwr_btn_adev;
-> +       acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISABLED;
-> +
-> +       acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
-> +
-> +       if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
-> +               pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON=
-_HID_POWERF,
-> +                                                           NULL, -1);
-> +               if (pwr_btn_adev) {
-> +                       pm_wakeup_event(&pwr_btn_adev->dev, 0);
-> +                       acpi_power_button_wakeup(pwr_btn_adev);
-> +                       acpi_dev_put(pwr_btn_adev);
-> +               }
-> +       }
-> +}
-> +
->  void acpi_s2idle_restore(void)
->  {
->         /*
-> @@ -849,6 +869,7 @@ static const struct platform_s2idle_ops acpi_s2idle_o=
-ps =3D {
->         .begin =3D acpi_s2idle_begin,
->         .prepare =3D acpi_s2idle_prepare,
->         .wake =3D acpi_s2idle_wake,
-> +       .restore_early =3D acpi_s2idle_restore_check_powerkey,
->         .restore =3D acpi_s2idle_restore,
->         .end =3D acpi_s2idle_end,
->  };
-> diff --git a/drivers/acpi/sleep.h b/drivers/acpi/sleep.h
-> index 9c3cb109c5d2..50382c90446c 100644
-> --- a/drivers/acpi/sleep.h
-> +++ b/drivers/acpi/sleep.h
-> @@ -18,6 +18,7 @@ static inline acpi_status acpi_set_waking_vector(u32 wa=
-keup_address)
->  extern int acpi_s2idle_begin(void);
->  extern int acpi_s2idle_prepare(void);
->  extern bool acpi_s2idle_wake(void);
-> +extern void acpi_s2idle_restore_check_powerkey(void);
->  extern void acpi_s2idle_restore(void);
->  extern void acpi_s2idle_end(void);
->
-> diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-> index b6b1dd76a06b..ce6663c1ef70 100644
-> --- a/drivers/acpi/x86/s2idle.c
-> +++ b/drivers/acpi/x86/s2idle.c
-> @@ -598,8 +598,10 @@ static void acpi_s2idle_restore_early_lps0(void)
->  {
->         struct acpi_s2idle_dev_ops *handler;
->
-> -       if (!lps0_device_handle || sleep_no_lps0)
-> +       if (!lps0_device_handle || sleep_no_lps0) {
-> +               acpi_s2idle_restore_check_powerkey();
->                 return;
-> +       }
->
->         list_for_each_entry(handler, &lps0_s2idle_devops_head, list_node)
->                 if (handler->restore)
-> diff --git a/include/acpi/button.h b/include/acpi/button.h
-> index af2fce5d2ee3..3cbf3272371e 100644
-> --- a/include/acpi/button.h
-> +++ b/include/acpi/button.h
-> @@ -8,11 +8,16 @@
->
->  #if IS_ENABLED(CONFIG_ACPI_BUTTON)
->  extern int acpi_lid_open(void);
-> +extern void acpi_power_button_wakeup(struct acpi_device *device);
->  #else
->  static inline int acpi_lid_open(void)
->  {
->         return 1;
->  }
-> +
-> +static inline void acpi_power_button_wakeup(struct acpi_device *device)
-> +{
-> +}
->  #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
->
->  #endif /* ACPI_BUTTON_H */
->
-> base-commit: 4d823c9d06aaa91476b58e56e4d44c4112da2811
-> --
-> 2.34.1
->
+ - Patch 3: reflects the OSPM nominal in the cpufreq policy, so that
+   boost and the frequency limits stay consistent with the register.
+
+This series applies on top of the following series, which provides the
+save/restore table that patch 2 hooks into:
+  cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+  https://lore.kernel.org/lkml/20260806200857.601152-1-sumitg@nvidia.com/
+
+v6[6] -> v7:
+ - Split patch 1 into an ACPI patch and a cpufreq patch.
+ - Patch 1:
+   - drop cppc_get_ospm_nominal_perf(), as the register is write-only.
+   - add cppc_ospm_nominal_perf_supported(), sharing the setter's
+     writable check via the new cpc_reg_writable() helper.
+ - Patch 2:
+   - make ospm_nominal_freq write-only, and track the requested value
+     in software instead of reading the register back.
+   - place the register before auto_sel in the save/restore table.
+ - Patch 3:
+   - rename *_reflect_nominal() to *_update_nominal_limits().
+   - do not fail the sysfs write when cppc_cpufreq_update_nominal_limits()
+     fails to update the QoS limit.
+   - skip the limit update while boost is enabled.
+   - make cppc_cpufreq_effective_nominal() take the value from the
+     software-tracked state, so it returns it directly and cannot fail.
+   - init() checks cppc_ospm_nominal_perf_supported() directly, instead
+     of using cppc_cpufreq_effective_nominal().
+
+Sumit Gupta (3):
+  ACPI: CPPC: Add ospm_nominal_perf support
+  cpufreq: CPPC: Add ospm_nominal_freq attribute
+  cpufreq: CPPC: Reflect the OSPM nominal in boost and limits
+
+ .../ABI/testing/sysfs-devices-system-cpu      |  24 ++++
+ drivers/acpi/cppc_acpi.c                      |  48 ++++++-
+ drivers/cpufreq/cppc_cpufreq.c                | 135 +++++++++++++++++-
+ include/acpi/cppc_acpi.h                      |  10 ++
+ 4 files changed, 208 insertions(+), 9 deletions(-)
+
+v6: https://lore.kernel.org/lkml/20260717215330.2215058-1-sumitg@nvidia.com/
+v5: https://lore.kernel.org/lkml/20260615185934.2383514-1-sumitg@nvidia.com/
+v4: https://lore.kernel.org/lkml/20260527194626.185286-1-sumitg@nvidia.com/
+v3: https://lore.kernel.org/lkml/20260514194822.1841748-1-sumitg@nvidia.com/
+v2: https://lore.kernel.org/lkml/20260430142430.755437-1-sumitg@nvidia.com/
+v1: https://lore.kernel.org/lkml/20260427051823.280419-1-sumitg@nvidia.com/
+
+-- 
+2.34.1
+
