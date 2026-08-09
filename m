@@ -1,264 +1,163 @@
-Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010027.outbound.protection.outlook.com [52.101.193.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF09455175
-	for <acpica-devel@lists.linux.dev>; Fri,  7 Aug 2026 21:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.27
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786139397; cv=fail; b=tSfpSrRFp1RJJgn5K3tqxXdCmZkZBck6EX8FJUK+qsQDmvgSX/OuuKEy+OFpdbFqjny6sK9D9s9eEdfvGKP9xnf0QedgsTy1EgCKxZmjiv2ifIKJNoecdkXDqbRuRX02LGD/tNb9d32dIDkcv/DVeHrdoAoRaiy7Ieb7MgkRzDc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786139397; c=relaxed/simple;
-	bh=7Laf5vwbfqDjveHOfT+yDWuPMHLaXvJnHti/SkHxEpU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=heW5ocWmAwcMfHp0MjEHHp8B+O3Ym3jBz1N9BJcxGtq2hUkzwYfp6hQdtEyavcFiWLnjAc3LLIA0RMrl9bg8zPwKTj+kbuYa6mbfdXgsQa2rh22pdYemGuXPS9LeEmm7h8uJwPcxizXx1Z7YU3zqcnNy6MSZpDCIzuR7DV2/g4s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q2stfrQo; arc=fail smtp.client-ip=52.101.193.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Q2stfrQo"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=O+nQDBHzw6ZDdtx8Dhb2OdEvt8grHaIjmx814jg663BwE2B4L3Lqdo7FLuJmKM5lxtxZxQ3/igu7fl4pVtN/oO/5P1m0LR8B9OiDQhRkB3vaeP7W88FC0USuLLEFSi6+jYpGAyH+eWjD+MYQy3TshManGSnkP9jczLZrzq2q1BYeF2pr++MyxnLfdRx63LZZCcPQG5bUzgE+K9tU8Zz+B1csmNtYZfWRbJbYZnLgkuUCoGTc2v7OaNN3Fck6Jrh5ucMm22NB5vYT/7OSW96cKJ5HUhreFmThSjH4KzzmfGhcPEAlw3SjBPmSoIYms5V4UD9LXAJhFH/369aFYFEt6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xfrAVW6krSwnY8c/gbZIS8Nb16CcK+izLwzk5gdupCE=;
- b=SUjpdLwvUyGx5s5Gh/L0QBp6cAjBx92AOuvzJpakeC7ZSwS3R5zLFAWQfIT8KnC8+IzQkdSncFD44QITEpSlOV1sIIsjXzmpAuxdrsd7xGRZfxtxRxr/E2vUrTt53K1xNT0Z+P1emu1VBrH1TNreZ0g8g7XBsWdqNXO4LiYmQg724znFnuDNdkiNp86a7S7KUZABuS6Iv1j//C0WkJV1JDqq9VN7VjXWSTKLlgjMBdPo6aYvRX5QjxlOSKrASPWZj4cyvdCqyg39BQxxe1Ogs1DlUDx7ucMNW2f64zxuW3IFwO9rSd9/1vO1lrQ0bb+IR1uBVRCBs1iOk7es0socxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xfrAVW6krSwnY8c/gbZIS8Nb16CcK+izLwzk5gdupCE=;
- b=Q2stfrQoHRINICFwjk+sEGi6mrayeibidP5ElLosPZc5CGX0RxKOu08kFpjFwTEsC8um98rlsdEEoFecD3mkL5JilcuqUNZAmNqgr9ZCPoJs6oDmJ/42n9NgF3jGX9NCIiFA7x/bwiKCZ/acIkFFX6nqs5adzreXZFnSVerh18V+bY/hRcPbpsy0JFdfqHw3ys/4ilaH2l3zuG1lVAozJok+XCjvmgRY5qpHjVgRK/DB++8lvOSOh49kh2g4mQAXOuIVePbQRpZ/UOIe6sBEgg7CZtwmEyww8FXBJ7KoFgCLAsBnHN2eEinM/2Dth/D+WNObF/YBukCoWVkqSQ0Gvw==
-Received: from BN9PR03CA0323.namprd03.prod.outlook.com (2603:10b6:408:112::28)
- by PH7PR12MB8179.namprd12.prod.outlook.com (2603:10b6:510:2b8::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.21; Fri, 7 Aug
- 2026 21:49:46 +0000
-Received: from BN1PEPF00006003.namprd05.prod.outlook.com
- (2603:10b6:408:112:cafe::6d) by BN9PR03CA0323.outlook.office365.com
- (2603:10b6:408:112::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.292.23 via Frontend Transport; Fri, 7
- Aug 2026 21:49:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN1PEPF00006003.mail.protection.outlook.com (10.167.243.235) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.315.6 via Frontend Transport; Fri, 7 Aug 2026 21:49:46 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 7 Aug
- 2026 14:49:31 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Fri, 7 Aug
- 2026 14:49:30 -0700
-Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Fri, 7 Aug 2026 14:49:24 -0700
-From: Sumit Gupta <sumitg@nvidia.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
-	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
-	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
-	<saket.dumbre@intel.co>, <mario.limonciello@amd.com>,
-	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linux-tegra@vger.kernel.org>
-CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
-	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
-	<bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [PATCH v7 3/3] cpufreq: CPPC: Reflect the OSPM nominal in boost and limits
-Date: Sat, 8 Aug 2026 03:18:37 +0530
-Message-ID: <20260807214837.863209-4-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260807214837.863209-1-sumitg@nvidia.com>
-References: <20260807214837.863209-1-sumitg@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940712E6CCD
+	for <acpica-devel@lists.linux.dev>; Sun,  9 Aug 2026 07:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.77
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1786261646; cv=none; b=cPVJ4xpu8ExDhvqWhRv1JJOx2JdA6pIRi0hobP3CeXSbu1DcryBFWw5HE0DV334fmB3VSz5BdtyMrOQ72ZpjQWx+Y+LO4Qu+aasNd0Fsgn4NAknlnZicZ/ZAdPrnGHD82Gj1LCSnxOJTztRzMqHH9ft4PS8fE0Z0fmlhZCMeS0o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1786261646; c=relaxed/simple;
+	bh=MxxK1nswFdGGIQiE2Cgw7vJY/VTYW1q42GfKB1Dk82A=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZZVj0zI6LHXbMIO1BS5jI9HKn9++pypXwc2LW64MXYGxkbCH4DYOYazyCgu6BDs6W2GwYVavjPKLTMt3sq7pTvYSBe0A+A9qbffRTHBDLLTDap+NoIrlgdyLvI6SwwZU1zvEcBW3I3mo2gEFmOqbSkwskSMe5od20+bh/9fL80I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-448bb8bcf38so685327fac.1
+        for <acpica-devel@lists.linux.dev>; Sun, 09 Aug 2026 00:47:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786261643; x=1786866443;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=EoRtarnkCMgBYDZmui+42eWr+FzDy4ub2bi2lcKX4OY=;
+        b=rcaWJkCp+Nua7i0c+H4EwuJlvarFWGFRCQdjHMxqDWkSX7+FGn1XYD4iJICKTaLD8W
+         1qbrNjHkV7Nk48oIzPXCwsu/332/E4wAd2Gzf6zGC8FmK01SV7m5oSSgWcqQDlUU/ygt
+         RfVcooMdeYX8eR/3PIDbiMkOPyZwVNyEutNuc2NB5W5kR95ov37lm4U+tA/fiCf3fVAg
+         2AsDOGH7E0seceaVTGzi6eSjGyc1EaVtGAkdSmSHWUGvwszwJxBTA4dT0LklNNNt1xqg
+         BZIN5QTZYSIA8+fyMuLQz3gAsJhva2w2C0puyzfpmaCDPONT7dxDSCStvPgTCrGv10ye
+         QAcg==
+X-Gm-Message-State: AOJu0YzrkfmpxY97UsqtM1LUk6+bta5bLvR39UmwyvFevoFYriPrwkLI
+	8Q3rBiv0HAm7Z90LYFWcAZxKErAfNOt7ySMkZdVr23KMptt5KB9pmumtY/MRBc8w8AH9vORxrAl
+	32CtwTVIrecmlMUZhbwbLWDy0dBex6LACHOVNyoG123xr+qj0XBaYssjjcObEqw==
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00006003:EE_|PH7PR12MB8179:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8db03e87-46e9-4ec4-eb3d-08def4cdcc08
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|376014|7416014|1800799024|82310400026|36860700016|921020|56012099006|10067099003|11063799006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	JDY9U3vfcevP0Jhan1cnyw4MxxqVvoqQuyECAo6e9M9BTy51zbplM67HAE1xznSCpLiRBAvRnQS6C+dBiIPY5PfK4uYCIs4NsAugtqgyyAjuG6CsSxri0OfpNzPSFhbmQoAq8e3aX8Yhwo+JAM+/COrcs+SW3CfzLzbB08mF/VyR55QVwyzD3uGz0nZF6JgvtAcnPR6NiiPLn+f7iv8u5FUGoUbwfDfOhoR3LJvmUkAXHyleFhw/0PKS1mNtYdWfJY1+/vc6pBLMlaBTEMrVTk1Svt2s9p71LuS7stl26Yd/IbQIHCGlDvo53Lm5sBioldgdufpw6bB962qlMKhlvlOosT9/KYzcX4PvAiQg0qIGCuN7nsDNSLnzFd7X/jDVA1TQUQMy8uy47z20f6OV2kzvrr6cqBQH8H6ljx16PDB6Hj+7P8Unfy9bZxEbqfP5VtBEuXRO5/bfsYSrU+jjbPDmfQdbx/xMR/q6cSKTxL0ZyQkSloGgsIcKAwOs62VFt7NVMI/BhNUIG3H8wN6Z1xDmkvbxlYEjaIAZEcrqOUIOCP1vqXHpWU835/G91Yu0t/zWf3WWyk59GxIsXeslUm7U7NWaRgsHgIgo/D9k7tVXPUNq9MzUCIJQtWMYH16nfZ/ZlisrE76oTrjXL8zqueBwk3KD3IWjG57EHuzlkwcJV+pXiaIQtbuBG3wVs5p67TiKbMsWTgJAFa7EEUxGdL0k4hX1xX1DbJnUFGsk1lwaJ/O3/+1Zo7WoPjqDlnJw
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(23010399003)(376014)(7416014)(1800799024)(82310400026)(36860700016)(921020)(56012099006)(10067099003)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	nPW+M/9I8wgJC/C2u/kClo2CMYjlKAkt4rEEnlfQ9uNbM9Wd+cpSXcGnqStolv9hCVnjDrXikWGYWjf9rNE7EC8RhROhJhcB+o2CsDoxVQaBPD03DMn5GxQL4sl9T1jd1HRo7IaBJ/jROA0baH9Z0AfvO//AAx1z2v5G1zKi3N0P1iaU7vHu1VukXL2AGV4/dq4wh19xBy3bBIZYTh2e/aGhnfhF5M0Rd16pW34qFdAoY6EsKjv4N1rxMopRYao+CxnqIB/GP/49b978YLdpf0cWUs7YcJYjaPiIu5LI3UoDHcx9Fq8xsNtcfVTmpiCy299Jg1fKO5MqYMkZ5BYig3vETTFJYMvQIMX+uOfet3u/Ysv4y9Em7pG95O14l/jYh3/E2vb1dvKbpf5OzLKj95gcaRMiFLHfkeEnzJWvNLVBWBTbrmDc+/Cp3eCFIs1/
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2026 21:49:46.0009
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8db03e87-46e9-4ec4-eb3d-08def4cdcc08
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00006003.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8179
+X-Received: by 2002:a05:6808:5392:b0:48f:a9f3:1c38 with SMTP id
+ 5614622812f47-4afadebaf89mr19199567b6e.2.1786261643402; Sun, 09 Aug 2026
+ 00:47:23 -0700 (PDT)
+Date: Sun, 09 Aug 2026 00:47:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a78308b.b50370da.49fe0.003b.GAE@google.com>
+Subject: [syzbot] [acpica?] KCSAN: data-race in number / vsnprintf
+From: syzbot <syzbot+6fd18c31ea0ad8f3d5ee@syzkaller.appspotmail.com>
+To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
+	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Boost is the performance range above nominal, so lowering the OSPM
-Nominal Performance enlarges the boost range and drops the non-boost
-ceiling. Keep the policy limits consistent with the register.
+Hello,
 
-Add cppc_cpufreq_effective_nominal(), which returns the OSPM Nominal
-Performance when set and the platform nominal otherwise. Use it for the
-non-boost ceiling in set_boost(), and to update the policy limits when
-ospm_nominal_freq is written.
+syzbot found the following issue on:
 
-The cpufreq core caps scaling_max_freq with a per-policy QoS request,
-boost_freq_req, that it sets to cpuinfo.max_freq and refreshes only when
-boost is toggled. A write to ospm_nominal_freq changes cpuinfo.max_freq
-without toggling boost, so cppc_cpufreq_update_nominal_limits() updates
-the request itself, rather than leaving scaling_max_freq at the old
-nominal.
+HEAD commit:    848acc8ffe1b Merge tag 'fsverity-for-linus' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=140dbe32580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84b3039e8461eef5
+dashboard link: https://syzkaller.appspot.com/bug?extid=6fd18c31ea0ad8f3d5ee
+compiler:       Debian clang version 22.1.8 (++20260613092233+e80beda6e255-1~exp1~20260613092250.77), Debian LLD 22.1.8
 
-When boost is enabled the ceiling is highest_perf, not the nominal, so
-the update is skipped. set_boost() applies the new nominal when boost is
-turned off.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-A platform with highest_perf == nominal_perf has no boost range at boot.
-Lowering the OSPM nominal from sysfs can create one. The core, however,
-adds its boost FREQ_QOS_MAX request only at policy setup, and only if
-boost_supported is already set. Set boost_supported in init() when the
-OSPM register is supported and highest_perf > lowest_perf. Boost can
-then be enabled after the nominal is lowered.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d1a0ae21bd78/disk-848acc8f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9be505d18eb6/vmlinux-848acc8f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8ab6a3838bc0/bzImage-848acc8f.xz
 
-Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6fd18c31ea0ad8f3d5ee@syzkaller.appspotmail.com
+
+      osl-1334 os_signal_semaphore   : Signaling semaphore[ffff8881000c3390|1]
+==================================================================
+BUG: KCSAN: data-race in number / vsnprintf
+
+write to 0xffffffff89405bc0 of 30 bytes by task 3755 on cpu 1:
+ vsnprintf+0x2c0/0x8c0 lib/vsprintf.c:2896
+ vsprintf+0x2a/0x40 lib/vsprintf.c:3090
+ acpi_os_vprintf drivers/acpi/osl.c:162 [inline]
+ acpi_os_printf+0x87/0x200 drivers/acpi/osl.c:153
+ acpi_debug_print+0x113/0x200 drivers/acpi/acpica/utdebug.c:158
+ acpi_os_wait_semaphore+0x29e/0x2b0 drivers/acpi/osl.c:1310
+ acpi_ut_acquire_mutex+0x242/0x4a0 drivers/acpi/acpica/utmutex.c:241
+ acpi_ns_get_node+0x46/0xc0 drivers/acpi/acpica/nsutils.c:721
+ acpi_get_handle+0xfd/0x180 drivers/acpi/acpica/nsxfname.c:98
+ acpi_has_method+0x46/0x80 drivers/acpi/utils.c:672
+ acpi_pci_set_power_state+0x5d/0x190 drivers/pci/pci-acpi.c:1084
+ platform_pci_set_power_state drivers/pci/pci.c:1068 [inline]
+ pci_power_up+0x40/0x3b0 drivers/pci/pci.c:1306
+ pci_pm_power_up_and_verify_state+0x29/0x130 drivers/pci/pci.c:3153
+ pci_pm_default_resume_early drivers/pci/pci-driver.c:591 [inline]
+ pci_pm_restore_noirq+0x53/0x1b0 drivers/pci/pci-driver.c:1259
+ dpm_run_callback+0x53/0x2f0 drivers/base/power/main.c:510
+ device_resume_noirq+0x851/0x880 drivers/base/power/main.c:857
+ async_resume_noirq+0x2c/0x40 drivers/base/power/main.c:879
+ async_run_entry_fn+0x52/0x180 kernel/async.c:129
+ process_one_work kernel/workqueue.c:3322 [inline]
+ process_scheduled_works+0x4d4/0x9a0 kernel/workqueue.c:3405
+ worker_thread+0x569/0x750 kernel/workqueue.c:3486
+ kthread+0x221/0x270 kernel/kthread.c:436
+ ret_from_fork+0x146/0x330 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+write to 0xffffffff89405bca of 1 bytes by task 3757 on cpu 0:
+ number+0x5c2/0xb80 lib/vsprintf.c:553
+ vsnprintf+0x68f/0x8c0 lib/vsprintf.c:2909
+ vsprintf+0x2a/0x40 lib/vsprintf.c:3090
+ acpi_os_vprintf drivers/acpi/osl.c:162 [inline]
+ acpi_os_printf+0x87/0x200 drivers/acpi/osl.c:153
+ acpi_debug_print+0x150/0x200 drivers/acpi/acpica/utdebug.c:171
+ acpi_ut_status_exit+0xc1/0x120 drivers/acpi/acpica/utdebug.c:-1
+ acpi_ns_get_node+0xa2/0xc0 drivers/acpi/acpica/nsutils.c:-1
+ acpi_get_handle+0xfd/0x180 drivers/acpi/acpica/nsxfname.c:98
+ acpi_has_method+0x46/0x80 drivers/acpi/utils.c:672
+ acpi_pci_set_power_state+0x5d/0x190 drivers/pci/pci-acpi.c:1084
+ platform_pci_set_power_state drivers/pci/pci.c:1068 [inline]
+ pci_power_up+0x40/0x3b0 drivers/pci/pci.c:1306
+ pci_pm_power_up_and_verify_state+0x29/0x130 drivers/pci/pci.c:3153
+ pci_pm_default_resume_early drivers/pci/pci-driver.c:591 [inline]
+ pci_pm_restore_noirq+0x53/0x1b0 drivers/pci/pci-driver.c:1259
+ dpm_run_callback+0x53/0x2f0 drivers/base/power/main.c:510
+ device_resume_noirq+0x851/0x880 drivers/base/power/main.c:857
+ async_resume_noirq+0x2c/0x40 drivers/base/power/main.c:879
+ async_run_entry_fn+0x52/0x180 kernel/async.c:129
+ process_one_work kernel/workqueue.c:3322 [inline]
+ process_scheduled_works+0x4d4/0x9a0 kernel/workqueue.c:3405
+ worker_thread+0x569/0x750 kernel/workqueue.c:3486
+ kthread+0x221/0x270 kernel/kthread.c:436
+ ret_from_fork+0x146/0x330 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+value changed: 0x73 -> 0x65
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 UID: 0 PID: 3757 Comm: kworker/u8:46 Not tainted syzkaller #0 PREEMPT(lazy) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/24/2026
+Workqueue: async async_run_entry_fn
+
+==================================================================
+
+
 ---
- drivers/cpufreq/cppc_cpufreq.c | 65 ++++++++++++++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index fe714e71826a..bcac46ad25c3 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -892,6 +892,27 @@ static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
- 	policy->driver_data = NULL;
- }
- 
-+/*
-+ * Return the non-boost performance ceiling: the OSPM Nominal Performance the
-+ * driver last requested, or the platform-reported Nominal Performance if none
-+ * was requested.
-+ *
-+ * The register is write-only, so the requested value comes from the
-+ * software-tracked state rather than from hardware.
-+ */
-+static u32 cppc_cpufreq_effective_nominal(struct cpufreq_policy *policy)
-+{
-+	const struct cppc_saved_vals *st = cppc_cpufreq_policy_state(policy)->regs;
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
-+	u64 ospm_nominal = st[CPPC_SAVED_OSPM_NOMINAL_PERF].requested_val;
-+
-+	/* U64_MAX means OSPM has not selected a nominal level. */
-+	if (ospm_nominal == U64_MAX)
-+		return cpu_data->perf_caps.nominal_perf;
-+
-+	return (u32)ospm_nominal;
-+}
-+
- static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- {
- 	unsigned int cpu = policy->cpu;
-@@ -950,9 +971,14 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	/*
- 	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
--	 * is supported.
-+	 * is supported. A writable OSPM Nominal Performance register can also
-+	 * open a boost range at runtime by lowering the nominal, so assume
-+	 * boost is supported in that case too, letting the core register its
-+	 * QoS request up front.
- 	 */
--	if (caps->highest_perf > caps->nominal_perf)
-+	if (caps->highest_perf > caps->nominal_perf ||
-+	    (caps->highest_perf > caps->lowest_perf &&
-+	     cppc_ospm_nominal_perf_supported(cpu)))
- 		policy->boost_supported = true;
- 
- 	/* Set policy->cur to max now. The governors will adjust later. */
-@@ -1233,11 +1259,12 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
- {
- 	struct cppc_cpudata *cpu_data = policy->driver_data;
- 	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
-+	u32 nominal = cppc_cpufreq_effective_nominal(policy);
- 
- 	if (state)
- 		policy->cpuinfo.max_freq = cppc_perf_to_khz(caps, caps->highest_perf);
- 	else
--		policy->cpuinfo.max_freq = cppc_perf_to_khz(caps, caps->nominal_perf);
-+		policy->cpuinfo.max_freq = cppc_perf_to_khz(caps, nominal);
- 
- 	return 0;
- }
-@@ -1411,6 +1438,36 @@ static int cppc_get_perf_limited_filtered(int cpu, u64 *perf_limited)
- CPPC_CPUFREQ_ATTR_RW_U64(perf_limited, cppc_get_perf_limited_filtered,
- 			 cppc_set_perf_limited)
- 
-+/*
-+ * While boost is disabled, the nominal is the ceiling. Set cpuinfo.max_freq to
-+ * it and update the core's boost_freq_req to match. The core only syncs
-+ * boost_freq_req when boost is enabled or disabled, so a plain nominal change
-+ * must update it here.
-+ */
-+static void cppc_cpufreq_update_nominal_limits(struct cpufreq_policy *policy)
-+{
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
-+	u32 nominal;
-+	int ret;
-+
-+	if (policy->boost_enabled)
-+		return;
-+
-+	nominal = cppc_cpufreq_effective_nominal(policy);
-+	policy->cpuinfo.max_freq = cppc_perf_to_khz(&cpu_data->perf_caps,
-+						    nominal);
-+
-+	if (freq_qos_request_active(&policy->boost_freq_req)) {
-+		ret = freq_qos_update_request(&policy->boost_freq_req,
-+					      policy->cpuinfo.max_freq);
-+		if (ret < 0)
-+			pr_debug("Failed to update boost limit on CPU%u (%d)\n",
-+				 policy->cpu, ret);
-+	}
-+
-+	refresh_frequency_limits(policy);
-+}
-+
- static ssize_t store_ospm_nominal_freq(struct cpufreq_policy *policy,
- 				       const char *buf, size_t count)
- {
-@@ -1442,6 +1499,8 @@ static ssize_t store_ospm_nominal_freq(struct cpufreq_policy *policy,
- 	st->requested_val = perf;
- 	st->firmware_val = cpu_data->perf_caps.nominal_perf;
- 
-+	cppc_cpufreq_update_nominal_limits(policy);
-+
- 	return count;
- }
- 
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
