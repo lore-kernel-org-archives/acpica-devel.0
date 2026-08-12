@@ -1,154 +1,127 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340D9372EC1
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 01:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07087404E;
+	Wed, 12 Aug 2026 19:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786499677; cv=none; b=MCKu0Nh4ZumyWoABm8n+650b47+ABR6gGZGO5jetxkEgp3mpZF68PmFtJaKZvqe821x/L60DEDHZu4kgfHIQQ9X3PXQvWWUsu8ICVUnFfQKvaJz8utkjD2WMZuAjBQbjaAIJupyQ2HeqacVuEXIOI8HHFsttCTGrPtQOrW/0gK0=
+	t=1786564089; cv=none; b=kyiK9jiEczH/TVXYGCLYFvzK97G3FN4Tjmwd81qUQEckmD45uHweRAe90jpRg/OuacG49B7W/9UJM6wSx3WLqSuGWVwIZxdVNejHiMxjDmuahfQ32vtb2+9xX6x/wKFxJsY/rYt+EoiNRgs05TvOLFwDnEWmWQELhzpQPPPm7+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786499677; c=relaxed/simple;
-	bh=6sNyxRUL/SZLJO6KJ0pbMPwvNlPOJqAQ/0+mD3UiaNY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ETGMEaDE1cmKKHbpNfb5l40GcMXj0TQHundeB//NlslTI3LEvATLCs57pWV3ZCaavRAYF8DtcWQ6V6mxTBlrM+fd4+nj64+ZYSJijcmXERfu2w5iYVb7/MB3slvksHuDAMgqc5fKDEeMFgg9GVSMfM/LEVgKYJxaPjk0ZN338vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=ZyzKRGmM; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=ZyzKRGmM; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1786564089; c=relaxed/simple;
+	bh=doVuSDT3SHyTs77s6X1YtZXjKFJcAa02zFCbKKo9hio=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TVGXTDzUXYYWcPWGU71AGXkRZJEO5gJgSxMV0eZxtp5MtkENGmP36bH2146ErlDzMDbjhKgv+8V2krnC9D+gbbg2fshb11mquVx7HtELbtPZIAoL8ZAzevicTzlN+nCl8DHZHOHR9BRrDrrwyM+XFfVrNyJ1Gm1lxpe7/SxQySM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J65Lagfi; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="ZyzKRGmM";
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="ZyzKRGmM"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=QNjEGANgwvV3GoHIvPMjjKa8yDAJG2vwyb3g92U6akA=;
-	b=ZyzKRGmMyRiU/pCTGS6wxMCobNz5qEOdeSpQhUxf+ttYNX+6dfSQKQaugt3F4wl7ulVWlGENs
-	kiWmJyLwdgVF7dQrSVE/m9+xIKp5GtyOjhUGzYOAr+RaU5rROZLRx/a97DZ7BVBkUKjqyeg+8zE
-	gILfXbAqwQ1QS+S2BHSSqYI=
-Received: from canpmsgout06.his.huawei.com (unknown [172.19.92.157])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTPS id 4hKWkL3jHnz126Lpk
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 09:54:02 +0800 (CST)
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=QNjEGANgwvV3GoHIvPMjjKa8yDAJG2vwyb3g92U6akA=;
-	b=ZyzKRGmMyRiU/pCTGS6wxMCobNz5qEOdeSpQhUxf+ttYNX+6dfSQKQaugt3F4wl7ulVWlGENs
-	kiWmJyLwdgVF7dQrSVE/m9+xIKp5GtyOjhUGzYOAr+RaU5rROZLRx/a97DZ7BVBkUKjqyeg+8zE
-	gILfXbAqwQ1QS+S2BHSSqYI=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4hKWVS6MsdzRhVN;
-	Wed, 12 Aug 2026 09:43:44 +0800 (CST)
-Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id ED9964057F;
-	Wed, 12 Aug 2026 09:54:19 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Wed, 12 Aug 2026 09:54:19 +0800
-From: Lifeng Zheng <zhenglifeng1@huawei.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
-	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
-	<sumitg@nvidia.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
-	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
-	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
-Subject: [RFC][PATCH v3 0/8] ACPI: CPPC: Resource Priority Register support and sysfs interface
-Date: Wed, 12 Aug 2026 09:52:08 +0800
-Message-ID: <20260812015217.74598-1-zhenglifeng1@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J65Lagfi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ACA91F000E9;
+	Wed, 12 Aug 2026 19:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1786564088;
+	bh=8NhpWmxABwm4VuRgMk0XpvLIeJxGbhLlRcTBash3Sio=;
+	h=From:To:Cc:Subject:Date;
+	b=J65LagfioFVVP0FZDWE9FHmPLDQBOmQk0YGOtSP/yGQHY0Cuprr9StQa2X8bGrfCr
+	 nxOEv2eSvU6RexGSsSDCq0psrfXHib4qYd7xVyw0YW0D9yH98grAZrD3P6gwBpG+0a
+	 baySkf7TT1jYDd5jbSKxrFS5lbuAFZH1dbTAG/udypnWqLt/BnncXKC5lcRblwh4ki
+	 xwcTXqWCGCj9SaZM26ZWso0CqQftJtQ2xhufsdRut8JrriVm9xp6lJi3egIX+jNxR+
+	 LvxDc4cVQ5Dve/2R/yILk3NZMprHUGhho5uIM9/5xz2hNSXjj8y571vXQ4agRJi3Am
+	 sANGHKyjXm7rw==
+From: Leon Romanovsky <leon@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>
+Cc: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	Lukas Wunner <lukas@wunner.de>,
+	"Natu, Mahesh" <mahesh.natu@intel.com>
+Subject: [PATCH RFC 0/7] PCI/HMAT: Describe P2PDMA reachability and performance
+Date: Wed, 12 Aug 2026 22:47:37 +0300
+Message-ID: <20260812-hmat-p2p-v1-0-75ac41380585@nvidia.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20260715-hmat-p2p-eb4971a9d731
+X-Mailer: b4 0.15-dev-18f8f
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemf100001.china.huawei.com (7.202.181.215)
 
-This series implements support for the CPPC v4 Resource Priority Register
-mechanism defined in ACPI 6.6, Section 8.4.6.1.2.7, and exposes it to
-userspace via sysfs.
+Linux derives P2PDMA reachability from visible PCI topology, ACS
+configuration, and a host-bridge whitelist. It cannot describe conditional
+or slower cross-host-bridge paths; passthrough can hide the physical peer
+relationships.
 
-Resource Priority allows OSPM to control the relative priority among
-processors for shared resources.  The controlled resource types include
-processor boost, throttle, L2 cache, L3 cache, and memory bandwidth.
-Each Resource Priority group consists of:
+This RFC series implements the proposed ACPI HMAT Type 3 extension below.
+Directional Generic Port matrices describe reachability, ordering, latency,
+and bandwidth. Linux uses ordered paths to authorize P2PDMA and their
+latency/bandwidth to rank providers. A VMM could translate these matrices
+into guest domains; that is outside this series.
 
-  - CONTROLLED_RESOURCES: which resource types the group affects
-  - ENABLE_VALUE / ENABLE_REGISTER: enable/disable the group
-  - PRIORITY_COUNT / PRIORITY_REGISTER: read/write the priority level
+  HMAT Type 3 structure
 
-The patch series is organized in three parts:
+  Field               Offset       Bytes  Meaning
+  ---------------------------------------------------------------
+  Type:                    0           2  value 3
+  Length:                  4           4  entire structure
+  Flags:                   8           1  traffic classes
+  Data-type:               9           1  metric selector
+  Initiators:             12           4  Generic Port count (s)
+  Targets:                16           4  Generic Port count (t)
+  Base-unit:              24           8  ps or MB/s; non-zero
+  Initiator-PDs:          32         4*s  proximity-domain list
+  Target-PDs:         32+4*s         4*t  proximity-domain list
+  Matrix:         32+4*(s+t)       2*s*t  directional Entry[i][j]
+  Reserved: bytes 2-3, 10-11, and 20-23
 
-  - patches 1-4 extend the CPPC data structures and _CPC parser to handle
-    Package-type entries and parse Resource Priority sub-packages into
-    structured descriptors.
+  Flags: encoding
+    bit 0  non-UIO
+    bit 1  UIO
 
-  - patches 5-7 refactor existing register I/O helpers to support direct
-    register access and add accessor functions for Resource Priority
-    attributes (enable, priority count, priority value).
+  Metrics: selector
+    0/1/2  access/read/write latency
+    3/4/5  access/read/write bandwidth
 
-  - patch 8 creates a "resource_priority" sysfs hierarchy under each
-    cpufreq policy to expose the Resource Priority attributes to userspace.
+  Direction: Initiator PD[i] -- Entry[i][j] metric --> Target PD[j]
 
-Changelog:
+----------------------------------------------------------------------
+Based on [PATCH v3 00/17] PCI/P2PDMA: Fix ACS egress control handling
+https://lore.kernel.org/all/20260811-fix-p2p-acs-v3-0-efc488ee7c03@nvidia.com/
 
-v3:
- - Patch 2: Add the (i - 2) == RESOURCE_PRIORITY condition back to ensure
-   the new code behaves the same as the original.
- - Patch 4: Assign -ENODATA to ret when an unexpected ACPI_TYPE_PACKAGE
-   appears.
- - Patch 5: Initialize the `optional` field of the remaining cpc_regs to
-   true so that they are treated as unsupported.
- - Patch 8: Call cppc_cpufreq_cpu_fie_exit() and set perf to lowest_perf
-   when cppc_create_res_prio_sysfs() fails. Call kobject_put() and kfree()
-   when kobject_init_and_add() fails in cppc_create_res_prio_sysfs().
-
-v2:
- - Patch 1: Revert changes to the CPC_SUPPORTED() macro.
- - Link: https://lore.kernel.org/all/20260804085042.4118193-1-zhenglifeng1@huawei.com/
-
-v1:
- - Link: https://lore.kernel.org/all/20260717024502.3520445-1-zhenglifeng1@huawei.com/
-
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
+Leon Romanovsky (7):
+      ACPICA: Define PCIe P2P latency and bandwidth information
+      ACPI: HMAT: Make PCIe P2P paths available to consumers
+      PCI/P2PDMA: Authorize HMAT-described cross-host-bridge P2P
+      PCI/P2PDMA: Prefer providers with better HMAT performance
+      ACPI: HMAT: Add KUnit tests for PCIe P2P matrix semantics
+      PCI/P2PDMA: Add KUnit tests for HMAT policy boundaries
+      PCI/P2PDMA: Add KUnit tests for HMAT provider ranking
 
-RFC: sysfs placement
+ drivers/acpi/numa/Kconfig     |  13 ++
+ drivers/acpi/numa/Makefile    |   1 +
+ drivers/acpi/numa/hmat.c      | 245 +++++++++++++++++++++-
+ drivers/acpi/numa/hmat_test.c | 223 ++++++++++++++++++++
+ drivers/acpi/numa/hmat_test.h |  17 ++
+ drivers/pci/Kconfig           |  14 ++
+ drivers/pci/Makefile          |   1 +
+ drivers/pci/p2pdma.c          | 300 ++++++++++++++++++++------
+ drivers/pci/p2pdma_test.c     | 477 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/pci.h             |  23 ++
+ include/acpi/actbl1.h         |  27 ++-
+ include/linux/acpi.h          |  26 +++
+ 12 files changed, 1298 insertions(+), 69 deletions(-)
+---
+base-commit: bc5261fca94dd94ab557cc0852ce465d9c3ab8b0
+change-id: 20260715-hmat-p2p-eb4971a9d731
 
-The sysfs interface is currently placed under /sys/devices/system/cpu/cpufreq/
-(i.e. the cpufreq policy directory). I am unsure whether this is the best
-location and would appreciate reviewer feedback.
-
-The concern is that Resource Priority covers resource types beyond CPU
-frequency control:
-
-  - PROCESSOR_BOOST, PROCESSOR_THROTTLE -- clearly CPU-frequency related
-  - L2_CACHE, L3_CACHE -- cache partitioning, not frequency
-  - MEMORY_BANDWIDTH -- memory QoS, not frequency
-
-Placing the attributes under cpufreq makes sense for boost/throttle but
-feels semantically wrong for cache and memory bandwidth resources.
-
-I would appreciate feedback on whether cpufreq is the right home for
-this interface, or whether a different location would be more appropriate.
-
-Lifeng Zheng (8):
-  ACPI: CPPC: Prepare cpc_register_resource for Package-type entries
-  ACPI: CPPC: Refactor element parsing into parse_cpc_element()
-  ACPI: CPPC: Refactor resource cleanup into free_reg_resource()
-  ACPI: CPPC: Parse Resource Priority Register entries from _CPC package
-  ACPI: CPPC: Store optional flag in cpc_register_resource
-  ACPI: CPPC: Factor out cpc_read_reg() and cpc_write_reg()
-  ACPI: CPPC: Add Resource Priority accessors
-  cpufreq: cppc: Expose Resource Priority attributes via sysfs
-
- drivers/acpi/cppc_acpi.c       | 717 +++++++++++++++++++++++++++------
- drivers/cpufreq/cppc_cpufreq.c | 283 ++++++++++++-
- include/acpi/cppc_acpi.h       |  60 +++
- 3 files changed, 930 insertions(+), 130 deletions(-)
-
--- 
-2.33.0
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
 
