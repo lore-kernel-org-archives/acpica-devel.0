@@ -1,38 +1,38 @@
 Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B492376A00
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 01:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CBE374E6F
+	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 01:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786499674; cv=none; b=EyTV2H4R0omv3UxMBfR8h5BM2mC6o+fyw+F4FK6/Xbek3SkPF7utckYspd8RrNQY1xOp9gd0JZDrfxkyWCIxb4MYBSLpHini3mCynOIecSRQhz6QFTVyk7aoSaQuEq+IVx+XkOiVu++UfOtjse3FL49amm4nGDot3Yx1hE5rbhE=
+	t=1786499676; cv=none; b=XjrfIW0+RstNoeo8HFY06wQbGngVsr9kgQtxTTmm+zHcArdeg4VmdY/M3JosUITuKlFiTwzTgJFWvCPS6y7tNDSBpkcxhY2BqpIyY/O7/DqPN/zyLkpdfuFHSPu/VOW7bdvD1xYtnqgIVuwJJ/7DR0wr13D53pqgqsi6O/aSV90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786499674; c=relaxed/simple;
-	bh=VInMwaHuJurOn/ENrJdTj+Xxe3WJfq8VoTqk7iM1eHQ=;
+	s=arc-20240116; t=1786499676; c=relaxed/simple;
+	bh=Pdyn01ETs/TPNcRKTejGGKn3Lvp/cyjB3+r4JaYkOxI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i3JHB9Wc03teQmIp2EvOYjFr3FDbegbBkysyzT8pCfxdmq8xOmLNAY9dVP75pVoyQ/rLjfgL3i2moUmoFb7VhGS6brEZ8VUPJeNPJiwdEojcck+FSAvd5qhT31t8dRty/es8Cz6H/RJLjzAMxbTv49SccDl+6zzR06Wq1qIp6Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=DtSjcYEk; arc=none smtp.client-ip=113.46.200.222
+	 MIME-Version:Content-Type; b=fMVr52y38Nbas0eCG/F9SBNuC5R0zfgvyzNHWIlcSO/7y5LgGLHAeIkYyu2h6sSW1F0+iGJElopCWXOM3eXfuWVlKZrlO+2yj1CEIxzjvj9Cqjxc4pLBmU7agxNy+i2nLIyJmBMyM7cNxHxGDQTvpQLbifu0u47OHbsFQerAg+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=D6xeNl5n; arc=none smtp.client-ip=113.46.200.222
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="DtSjcYEk"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="D6xeNl5n"
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=k/TsyVlQ6DTix8vCotB7f+OzhzSMALsvFn182y/upvE=;
-	b=DtSjcYEk3ja+z2/YTURVbkts8XhyC8bZdV/zRQji+Vha77hxUlyip3CuYBIzZyQcFgR+FlFQR
-	hWG2Nf3I+PfV/frUY8NXYPe+Ww/hnpDfa2wYUCDERdC+2Wn1FyJPhBDNt0bAULm5LjRJIH96HU0
-	IeFTeWlCWNGGa+9Om77s/Tk=
-Received: from mail.maildlp.com (unknown [172.19.163.200])
-	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4hKWVV40GYzLlXC;
-	Wed, 12 Aug 2026 09:43:46 +0800 (CST)
+	bh=Rh83EaNYRqmAhG/BdnqS5kQ6Bg6zMu3GoGaveSHo+e0=;
+	b=D6xeNl5nPVjjO2LcB1lYJMIA5fK4YwH5bIyrbi+bPHim8aYr55+V3yOSyHIhpis4BvreIJ2/c
+	KlZS8guvxYz1uXFsMhJthZUUzN/4mTMmTvqA2E2yK+RWzF027XecBDE/POson7If0jVp9g9/ZLu
+	EFKdUAn4KDyE5zYmPSqx4IQ=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4hKWVT1743zLlX5;
+	Wed, 12 Aug 2026 09:43:45 +0800 (CST)
 Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3D3CA40563;
-	Wed, 12 Aug 2026 09:54:23 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id D046B40572;
+	Wed, 12 Aug 2026 09:54:21 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Wed, 12 Aug 2026 09:54:22 +0800
+ 15.2.1544.36; Wed, 12 Aug 2026 09:54:21 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
 	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
@@ -42,9 +42,9 @@ CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
 	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
 	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
-Subject: [PATCH v3 7/8] ACPI: CPPC: Add Resource Priority accessors
-Date: Wed, 12 Aug 2026 09:52:15 +0800
-Message-ID: <20260812015217.74598-8-zhenglifeng1@huawei.com>
+Subject: [PATCH v3 4/8] ACPI: CPPC: Parse Resource Priority Register entries from _CPC package
+Date: Wed, 12 Aug 2026 09:52:12 +0800
+Message-ID: <20260812015217.74598-5-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20260812015217.74598-1-zhenglifeng1@huawei.com>
 References: <20260812015217.74598-1-zhenglifeng1@huawei.com>
@@ -60,358 +60,239 @@ X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemf100001.china.huawei.com (7.202.181.215)
 
 CPPC v4 (ACPI 6.6, Section 8.4.6.1.2.7) defines the Resource Priority
-mechanism that lets OSPM control relative priority among processors for
-shared resources such as processor boost, throttle, L2/L3 cache, and
-memory bandwidth.
+entry as a Package of sub-packages, each containing:
 
-Add the following exported APIs for user-space and driver consumers:
+  - CONTROLLED_RESOURCES: a Package of integer resource IDs
+  - ENABLE_VALUE / ENABLE_REGISTER: enable/disable control
+  - PRIORITY_COUNT / PRIORITY_REGISTER: priority level setting
 
-  - cppc_get_resource_priority_count() -- number of sub-packages
-  - cppc_get_resource_priority_resources() -- resource type IDs
-  - cppc_get/set_res_priority_enable() -- enable/disable a group
-  - cppc_get_res_priority_count() -- priority levels in a group
-  - cppc_get/set_res_priority() -- read/write the priority value
+These allow OSPM to set relative priority among processors for shared
+resources such as boost, throttle, L2/L3 cache, and memory bandwidth.
 
-These wrappers navigate the nested Package structure parsed earlier by
-parse_priority_regs() and delegate register I/O to cpc_read_reg() /
-cpc_write_reg().
+Implement parse_priority_regs() which:
 
-Provide stubs returning -EOPNOTSUPP for the !CONFIG_ACPI_CPPC_LIB case.
+  1. Validates each sub-package has the expected element count
+     (RESOURCE_PRIORITY_NUM).
+  2. Allocates cpc_register_resource arrays for the sub-package
+     elements and the nested CONTROLLED_RESOURCES list.
+  3. Parses CONTROLLED_RESOURCES as integers and the remaining
+     entries (ENABLE_REGISTER, PRIORITY_REGISTER, etc.) via
+     parse_cpc_element() so that register descriptors, PCC subspace
+     tracking, and ioremap are handled consistently.
+  4. Wires the parser into the main _CPC probe loop, replacing the
+     previous "package type not supported" stub with full parsing for
+     RESOURCE_PRIORITY while rejecting unexpected Package entries.
+
+The probe and _exit() error/cleanup paths already use
+free_reg_resource(), which recursively frees Package-type entries,
+so no additional cleanup changes are needed.
+
+Add the resource_priority_regs enumeration that defines the indices
+into each Resource Priority sub-package (CONTROLLED_RESOURCES,
+ENABLE_VALUE, ENABLE_REGISTER, PRIORITY_COUNT, PRIORITY_REGISTER)
+and RESOURCE_PRIORITY_NUM as the element count sentinel.
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 262 +++++++++++++++++++++++++++++++++++++++
- include/acpi/cppc_acpi.h |  37 ++++++
- 2 files changed, 299 insertions(+)
+ drivers/acpi/cppc_acpi.c | 137 ++++++++++++++++++++++++++++++++++++---
+ include/acpi/cppc_acpi.h |  13 ++++
+ 2 files changed, 142 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 2c2b25ec3e27..2d78886b108d 100644
+index dce15d875c62..b5563d75d6c5 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -2284,6 +2284,268 @@ int cppc_set_perf_limited(int cpu, u64 bits_to_clear)
+@@ -777,6 +777,91 @@ static void free_reg_resource(struct cpc_register_resource *cpc_reg)
+ 	}
  }
- EXPORT_SYMBOL_GPL(cppc_set_perf_limited);
  
 +/**
-+ * get_res_prio_subpkg - Get pointer to the elements array of a RESOURCE_PRIORITY sub-package.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index (0 to count-1).
++ * parse_priority_regs - Parse the RESOURCE_PRIORITY nested package structure.
++ * @cpc_obj:         ACPI Package object for the RESOURCE_PRIORITY entry.
++ * @regs:            Output array of cpc_register_resource to fill.
++ * @pcc_subspace_id: In/out pointer to PCC subspace ID.
++ * @cpu:             CPU number, used for debug messages.
 + *
-+ * Return: Pointer to the sub-package's elements array, or NULL on error.
++ * The RESOURCE_PRIORITY entry (CPPC v4) is a Package of sub-packages.
++ * Each sub-package has RESOURCE_PRIORITY_NUM elements:
++ *   [0] = Package of integers (CONTROLLED_RESOURCES list)
++ *   [1] = ENABLE_VALUE, [2] = ENABLE_REGISTER,
++ *   [3] = PRIORITY_COUNT, [4] = PRIORITY_REGISTER
 + *
-+ * The layout within each sub-package element is:
-+ *   elements[CONTROLLED_RESOURCES] = [0]
-+ *   elements[ENABLE_VALUE]         = [1]
-+ *   elements[ENABLE_REGISTER]      = [2]
-+ *   elements[PRIORITY_COUNT]       = [3]
-+ *   elements[PRIORITY_REGISTER]    = [4]
++ * Return: 0 on success, -ENODATA on malformed data, -ENOMEM on allocation failure.
 + */
-+static struct cpc_register_resource *get_res_prio_subpkg(int cpu, int index)
++static int parse_priority_regs(union acpi_object *cpc_obj,
++			       struct cpc_register_resource *regs,
++			       int *pcc_subspace_id, u32 cpu)
 +{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+	struct cpc_register_resource *rp_pkg;
-+
-+	if (!cpc_desc)
-+		return NULL;
-+
-+	rp_pkg = &cpc_desc->cpc_regs[RESOURCE_PRIORITY];
-+	if (rp_pkg->type != ACPI_TYPE_PACKAGE)
-+		return NULL;
-+
-+	if (index < 0 || index >= rp_pkg->cpc_entry.package.count)
-+		return NULL;
-+
-+	return rp_pkg->cpc_entry.package.elements[index].cpc_entry.package.elements;
-+}
-+
-+/**
-+ * cppc_get_resource_priority_count - Get number of Resource Priority sub-packages.
-+ * @cpu: CPU number.
-+ * @count: Output number of resource priority groups.
-+ *
-+ * Return: 0 on success, -EOPNOTSUPP if RESOURCE_PRIORITY not provided by firmware.
-+ */
-+int cppc_get_resource_priority_count(int cpu, int *count)
-+{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+	struct cpc_register_resource *rp_pkg;
-+
-+	if (!count)
-+		return -EINVAL;
-+
-+	if (!cpc_desc)
-+		return -ENODEV;
-+
-+	rp_pkg = &cpc_desc->cpc_regs[RESOURCE_PRIORITY];
-+	if (rp_pkg->type != ACPI_TYPE_PACKAGE)
-+		return -EOPNOTSUPP;
-+
-+	*count = rp_pkg->cpc_entry.package.count;
-+	if (*count <= 0)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_resource_priority_count);
-+
-+/**
-+ * cppc_get_resource_priority_resources - Read Controlled Resources list for a sub-package.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index (0 to count-1).
-+ * @resources: Output array of resource type IDs (caller-allocated).
-+ * @num_resources: Input = array capacity, output = actual count.
-+ *
-+ * Return: 0 on success, -EOPNOTSUPP, -EINVAL, etc.
-+ */
-+int cppc_get_resource_priority_resources(int cpu, int index,
-+					 u32 *resources, int *num_resources)
-+{
-+	struct cpc_register_resource *elems;
-+	struct cpc_register_resource *cr_pkg;
-+	int i, cr_count;
-+
-+	if (!resources || !num_resources || *num_resources <= 0)
-+		return -EINVAL;
-+
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
-+
-+	cr_pkg = &elems[CONTROLLED_RESOURCES];
-+	if (cr_pkg->type != ACPI_TYPE_PACKAGE)
-+		return -EOPNOTSUPP;
-+
-+	cr_count = cr_pkg->cpc_entry.package.count;
-+	if (cr_count <= 0)
-+		return 0;
-+
-+	*num_resources = min(cr_count, *num_resources);
-+
-+	for (i = 0; i < *num_resources; i++)
-+		resources[i] = cr_pkg->cpc_entry.package.elements[i].cpc_entry.int_value;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_resource_priority_resources);
-+
-+/**
-+ * cppc_get_res_priority_enable - Read enable state of a Resource Priority register.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index.
-+ * @enable: Output true if enabled, false if disabled.
-+ *
-+ * Compares the current ENABLE_REGISTER value against ENABLE_VALUE.
-+ * If ENABLE_REGISTER is null/unsupported, returns -EOPNOTSUPP.
-+ *
-+ * Return: 0 on success, negative error otherwise.
-+ */
-+int cppc_get_res_priority_enable(int cpu, int index, bool *enable)
-+{
-+	struct cpc_register_resource *elems;
-+	struct cpc_register_resource *enable_reg;
-+	u64 reg_val, enable_val;
++	struct cpc_register_resource *reg_elements;
++	union acpi_object reg_desc_obj;
++	unsigned int i, j, resources_count;
 +	int ret;
 +
-+	if (!enable)
-+		return -EINVAL;
++	for (i = 0; i < cpc_obj->package.count; i++) {
++		reg_desc_obj = cpc_obj->package.elements[i];
++		if (reg_desc_obj.type != ACPI_TYPE_PACKAGE ||
++		    reg_desc_obj.package.count != RESOURCE_PRIORITY_NUM) {
++			pr_debug("Malformed priority regs sub-pkg: type %d count %d, expected %d for CPU:%d\n",
++				 reg_desc_obj.type, reg_desc_obj.package.count,
++				 RESOURCE_PRIORITY_NUM, cpu);
++			return -ENODATA;
++		}
 +
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
++		reg_elements = kzalloc_objs(struct cpc_register_resource, RESOURCE_PRIORITY_NUM);
++		if (!reg_elements) {
++			pr_debug("Failed to allocate reg_elements for CPU:%d\n", cpu);
++			return -ENOMEM;
++		}
 +
-+	enable_reg = &elems[ENABLE_REGISTER];
-+	if (enable_reg->type != ACPI_TYPE_BUFFER ||
-+	    IS_NULL_REG(&enable_reg->cpc_entry.reg))
-+		return -EOPNOTSUPP;
++		/*
++		 * Assign values immediately after successful allocation to ensure that resources
++		 * can be properly released.
++		 */
++		regs[i].type = ACPI_TYPE_PACKAGE;
++		regs[i].cpc_entry.package.count = RESOURCE_PRIORITY_NUM;
++		regs[i].cpc_entry.package.elements = reg_elements;
 +
-+	ret = cpc_read_reg(cpu, enable_reg, &reg_val);
-+	if (ret)
-+		return ret;
++		resources_count = reg_desc_obj.package.elements[0].package.count;
 +
-+	ret = cpc_read_reg(cpu, &elems[ENABLE_VALUE], &enable_val);
-+	if (ret)
-+		return ret;
++		if (reg_desc_obj.package.elements[0].type != ACPI_TYPE_PACKAGE ||
++		    !resources_count) {
++			pr_debug("Invalid priority sub-elements: type %d count %d for CPU:%d\n",
++				 reg_desc_obj.package.elements[0].type, resources_count, cpu);
++			return -ENODATA;
++		}
 +
-+	*enable = (reg_val == enable_val);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_res_priority_enable);
++		reg_elements[0].cpc_entry.package.elements =
++			kzalloc_objs(struct cpc_register_resource, resources_count);
++		if (!reg_elements[0].cpc_entry.package.elements) {
++			pr_debug("Failed to allocate %d priority sub-elements for CPU:%d\n",
++				 resources_count, cpu);
++			return -ENOMEM;
++		}
 +
-+/**
-+ * cppc_set_res_priority_enable - Set enable state of a Resource Priority register.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index.
-+ * @enable: true to enable (write ENABLE_VALUE), false to disable (write 0).
-+ *
-+ * Return: 0 on success, negative error otherwise.
-+ */
-+int cppc_set_res_priority_enable(int cpu, int index, bool enable)
-+{
-+	struct cpc_register_resource *elems;
-+	struct cpc_register_resource *enable_reg;
-+	u64 val;
-+	int ret;
++		reg_elements[0].type = ACPI_TYPE_PACKAGE;
++		reg_elements[0].cpc_entry.package.count = resources_count;
 +
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
++		for (j = 0; j < reg_elements[0].cpc_entry.package.count; j++) {
++			reg_elements[0].cpc_entry.package.elements[j].type = ACPI_TYPE_INTEGER;
++			reg_elements[0].cpc_entry.package.elements[j].cpc_entry.int_value =
++				reg_desc_obj.package.elements[0].package.elements[j].integer.value;
++		}
 +
-+	enable_reg = &elems[ENABLE_REGISTER];
-+
-+	if (enable) {
-+		ret = cpc_read_reg(cpu, &elems[ENABLE_VALUE], &val);
-+		if (ret)
-+			return ret;
-+	} else {
-+		val = 0;
++		for (j = 1; j < RESOURCE_PRIORITY_NUM; j++) {
++			ret = parse_cpc_element(&reg_desc_obj.package.elements[j], &reg_elements[j],
++						pcc_subspace_id, cpu, RESOURCE_PRIORITY);
++			if (ret)
++				return ret;
++		}
 +	}
 +
-+	return cpc_write_reg(cpu, enable_reg, val);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(cppc_set_res_priority_enable);
 +
-+/**
-+ * cppc_get_res_priority_count - Read priority count for a Resource Priority register.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index.
-+ * @count: Output priority count (>= 2 per spec).
-+ *
-+ * Return: 0 on success, negative error otherwise.
-+ */
-+int cppc_get_res_priority_count(int cpu, int index, u64 *count)
-+{
-+	struct cpc_register_resource *elems;
+ /*
+  * An example CPC table looks like the following.
+  *
+@@ -815,6 +900,7 @@ static void free_reg_resource(struct cpc_register_resource *cpc_reg)
+ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ {
+ 	struct acpi_buffer output = {ACPI_ALLOCATE_BUFFER, NULL};
++	struct cpc_register_resource *pkg_elements;
+ 	union acpi_object *out_obj, *cpc_obj;
+ 	struct cpc_desc *cpc_ptr;
+ 	struct device *cpu_dev;
+@@ -823,6 +909,7 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 	int pcc_subspace_id = -1;
+ 	acpi_status status;
+ 	int ret = -ENODATA;
++	u32 pkg_count;
+ 
+ 	if (!osc_sb_cppc2_support_acked) {
+ 		pr_debug("CPPC v2 _OSC not acked\n");
+@@ -904,16 +991,50 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+ 	for (i = 2; i < num_ent; i++) {
+ 		cpc_obj = &out_obj->package.elements[i];
+ 
+-		if (cpc_obj->type == ACPI_TYPE_PACKAGE && (i - 2) == RESOURCE_PRIORITY) {
++		/*
++		 * Package-type entries are used for nested structures such as
++		 * RESOURCE_PRIORITY (CPPC v4). Only RESOURCE_PRIORITY is
++		 * currently supported; any other Package entry is rejected.
++		 */
++		if (cpc_obj->type == ACPI_TYPE_PACKAGE) {
++			cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_PACKAGE;
++			cpc_ptr->cpc_regs[i-2].cpc_entry.package.count = 0;
++			cpc_ptr->cpc_regs[i-2].cpc_entry.package.elements = NULL;
 +
-+	if (!count)
-+		return -EINVAL;
++			pkg_count = cpc_obj->package.count;
++			if (!pkg_count) {
++				pr_debug("Empty package entry at index %d for CPU:%d\n",
++					 i, pr->id);
++				continue;
++			}
 +
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
++			pkg_elements = kzalloc_objs(struct cpc_register_resource, pkg_count);
++			if (!pkg_elements) {
++				ret = -ENOMEM;
++				goto out_free;
++			}
 +
-+	return cpc_read_reg(cpu, &elems[PRIORITY_COUNT], count);
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_res_priority_count);
+ 			/*
+-			 * ACPI 6.6, s8.4.6.1.2.7 defines Resource Priority as a
+-			 * Package of Resource Priority Register Descriptor sub-packages.
+-			 * Parsing the full structure is not yet supported.
+-			 * Mark the register as unsupported for now.
++			 * Assign values immediately after successful allocation to ensure that
++			 * resources can be properly released.
+ 			 */
+-			pr_debug("CPU:%d Resource Priority not supported\n", pr->id);
+-			cpc_ptr->cpc_regs[i-2].type = ACPI_TYPE_INTEGER;
+-			cpc_ptr->cpc_regs[i-2].cpc_entry.int_value = 0;
++			cpc_ptr->cpc_regs[i-2].cpc_entry.package.count = pkg_count;
++			cpc_ptr->cpc_regs[i-2].cpc_entry.package.elements = pkg_elements;
 +
-+/**
-+ * cppc_get_res_priority - Read priority value for a Resource Priority register.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index.
-+ * @priority: Output priority value.
-+ *
-+ * Return: 0 on success, negative error otherwise.
-+ */
-+int cppc_get_res_priority(int cpu, int index, u64 *priority)
-+{
-+	struct cpc_register_resource *elems;
-+	struct cpc_register_resource *prio_reg;
++			if (i - 2 == RESOURCE_PRIORITY) {
++				ret = parse_priority_regs(cpc_obj, pkg_elements,
++							  &pcc_subspace_id, pr->id);
++				if (ret)
++					goto out_free;
 +
-+	if (!priority)
-+		return -EINVAL;
-+
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
-+
-+	prio_reg = &elems[PRIORITY_REGISTER];
-+	if (prio_reg->type != ACPI_TYPE_BUFFER ||
-+	    IS_NULL_REG(&prio_reg->cpc_entry.reg))
-+		return -EOPNOTSUPP;
-+
-+	return cpc_read_reg(cpu, prio_reg, priority);
-+}
-+EXPORT_SYMBOL_GPL(cppc_get_res_priority);
-+
-+/**
-+ * cppc_set_res_priority - Write priority value for a Resource Priority register.
-+ * @cpu: CPU number.
-+ * @index: Sub-package index.
-+ * @priority: Priority value to write (valid range: [0, PriorityCount - 1]).
-+ *
-+ * Return: 0 on success, negative error otherwise.
-+ */
-+int cppc_set_res_priority(int cpu, int index, u64 priority)
-+{
-+	struct cpc_register_resource *elems;
-+	struct cpc_register_resource *prio_reg;
-+	u64 prio_count;
-+	int ret;
-+
-+	elems = get_res_prio_subpkg(cpu, index);
-+	if (!elems)
-+		return -EOPNOTSUPP;
-+
-+	ret = cpc_read_reg(cpu, &elems[PRIORITY_COUNT], &prio_count);
-+	if (ret)
-+		return ret;
-+
-+	if (priority >= prio_count)
-+		return -EINVAL;
-+
-+	prio_reg = &elems[PRIORITY_REGISTER];
-+
-+	return cpc_write_reg(cpu, prio_reg, priority);
-+}
-+EXPORT_SYMBOL_GPL(cppc_set_res_priority);
-+
- /**
-  * cppc_get_transition_latency - returns frequency transition latency in ns
-  * @cpu_num: CPU number for per_cpu().
++				pr_debug("Parsed RESOURCE_PRIORITY (%d sub-pkgs) for CPU:%d\n",
++					 pkg_count, pr->id);
++			} else {
++				pr_debug("Unexpected ACPI_TYPE_PACKAGE at index %d for CPU:%d\n",
++					 i, pr->id);
++				ret = -ENODATA;
++				goto out_free;
++			}
+ 		} else {
+ 			ret = parse_cpc_element(cpc_obj, &cpc_ptr->cpc_regs[i-2],
+ 						&pcc_subspace_id, pr->id, i);
 diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index c0b8d52016cd..86a4764c504d 100644
+index 1839582b80be..19f8a722654b 100644
 --- a/include/acpi/cppc_acpi.h
 +++ b/include/acpi/cppc_acpi.h
-@@ -208,6 +208,14 @@ extern int cppc_get_auto_sel(int cpu, bool *enable);
- extern int cppc_set_auto_sel(int cpu, bool enable);
- extern int cppc_get_perf_limited(int cpu, u64 *perf_limited);
- extern int cppc_set_perf_limited(int cpu, u64 bits_to_clear);
-+extern int cppc_get_resource_priority_count(int cpu, int *count);
-+extern int cppc_get_resource_priority_resources(int cpu, int index,
-+						u32 *resources, int *num_resources);
-+extern int cppc_get_res_priority_enable(int cpu, int index, bool *enable);
-+extern int cppc_set_res_priority_enable(int cpu, int index, bool enable);
-+extern int cppc_get_res_priority_count(int cpu, int index, u64 *count);
-+extern int cppc_get_res_priority(int cpu, int index, u64 *priority);
-+extern int cppc_set_res_priority(int cpu, int index, u64 priority);
- extern int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf);
- extern int amd_get_boost_ratio_numerator(unsigned int cpu, u64 *numerator);
- extern int amd_detect_prefcore(bool *detected);
-@@ -312,6 +320,35 @@ static inline int cppc_set_perf_limited(int cpu, u64 bits_to_clear)
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int cppc_get_resource_priority_count(int cpu, int *count)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_resource_priority_resources(int cpu, int index,
-+						       u32 *resources, int *num_resources)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_res_priority_enable(int cpu, int index, bool *enable)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_set_res_priority_enable(int cpu, int index, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_res_priority_count(int cpu, int index, u64 *count)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_get_res_priority(int cpu, int index, u64 *priority)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int cppc_set_res_priority(int cpu, int index, u64 priority)
-+{
-+	return -EOPNOTSUPP;
-+}
- static inline int amd_get_highest_perf(unsigned int cpu, u32 *highest_perf)
- {
- 	return -ENODEV;
+@@ -123,6 +123,19 @@ enum cppc_regs {
+ 	RESOURCE_PRIORITY,
+ };
+ 
++/*
++ * Indices into each sub-package of the RESOURCE_PRIORITY entry.
++ * RESOURCE_PRIORITY_NUM serves as the element count / loop bound.
++ */
++enum resource_priority_regs {
++	CONTROLLED_RESOURCES,	/* Package of integer resource IDs */
++	ENABLE_VALUE,		/* Enable/disable value */
++	ENABLE_REGISTER,	/* Register for enable/disable control */
++	PRIORITY_COUNT,		/* Number of priority levels */
++	PRIORITY_REGISTER,	/* Register for priority setting */
++	RESOURCE_PRIORITY_NUM,	/* Number of elements (sentinel) */
++};
++
+ /*
+  * Categorization of registers as described
+  * in the ACPI v.5.1 spec.
 -- 
 2.33.0
 
