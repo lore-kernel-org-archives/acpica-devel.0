@@ -1,38 +1,38 @@
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFC137189C
-	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 01:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E86371D15
+	for <acpica-devel@lists.linux.dev>; Wed, 12 Aug 2026 01:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786499668; cv=none; b=ArfbkRUTzjFkRP4wiOIfzGBYleqcGSBJNBKsP6dfSb/mVxlS6ge5u3qCF6Q0v7hmWy3ffrPHw/XDbzQnGAft83PNXDxQr6G2+BBSfY/jQppKxWhMqRnzu8HDi9L9FDzwTqj2uiEAozILtM6kQvrXpuCv9zR85QCPz0gtHPqvC4w=
+	t=1786499669; cv=none; b=FGq2e8r4tO+3jNSSOuPs8J4BErdbjQMOZeBrqtNavvduevqVPn3Kw3DUDQgCWjYvT7PNYhncMjZbqJ7AawhNE/F0eqAm6Ny4Kz5NBM2IQA9mjC3BheueXDQONCzBDOzy1Pgq3YC2nfcoHvbV9ASKFoA76gvuQqzOJeGc4ufA5ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786499668; c=relaxed/simple;
-	bh=kDpK7Seh/MxWoKpik6r7NblQ5wfpHGUwrsILNj5QaYs=;
+	s=arc-20240116; t=1786499669; c=relaxed/simple;
+	bh=N4HtkiWf7I6T2lTSMu8KrEBHfC1CNXw2MeRawSnuvXU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BHJmphbeYox51m3yqWJ7PDLX35wfuUo5NfuXDqFb5cPzlXGDHf3fFuywqC0uV1Ash6qw4QRq6imCMPMfJf3vAW4gcFexeUpoaRnkfOWJC76i6jH0+pKoaQ6DfdtSdQ8QAINogblBxuCrD/7D7ToeGJfLSXEl8mW3rEepLRXavsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=D66CmRTe; arc=none smtp.client-ip=113.46.200.219
+	 MIME-Version:Content-Type; b=BkgeEvj65LulCpCLyth4dl7YscswJnQhBU7tDWsHEOaP5geEibF8slEDMYDiZOQYa6PAHxY+LBbnnNLBzJOi5ORPprbcRUYXI+2yrwVeNcW9Ry7rDDajKlQvokpQ16M9KY0pUsXRFWMCtN7hu8Bu3fXQ/ZPoj19UVWfkuet6aD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=A6MLL1lL; arc=none smtp.client-ip=113.46.200.225
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="D66CmRTe"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="A6MLL1lL"
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=FCtyezrfFYHAsq12yeCIgaKi9Rbow+xBWuIlKanOkyk=;
-	b=D66CmRTe0YZORKY7r8ATMMk2H/F/vX4IrE3iMes4ZC5WIuOJUw8idDe2tMPcYt9MQ1cx40+wf
-	Kemo7oJQAFNmsyHd1FCNNxywrW5f1FZpCUX8l5j/zhWG4HONjLcobSD6wMr9dCpayYajAqrgO62
-	TnJudJ+lMKD4BghxDsUpFls=
-Received: from mail.maildlp.com (unknown [172.19.162.140])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4hKWVQ3R4Tz1prKd;
-	Wed, 12 Aug 2026 09:43:42 +0800 (CST)
+	bh=uuTlAjbFVG3K4wNEikSMGRwn8CiTCyTwtRqd8LgITfc=;
+	b=A6MLL1lLoqRqLjMnIUrkIz7uyVDYEI7+6iMBwg379KlmGhDk2YI4eNS+GqCXAfUABQafn2U9p
+	k5VwnFEKgWv6vb/w2CNZrvQOGeiOxdDzfuxq9C5JYIKiIW6RBiO/lRBs+NB+Uo26BE3mTyy9vEe
+	zicGgEAClSO49nqGfFRLpLY=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4hKWVT6KSQz1K98V;
+	Wed, 12 Aug 2026 09:43:45 +0800 (CST)
 Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5CC6120333;
-	Wed, 12 Aug 2026 09:54:21 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id B9E114057C;
+	Wed, 12 Aug 2026 09:54:22 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Wed, 12 Aug 2026 09:54:20 +0800
+ 15.2.1544.36; Wed, 12 Aug 2026 09:54:22 +0800
 From: Lifeng Zheng <zhenglifeng1@huawei.com>
 To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
 	<lenb@kernel.org>, <zhanjie9@hisilicon.com>, <pierre.gondois@arm.com>,
@@ -42,9 +42,9 @@ CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linuxarm@huawei.com>, <lihuisong@huawei.com>, <yubowen8@huawei.com>,
 	<zhangpengjie2@huawei.com>, <wangzhi12@huawei.com>,
 	<linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
-Subject: [PATCH v3 3/8] ACPI: CPPC: Refactor resource cleanup into free_reg_resource()
-Date: Wed, 12 Aug 2026 09:52:11 +0800
-Message-ID: <20260812015217.74598-4-zhenglifeng1@huawei.com>
+Subject: [PATCH v3 6/8] ACPI: CPPC: Factor out cpc_read_reg() and cpc_write_reg()
+Date: Wed, 12 Aug 2026 09:52:14 +0800
+Message-ID: <20260812015217.74598-7-zhenglifeng1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20260812015217.74598-1-zhenglifeng1@huawei.com>
 References: <20260812015217.74598-1-zhenglifeng1@huawei.com>
@@ -59,101 +59,161 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
  kwepemf100001.china.huawei.com (7.202.181.215)
 
-Both the error path of acpi_cppc_processor_probe() and the normal
-cleanup in acpi_cppc_processor_exit() iterate over the cpc_regs[]
-array and iounmap() any SystemMemory virtual addresses that were
-set up during probe.
+cppc_get_reg_val() and cppc_set_reg_val() combine two responsibilities:
+looking up the per-CPU cpc_desc and then performing the actual register
+read/write (including null/optional checks and PCC handling).
 
-CPPC v4 adds Package-type entries that own dynamically allocated
-sub-elements which also need to be freed.  Inlining this recursive
-cleanup at every call-site would be error-prone and repetitive.
+Split out the register I/O logic into cpc_read_reg() and cpc_write_reg()
+that accept a struct cpc_register_resource pointer directly.  This allows
+callers that already hold a register reference -- such as the upcoming
+Resource Priority accessors -- to read or write a register without going
+through the per-CPU descriptor lookup by index.
 
-Extract the per-register cleanup logic into free_reg_resource(),
-which releases any iomapped address and, for Package-type entries,
-recursively frees all child elements and the elements array itself.
-Convert both the probe error path and _exit() to use the new helper.
-
-No functional change for existing Integer / Buffer entries.
+Also rename the PCC wrappers from cppc_get/set_reg_val_in_pcc() to
+cpc_read/write_in_pcc() to align with the new naming convention.
 
 Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
 ---
- drivers/acpi/cppc_acpi.c | 41 ++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+ drivers/acpi/cppc_acpi.c | 89 ++++++++++++++++++++++++++--------------
+ 1 file changed, 58 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 47ececf214c4..dce15d875c62 100644
+index 53c71888108d..2c2b25ec3e27 100644
 --- a/drivers/acpi/cppc_acpi.c
 +++ b/drivers/acpi/cppc_acpi.c
-@@ -753,6 +753,30 @@ static int parse_cpc_element(union acpi_object *cpc_obj,
- 	return 0;
+@@ -1374,7 +1374,7 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
+ 	return ret_val;
  }
  
+-static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
++static int cpc_read_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
+ {
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+ 	struct cppc_pcc_data *pcc_ss_data = NULL;
+@@ -1399,35 +1399,52 @@ static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u
+ 	return ret;
+ }
+ 
+-static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
 +/**
-+ * free_reg_resource - Free resources held by a CPC register resource.
-+ * @cpc_reg: Pointer to the CPC register resource to clean up.
++ * cpc_read_reg - Read value from a register element that may be Integer or Buffer.
++ * @cpu: CPU number.
++ * @reg: Pointer to the CPC register element.
++ * @val: Output value.
 + *
-+ * Releases any iomapped SystemMemory address and, for Package-type
-+ * resources, recursively frees all nested elements before freeing the
-+ * elements array itself.
++ * Return: 0 on success, -EOPNOTSUPP if null/unsupported, negative on error.
 + */
-+static void free_reg_resource(struct cpc_register_resource *cpc_reg)
-+{
-+	void __iomem *addr = cpc_reg->sys_mem_vaddr;
-+	int i;
++static int cpc_read_reg(int cpu, struct cpc_register_resource *reg, u64 *val)
+ {
+-	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+-	struct cpc_register_resource *reg;
+-
+ 	if (val == NULL)
+ 		return -EINVAL;
+ 
+-	if (!cpc_desc) {
+-		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+-		return -ENODEV;
+-	}
+-
+-	reg = &cpc_desc->cpc_regs[reg_idx];
+-
+-	if ((reg->type == ACPI_TYPE_INTEGER && reg->optional &&
+-	     !reg->cpc_entry.int_value) || (reg->type != ACPI_TYPE_INTEGER &&
+-	     IS_NULL_REG(&reg->cpc_entry.reg))) {
+-		pr_debug("CPC register is not supported\n");
+-		return -EOPNOTSUPP;
++	if (reg->type == ACPI_TYPE_INTEGER) {
++		if (reg->optional && !reg->cpc_entry.int_value)
++			goto err_unsupported;
++	} else if (reg->type == ACPI_TYPE_BUFFER) {
++		if (IS_NULL_REG(&reg->cpc_entry.reg))
++			goto err_unsupported;
++	} else {
++		goto err_unsupported;
+ 	}
+ 
+ 	if (CPC_IN_PCC(reg))
+-		return cppc_get_reg_val_in_pcc(cpu, reg, val);
++		return cpc_read_in_pcc(cpu, reg, val);
+ 
+ 	return cpc_read(cpu, reg, val);
 +
-+	if (addr)
-+		iounmap(addr);
-+
-+	if (cpc_reg->type == ACPI_TYPE_PACKAGE) {
-+		for (i = 0; i < cpc_reg->cpc_entry.package.count; i++)
-+			free_reg_resource(&cpc_reg->cpc_entry.package.elements[i]);
-+
-+		kfree(cpc_reg->cpc_entry.package.elements);
-+	}
++err_unsupported:
++	pr_debug("CPC register is not supported\n");
++	return -EOPNOTSUPP;
 +}
 +
- /*
-  * An example CPC table looks like the following.
-  *
-@@ -965,12 +989,9 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
++static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
++{
++	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
++
++	if (!cpc_desc) {
++		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
++		return -ENODEV;
++	}
++
++	return cpc_read_reg(cpu, &cpc_desc->cpc_regs[reg_idx], val);
+ }
  
- out_free:
- 	/* Free all the mapped sys mem areas for this CPU */
--	for (i = 2; i < cpc_ptr->num_entries; i++) {
--		void __iomem *addr = cpc_ptr->cpc_regs[i-2].sys_mem_vaddr;
-+	for (i = 2; i < cpc_ptr->num_entries; i++)
-+		free_reg_resource(&cpc_ptr->cpc_regs[i-2]);
- 
--		if (addr)
--			iounmap(addr);
--	}
- 	kfree(cpc_ptr);
- 
- out_buf_free:
-@@ -989,7 +1010,6 @@ void acpi_cppc_processor_exit(struct acpi_processor *pr)
+-static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
++static int cpc_write_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
  {
- 	struct cpc_desc *cpc_ptr;
- 	unsigned int i;
--	void __iomem *addr;
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, pr->id);
+ 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
+ 	struct cppc_pcc_data *pcc_ss_data = NULL;
+@@ -1452,18 +1469,16 @@ static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u
+ 	return ret;
+ }
  
- 	if (pcc_ss_id >= 0 && pcc_data[pcc_ss_id]) {
-@@ -1007,12 +1027,9 @@ void acpi_cppc_processor_exit(struct acpi_processor *pr)
- 	if (!cpc_ptr)
- 		return;
- 
--	/* Free all the mapped sys mem areas for this CPU */
--	for (i = 2; i < cpc_ptr->num_entries; i++) {
--		addr = cpc_ptr->cpc_regs[i-2].sys_mem_vaddr;
--		if (addr)
--			iounmap(addr);
+-static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
++/**
++ * cpc_write_reg - Write a CPC register.
++ * @cpu: CPU number.
++ * @reg: Pointer to the CPC register resource.
++ * @val: Value to write.
++ *
++ * Return: 0 on success, negative error code otherwise.
++ */
++static int cpc_write_reg(int cpu, struct cpc_register_resource *reg, u64 val)
+ {
+-	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+-	struct cpc_register_resource *reg;
+-
+-	if (!cpc_desc) {
+-		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
+-		return -ENODEV;
 -	}
-+	/* Free all the mapped sys mem areas and nested package resources for this CPU */
-+	for (i = 2; i < cpc_ptr->num_entries; i++)
-+		free_reg_resource(&cpc_ptr->cpc_regs[i-2]);
+-
+-	reg = &cpc_desc->cpc_regs[reg_idx];
+-
+ 	/* if a register is writeable, it must be a buffer and not null */
+ 	if ((reg->type != ACPI_TYPE_BUFFER) || IS_NULL_REG(&reg->cpc_entry.reg)) {
+ 		pr_debug("CPC register is not supported\n");
+@@ -1471,11 +1486,23 @@ static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
+ 	}
  
- 	kobject_put(&cpc_ptr->kobj);
- 	kfree(cpc_ptr);
+ 	if (CPC_IN_PCC(reg))
+-		return cppc_set_reg_val_in_pcc(cpu, reg, val);
++		return cpc_write_in_pcc(cpu, reg, val);
+ 
+ 	return cpc_write(cpu, reg, val);
+ }
+ 
++static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
++{
++	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
++
++	if (!cpc_desc) {
++		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
++		return -ENODEV;
++	}
++
++	return cpc_write_reg(cpu, &cpc_desc->cpc_regs[reg_idx], val);
++}
++
+ /**
+  * cppc_get_desired_perf - Get the desired performance register value.
+  * @cpunum: CPU from which to get desired performance.
 -- 
 2.33.0
 
