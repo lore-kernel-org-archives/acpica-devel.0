@@ -1,137 +1,149 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FE3320CBE
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 09:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A2A3D6CCF
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 10:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786612436; cv=none; b=S/WW1CdVSxnbILrz6na4pwX/V/+tM8Em3Z4oyv6q5HIsuvRfQpHJ3tRr25nyG6xYrb9h9sMZhDs6Bqa83GI0r7VRmuS/Of8BLh/K7kVvnRjOpeCQdDFZ8ZLbOwvP7uaRup51GEDWet+0RwfBhU9NcZ7L04TVQUIteEnOK05Yvng=
+	t=1786616052; cv=none; b=dvafM8LLANiK25YLw6uFuRs2ZE4yovV7q4LAQPizDEVmCDrVDWyB7RA4sGUgQp5oyJtBsfanamyjmX7GiOd0zB/4E4UigEOubE8nm3fycSdyfTdB8bKPDgO2h6zpNHDVrSXd190rlG0Qpo7zNEt1NvAsNzIlWMVsE6aZoXtoTCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786612436; c=relaxed/simple;
-	bh=wNa4yBoWyMmFnBuuKabMY31Qn9tIHXbMS3K/NGSymts=;
+	s=arc-20240116; t=1786616052; c=relaxed/simple;
+	bh=eNOgY/8tx7BxqRcfnnxrILVFjSWVTuELAsGKZxQoM/M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bet7V5zhytfSB8qh1C3m7VjvonThRFiiNwZyL3+LJBpP7dvH/xhp77+0MhypTVU2H9qG7NO9lNc45vSWAxfo5wnhBKAVThnBEuwOro5spGOWcOiBN05QJaGmteTZTksNHOPJeD+4GyM/FrtvebwKPd1en4aYDNYhmNtCW6fCyz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P7eJV8qp; arc=none smtp.client-ip=100.103.45.18
+	 To:Cc:Content-Type; b=kZN2ZoXZbI6cYa6Rw9f8vjKfth6XhOTp6Da7j8RKI92lICyBkdzOJeP7+ThYviKeyWASuWavsmjJNREuJdAtZDaIz8WXzOQrVcwxe4DmZlvEcVOZJbedl+cacrc+4IkdCe2sFA2GYNSahswW+hMTq46RAiWgZbkGtTp/u1vEbRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLo6t8IB; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P7eJV8qp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCB71F00AC4
-	for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 09:13:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLo6t8IB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ED8E1F00A3D
+	for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 10:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786612435;
-	bh=LhAi/xlxK8JP8cA81/58f93yko89uigQ5ipid3kk9jc=;
+	s=k20260515; t=1786616043;
+	bh=kTNrCV3t/mEVfwJWf78aFwuNT6sE+LNNyY+YdUQxlDQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=P7eJV8qp0Y4xFMFZz8C76Wo5J6LDLJ+iTu2rUkDNY0UCtb7S1LxNEl0YwRWYI78+U
-	 j/a0BIgv+3S/HztFYdZR/KJJG0enJr6uuLQk96h1Nc+420e/y3eWnrhAG/wQdS1E9r
-	 U6oDlKHRUJlh2Ui41NVX488uyg2AA/tpD/Prg7wJQu0cHr27sAa6GPlLz9TZijNFQv
-	 cv9U1Xtgx+vE8f6xQ/eNF6UBKzjU/0iIQGJxofh8EKMoR8NHk5k/h+vIHRL9yIbSWS
-	 ScWda3cZDRsrjSfFYAa87AhP4WPfiHZBXBc0QFKqMdlVISKuhey1Eu8PbT+7U1TT8W
-	 jRik7UZqYh5hA==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5b00d083818so725623e87.1
-        for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 02:13:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RoFKqjharZWQ9P8krdHe4G/zFEHZmxlRHG+/P3PFjfSkjJ2eoySLm5PyjBkpEjHmhMu4Te6gvmQpCmmke4=@lists.linux.dev
-X-Gm-Message-State: AOJu0YxJVx56K727yPjZcZg+XMWa+grVLV8tVV6B/DvBsN02zxKIWzP8
-	Ii/zcEUJc6v81kRBwHCT34j6E0vh8QXYE8vATZJk3dBmAB9HE6o9iiTmaY6f4n0GQLifmrmGRqo
-	Pwb53LJ5YRrrdsdZOBkZfAd2OTFgrKvc=
-X-Received: by 2002:a05:6512:1444:10b0:5b2:d6a3:4510 with SMTP id
- 2adb3069b0e04-5b453ce1a08mr547819e87.20.1786612433602; Thu, 13 Aug 2026
- 02:13:53 -0700 (PDT)
+	b=kLo6t8IBz6w/C6XDmWLBGqRq3yUY43U3bQLCxdr1uVi8u4fofA8FOObBZgl4IMFRQ
+	 NLctUIslclMRnBpt7lyenPR5RPmv/XKMCpY1/4zPjflERf+DWjwM5MPrEMcHGT1tlQ
+	 c8Bk+tLFAMbjutlHRuPqekSoMB0zU1zXA8JYPRXSkN1PtYXCgaCYXiadMtuHSNNqK0
+	 q20EHaGKhhjZXyDDUFiupUwh5TfEUxi84ZHotKQ4ls0ADPhMGq8cfUA5oOUFQ4nNQ8
+	 dmeK1v05QKYNyJcF6mfo6DLRWNMrOTx6sQoDZ+0zSXlfRPSm1rm8Ebh3kGQ8jCp6gu
+	 sCN/NV4ebJLeg==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5aeb59d54b1so2229470e87.1
+        for <acpica-devel@lists.linux.dev>; Thu, 13 Aug 2026 03:14:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RoPpuDrNDHteVm1yXYtrTNNPCqhANVcB8LmJjHg1PyqZ4h8t4SShkz99o9DeMCet0tVrTI21/0RpW4QTb0=@lists.linux.dev
+X-Gm-Message-State: AOJu0YynCPLUCQbbItD1TEgJhtqr0QqY6xB3nm1RwcYS7yHgfKi7cfSh
+	znooIfZLIU9W2tSD20gMAGrPPRYi4+yOwWdHlePnq8rX6sMnETRvNrPi1+/ZnbFEOPS/OIY8rxc
+	DI7AlD8aDfPv0zsqxZiUR+I9w2XMhD34=
+X-Received: by 2002:a05:6512:150e:10b0:5ae:b78c:da1 with SMTP id
+ 2adb3069b0e04-5b453f6fd11mr502046e87.28.1786616041559; Thu, 13 Aug 2026
+ 03:14:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260722131553.2117835-1-sudeep.holla@kernel.org>
- <20260722131553.2117835-2-sudeep.holla@kernel.org> <CAJZ5v0hdxtuEbFQdwRe=T+Q2xRki+uN9PP7PPw7AdW4Obe3fqA@mail.gmail.com>
- <20260813-demonic-athletic-manul-e1d7bb@sudeepholla>
-In-Reply-To: <20260813-demonic-athletic-manul-e1d7bb@sudeepholla>
+References: <20260812-hmat-p2p-v1-0-75ac41380585@nvidia.com> <20260812-hmat-p2p-v1-1-75ac41380585@nvidia.com>
+In-Reply-To: <20260812-hmat-p2p-v1-1-75ac41380585@nvidia.com>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Thu, 13 Aug 2026 11:13:31 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gMU1NjMKgEUMW6cmU7uquPyES2TejZVQqkwDH5C6FWvw@mail.gmail.com>
-X-Gm-Features: AUfX_mzjj1YuUUhBThcPDaeHNnm_w4rMlGqwQtgg0Xsk2EYwg3QfFb4WXKHHeWU
-Message-ID: <CAJZ5v0gMU1NjMKgEUMW6cmU7uquPyES2TejZVQqkwDH5C6FWvw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ACPICA: Fix PCC OperationRegion command offsets
-To: Sudeep Holla <sudeep.holla@kernel.org>
-Cc: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Saket Dumbre <saket.dumbre@intel.com>
+Date: Thu, 13 Aug 2026 12:13:39 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iDR1LN=6QosMvNbctHKqEmzG0Jg6eS1np5MQkfLjXzAA@mail.gmail.com>
+X-Gm-Features: AUfX_myRSOyiZCvF9QRoOS94TTWfPQ0TJEjyuMvimTc5W7PyRpU-jyLFek1aFmQ
+Message-ID: <CAJZ5v0iDR1LN=6QosMvNbctHKqEmzG0Jg6eS1np5MQkfLjXzAA@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/7] ACPICA: Define PCIe P2P latency and bandwidth information
+To: Leon Romanovsky <leon@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Saket Dumbre <saket.dumbre@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Logan Gunthorpe <logang@deltatee.com>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, Lukas Wunner <lukas@wunner.de>, 
+	"Natu, Mahesh" <mahesh.natu@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 13, 2026 at 5:00=E2=80=AFAM Sudeep Holla <sudeep.holla@kernel.o=
-rg> wrote:
+On Wed, Aug 12, 2026 at 9:48=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+rote:
 >
-> On Wed, Aug 05, 2026 at 06:46:15PM +0200, Rafael J. Wysocki (Intel) wrote=
-:
-> > On Wed, Jul 22, 2026 at 3:16=E2=80=AFPM Sudeep Holla <sudeep.holla@kern=
-el.org> wrote:
-> > >
-> > > ACPI 6.3, section 5.5.2.4.7.3, states that the PCC Operation
-> > > Region is associated with the region of shared memory that follows th=
-e
-> > > PCC signature.
-> > >
-> > > The generic and extended PCC shared memory layouts include the 4-byte
-> > > signature at offset 0, so their raw shared memory COMMAND fields are =
-at
-> > > offsets 4 and 12 respectively. Since AML field offsets for the PCC
-> > > OperationRegion are relative to the region after that signature, ACPI=
-CA
-> > > must look for those COMMAND fields at OperationRegion offsets 0 and 8=
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> PCIe topology alone cannot tell an operating system whether traffic may
+> cross host bridges, what ordering rules it needs, or how expensive the pa=
+th
+> is. Encoding this knowledge in chipset lists duplicates platform policy a=
+nd
+> cannot survive a virtualized topology.
+>
+> Define HMAT Type 3 as a firmware contract for directional Generic Port P2=
+P
+> paths, including separate ordered and Unordered I/O applicability. This
+> gives platform software a standard way to distinguish unsupported,
+> conditional, and usable paths. The definition follows a proposed ACPI ECN=
 .
-> > >
-> > > Adjust the generic and master subspace command checks to use those
-> > > OperationRegion-relative offsets. Otherwise writes to the COMMAND fie=
-ld
-> > > can fail to invoke the PCC address space handler at the offset descri=
-bed
-> > > by the PCC OperationRegion definition.
-> > >
-> > > Fixes: aa6ec56b574d ("ACPICA: ACPI 6.3: add PCC operation region supp=
-ort for AML interpreter")
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@kernel.org>
-> > > ---
-> > >  drivers/acpi/acpica/exfield.c | 11 ++++++-----
-> > >  1 file changed, 6 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfi=
-eld.c
-> > > index 9a55524ed8f4..a7fac63938b3 100644
-> > > --- a/drivers/acpi/acpica/exfield.c
-> > > +++ b/drivers/acpi/acpica/exfield.c
-> > > @@ -45,12 +45,13 @@ static const u8 acpi_protocol_lengths[] =3D {
-> > >
-> > >  /*
-> > >   * The following macros determine a given offset is a COMD field.
-> > > - * According to the specification, generic subspaces (types 0-2) con=
-tains a
-> > > - * 2-byte COMD field at offset 4 and master subspaces (type 3) conta=
-ins a 4-byte
-> > > - * COMD field starting at offset 12.
-> > > + * According to the specification, the PCC OperationRegion begins af=
-ter
-> > > + * the PCC signature. The raw shared memory COMD offsets of 4 for ge=
-neric
-> > > + * subspaces (types 0-2) and 12 for master subspaces (type 3) theref=
-ore
-> > > + * appear at OperationRegion offsets 0 and 8.
-> > >   */
-> > > -#define GENERIC_SUBSPACE_COMMAND(a)     (4 =3D=3D a || a =3D=3D 5)
-> > > -#define MASTER_SUBSPACE_COMMAND(a)      (12 <=3D a && a <=3D 15)
-> > > +#define GENERIC_SUBSPACE_COMMAND(a)     ((a) < 2)
-> > > +#define MASTER_SUBSPACE_COMMAND(a)      (((a) - 8) < 4)
-> > >
-> > >  /*******************************************************************=
-************
-> > >   *
-> > > --
-> >
-> > Can you please see the corresponding upstream ACPICA pull request?
-> > There are concerns regarding it.
-> >
 >
-> Sorry for the delay in response, currently I am on vacation and don't
-> have all the setup to validate anything. I will follow up once I am back.
-> It is OK to miss v7.3
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  include/acpi/actbl1.h | 27 ++++++++++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
 
-OK, I'll wait then, thanks!
+As per Documentation/driver-api/acpi/linuxized-acpica.rst, please
+submit a pull request with this change to the upstream ACPICA project
+on GitHub.  The Linux patch will become applicable when there is a
+corresponding commit upstream.
+
+> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+> index d824838cb7af..0fc766a8e90f 100644
+> --- a/include/acpi/actbl1.h
+> +++ b/include/acpi/actbl1.h
+> @@ -2003,7 +2003,8 @@ enum acpi_hmat_type {
+>         ACPI_HMAT_TYPE_PROXIMITY =3D 0,   /* Memory proximity domain attr=
+ibutes */
+>         ACPI_HMAT_TYPE_LOCALITY =3D 1,    /* System locality latency and =
+bandwidth information */
+>         ACPI_HMAT_TYPE_CACHE =3D 2,       /* Memory side cache informatio=
+n */
+> -       ACPI_HMAT_TYPE_RESERVED =3D 3     /* 3 and greater are reserved *=
+/
+> +       ACPI_HMAT_TYPE_P2P_LATENCY =3D 3, /* PCIe P2P latency and bandwid=
+th information */
+> +       ACPI_HMAT_TYPE_RESERVED =3D 4     /* 4 and greater are reserved *=
+/
+>  };
+>
+>  struct acpi_hmat_structure {
+> @@ -2108,6 +2109,30 @@ struct acpi_hmat_cache {
+>  #define ACPI_HMAT_CP_WB     (1)
+>  #define ACPI_HMAT_CP_WT     (2)
+>
+> +/* 3: PCIe P2P Latency and Bandwidth Information */
+> +
+> +struct acpi_hmat_p2p_latency {
+> +       struct acpi_hmat_structure header;
+> +       u8 flags;
+> +       u8 data_type;
+> +       u16 reserved1;
+> +       u32 number_of_initiator_Pds;
+> +       u32 number_of_target_Pds;
+> +       u32 reserved2;
+> +       u64 entry_base_unit;
+> +};
+> +
+> +/* Masks for Flags field above */
+> +
+> +#define ACPI_HMAT_P2P_NON_UIO   (1)    /* Bit 0: Entries apply to non-UI=
+O traffic */
+> +#define ACPI_HMAT_P2P_UIO       (1<<1) /* Bit 1: Entries apply to UIO tr=
+affic */
+> +
+> +/*
+> + * The data_type field reuses the ACPI_HMAT_ACCESS/READ/WRITE_LATENCY an=
+d
+> + * ACPI_HMAT_ACCESS/READ/WRITE_BANDWIDTH values defined for the System
+> + * Locality Latency and Bandwidth Information Structure above.
+> + */
+> +
+>  /***********************************************************************=
+********
+>   *
+>   * HPET - High Precision Event Timer table
+>
+> --
+> 2.55.0
+>
