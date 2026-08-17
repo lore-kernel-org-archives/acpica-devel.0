@@ -1,54 +1,54 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2576B40EBAE
-	for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 12:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFE040DB58
+	for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 12:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786968742; cv=none; b=S1udan7QmGJ79nezn5zluu2yDg+RUE9IPy87PWSetC7o74d8ETBgaU5Col3aUItiF/a++UG27AIu9DFcQKwB9sPIAlDMVjd9igUQyTFwQad1fmmyUSGhbJknIcDCtCXuK1mdbHAQUSEjAxCDMbGwK0D8iE+6ZeoVY++kaAnA5GU=
+	t=1786968793; cv=none; b=ZB+1vzVOe5ujUVOtVOe0j8Bxp1tesyZJzI9hWzOQ+5QWwpHLOjRTOel3y/EueqB3WnQjcJ7Blsgslh4UZyW0+k4dFww152r/mm+eT5P8K5xj8QWhAzfRIFmzS77+JBlT2pFl+l1mbi5x6ZVrb3W+Yd6mfdcVL1iFbXr9tVZenQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786968742; c=relaxed/simple;
-	bh=DEkbgaD44ZoggJjAhvSo/y4n4yYMUEQL8GL/jSTDmCY=;
+	s=arc-20240116; t=1786968793; c=relaxed/simple;
+	bh=fDvF2o86CpX/eUBAtOLTtFXPtLP8pTqWPEOo7SqLNmM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZlWMcdArxHF9h9t+DnSwFhY37/9LweVvIxbCYJlCtktWiXk6ocORn/qbHb/M8RA6oRuW2droMn7coY9eZAmnwMb1rRXulPLfbJb/YVtPBymMkVqE/+l5qeOFi/3GwDcL5Gf9qeo3ug4OShalq76OC6k2rpQVYRqEdca/s3oBuIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AHHpzJw/; arc=none smtp.client-ip=100.103.45.18
+	 To:Cc:Content-Type; b=Tw7T8M/6t/CjpSvmCQFnzuhZiZfIrAxV6ImU+2efF16YPu3rxi6q7E5rQHyDKTozcvB3er/QaGi7X5xvCtOCwZ0gUd6Q1oLRv6eUw92wQO4VnmDO98xMUUkcyzltNRrs4F6BZpmJxChJNgQpCYiOAorydu6Zt8AOUGjNeb4HxzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOf6Mp7I; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AHHpzJw/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 952B11F01570
-	for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 12:12:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOf6Mp7I"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1532E1F01565
+	for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 12:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786968739;
-	bh=DEkbgaD44ZoggJjAhvSo/y4n4yYMUEQL8GL/jSTDmCY=;
+	s=k20260515; t=1786968791;
+	bh=fDvF2o86CpX/eUBAtOLTtFXPtLP8pTqWPEOo7SqLNmM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=AHHpzJw/qNymPPxcwejiU1TSYVPrw75zTUfA1EpG/cwFIMpBp6RWuJo5d/JSJKn+J
-	 VnvdIj7gM+DO26Dkn3jF33jvGb+3E5NhHjHeZL48cLydPwfC5FbQuTjfkXl3zTKKZT
-	 0/6ihsPrV+bOrSBeEhEKi6Z9SrVRa2k16DNGD1NoogZgkCtWpgnGXCInd3kMNhd4SM
-	 EFxY7gu8TX/lsH+PIazVacXW0ouSzSHtUJ88IQ0FtLnLuJem6Te9UF1HqE2kDSa15W
-	 HifVXltxSO+o+mb1Dj2DYaKWEh/oHL2PVT310EaeEsG6Om2PngrPr6XKntT8EcP3Cs
-	 ZnUoauAw5L1cA==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5b0231a3e86so2867962e87.0
-        for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 05:12:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RoUfhOI+OSgOWG6CWuCBHD33NM4jdpBBjpYGpyT3SkfNqEpf1Bj0FFXlT/gqCOCHVLOu/ljMGnu94lKWnY=@lists.linux.dev
-X-Gm-Message-State: AOJu0YwPPY6kvybW8WpFvVDGhcn0p/Cw+fVPAQwQqHyN6tlccNcsv8hs
-	M0Bc2lSs2M0W9b/o7SkA+Sjzs+JdtZ8a1ft0drNWPKrBwtA4Bl2ZHGiK8Xx9fN/y+i3xxavlEw0
-	O25Bw+tm+iMksUNiw5iJ3izErnzjN/tA=
-X-Received: by 2002:a05:6512:acf:b0:5b2:b808:6913 with SMTP id
- 2adb3069b0e04-5b459102739mr3660264e87.11.1786968738185; Mon, 17 Aug 2026
- 05:12:18 -0700 (PDT)
+	b=FOf6Mp7ILFvlN/SPCqPK/Jo7hW00u/svsJhDlq66Q/HdlgILeLy5JAsuwpmoo+RpY
+	 DSYr+vS2b5oCH6L1myCqKIrQL+WxFGdKnmv80vGxnF/13FanSSnegotPCaHWHfI7NL
+	 M4yA+1pMbFfRB0Gp6iqtV/r9d8mg32jlh8ZC8QgTOkFtp9TD1w1C2/WcDkb+kJfQau
+	 E4n7yngqwuFOgwD6WZ0O0gvxmkRA5CPoBbAPo4lQMJuAxiK2gKB3WjtpaUyJfB+enX
+	 ghT9bCcNAQf8oHMMFeZFgFDYPYgaKsfAiXOKvgittj4vO0MpZWIWF1auJ9Mz458iB0
+	 6/WQ4+wnsNp4w==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5aeb24c0807so2587754e87.0
+        for <acpica-devel@lists.linux.dev>; Mon, 17 Aug 2026 05:13:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rqq2yTDaxw/fYIoQcyVAdtnji1ovdYXn6xlWsoHGArP12qANV8qceMhMqH5iEmDULXtocOveoqi+0y5kSE=@lists.linux.dev
+X-Gm-Message-State: AOJu0YzzanuC7jI5sje4mcsZUqs6KT9Iewqorf6/0yhGSzOR95Udaopr
+	HEo67j2sqZ4wn2YayJmptPxTZF6t9wwwuDFtj5gZxEhmhDRRqcxn+lNWLnAL3H9uiF9K0D3eVkm
+	5MaTP1NxORm1Ds47zGmJtTKMEXp6XxzY=
+X-Received: by 2002:a05:6512:2382:b0:5b1:4c6f:92f9 with SMTP id
+ 2adb3069b0e04-5b47067f197mr7540e87.20.1786968789825; Mon, 17 Aug 2026
+ 05:13:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260816060648.4030-1-farbere@amazon.com> <20260816060648.4030-6-farbere@amazon.com>
-In-Reply-To: <20260816060648.4030-6-farbere@amazon.com>
+References: <20260816060648.4030-1-farbere@amazon.com> <20260816060648.4030-13-farbere@amazon.com>
+In-Reply-To: <20260816060648.4030-13-farbere@amazon.com>
 From: Linus Walleij <linusw@kernel.org>
-Date: Mon, 17 Aug 2026 14:12:06 +0200
-X-Gmail-Original-Message-ID: <CAD++jL=_Ajiq=OCS1zOjYJSmF_A6hvLWkLeDq1sgopv++sD5FQ@mail.gmail.com>
-X-Gm-Features: AcwNN1WwEcW3n9VIxXHtEWS4W77KSOONP6e7TWlR43QzddLucvP_-QdrsayA2i4
-Message-ID: <CAD++jL=_Ajiq=OCS1zOjYJSmF_A6hvLWkLeDq1sgopv++sD5FQ@mail.gmail.com>
-Subject: Re: [PATCH v5 05/13] gpio: adp5585: use devm_blocking_notifier_chain_register()
+Date: Mon, 17 Aug 2026 14:12:58 +0200
+X-Gmail-Original-Message-ID: <CAD++jLn2V3DP=8qQmkKo0KSh87ZdjHy6XGn2DeHdL-Ui0_OM=w@mail.gmail.com>
+X-Gm-Features: AcwNN1U4JrOxzsv9KlcvcECVLI6UdHKCqisJUWamsMkkrKOZr3X21Ct07ozVb8o
+Message-ID: <CAD++jLn2V3DP=8qQmkKo0KSh87ZdjHy6XGn2DeHdL-Ui0_OM=w@mail.gmail.com>
+Subject: Re: [PATCH v5 12/13] gpio: gpiolib-kunit: use devm_blocking_notifier_chain_register()
 To: Eliav Farber <farbere@amazon.com>
 Cc: rafael@kernel.org, tony.luck@intel.com, bp@alien8.de, guohanjun@huawei.com, 
 	mchehab@kernel.org, xueshuai@linux.alibaba.com, lenb@kernel.org, 
@@ -68,19 +68,17 @@ Cc: rafael@kernel.org, tony.luck@intel.com, bp@alien8.de, guohanjun@huawei.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 16, 2026 at 8:08=E2=80=AFAM Eliav Farber <farbere@amazon.com> w=
+On Sun, Aug 16, 2026 at 8:09=E2=80=AFAM Eliav Farber <farbere@amazon.com> w=
 rote:
 
 > Replace the blocking_notifier_chain_register() +
 > devm_add_action_or_reset() pattern with a single call to
 > devm_blocking_notifier_chain_register(), removing the
-> adp5585_gpio_unreg_notifier() callback.
+> gpio_unbind_unregister_notifier() callback.
 >
 > Signed-off-by: Eliav Farber <farbere@amazon.com>
 > Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
-Sashikos comment is probably correct but can be fixed in another
-patch by whoever wants to.
 Reviewed-by: Linus Walleij <linusw@kernel.org>
 
 Yours,
