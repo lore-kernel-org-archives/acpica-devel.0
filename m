@@ -1,283 +1,195 @@
-Received: from mail-oi2-f0.google.com (mail-oi2-f0.google.com [74.125.231.192])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2B1481B1
-	for <acpica-devel@lists.linux.dev>; Wed, 19 Aug 2026 02:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.231.192
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787106686; cv=none; b=FZqfzFB1VZJz0FYdAeQr73tQobOMMzwR2UtkX2RtPLGOcunU1l1jiO42Xs7EQ5yhNtQYYH9g7Ub055tRPOFx360gJvNWWBCWPu7ayVM+cghjkxYVcbKrTSrzUbJxNYl8YWNmn0rdYbaLK8fztXMWzQi86Nt6ENEx6/IbDS7gO9k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787106686; c=relaxed/simple;
-	bh=4Df0w7O+PjxxTCXxgNarcc4VRCI89bekYhtLcNWGSaE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Zt0s71+EiVTwcvkK3m6R1h5Zn5xoP20W/ZR6SsZq0jFUpf2CWVf0b7YMeRObfe1Tux763nP8BXzQvp4bDqCW6enaHPD1q5xdby3Xvv7QXaUNbwr3JqrYFHfz1vexXhCHgkyzESOEhQ4MRzQwhAaYJhup6s1Wm5/ldh+X0gvj4QY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=74.125.231.192
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi2-f0.google.com with SMTP id 5614622812f47-4a41b6fb855so185682b6e.1
-        for <acpica-devel@lists.linux.dev>; Tue, 18 Aug 2026 19:31:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787106683; x=1787711483;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=RrYXRrWNX4Mquo3qz8DEScYpwIiZa8KKsP3Efpj4QnU=;
-        b=cBE73Qi40D31oWXHBkXHOJTmqOviK1jjRioXuC9UQmg6d/yDNSi92HhznfZCNmTWeO
-         MQaWH7ePrOn6+swvVrnVC3YJkIShCVsOES2fMOSOKSHILf2HH5GKPRTukh1NFgl2Mvd9
-         IToji3ANxdENa7fjdDBqRvwbfxz3l9MkhSrHR+w+nPylYWLMameCoWtQ0WDCNiV9l2Kx
-         APIF/DBcySJg/olRkk09YxivovGaGiBUciyfimBeLlxOEOGlotiEZ7h89eR5aZfOtlmx
-         MToNGfHKVWAh4TYlvDs8gfVvWoDFzBUj6uwGBKxVAcPpz3qZxVdYeYIkeKeoq4HBBzXa
-         yf3A==
-X-Gm-Message-State: AOJu0YxvEZOwf0B1mXawylc/dNHPgMcLJEWY5jw5gocOePxh/6faXuuK
-	/McERQYmXuM53RUmpnrYhrtR4FLA/mZS5UVqdUxf7+Gtepa+onBSZNGOdQVc6L0mK7qzmB5Pt+3
-	nr8NHz3zR+Fw8dLN6A99YwDkJv4rH/ebwvx0xJMZZOKLABPXYgETuJIa5HopHXg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 504D83C4574
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 19 Aug 2026 08:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=140.211.166.137
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787129759; cv=fail; b=C/2ytkAEUM+F5JSlGQk4C/wwCsr9O3M7HpLQNx5lXL+C/EVPlhDZePEpwOZyzhzXrD2HUlhBZvWZVsKVmyjIm54HeoMmqY+FGUugS34KBfvWt7Hm0Ttd7gD2KTbiEsq0OhlcWUiqLgXgcTqWiYaLcUdg6qMxuAlUU/xe9/ikXTI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787129759; c=relaxed/simple;
+	bh=ZskHMeqslgnZh9eXjkkqsO59j5gbkXMdXWFj5lxqzdo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wrh4qgUHm37FH5V/88YIOvLzRGDD6Tyug/Y3F/S9ia6pRDrBgans2CIqPsZKe2XTvs0PV4NFO0Q3ggebKHj0P6FJwQkndjsgIQfmQcOlXXswc5iHTBB4TJ6tO/DcIJ73FbA5tvH+oyk7zNVH7LLX8g1VCb9JtXJgjn8FNb3Xpsw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dUIfV28O; arc=fail smtp.client-ip=140.211.166.137
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dUIfV28O"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id 093A1405D0
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 19 Aug 2026 08:55:49 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.101
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+ by localhost (smtp4.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id ROi83o0kKpiw for <acpica-devel@lists.linuxfoundation.org>;
+ Wed, 19 Aug 2026 08:55:48 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a01:111:f403:c107::1; helo=ph8pr06cu001.outbound.protection.outlook.com; envelope-from=baorui.liu@amd.com; receiver=<UNKNOWN> 
+Authentication-Results: smtp4.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=dUIfV28O
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azlp170120001.outbound.protection.outlook.com [IPv6:2a01:111:f403:c107::1])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id 119FA405CF
+	for <acpica-devel@lists.linuxfoundation.org>; Wed, 19 Aug 2026 08:55:47 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SlCyw6mJPHdUXdf0SSHi4pywdyyRIfLwCGxpg0fxvZjhiBNDW768sfcMqtHIL8sbfx6sH7uxldn5cfrM4wYOqU2pCPMtiRQfDboRMJ9Wb8v4Y+cYI5iU/aLiCWnd4a4diQZTC8LvHObTdrQWkNfsF38LuBHf0t0ut49K8h2G2ZAEO6lvHP7q9TvqGZ/0mepD0vSlBnAVFwABOzWUiaXtsskDPDFwC8KPJwBBPZo8LrWXoKgiPscKpEn0fjgk0B2jit6gUgwTPW+V5pu8NiaZA5LSAX1xAZmrRmvLVjyfgGSO2l1SQbS9ziP6rNmsLIQrWDg4w/MFnOSg2d+yAfYtdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EmOmeSIOxHprq3J7/NmcwJgmIIi0UdaHWFhSXukWjQA=;
+ b=U8DeMvITkvYbwF8tchx0Ro5AyLBXH2/f+QNOVS4KHIohSfLtPUcfxUfQH//FeaPDwsdDtGMfej08qN9WgBP+P2nJiAd095225qa4fHI+DZ22lYdMypCPkW7D846Z4ICz3rVNyXHrqTeLN46XZhJEfP7PbKbgyWI6oNLxxbZ8HL7OMPEBZRXgDqq5Pc8VVJmwt1DUwAQDJFVBvatjokNXCE4XB3JGyH0PViCASuoMgCveEfTuKMx5v8CwCD2FEP8Yo4WLCkcNnFK1yWg42bO/SuRa7VA7sehqRuP8P9sx1m4ejM0IF03DA+qngdwMq+sY/N24KGuMltZvLBk3RpsDeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EmOmeSIOxHprq3J7/NmcwJgmIIi0UdaHWFhSXukWjQA=;
+ b=dUIfV28O/chtU+WwI8kipEw9e4xE6O4e59PS0++D1Mpg1ees+OHlIKarl3Bfw6jNaZ+dtG4CAThKfWQSfHNJOVz4KDDMZG+liTm6D+CdwuFUckYa5qIy6GfDK91viRZ9xFv6SNlIcquqmyoOEtfPydsde+61n44nD2aFbiSpwfA=
+Received: from DS7PR03CA0286.namprd03.prod.outlook.com (2603:10b6:5:3ad::21)
+ by MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.315.12; Wed, 19 Aug
+ 2026 08:55:42 +0000
+Received: from CY4PEPF0000EE3E.namprd03.prod.outlook.com
+ (2603:10b6:5:3ad:cafe::45) by DS7PR03CA0286.outlook.office365.com
+ (2603:10b6:5:3ad::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.17 via Frontend Transport; Wed,
+ 19 Aug 2026 08:55:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ CY4PEPF0000EE3E.mail.protection.outlook.com (10.167.242.16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.339.3 via Frontend Transport; Wed, 19 Aug 2026 08:55:41 +0000
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Wed, 19 Aug
+ 2026 03:55:39 -0500
+Received: from localhost.amd.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
+ Transport; Wed, 19 Aug 2026 03:55:38 -0500
+From: Baorui.Liu <baorliu@amd.com>
+To: <rafael@kernel.org>
+CC: <lenb@kernel.org>, <robert.moore@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	Baorui.Liu <baorliu@amd.com>
+Subject: [PATCH v2 0/1] ACPI: button: Report wakeup key only for power button wakeups
+Date: Wed, 19 Aug 2026 16:55:27 +0800
+Message-ID: <20260819085528.575-1-baorliu@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260806122732.533-1-baorliu@amd.com>
+References: <20260806122732.533-1-baorliu@amd.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:c87:b0:6a0:a791:6885 with SMTP id
- 006d021491bc7-6b13c55acf2mr1826471eaf.23.1787106683692; Tue, 18 Aug 2026
- 19:31:23 -0700 (PDT)
-Date: Tue, 18 Aug 2026 19:31:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a85157b.f7a79266.2f965f.0038.GAE@google.com>
-Subject: [syzbot] [acpica?] KASAN: slab-use-after-free Read in acpi_ut_update_object_reference
-From: syzbot <syzbot+c6c92a97a9907f92fa1c@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3E:EE_|MW4PR12MB5667:EE_
+X-MS-Office365-Filtering-Correlation-Id: 700b4bc4-9997-48af-8f1c-08defdcfa605
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|23010399003|376014|82310400026|36860700016|11063799006|18002099003|22082099003|6133799003|56012099006|10067099003;
+X-Microsoft-Antispam-Message-Info:
+	HJKgxV5BbsJBb6KqRiXQisYAFxNUYW4sMZT78KFNXBrGXIoYWMWiOQJKpUVfJyxxq6dqAlRpYtoLifqB7y2Xvs2tTClimo9HbxB/poi8TLYe85SOAeZ4wRQORY1haLQuox3Kmqh05qe71pqOuAGp8wIOlDMvgaAKSFQoVQ1V0oji++le9lZXJM/GBMGSWuALzxvj98LvV3c3fYlGVJMZHo9ALVxJaSIEiBrSfu+CRBI1kIXqixdA/k7z05Xv8Suo5bgFUrwKCJh2iU8UGaD+DzaDVLzvLhGZEv4sLxjvum//NXlFCYjYjsUUdwcOzWihmhlszR6+6PfyZZLfVp/r6zhRvkv85zL23JDTpnqkAQlAFlGaW78oB1RwEKNGEntyWwg1AoeqGs+/cQk/s1tbcBIndVbIycH0Msm6J3XhcKQwrQ1t1UM0UW9iQOGkXu0DkW7027tpe36Wku6LuFESJ/Y8/3B93uHwlzWaI0iP1lZb0NhZdA33af6H66dYoy7N90VS/Esu+Pg0ploZuzvdusKqdB8i04uOOKcO1OjRiTPlCLcsLNIkRNhXOJKTzmH2f/l95lbPoSUu+BVdDNm2RyFoc53BYr53O3UcmSPqnWgjzbzJD3eTFdC/KUyQx/CE5roIOm3v4aKpJnmzwbYVSdzum7soB9MxLS8RLD2mlQzBm90wq+uRH9IzsOPAqSjsgebRi3A9rWqsX6U83KlYeA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(376014)(82310400026)(36860700016)(11063799006)(18002099003)(22082099003)(6133799003)(56012099006)(10067099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	hZv4zeGwVUCzUqlVH414riBxuiYrugJ0Mbxy2/yMVa7TA0Q1yqd0wAvQFZ5anEbnBSCxTjOb/FlAkx92BjtUz+4/rouVTpP++j3jdRcExGANPvIFVvDb7itSu2EhFJIlmYRKxZBcB/i1kV104BMXJVJEy0wRRaaJo/UpurJ3cahvea3q/UEZeUQ1Uiw09oK+OM6sLGb7N667UDZAZC8Qp1Kc5p4wx01UO26vYGjX1ul/X5NyvYoHja6N3B3YeqnhIRNbNnyvzZRGBjBKZ/0QhFsjVqYeYxqtswM9+1cYAAN0Ty63S85vICGw/GAS16D7r76xo4J/1+OTHW7cmvhPwJ7bf4mZtwWdeiXqV+KPuaGTtkdjBG5G4CaZDPeaQCaZVpBjaLEjJRuDC3kj0eFwtnk7kUa5uiSwnT2S6wJOlQKci+OrJ3YFG//1E8rcWHuO
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2026 08:55:41.7745
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 700b4bc4-9997-48af-8f1c-08defdcfa605
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE3E.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5667
 
-Hello,
+This v2 addresses the review feedback on v1 by documenting the
+practical impact and by avoiding KEY_WAKEUP reporting from generic ACPI
+sleep resume paths.
 
-syzbot found the following issue on:
+Problem reproduced on an AMD Android 15 Xen guest.
 
-HEAD commit:    3aa1dcaa4f6f Revert "wifi: mt76: Disable napi when removin..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c5ac79580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c44651ea7dd2f307
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6c92a97a9907f92fa1c
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+Input device mapping:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  event0: LNXPWRBN Power Button, KEY_POWER + KEY_WAKEUP
+  event1: LNXSLPBN Sleep Button, KEY_SLEEP
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-3aa1dcaa.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e219f4b3c94a/vmlinux-3aa1dcaa.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d2bd57f22288/bzImage-3aa1dcaa.xz
+Runtime trigger mapping:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6c92a97a9907f92fa1c@syzkaller.appspotmail.com
+  xl trigger android power -> event0 KEY_POWER
+  xl trigger android sleep -> event1 KEY_SLEEP
 
-==================================================================
-BUG: KASAN: slab-use-after-free in acpi_ut_update_object_reference+0x701/0x800 drivers/acpi/acpica/utdelete.c:544
-Read of size 1 at addr ffff888021a39f11 by task syz.7.954/9138
+without-fix kernel:
 
-CPU: 0 UID: 0 PID: 9138 Comm: syz.7.954 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0x13d/0x4b0 mm/kasan/report.c:482
- kasan_report+0xdf/0x1c0 mm/kasan/report.c:595
- acpi_ut_update_object_reference+0x701/0x800 drivers/acpi/acpica/utdelete.c:544
- acpi_ut_add_reference+0x80/0x170 drivers/acpi/acpica/utdelete.c:694
- acpi_ex_resolve_node_to_value+0x7e1/0x9a0 drivers/acpi/acpica/exresnte.c:135
- acpi_ex_resolve_to_value+0x3da/0xcd0 drivers/acpi/acpica/exresolv.c:76
- acpi_ds_evaluate_name_path+0x30d/0x4a0 drivers/acpi/acpica/dsutils.c:790
- acpi_ds_exec_end_op+0xb78/0x1e60 drivers/acpi/acpica/dswexec.c:374
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
- pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
- do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:1998
- pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2089
- udc_pci_probe+0x55/0x8a0 drivers/usb/gadget/udc/amd5536udc_pci.c:103
- local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
- pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
- __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
- pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
- call_driver_probe drivers/base/dd.c:628 [inline]
- really_probe+0x241/0xa60 drivers/base/dd.c:706
- __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
- device_driver_attach+0xd1/0x220 drivers/base/dd.c:1203
- bind_store+0xf4/0x190 drivers/base/bus.c:267
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fdb8c39e0d9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fdb8d2d0028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fdb8c625fa0 RCX: 00007fdb8c39e0d9
-RDX: 000000000000000c RSI: 0000200000001700 RDI: 0000000000000005
-RBP: 00007fdb8c435024 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fdb8c626038 R14: 00007fdb8c625fa0 R15: 00007ffd31b52658
- </TASK>
+  6.6.118-android15-14-maybe-dirty-gc3c82a22502d
 
-Allocated by task 1:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- unpoison_slab_object mm/kasan/common.c:340 [inline]
- __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4584 [inline]
- slab_alloc_node mm/slub.c:4917 [inline]
- kmem_cache_alloc_noprof+0x26b/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_package_obj+0xa8c/0xe60 drivers/acpi/acpica/dspkginit.c:92
- acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_parse_table+0xcb/0x160 drivers/acpi/acpica/nsparse.c:268
- acpi_ns_load_table+0xc9/0x490 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x2b0/0x8f0 drivers/acpi/acpica/tbxfload.c:158
- acpi_load_tables+0x89/0x160 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init drivers/acpi/bus.c:1479 [inline]
- acpi_init+0x146/0x840 drivers/acpi/bus.c:1592
- do_one_initcall+0x11d/0x700 init/main.c:1347
- do_initcall_level init/main.c:1409 [inline]
- do_initcalls init/main.c:1425 [inline]
- do_basic_setup init/main.c:1445 [inline]
- kernel_init_freeable+0x6ea/0x7b0 init/main.c:1658
- kernel_init+0x1f/0x1e0 init/main.c:1548
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+  echo mem > /sys/power/state
+  xl trigger android s3resume
 
-Freed by task 6178:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:253 [inline]
- __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2677 [inline]
- slab_free mm/slub.c:6377 [inline]
- kmem_cache_free+0x127/0x6b0 mm/slub.c:6504
- acpi_os_release_object+0x1c/0x30 drivers/acpi/osl.c:1661
- acpi_ut_delete_object_desc+0xea/0x130 drivers/acpi/acpica/utobject.c:402
- acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
- acpi_ut_update_ref_count.part.0+0x510/0x2250 drivers/acpi/acpica/utdelete.c:436
- acpi_ut_update_ref_count drivers/acpi/acpica/utdelete.c:374 [inline]
- acpi_ut_update_object_reference+0x5f9/0x800 drivers/acpi/acpica/utdelete.c:632
- acpi_ut_remove_reference drivers/acpi/acpica/utdelete.c:740 [inline]
- acpi_ut_remove_reference+0x192/0x1d0 drivers/acpi/acpica/utdelete.c:710
- acpi_rs_get_prt_method_data+0xcd/0x150 drivers/acpi/acpica/rsutils.c:460
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x1a8/0x360 drivers/acpi/pci_irq.c:499
- pcibios_disable_device arch/x86/pci/common.c:706 [inline]
- pcibios_disable_device+0x89/0xb0 arch/x86/pci/common.c:703
- do_pci_disable_device+0x9f/0x100 drivers/pci/pci.c:2170
- pci_disable_device+0x130/0x270 drivers/pci/pci.c:2206
- udc_pci_probe+0x39b/0x8a0 drivers/usb/gadget/udc/amd5536udc_pci.c:188
- local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
- pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
- __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
- pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
- call_driver_probe drivers/base/dd.c:628 [inline]
- really_probe+0x241/0xa60 drivers/base/dd.c:706
- __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
- device_driver_attach+0xd1/0x220 drivers/base/dd.c:1203
- bind_store+0xf4/0x190 drivers/base/bus.c:267
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6ac/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+  /dev/input/event0 reports KEY_WAKEUP DOWN/UP.
 
-The buggy address belongs to the object at ffff888021a39f08
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 9 bytes inside of
- freed 72-byte region [ffff888021a39f08, ffff888021a39f50)
+with-fix v2 kernel:
 
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888021a39dd0 pfn:0x21a39
-flags: 0xfff00000000200(workingset|node=0|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 00fff00000000200 ffff88801bc4da40 ffffea0000869290 ffffea0000868d90
-raw: ffff888021a39dd0 0000000800270012 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2659888968, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0xfd/0x120 mm/page_alloc.c:1859
- prep_new_page mm/page_alloc.c:1867 [inline]
- get_page_from_freelist+0xf48/0x3530 mm/page_alloc.c:3946
- __alloc_frozen_pages_noprof+0x299/0x2dc0 mm/page_alloc.c:5304
- alloc_slab_page mm/slub.c:3266 [inline]
- allocate_slab mm/slub.c:3380 [inline]
- new_slab+0xa2/0x640 mm/slub.c:3426
- refill_objects+0xe3/0x410 mm/slub.c:7310
- refill_sheaf mm/slub.c:2804 [inline]
- __pcs_replace_empty_main+0x376/0x680 mm/slub.c:4675
- alloc_from_pcs mm/slub.c:4773 [inline]
- slab_alloc_node mm/slub.c:4905 [inline]
- kmem_cache_alloc_noprof+0x46e/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x173/0x790 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_build_internal_package_obj+0x481/0xe60 drivers/acpi/acpica/dspkginit.c:202
- acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
-page_owner free stack trace missing
+  6.6.118-android15-14-maybe-dirty-g5b231ece911d
 
-Memory state around the buggy address:
- ffff888021a39e00: fb fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb
- ffff888021a39e80: fc fc fc fc fa fb fb fb fb fb fb fb fb fc fc fc
->ffff888021a39f00: fc fa fb fb fb fb fb fb fb fb fc fc fc fc fa fb
-                         ^
- ffff888021a39f80: fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
- ffff888021a3a000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+  The same non-power-button S3 resume path no longer reports KEY_WAKEUP
+  from /dev/input/event0.  This was verified twice; both event0 logs are
+  empty.
 
+The dmesg log confirms that the test path is S3 suspend/resume:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  PM: suspend entry (deep)
+  ACPI: PM: Preparing to enter system sleep state S3
+  ACPI: PM: Waking up from system sleep state S3
+  Resume cause unknown
+  PM: suspend exit
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+A positive-control power-button S3 wake was attempted in the Xen guest:
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+  echo mem > /sys/power/state
+  xl trigger android power
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+The guest remained suspended/offline and was recovered with:
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+  xl trigger android s3resume
 
-If you want to undo deduplication, reply with:
-#syz undup
+Therefore, xl trigger android power is not a reliable S3 wake source in
+this Xen setup.  That run is not used as positive-control power-button
+wake evidence; it only confirms runtime input-device mapping.
+
+Changes in v2:
+  - Add test evidence showing the practical impact.
+  - Track pending wakeup reporting in the ACPI button driver.
+  - Report KEY_WAKEUP only if a power-button event/notify is observed
+    while the ACPI button device is suspended.
+  - Stop synthesizing Power Button KEY_WAKEUP events from generic ACPI
+    sleep resume paths.
+
+  ACPI: button: Report wakeup key only for power button wakeups
+
+ drivers/acpi/button.c | 38 ++++++++++++++++-------------
+ drivers/acpi/sleep.c  | 56 +++----------------------------------------
+ include/acpi/button.h |  5 ----
+ 3 files changed, 24 insertions(+), 75 deletions(-)
+
+-- 
+2.34.1
+
