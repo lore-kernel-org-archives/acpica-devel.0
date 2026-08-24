@@ -1,455 +1,241 @@
-Received: from mail-oi2-f0.google.com (mail-oi2-f0.google.com [74.125.231.192])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34BA45C6EE
-	for <acpica-devel@lists.linux.dev>; Mon, 24 Aug 2026 15:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.231.192
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787587004; cv=none; b=Rg/3UVk420Q6fnZVLvdb6sPrN8vaQ/5OPHoC1ZkH837IA8zZ9R5g9MxHGigvpQHeD1QLIpokvj6i/X/5g/ZW8tbCwR/0i67CqJHa5PwKGXwxqOi6xp6jvMfpWXyZJO2x9sbRlJAMRLKhtrxOgOY/w5Jo1LuhqGdeoGb5ZMjK5kk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787587004; c=relaxed/simple;
-	bh=NcrWUDcrG/mCNtXMbgPfbvZSceIj/D8GGkFMMDJWFvU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=XYNgt7y+6maLtNhBslpr5YuYxuScVv/584xvnhQrpzXJ9D1IjtSB6Fqrz59vCKVCU1eg7FoW74+QiGCYG35Ip5Kz2genyOrokdfm8/ZwzjyAr5lBpU6K5pzoueCj78fg42sYChDcheOD9QuAzh3FHL+xO3BCjyQYjLvRKcHQtfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=74.125.231.192
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi2-f0.google.com with SMTP id 5614622812f47-4a4492f5cd1so334262b6e.1
-        for <acpica-devel@lists.linux.dev>; Mon, 24 Aug 2026 08:56:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787586996; x=1788191796;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=InSelIQtvuERPXKUGsUKFbCwhTimVborn25IOYTuBGY=;
-        b=GuJCVe6Wi/otRE3DeD7WStYkwzH+xHwsQBOnqqEBsxo8DMdIOdI1XZuvDX2J2X/mmB
-         97KciSbSTqke0PqnNmTTPnJ6sscz/o1Cu+CQOjEQhRUKz3xLlxRtC9WwEnYlaee5L9ki
-         2JgyzMuyVbm/P7ZlfqrMFfwVFaWr4stavf9eZLBE4SRE0ZKWH5NmPv8TRKCz/QIbcZcn
-         AjPhoQMuNjpAUzKn7qcKjUIpO4gUcFlLZkvZsn8Zcm1MO0aUQUbMEamzyofiMjIbn+oA
-         +LVnh2gsxkcp0iqBLTnLgN4kHNrNgBVTYKVcH0+OUdMpueHhZzpeN+LI89JyKL4wrZWO
-         9pnw==
-X-Gm-Message-State: AFuF++nhNPAqvnerL3Mo7Ax1vzpz+lY3v8eudmtlID5vgGTQOB0dLra5
-	Qx6OWieFIIoV3Dv40sXIfeBWShqF6O0qAqF1sGx+gpS6Vmped17AIQ1oS1XgeRzfa7AzKabY0+5
-	FLk9bT3yVgLkwVtepRFs2eD0R7WbEl4x8mLmJNdLZHSXVErPvCCYSTYzX7RrOmw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882FC353A9F
+	for <acpica-devel@lists.linux.dev>; Mon, 24 Aug 2026 20:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787602548; cv=fail; b=PLvDIvOc2woXW4ZRnHVt2fWnXSQsvu6XVot4j2XxKr4Tdhk/9b3CKNd7W00gnMj5RlfdCs/cn0en7reZZ1TE2ATgBYprPlMmdSivWH2auwGh9ZioYYTtN0Z34svPMZY+YNCwphfhaHEhKs8gckRK58M+b91dq/IOnGv8HyzrDwQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787602548; c=relaxed/simple;
+	bh=UIY6Ugxzsd+AF2KkUKRUZtz8CYgvhTzrHGi3rEijFiY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=LMrKFtn8wdFeEHbinZXEO+qszHe+0n43Wn3Um3nVOgSynj21du8fjBgyzEAsfgypHdCl4/m/p51k8gQ26xvHekYchNBpnG+QlkmW6V/vISifoogLUBqjSoZ0wQlu/7iDE+JToLb3e/okSHLHJjpWJpqfRO00pvOCpmJP+7xJmyc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=miXgIE9y; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="miXgIE9y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1787602545; x=1819138545;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=UIY6Ugxzsd+AF2KkUKRUZtz8CYgvhTzrHGi3rEijFiY=;
+  b=miXgIE9y2CviVwZpfbRiyE6QyFbsEFMNXSdQLtgtklU99wNPCMHKnhRD
+   Y3bMbTnIk8Af/TcN9wVvXJHs5ZGwmL/vxBerifFv/pcz8eKhdN3GKVOp6
+   qYQ6ZJmoFa49aTFjolZ6/UpxpCR9i4Dl7ZmuNPKV8yAe7estze+WlRriG
+   0SnQQgRf6ThMIJ2xTGynInhbjKrDrOKvgV5OOUojhYQ65dLS8kcB8j/Mu
+   o3XvHTpMx23ASZ7cgl/iHlBPPRny77gBCJPgnDegkkUTK5s7lZV/qdyMh
+   /MZ+NNj8R1f341WaYu3jX7xcsXJA8S8t4SqHKWKIg5vd6gJIBxpdfXq4K
+   Q==;
+X-CSE-ConnectionGUID: E8rzdmDuTFijd/sRvhVw8w==
+X-CSE-MsgGUID: OW8qudmfTDmjOwrvVRuPHg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11885"; a="98400855"
+X-IronPort-AV: E=Sophos;i="6.25,241,1779174000"; 
+   d="scan'208";a="98400855"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2026 13:15:44 -0700
+X-CSE-ConnectionGUID: BiJBqMScQ7ewItmktr0nhg==
+X-CSE-MsgGUID: ag0q1u4uT+ycAjADiylwrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,241,1779174000"; 
+   d="scan'208";a="263364457"
+Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2026 13:15:44 -0700
+Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45; Mon, 24 Aug 2026 13:15:43 -0700
+Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
+ FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45 via Frontend Transport; Mon, 24 Aug 2026 13:15:43 -0700
+Received: from DM5PR21CU001.outbound.protection.outlook.com (52.101.62.7) by
+ edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.45; Mon, 24 Aug 2026 13:15:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mwUGRp/yub2p4PBTYaOx/YtWM3XpDSqYxJK7d8UPN9oZu6+118VbrQquiz/EkFRhj7q3FsKM+IqshzW46ECj6a7XQNL5ZW+bWKlhGmaCJXDl3gd1yMS7ukwieKITmSX3TeD2VZT3NssghIgeVJ1R9PbdOJdad+1bR6cSEwniidyxBJ2tdMlRaErCGlRJuU1XDfR+tlJgvAN2VDE0lQozEzfGYkHIQL64yJyCTpqClnXwGXtkMlwjB33zwCFZO2/QZxVOGA8otlPEHultiXcfkx0QUBoktJpepGQ/TKvewVotHOL34+4+JbssnqI63mWmaX6C94GyRdTwD3U7zIwqmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q6qBeFVQlrLHDvUA0rzM4xklIwtqGl0I8pJBFeqDmbk=;
+ b=ggX4HBMOYXfMocqYg8aH9PWretd2J0FpvrG1lyjVnGV/RlDxtcPPhdlmsQ4Fhf5zJ6/Fbhsm5thUgfp46Quue0Xrg2kfW8mJyBcJ1juzsEt7b4sBHfjvA6rHIN0W0bVMz460ldkUqTJKLzhWproPuD/lmDmhQGophhKsbaNZRwYMGRKa32j9+hqIQeMNPp2IwW6KSYgDcUpbSFlghvdVhwRsH2t/mbVTW7/3lIpb5h7iGfqxIW2SJvaOXCMZ1MJtrkMwBmLRDEwlgwMfBtt1iGsxDydNDAtxPRSW4IuebDcM+LeW/Pu0Xm7DmX6L44MmfX5NDjfVH9fRCi3LfE8OqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS4PPF0BAC23327.namprd11.prod.outlook.com (2603:10b6:f:fc02::9)
+ by PH0PR11MB4918.namprd11.prod.outlook.com (2603:10b6:510:31::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.339.12; Mon, 24 Aug
+ 2026 20:15:40 +0000
+Received: from DS4PPF0BAC23327.namprd11.prod.outlook.com
+ ([fe80::e721:90d7:9214:2d53]) by DS4PPF0BAC23327.namprd11.prod.outlook.com
+ ([fe80::e721:90d7:9214:2d53%6]) with mapi id 15.21.0339.012; Mon, 24 Aug 2026
+ 20:15:38 +0000
+Date: Mon, 24 Aug 2026 13:15:34 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>, Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, Lukas Wunner <lukas@wunner.de>, "Natu, Mahesh"
+	<mahesh.natu@intel.com>
+Subject: Re: [PATCH RFC 0/7] PCI/HMAT: Describe P2PDMA reachability and
+ performance
+Message-ID: <aoymZhOaSCG_Tsmj@aschofie-mobl2.lan>
+References: <20260812-hmat-p2p-v1-0-75ac41380585@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20260812-hmat-p2p-v1-0-75ac41380585@nvidia.com>
+X-ClientProxiedBy: SJ0PR03CA0274.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::9) To DS4PPF0BAC23327.namprd11.prod.outlook.com
+ (2603:10b6:f:fc02::9)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:bd3:b0:495:e16d:5d03 with SMTP id
- 5614622812f47-4b309ca1450mr18112834b6e.21.1787586995752; Mon, 24 Aug 2026
- 08:56:35 -0700 (PDT)
-Date: Mon, 24 Aug 2026 08:56:35 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a8c69b3.dbb3a75c.7844.0008.GAE@google.com>
-Subject: [syzbot] [acpica?] possible deadlock in get_from_partial_node
-From: syzbot <syzbot+c45feb6d62880ad9f42b@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS4PPF0BAC23327:EE_|PH0PR11MB4918:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8126bbc5-c223-42c0-1267-08df021c76c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|366016|1800799024|7416014|376014|56012099006|10067099003|6133799003|18002099003|22082099003|11063799006;
+X-Microsoft-Antispam-Message-Info: ip1+Ts3wE5x+4Xx/Vkg6H1iTJEgqfcfe3GKnVLiSaenNR5Nytjd+pcNiZ2UVNH6k66OGqwGpuusOErQ6Z+d577u3nqoHVdRJKbUpfEbSD3Eh4BEsd35BQ89DCEKEYZKDngaFElW/owwKjVJ90X0oEYSfCKK5iZ88TnikRNcZWK8tk4pl0UeOrtuA2sjiMuprVfiuwQijjO6OeCfvUjlegeysYiY6+iEsJ6wZduD3sBrLQuGTyk03cwnXqrl7VYgNvYlO7uVE8X+SMo6W3hjcYVISBysPJBtwz73z33qqVUMk6E4W94fTwRadyXxiFNHLq8p+sh6fqz3PPCubGaKeQ0PcweXcKMTx7jPZDJEedjTW2JXbZEA2EfuXZnmTmoMi2k1ZyENj2xpQYpRg348Vd7F8LkgogouoFVfeOOare8xXy0CMs+U21xnURi7bGS2LEw4/MDuXhHmGhfycv5VYtMJzTdRBGFRBD6fdAaXxGaQi2ezUPm8KpyE92G1rCHy5ifI2LsBwX3du2I0T21tepj8BrqaJ9mNCjHFJz9mj7K/1kT6N59qBSY1WhTe0/YFuS9whM8YRjYObFAVjNz9PEJF9Sb/Y4WlsAuxekkEYH+IxnLIo7oow0hSXsLvkM7JIOxWC+TSp5tytpnq8u1iHtEz9RF2chru7Ke7yiSN49Is=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS4PPF0BAC23327.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(1800799024)(7416014)(376014)(56012099006)(10067099003)(6133799003)(18002099003)(22082099003)(11063799006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4Qc4kFe0sgylvI1gIeOYya3XURHVQ+KSl2cvznTksulZwLh99d3GFSdN/x5h?=
+ =?us-ascii?Q?j3eJfgfkwrRlcgAkUC2Jv0F9HkWWe+aYphiQjMBZ/E7h8hitPUsECpRUXfiY?=
+ =?us-ascii?Q?LplYGvHp9CzIWhyhqaRxFLZMRVWw8A52S+jLGiL1e9vhsR3m0rlmj8ilTHHm?=
+ =?us-ascii?Q?fbt1Ka71bqaYlO/EwqVAYBrKfVsf2eQ7Knei3WU1gS9QQ7ON2x7LbKhZpfne?=
+ =?us-ascii?Q?nXS09YSaSFKugnQUKKBS+vXvpClG993a+7qBCd/PcVAd4/EfC56oC1cO/0NB?=
+ =?us-ascii?Q?I059GshojaS/Dajd8Dp1PIZOFXjXK3LIyQ+qe5gGgEf1UUmls3okDpFTw2Av?=
+ =?us-ascii?Q?Mi5O7FVyi+WUtx1Kd1lqrdJ4jDj8zmAN6oxZTFijYfboBXqwVQZQU7xGEFAG?=
+ =?us-ascii?Q?TBnFVbGz7x5w7Kt6RsprLwC4O2dcN1Rb9Lu/IzuTi4o6kkBwWlgkBQqRAbv1?=
+ =?us-ascii?Q?JBn8JgfCS1yU0MVAGaYrabDpUp7QDUH8Y1HSIPuDHfCrfKa5BR031vcG38Nu?=
+ =?us-ascii?Q?n0XMRIgxnOQoTKktLESXdnkikGItlTBThlF3cyf/KeDrJTGGLwjbfB95EBTj?=
+ =?us-ascii?Q?9HhfigWrCBqlzIrLos9yuW6AICOD+NUbXf+MUT19m41LOzIwuIicZpPJWf14?=
+ =?us-ascii?Q?DSBLcFBQJTqd0oW8Jg8DRPawiRJZYglOFwVTbklqNzIP3Hx+bswFQaNcyZNP?=
+ =?us-ascii?Q?tbeNIwYEb23jWcbvNEBG8ViWwes/DMszNoZwl8ObJVqKjbe6+Q6BAuQyaxAV?=
+ =?us-ascii?Q?wWZFQLmdjuWUokVwlmunOEl9EoUI2TwemrWdhL6GMopi3Ta8FKha6kU+arZn?=
+ =?us-ascii?Q?Dl0NwceuQV/YfCjhc+lImHX/d9xawqusEeqPRaWAHm87pEn9jnO0KTUwR2JO?=
+ =?us-ascii?Q?bmc5rmH5Mzd43HuryKn4TwNtArPXkwdLdsgbd80uURToH7uXQ2R9X/We4unj?=
+ =?us-ascii?Q?vQSCdhMjmC7xwL+oTxmYrGz4N8JMUUHMV72NeNj0Qy8fcd89eOUqO8yJevbA?=
+ =?us-ascii?Q?K/MGbF1qcl2yqUhLPDa6oi63EWIdXm8a857FKYQ8z4hN6DcY+p1VuHvHXj8k?=
+ =?us-ascii?Q?t1L4wdJ35zrbo5UaLJJPsLed961q/YcG4qAP22bJn1JcGXdb+WpTZS8OOw0r?=
+ =?us-ascii?Q?01UREh4J4rqNmwQj0iGl58wtJSdDjyrxLVNxqcctxT9omzYxOEKqK9bYiTX1?=
+ =?us-ascii?Q?q29y/xt4IgVZqfS7BGFbLyiWOCW7tqdpI+Sq+CVfuGJDCmbW4XSciQL6NfF+?=
+ =?us-ascii?Q?zfAFP+5iQdXiTpVdzH6WOFYYViBIEvnce2MVXpRNUiLPgfEvEvEA1dJpsvtT?=
+ =?us-ascii?Q?5qXE5X1d8pmIRLtd659tuaGCewUL8zdQioEPjNXOJIhZlbjqQv+gG4gJn7ap?=
+ =?us-ascii?Q?DG7yvRVHSWeToBrhVbsswNj/jNKrObp2ixrCqqPt9NF+omWY4B9Y7P/LFplh?=
+ =?us-ascii?Q?lddmuiUD9ZSIarM6ZNxWc6EQCWHFR08ckuF1Cg3213O2Ldyipkug8T1iTpT0?=
+ =?us-ascii?Q?P7DCoMAc4dhrwAKYr39DLHi60/fNRi/IjtIocyJWRZVHQWOegJcF71W2/Dih?=
+ =?us-ascii?Q?s+dpHedgUj3SSSFtPb9euwL3L2Ciu8yg+dA3YImNN9sR6xUBOp40/r4freD5?=
+ =?us-ascii?Q?eFGIJ+xQ3NaBkN8d43dDJSkdPmr9VZJEt+9kR/608P53lYpTALf6Zz6EpnA1?=
+ =?us-ascii?Q?f7biD3TeRjEG7U2XFrpNLxqylxY0LoXx3hB6MFAiHZSdH/+8rqljXokqsT/U?=
+ =?us-ascii?Q?oiutjfOonfEofYr/2HP+wGwhVH8e5as=3D?=
+X-Exchange-RoutingPolicyChecked: wVU9dHf/FlFDQK1IcpfshRP4sXNE3ESrAvxDXIqxm3dJWxIJFtjng7SwGVsabnRTa5Ty70hfH/NyIAnTXBs/5ecuMf3VLJLjJeY8HxvpQ6OMFo/BwoMlQ4dQDGqP+lkgcxevo6yWwyodJRrG0U9l0k2pN0fF9egm44SY/nvvLdqSehy9ZgWa4Z86vDbZGk6+byhzaNYF9uqmz5jZ0LYXU0/HGZe1TwjMWdbxfFYW0mgvOpaCQOZLwmR/YHB54PjomVcJYRJmHsughOk8y4Pq5VEi3D9Mw/v4u/pmd8Y2VXL9O3FdwkYU0pdO8HGapgFmtWvIarqqokV1lW4MJoiPjQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8126bbc5-c223-42c0-1267-08df021c76c6
+X-MS-Exchange-CrossTenant-AuthSource: DS4PPF0BAC23327.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2026 20:15:38.8865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zfdwU3n2+My1W+oLTB72j6uL93CdOIzVegDUp1xU7XtepYLqoerl85tKuG2hi1CboBIo+9JiJe4VJzTvQz1klGWAW5Y2JetsN1QUhtCKRLc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4918
+X-OriginatorOrg: intel.com
 
-Hello,
+On Wed, Aug 12, 2026 at 10:47:37PM +0300, Leon Romanovsky wrote:
+> Linux derives P2PDMA reachability from visible PCI topology, ACS
+> configuration, and a host-bridge whitelist. It cannot describe conditional
+> or slower cross-host-bridge paths; passthrough can hide the physical peer
+> relationships.
+> 
+> This RFC series implements the proposed ACPI HMAT Type 3 extension below.
 
-syzbot found the following issue on:
+Hi Leon,
 
-HEAD commit:    a4ff2be345d0 Merge tag 'v7.3-p1' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12786549580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=29686c02180e4e86
-dashboard link: https://syzkaller.appspot.com/bug?extid=c45feb6d62880ad9f42b
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+Is there an ECN document for review alongside this?
+I get that the table below is a snapshot of the expected change, but
+would appreciate the long version to read.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Please add linux-cxl to CC list on future postings.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-a4ff2be3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e0a874c2c2e0/vmlinux-a4ff2be3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b39932275def/bzImage-a4ff2be3.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c45feb6d62880ad9f42b@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Tainted: G             L     
-------------------------------------------------------
-syz.2.702/8696 is trying to acquire lock:
-ffffffff8ecf5400 (console_owner){..-.}-{0:0}, at: console_trylock_spinning kernel/printk/printk.c:2026 [inline]
-ffffffff8ecf5400 (console_owner){..-.}-{0:0}, at: vprintk_emit+0x4c3/0x6b0 kernel/printk/printk.c:2478
-
-but task is already holding lock:
-ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: spin_lock_irq include/linux/spinlock.h:377 [inline]
-ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: free_partial mm/slub.c:8009 [inline]
-ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: __kmem_cache_shutdown+0x10c/0x330 mm/slub.c:8058
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (&n->list_lock){-.-.}-{3:3}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:155 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:181
-       get_from_partial_node+0x7d/0x5b0 mm/slub.c:3817
-       get_from_partial mm/slub.c:3947 [inline]
-       ___slab_alloc+0x78/0x800 mm/slub.c:4459
-       slab_alloc_node mm/slub.c:4908 [inline]
-       kmem_cache_alloc_noprof+0x3a9/0x6a0 mm/slub.c:4931
-       kmem_alloc_batch+0x49/0x170 lib/debugobjects.c:371
-       fill_pool lib/debugobjects.c:420 [inline]
-       debug_objects_fill_pool lib/debugobjects.c:780 [inline]
-       debug_objects_fill_pool+0x24d/0x550 lib/debugobjects.c:758
-       debug_object_activate+0x103/0x4b0 lib/debugobjects.c:869
-       debug_work_activate kernel/workqueue.c:682 [inline]
-       insert_work+0x2e/0x230 kernel/workqueue.c:2223
-       insert_wq_barrier kernel/workqueue.c:3940 [inline]
-       start_flush_work kernel/workqueue.c:4303 [inline]
-       __flush_work+0x46e/0xcb0 kernel/workqueue.c:4338
-       flush_all_cpus_locked+0x1bc/0x220 mm/slub.c:4008
-       flush_all mm/slub.c:4017 [inline]
-       __kmem_cache_shrink+0x15/0x30 mm/slub.c:8326
-       acpi_os_purge_cache+0x15/0x20 drivers/acpi/osl.c:1622
-       acpi_purge_cached_objects+0x51/0x140 drivers/acpi/acpica/utxface.c:237
-       acpi_initialize_objects+0x8b/0x100 drivers/acpi/acpica/utxfinit.c:250
-       acpi_bus_init drivers/acpi/bus.c:1375 [inline]
-       acpi_init+0x1b0/0x840 drivers/acpi/bus.c:1464
-       do_one_initcall+0x11c/0x6f0 init/main.c:1353
-       do_initcall_level init/main.c:1415 [inline]
-       do_initcalls init/main.c:1431 [inline]
-       do_basic_setup init/main.c:1451 [inline]
-       kernel_init_freeable+0x6ea/0x7b0 init/main.c:1666
-       kernel_init+0x21/0x1e0 init/main.c:1556
-       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
--> #3 (&pool->lock){-.-.}-{2:2}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
-       __raw_spin_lock include/linux/spinlock_api_smp.h:190 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:173
-       __queue_work+0x298/0x12b0 kernel/workqueue.c:2361
-       queue_work_on+0x1a9/0x1e0 kernel/workqueue.c:2452
-       queue_work include/linux/workqueue.h:699 [inline]
-       rpm_suspend+0xf6b/0x1220 drivers/base/power/runtime.c:685
-       rpm_idle+0x60c/0x790 drivers/base/power/runtime.c:559
-       __pm_runtime_idle+0xba/0x1a0 drivers/base/power/runtime.c:1129
-       pm_runtime_put include/linux/pm_runtime.h:551 [inline]
-       __device_attach+0x37e/0x4d0 drivers/base/dd.c:1116
-       device_initial_probe+0xaf/0xd0 drivers/base/dd.c:1153
-       bus_probe_device+0x64/0x160 drivers/base/bus.c:620
-       device_add+0x121d/0x1970 drivers/base/core.c:3776
-       serial_base_port_add+0x227/0x2b0 drivers/tty/serial/serial_base_bus.c:186
-       serial_core_port_device_add drivers/tty/serial/serial_core.c:3275 [inline]
-       serial_core_register_port+0x13c/0x16f0 drivers/tty/serial/serial_core.c:3314
-       serial8250_register_8250_port+0x15af/0x2330 drivers/tty/serial/8250/8250_core.c:828
-       serial_pnp_probe+0x436/0x930 drivers/tty/serial/8250/8250_pnp.c:480
-       pnp_device_probe+0x2b3/0x4a0 drivers/pnp/driver.c:111
-       call_driver_probe drivers/base/dd.c:628 [inline]
-       really_probe+0x241/0xa60 drivers/base/dd.c:706
-       __driver_probe_device+0x210/0x460 drivers/base/dd.c:868
-       driver_probe_device+0x4a/0x140 drivers/base/dd.c:898
-       __driver_attach+0x21f/0x5b0 drivers/base/dd.c:1292
-       bus_for_each_dev+0x13e/0x1d0 drivers/base/bus.c:383
-       bus_add_driver+0x305/0x5b0 drivers/base/bus.c:763
-       driver_register+0x1e2/0x360 drivers/base/driver.c:174
-       serial8250_init+0xcc/0x1c0 drivers/tty/serial/8250/8250_platform.c:317
-       do_one_initcall+0x11c/0x6f0 init/main.c:1353
-       do_initcall_level init/main.c:1415 [inline]
-       do_initcalls init/main.c:1431 [inline]
-       do_basic_setup init/main.c:1451 [inline]
-       kernel_init_freeable+0x6ea/0x7b0 init/main.c:1666
-       kernel_init+0x21/0x1e0 init/main.c:1556
-       ret_from_fork+0x730/0xd60 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
--> #2 (&dev->power.lock){-.-.}-{3:3}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:155 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:181
-       __pm_runtime_resume+0xa9/0x170 drivers/base/power/runtime.c:1196
-       pm_runtime_get include/linux/pm_runtime.h:494 [inline]
-       __uart_start+0x1b0/0x510 drivers/tty/serial/serial_core.c:149
-       uart_write+0x211/0xb20 drivers/tty/serial/serial_core.c:629
-       process_output_block drivers/tty/n_tty.c:557 [inline]
-       n_tty_write+0x431/0x1160 drivers/tty/n_tty.c:2366
-       iterate_tty_write drivers/tty/tty_io.c:1006 [inline]
-       file_tty_write.isra.0+0x4d2/0x890 drivers/tty/tty_io.c:1081
-       tty_write drivers/tty/tty_io.c:1102 [inline]
-       redirected_tty_write drivers/tty/tty_io.c:1125 [inline]
-       redirected_tty_write+0xd4/0x120 drivers/tty/tty_io.c:1105
-       new_sync_write fs/read_write.c:595 [inline]
-       vfs_write+0x6af/0x1050 fs/read_write.c:687
-       ksys_write+0x12a/0x250 fs/read_write.c:739
-       do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
-       do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (&port_lock_key){-.-.}-{3:3}:
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:155 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:181
-       uart_port_lock_irqsave include/linux/serial_core.h:719 [inline]
-       serial8250_console_write+0x177/0x1a50 drivers/tty/serial/8250/8250_port.c:3344
-       console_emit_next_record kernel/printk/printk.c:3183 [inline]
-       console_flush_one_record+0x790/0xe50 kernel/printk/printk.c:3269
-       console_flush_all kernel/printk/printk.c:3343 [inline]
-       __console_flush_and_unlock kernel/printk/printk.c:3373 [inline]
-       console_unlock+0x103/0x260 kernel/printk/printk.c:3413
-       vprintk_emit+0x407/0x6b0 kernel/printk/printk.c:2479
-       _printk+0xcf/0x110 kernel/printk/printk.c:2504
-       register_console.cold+0xc0/0x248 kernel/printk/printk.c:4208
-       univ8250_console_init+0x6f/0x80 drivers/tty/serial/8250/8250_core.c:515
-       console_init+0x3d5/0x5b0 kernel/printk/printk.c:4407
-       start_kernel+0x314/0x490 init/main.c:1118
-       x86_64_start_reservations+0x24/0x30 arch/x86/kernel/head64.c:310
-       x86_64_start_kernel+0x12b/0x130 arch/x86/kernel/head64.c:291
-       common_startup_64+0x13e/0x158
-
--> #0 (console_owner){..-.}-{0:0}:
-       check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3181
-       check_prevs_add kernel/locking/lockdep.c:3300 [inline]
-       validate_chain kernel/locking/lockdep.c:3924 [inline]
-       __lock_acquire+0x1492/0x1ec0 kernel/locking/lockdep.c:5253
-       lock_acquire kernel/locking/lockdep.c:5886 [inline]
-       lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
-       console_trylock_spinning kernel/printk/printk.c:2026 [inline]
-       vprintk_emit+0x4d4/0x6b0 kernel/printk/printk.c:2478
-       _printk+0xcf/0x110 kernel/printk/printk.c:2504
-       __slab_bug+0x4f/0xb0 mm/slub.c:1144
-       slab_bug+0x5d/0x80 mm/slub.c:1155
-       list_slab_objects mm/slub.c:7978 [inline]
-       free_partial mm/slub.c:8015 [inline]
-       __kmem_cache_shutdown.cold+0x39/0x177 mm/slub.c:8058
-       kmem_cache_destroy mm/slab_common.c:569 [inline]
-       kmem_cache_destroy+0x73/0x190 mm/slab_common.c:527
-       virtio_gpu_free_vbufs+0x38/0x80 drivers/gpu/drm/virtio/virtgpu_vq.c:86
-       virtio_gpu_release+0x5c/0x1c0 drivers/gpu/drm/virtio/virtgpu_kms.c:312
-       drm_dev_release drivers/gpu/drm/drm_drv.c:912 [inline]
-       kref_put include/linux/kref.h:65 [inline]
-       drm_dev_put.part.0+0xbd/0x140 drivers/gpu/drm/drm_drv.c:948
-       drm_dev_put+0x1f/0x30 drivers/gpu/drm/drm_drv.c:947
-       virtio_dev_remove+0xb8/0x170 drivers/virtio/virtio.c:375
-       device_remove+0xcb/0x180 drivers/base/dd.c:616
-       __device_release_driver drivers/base/dd.c:1349 [inline]
-       device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
-       bus_remove_device+0x2bc/0x560 drivers/base/bus.c:664
-       device_del+0x376/0x9b0 drivers/base/core.c:3965
-       device_unregister+0x1d/0xe0 drivers/base/core.c:4006
-       unregister_virtio_device+0x39/0x60 drivers/virtio/virtio.c:594
-       virtio_pci_remove+0x7c/0x110 drivers/virtio/virtio_pci_common.c:758
-       pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
-       device_remove+0xcb/0x180 drivers/base/dd.c:616
-       __device_release_driver drivers/base/dd.c:1349 [inline]
-       device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
-       unbind_store+0xf8/0x110 drivers/base/bus.c:244
-       drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
-       sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
-       kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
-       new_sync_write fs/read_write.c:595 [inline]
-       vfs_write+0x6af/0x1050 fs/read_write.c:687
-       ksys_write+0x12a/0x250 fs/read_write.c:739
-       do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
-       do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  console_owner --> &pool->lock --> &n->list_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&n->list_lock);
-                               lock(&pool->lock);
-                               lock(&n->list_lock);
-  lock(console_owner);
-
- *** DEADLOCK ***
-
-locks held by syz.2.702/8696: 8, last CPU#0:
- #0: ffff888013f16ef0 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x2aa/0x380 fs/file.c:1259
- #1: ffff888042fd8460 (sb_writers#8){.+.+}-{0:0}, at: ksys_write+0x12a/0x250 fs/read_write.c:739
- #2: ffff888035090c80 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x2c2/0x5f0 fs/kernfs/file.c:336
- #3: ffff888022e821f8 (&dev->mutex){....}-{4:4}, at: device_lock include/linux/device.h:1104 [inline]
- #3: ffff888022e821f8 (&dev->mutex){....}-{4:4}, at: __device_driver_lock drivers/base/dd.c:1171 [inline]
- #3: ffff888022e821f8 (&dev->mutex){....}-{4:4}, at: device_release_driver_internal+0xb2/0x620 drivers/base/dd.c:1369
- #4: ffff88802658d1b0 (&dev->mutex){....}-{4:4}, at: device_lock include/linux/device.h:1104 [inline]
- #4: ffff88802658d1b0 (&dev->mutex){....}-{4:4}, at: __device_driver_lock drivers/base/dd.c:1171 [inline]
- #4: ffff88802658d1b0 (&dev->mutex){....}-{4:4}, at: device_release_driver_internal+0xb2/0x620 drivers/base/dd.c:1369
- #5: ffffffff8ec7a350 (cpu_hotplug_lock){++++}-{0:0}, at: kmem_cache_destroy mm/slab_common.c:556 [inline]
- #5: ffffffff8ec7a350 (cpu_hotplug_lock){++++}-{0:0}, at: kmem_cache_destroy+0x4b/0x190 mm/slab_common.c:527
- #6: ffffffff8ef8a0e0 (slab_mutex){+.+.}-{4:4}, at: kmem_cache_destroy mm/slab_common.c:557 [inline]
- #6: ffffffff8ef8a0e0 (slab_mutex){+.+.}-{4:4}, at: kmem_cache_destroy+0x59/0x190 mm/slab_common.c:527
- #7: ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: spin_lock_irq include/linux/spinlock.h:377 [inline]
- #7: ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: free_partial mm/slub.c:8009 [inline]
- #7: ffff888027fc2558 (&n->list_lock){-.-.}-{3:3}, at: __kmem_cache_shutdown+0x10c/0x330 mm/slub.c:8058
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 8696 Comm: syz.2.702 Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2059
- check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2191
- check_prev_add+0xeb/0xe60 kernel/locking/lockdep.c:3181
- check_prevs_add kernel/locking/lockdep.c:3300 [inline]
- validate_chain kernel/locking/lockdep.c:3924 [inline]
- __lock_acquire+0x1492/0x1ec0 kernel/locking/lockdep.c:5253
- lock_acquire kernel/locking/lockdep.c:5886 [inline]
- lock_acquire+0x1b9/0x370 kernel/locking/lockdep.c:5843
- console_trylock_spinning kernel/printk/printk.c:2026 [inline]
- vprintk_emit+0x4d4/0x6b0 kernel/printk/printk.c:2478
- _printk+0xcf/0x110 kernel/printk/printk.c:2504
- __slab_bug+0x4f/0xb0 mm/slub.c:1144
- slab_bug+0x5d/0x80 mm/slub.c:1155
- list_slab_objects mm/slub.c:7978 [inline]
- free_partial mm/slub.c:8015 [inline]
- __kmem_cache_shutdown.cold+0x39/0x177 mm/slub.c:8058
- kmem_cache_destroy mm/slab_common.c:569 [inline]
- kmem_cache_destroy+0x73/0x190 mm/slab_common.c:527
- virtio_gpu_free_vbufs+0x38/0x80 drivers/gpu/drm/virtio/virtgpu_vq.c:86
- virtio_gpu_release+0x5c/0x1c0 drivers/gpu/drm/virtio/virtgpu_kms.c:312
- drm_dev_release drivers/gpu/drm/drm_drv.c:912 [inline]
- kref_put include/linux/kref.h:65 [inline]
- drm_dev_put.part.0+0xbd/0x140 drivers/gpu/drm/drm_drv.c:948
- drm_dev_put+0x1f/0x30 drivers/gpu/drm/drm_drv.c:947
- virtio_dev_remove+0xb8/0x170 drivers/virtio/virtio.c:375
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- bus_remove_device+0x2bc/0x560 drivers/base/bus.c:664
- device_del+0x376/0x9b0 drivers/base/core.c:3965
- device_unregister+0x1d/0xe0 drivers/base/core.c:4006
- unregister_virtio_device+0x39/0x60 drivers/virtio/virtio.c:594
- virtio_pci_remove+0x7c/0x110 drivers/virtio/virtio_pci_common.c:758
- pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- unbind_store+0xf8/0x110 drivers/base/bus.c:244
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6af/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f857079e0d9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8571728028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f8570a25fa0 RCX: 00007f857079e0d9
-RDX: 000000000000000d RSI: 00002000000001c0 RDI: 0000000000000003
-RBP: 00007f8570835024 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8570a26038 R14: 00007f8570a25fa0 R15: 00007ffeb5a8ff58
- </TASK>
-BUG virtio-gpu-vbufs (Tainted: G             L     ): Objects remaining on __kmem_cache_shutdown()
------------------------------------------------------------------------------
-
-Object 0xffff888027e50348 @offset=840
-Object 0xffff888027e50460 @offset=1120
-Object 0xffff888027e50d20 @offset=3360
-Object 0xffff888027e50e38 @offset=3640
-Object 0xffff888027e51298 @offset=4760
-Object 0xffff888027e513b0 @offset=5040
-Object 0xffff888027e514c8 @offset=5320
-Object 0xffff888027e515e0 @offset=5600
-Slab 0xffffea00009f9400 objects=29 used=8 fp=0xffff888027e50000 flags=0xfff00000000240(workingset|head|node=0|zone=1|lastcpupid=0x7ff)
-------------[ cut here ]------------
-1
-WARNING: mm/slub.c:1244 at __slab_err+0x15/0x20 mm/slub.c:1244, CPU#0: syz.2.702/8696
-Modules linked in:
-CPU: 0 UID: 0 PID: 8696 Comm: syz.2.702 Tainted: G    B        L      syzkaller #0 PREEMPT(full) 
-Tainted: [B]=BAD_PAGE, [L]=SOFTLOCKUP
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-RIP: 0010:__slab_err+0x15/0x20 mm/slub.c:1244
-Code: 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 e8 5b fd ff ff be 01 00 00 00 bf 05 00 00 00 e8 7c f6 a2 00 90 <0f> 0b 90 c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000160f808 EFLAGS: 00010046
-RAX: 0000000000080000 RBX: ffffc9000160f858 RCX: ffffc90006a91000
-RDX: 0000000000080000 RSI: ffffffff81c7459d RDI: ffff8880308e8000
-RBP: ffff888027fc2558 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000062616c53 R12: 0000000000001ea0
-R13: ffff888027e51fb8 R14: ffff888027fc2540 R15: ffffea00009f9400
-FS:  00007f85717286c0(0000) GS:ffff8880d5bc6000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe71918568 CR3: 0000000040e74000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- list_slab_objects mm/slub.c:7994 [inline]
- free_partial mm/slub.c:8015 [inline]
- __kmem_cache_shutdown.cold+0x16e/0x177 mm/slub.c:8058
- kmem_cache_destroy mm/slab_common.c:569 [inline]
- kmem_cache_destroy+0x73/0x190 mm/slab_common.c:527
- virtio_gpu_free_vbufs+0x38/0x80 drivers/gpu/drm/virtio/virtgpu_vq.c:86
- virtio_gpu_release+0x5c/0x1c0 drivers/gpu/drm/virtio/virtgpu_kms.c:312
- drm_dev_release drivers/gpu/drm/drm_drv.c:912 [inline]
- kref_put include/linux/kref.h:65 [inline]
- drm_dev_put.part.0+0xbd/0x140 drivers/gpu/drm/drm_drv.c:948
- drm_dev_put+0x1f/0x30 drivers/gpu/drm/drm_drv.c:947
- virtio_dev_remove+0xb8/0x170 drivers/virtio/virtio.c:375
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- bus_remove_device+0x2bc/0x560 drivers/base/bus.c:664
- device_del+0x376/0x9b0 drivers/base/core.c:3965
- device_unregister+0x1d/0xe0 drivers/base/core.c:4006
- unregister_virtio_device+0x39/0x60 drivers/virtio/virtio.c:594
- virtio_pci_remove+0x7c/0x110 drivers/virtio/virtio_pci_common.c:758
- pci_device_remove+0xb2/0x1d0 drivers/pci/pci-driver.c:512
- device_remove+0xcb/0x180 drivers/base/dd.c:616
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x44e/0x620 drivers/base/dd.c:1372
- unbind_store+0xf8/0x110 drivers/base/bus.c:244
- drv_attr_store+0x74/0xb0 drivers/base/bus.c:125
- sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:145
- kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x6af/0x1050 fs/read_write.c:687
- ksys_write+0x12a/0x250 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f857079e0d9
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8571728028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f8570a25fa0 RCX: 00007f857079e0d9
-RDX: 000000000000000d RSI: 00002000000001c0 RDI: 0000000000000003
-RBP: 00007f8570835024 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8570a26038 R14: 00007f8570a25fa0 R15: 00007ffeb5a8ff58
- </TASK>
+-- Alison
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> Directional Generic Port matrices describe reachability, ordering, latency,
+> and bandwidth. Linux uses ordered paths to authorize P2PDMA and their
+> latency/bandwidth to rank providers. A VMM could translate these matrices
+> into guest domains; that is outside this series.
+> 
+>   HMAT Type 3 structure
+> 
+>   Field               Offset       Bytes  Meaning
+>   ---------------------------------------------------------------
+>   Type:                    0           2  value 3
+>   Length:                  4           4  entire structure
+>   Flags:                   8           1  traffic classes
+>   Data-type:               9           1  metric selector
+>   Initiators:             12           4  Generic Port count (s)
+>   Targets:                16           4  Generic Port count (t)
+>   Base-unit:              24           8  ps or MB/s; non-zero
+>   Initiator-PDs:          32         4*s  proximity-domain list
+>   Target-PDs:         32+4*s         4*t  proximity-domain list
+>   Matrix:         32+4*(s+t)       2*s*t  directional Entry[i][j]
+>   Reserved: bytes 2-3, 10-11, and 20-23
+> 
+>   Flags: encoding
+>     bit 0  non-UIO
+>     bit 1  UIO
+> 
+>   Metrics: selector
+>     0/1/2  access/read/write latency
+>     3/4/5  access/read/write bandwidth
+> 
+>   Direction: Initiator PD[i] -- Entry[i][j] metric --> Target PD[j]
+> 
+> ----------------------------------------------------------------------
+> Based on [PATCH v3 00/17] PCI/P2PDMA: Fix ACS egress control handling
+> https://lore.kernel.org/all/20260811-fix-p2p-acs-v3-0-efc488ee7c03@nvidia.com/
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> Leon Romanovsky (7):
+>       ACPICA: Define PCIe P2P latency and bandwidth information
+>       ACPI: HMAT: Make PCIe P2P paths available to consumers
+>       PCI/P2PDMA: Authorize HMAT-described cross-host-bridge P2P
+>       PCI/P2PDMA: Prefer providers with better HMAT performance
+>       ACPI: HMAT: Add KUnit tests for PCIe P2P matrix semantics
+>       PCI/P2PDMA: Add KUnit tests for HMAT policy boundaries
+>       PCI/P2PDMA: Add KUnit tests for HMAT provider ranking
+> 
+>  drivers/acpi/numa/Kconfig     |  13 ++
+>  drivers/acpi/numa/Makefile    |   1 +
+>  drivers/acpi/numa/hmat.c      | 245 +++++++++++++++++++++-
+>  drivers/acpi/numa/hmat_test.c | 223 ++++++++++++++++++++
+>  drivers/acpi/numa/hmat_test.h |  17 ++
+>  drivers/pci/Kconfig           |  14 ++
+>  drivers/pci/Makefile          |   1 +
+>  drivers/pci/p2pdma.c          | 300 ++++++++++++++++++++------
+>  drivers/pci/p2pdma_test.c     | 477 ++++++++++++++++++++++++++++++++++++++++++
+>  drivers/pci/pci.h             |  23 ++
+>  include/acpi/actbl1.h         |  27 ++-
+>  include/linux/acpi.h          |  26 +++
+>  12 files changed, 1298 insertions(+), 69 deletions(-)
+> ---
+> base-commit: bc5261fca94dd94ab557cc0852ce465d9c3ab8b0
+> change-id: 20260715-hmat-p2p-eb4971a9d731
+> 
+> Best regards,
+> --  
+> Leon Romanovsky <leonro@nvidia.com>
+> 
