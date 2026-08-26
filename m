@@ -1,125 +1,148 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF873CD8A9
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 10:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E780F42E418;
+	Wed, 26 Aug 2026 14:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787740109; cv=none; b=uD7OMoP+g6aRyHTdg5GQ0hKgsZlI/If7rVvtMeImZ2k7cMbc9pplmPxUqX9PBIWsualnG/m8I6bXmLpcWhxl16oyMET5xxfCEZIaQLfB0h0mWqIHzMXUbbSUVDKNoARkH1/0dpVCkXFHhNywPuvSD4EgLqH9mrO8y+TjCMoD5ws=
+	t=1787753316; cv=none; b=RDhVpFk+UTfKDIQTS/ea9SCA3KLebZ5A3aqvn/6Yhi5TOGgc9VpD55lJcGIs4FWnV4rJWy9iGJJyzLWMXsAWeSBBEGnoXwqgSlnQ7so48XraoeKCq40wTzQW+BKng6zcygiabrs8DyxF7rs3DclY1lUAm2nHByw7MtIuykX2ZR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787740109; c=relaxed/simple;
-	bh=wL5hc3LpyT3SWMGIxNFjPrz1dCnPAqt0M9tE+ySsTFs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KLrElSibzG2g8WMZruHF0D+FeQjy15MAAy5uaMTe7nxh8IjyD8Y6gYKZ8wQINY2OiFRjSQZi3hLX5xxki6QP9poObi8m3Im3PqTuarUokOCWYqOl2nZpGETBJFWVTdKdo+yzj58BU26k8agSZ2wrjimrN+TxWKg0Pf9AAcXh5k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ez6/Kr+q; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1787753316; c=relaxed/simple;
+	bh=CFG87ZaWpvxar+LmzhhuZpRsOTZ64BqB1+w3gYa98yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEez06kcpbeBBHPJevrTQLDMOZsdJIXLLwxyTUvgMe8Y/R8+yRNV9/B27YN5p5ZoEUYmBNtv/l0NCVaDYPT7NQObLtA8kyT/DdfvTat3vqbnitGhcSey7H6mcbBbYcagSXMWIt95kBseU0L+kRLkoc82C446IqpZXGuS0EPuGSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dZiGcDnl; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ez6/Kr+q"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78EE81F00A3E
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 10:28:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dZiGcDnl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AD271F000E9;
+	Wed, 26 Aug 2026 14:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787740107;
-	bh=t4LB0ynimvmu7IDX+F7ZHjm0CNIAuGM932GF2KntDbE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=ez6/Kr+qZR/Ocy5aSFcPdPsbdH/0FP89fskhHThhM3BBpbHCZ9VsGp+8htG2sqwnX
-	 pjNgnTzO5YudXR4vHeNTNdmYk7TMMHqvT77BL1vQ8Z2MqY5JOi05ZnBhVAroVau/hz
-	 uyFPrvbRv56IXSx/ZQLJFWzlfyUkpHXrlYPRsZX4UozW39+2EysSf/uzgapvAjubX8
-	 e27Fp4rRs6ufE38jwSK4TwijNGufi6jsz2Jlxg1u5GcQmHTUZJWnZam9JK1y/Cq1Pa
-	 ivEn6k2Gb4xZi+YgiKxKLZYTNjc3ZCPktWX63NLytrp2f0PWl0RIE6solC5O9EWuYy
-	 Fie+3QpVFJzzw==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-3a1a3bb6c5dso7455651fa.2
-        for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 03:28:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpCnbjRDXAOxIKY0b/2X03+D3qTkoIodoQJ9c3jme3TvxzkzMoKJ34PQ3gAMhEuy9hPz2cY0VsPVXTvKQQ=@lists.linux.dev
-X-Gm-Message-State: AFuF++l79stNESnmywoLbNCE0qeAXMMyG5B2VWEAGasA4HOoMAoOe0s+
-	ffLjgiS/STuRPjW7gjrJ8sUaLJ/aHBNxKSbW58qKtbFj4RFs8KLMljY5zIJ9RDfxG20u+sbx4UG
-	xsZ6gfLAPf7sQkM7u+pamClvA95Sra+g=
-X-Received: by 2002:a05:651c:1443:b0:3a2:522:c75 with SMTP id
- 38308e7fff4ca-3a205221193mr5570921fa.4.1787740105816; Wed, 26 Aug 2026
- 03:28:25 -0700 (PDT)
+	s=k20260515; t=1787753314;
+	bh=58CqlTkVH+yeGKqVx3x8yllINuupuUvSuHy1ToSmt8o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=dZiGcDnlz6tDjWuQcAuRDVN9X4hvLFz0grc8asWYHCXwDkmEDtD1eQHI4owQslV/P
+	 yAaCW+FUfOddDcMs/zBZLDSCSsiD58j+7hEzQq9N5QgR7UZaMIXrMACPfPQvo+KSh0
+	 vyXP/eHeK8girFF8S3HcvBQr+HSkPUwgDlm32kwCdF2+VvK9A7LnhNOKrz/MCMUxMp
+	 NHwdwHV48AZsjvxm2wtYBzBHan8CLH3hZyCPURljSi6QqAtVL6xm7B5gle5a3s5mQk
+	 xgyEdcZMZf1X1CfJnFSIN3EXL/dLtc2Z1nfxGuBeB1+eJhXwweci6L8dADVW2B/2xS
+	 ZhmUoi1HsZ6jg==
+Date: Wed, 26 Aug 2026 17:08:31 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Alison Schofield <alison.schofield@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	Saket Dumbre <saket.dumbre@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>, linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+	"Natu, Mahesh" <mahesh.natu@intel.com>
+Subject: Re: [PATCH RFC 0/7] PCI/HMAT: Describe P2PDMA reachability and
+ performance
+Message-ID: <20260826140831.GF42790@unreal>
+References: <20260812-hmat-p2p-v1-0-75ac41380585@nvidia.com>
+ <aoymZhOaSCG_Tsmj@aschofie-mobl2.lan>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260806200857.601152-1-sumitg@nvidia.com> <46d81167-1548-4b6a-b6cc-38542b2d093e@nvidia.com>
- <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
-In-Reply-To: <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 26 Aug 2026 12:27:40 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
-X-Gm-Features: AcwNN1Vq8ojxPy8S0E7lgKbAolH28ywilxtnQLjWXsCL5FdsGTBnAjbB9hFBo08
-Message-ID: <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] cpufreq: CPPC: Preserve OSPM-set registers across
- hotplug and unload
-To: Christian Loehle <christian.loehle@arm.com>, Sumit Gupta <sumitg@nvidia.com>
-Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com, 
-	zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, saket.dumbre@intel.com, 
-	ray.huang@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com, 
-	kprateek.nayak@amd.com, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, treding@nvidia.com, 
-	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
-	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aoymZhOaSCG_Tsmj@aschofie-mobl2.lan>
 
-On Wed, Aug 26, 2026 at 11:07=E2=80=AFAM Christian Loehle
-<christian.loehle@arm.com> wrote:
->
-> On 8/25/26 22:20, Sumit Gupta wrote:
-> >
-> > On 07/08/26 01:38, Sumit Gupta wrote:
-> >> This series keeps the CPPC cpufreq policy alive across CPU hotplug and
-> >> preserves the OSPM-set CPPC registers (Energy Performance Preference,
-> >> Autonomous Activity Window, Autonomous Selection - set via sysfs).
-> >>
-> >> Without online()/offline() callbacks, the core tears a policy down whe=
-n
-> >> its last CPU goes offline and rebuilds it on the way back, re-reading =
-the
-> >> CPPC capabilities each time. The values written to these registers can
-> >> be lost:
-> >>
-> >>   - Across CPU hotplug or suspend/resume: the platform may reset them
-> >>     while the CPU is offline.
-> >>   - On driver unload: the driver-written value is left in the register
-> >>     instead of returning to its pre-driver state.
-> >>
-> >> Handle these with:
-> >>
-> >>   - Patch 1: adds online()/offline() callbacks so the core keeps polic=
-y
-> >>     alive across CPU hotplug instead of tearing it down and rebuilding=
- it.
-> >>   - Patch 2: makes the autonomous selection register helpers take a u6=
-4.
-> >>   - Patch 3: adds a table-driven mechanism that captures each register=
-'s
-> >>     firmware value at init(), restores it from offline(), and reapplie=
-s
-> >>     the OSPM-set value from online().
-> >>   - Patch 4: extends the same save/restore to system suspend/resume.
-> >
-> > Gentle reminder.
-> > Could this be considered for queuing if nothing further needs addressin=
-g.
->
-> FWIW both sashiko findings look legit to me, the feedback counters one I
-> wouldn't consider that drastic, given that these counters are expected to
-> have 'fuzzy' readings anyhow, the second one is worse (losing sysfs setti=
-ngs
-> on cpu_online())
+On Mon, Aug 24, 2026 at 01:15:34PM -0700, Alison Schofield wrote:
+> On Wed, Aug 12, 2026 at 10:47:37PM +0300, Leon Romanovsky wrote:
+> > Linux derives P2PDMA reachability from visible PCI topology, ACS
+> > configuration, and a host-bridge whitelist. It cannot describe conditional
+> > or slower cross-host-bridge paths; passthrough can hide the physical peer
+> > relationships.
+> > 
+> > This RFC series implements the proposed ACPI HMAT Type 3 extension below.
+> 
+> Hi Leon,
+> 
+> Is there an ECN document for review alongside this?
+> I get that the table below is a snapshot of the expected change, but
+> would appreciate the long version to read.
 
-I agree.
+Sure, Mahesh sent me the document, which I promised to convert to the
+mailing list format. I will send the official RFC to the linux-acpi ML
+slightly later.
 
-Besides, as I said elsewhere, I want this series to go in before any
-other pending changes related to CPPC:
+Thanks
 
-https://lore.kernel.org/linux-acpi/20260826063019.670240-1-christian.loehle=
-@arm.com/
-
-and I really would like to get some tags on it before it goes in.  It
-clearly is not ready for 7.3, but it may be applicable early for 7.4
-if people care to respond to it.
-
-Thanks!
+> 
+> Please add linux-cxl to CC list on future postings.
+> 
+> -- Alison
+> 
+> 
+> > Directional Generic Port matrices describe reachability, ordering, latency,
+> > and bandwidth. Linux uses ordered paths to authorize P2PDMA and their
+> > latency/bandwidth to rank providers. A VMM could translate these matrices
+> > into guest domains; that is outside this series.
+> > 
+> >   HMAT Type 3 structure
+> > 
+> >   Field               Offset       Bytes  Meaning
+> >   ---------------------------------------------------------------
+> >   Type:                    0           2  value 3
+> >   Length:                  4           4  entire structure
+> >   Flags:                   8           1  traffic classes
+> >   Data-type:               9           1  metric selector
+> >   Initiators:             12           4  Generic Port count (s)
+> >   Targets:                16           4  Generic Port count (t)
+> >   Base-unit:              24           8  ps or MB/s; non-zero
+> >   Initiator-PDs:          32         4*s  proximity-domain list
+> >   Target-PDs:         32+4*s         4*t  proximity-domain list
+> >   Matrix:         32+4*(s+t)       2*s*t  directional Entry[i][j]
+> >   Reserved: bytes 2-3, 10-11, and 20-23
+> > 
+> >   Flags: encoding
+> >     bit 0  non-UIO
+> >     bit 1  UIO
+> > 
+> >   Metrics: selector
+> >     0/1/2  access/read/write latency
+> >     3/4/5  access/read/write bandwidth
+> > 
+> >   Direction: Initiator PD[i] -- Entry[i][j] metric --> Target PD[j]
+> > 
+> > ----------------------------------------------------------------------
+> > Based on [PATCH v3 00/17] PCI/P2PDMA: Fix ACS egress control handling
+> > https://lore.kernel.org/all/20260811-fix-p2p-acs-v3-0-efc488ee7c03@nvidia.com/
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> > Leon Romanovsky (7):
+> >       ACPICA: Define PCIe P2P latency and bandwidth information
+> >       ACPI: HMAT: Make PCIe P2P paths available to consumers
+> >       PCI/P2PDMA: Authorize HMAT-described cross-host-bridge P2P
+> >       PCI/P2PDMA: Prefer providers with better HMAT performance
+> >       ACPI: HMAT: Add KUnit tests for PCIe P2P matrix semantics
+> >       PCI/P2PDMA: Add KUnit tests for HMAT policy boundaries
+> >       PCI/P2PDMA: Add KUnit tests for HMAT provider ranking
+> > 
+> >  drivers/acpi/numa/Kconfig     |  13 ++
+> >  drivers/acpi/numa/Makefile    |   1 +
+> >  drivers/acpi/numa/hmat.c      | 245 +++++++++++++++++++++-
+> >  drivers/acpi/numa/hmat_test.c | 223 ++++++++++++++++++++
+> >  drivers/acpi/numa/hmat_test.h |  17 ++
+> >  drivers/pci/Kconfig           |  14 ++
+> >  drivers/pci/Makefile          |   1 +
+> >  drivers/pci/p2pdma.c          | 300 ++++++++++++++++++++------
+> >  drivers/pci/p2pdma_test.c     | 477 ++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/pci/pci.h             |  23 ++
+> >  include/acpi/actbl1.h         |  27 ++-
+> >  include/linux/acpi.h          |  26 +++
+> >  12 files changed, 1298 insertions(+), 69 deletions(-)
+> > ---
+> > base-commit: bc5261fca94dd94ab557cc0852ce465d9c3ab8b0
+> > change-id: 20260715-hmat-p2p-eb4971a9d731
+> > 
+> > Best regards,
+> > --  
+> > Leon Romanovsky <leonro@nvidia.com>
+> > 
+> 
