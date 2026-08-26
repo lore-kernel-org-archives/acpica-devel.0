@@ -1,91 +1,125 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9AD3B7B6E
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 09:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF873CD8A9
+	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 10:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787735240; cv=none; b=E4QOZRq4TtZjfhBiPRR0PhCIz0pJxYj5ntfcMtnAB48wyhoj6bKejKC2tZMMCAQ9ORx4O44+Rekx99sa2BVN43bvJe5iZS8I6M7B+sCs7HR565/sQgCLuqiFoZTVL+IN6nlZLMILrPw5zc1RODyFMfndqoEz3CKLOoxcx6mElRY=
+	t=1787740109; cv=none; b=uD7OMoP+g6aRyHTdg5GQ0hKgsZlI/If7rVvtMeImZ2k7cMbc9pplmPxUqX9PBIWsualnG/m8I6bXmLpcWhxl16oyMET5xxfCEZIaQLfB0h0mWqIHzMXUbbSUVDKNoARkH1/0dpVCkXFHhNywPuvSD4EgLqH9mrO8y+TjCMoD5ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787735240; c=relaxed/simple;
-	bh=iVxv0aeOkJqXzhbIw6liWm3Nz8+6mlu/NTd5a4uNkSM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jd20EEClugNWfxPtgkrjxrGBUznWPf+4ePjvksHvm7LS26k+FLTKtG9uUmlDn9m6/FcSpMBchXuCO5aRqV9IPyYC/iiJs3LNEM4Zw19yWOu2+zJBaFFYrsZVWH3p6pRGDNQCYcLLBhuQv6mGB0iO3Uqebvb1kjh7pd2g32DEtmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=Ig0v1IvS; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1787740109; c=relaxed/simple;
+	bh=wL5hc3LpyT3SWMGIxNFjPrz1dCnPAqt0M9tE+ySsTFs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KLrElSibzG2g8WMZruHF0D+FeQjy15MAAy5uaMTe7nxh8IjyD8Y6gYKZ8wQINY2OiFRjSQZi3hLX5xxki6QP9poObi8m3Im3PqTuarUokOCWYqOl2nZpGETBJFWVTdKdo+yzj58BU26k8agSZ2wrjimrN+TxWKg0Pf9AAcXh5k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ez6/Kr+q; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="Ig0v1IvS"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 294C21684;
-	Wed, 26 Aug 2026 02:07:14 -0700 (PDT)
-Received: from [10.57.6.192] (unknown [10.57.6.192])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C0BA3F66F;
-	Wed, 26 Aug 2026 02:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1787735238; bh=iVxv0aeOkJqXzhbIw6liWm3Nz8+6mlu/NTd5a4uNkSM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ig0v1IvS3kNb4YYEuyNqGnsrGuFpayp+JUIhH+nx6UTtlHE+Q/RFpIW57I9eDawme
-	 W56zjLUuDf8mXW1k7jw8pgJpl+GMkKxyXxrjfuZ9ZBodNlvsPzrDhhLdLmLIiDAicw
-	 SjTRWksmS42V2i39lBuSOrSxH0Pw/ZHEmxzZQG3s=
-Message-ID: <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
-Date: Wed, 26 Aug 2026 10:07:07 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ez6/Kr+q"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78EE81F00A3E
+	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 10:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787740107;
+	bh=t4LB0ynimvmu7IDX+F7ZHjm0CNIAuGM932GF2KntDbE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=ez6/Kr+qZR/Ocy5aSFcPdPsbdH/0FP89fskhHThhM3BBpbHCZ9VsGp+8htG2sqwnX
+	 pjNgnTzO5YudXR4vHeNTNdmYk7TMMHqvT77BL1vQ8Z2MqY5JOi05ZnBhVAroVau/hz
+	 uyFPrvbRv56IXSx/ZQLJFWzlfyUkpHXrlYPRsZX4UozW39+2EysSf/uzgapvAjubX8
+	 e27Fp4rRs6ufE38jwSK4TwijNGufi6jsz2Jlxg1u5GcQmHTUZJWnZam9JK1y/Cq1Pa
+	 ivEn6k2Gb4xZi+YgiKxKLZYTNjc3ZCPktWX63NLytrp2f0PWl0RIE6solC5O9EWuYy
+	 Fie+3QpVFJzzw==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-3a1a3bb6c5dso7455651fa.2
+        for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 03:28:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RpCnbjRDXAOxIKY0b/2X03+D3qTkoIodoQJ9c3jme3TvxzkzMoKJ34PQ3gAMhEuy9hPz2cY0VsPVXTvKQQ=@lists.linux.dev
+X-Gm-Message-State: AFuF++l79stNESnmywoLbNCE0qeAXMMyG5B2VWEAGasA4HOoMAoOe0s+
+	ffLjgiS/STuRPjW7gjrJ8sUaLJ/aHBNxKSbW58qKtbFj4RFs8KLMljY5zIJ9RDfxG20u+sbx4UG
+	xsZ6gfLAPf7sQkM7u+pamClvA95Sra+g=
+X-Received: by 2002:a05:651c:1443:b0:3a2:522:c75 with SMTP id
+ 38308e7fff4ca-3a205221193mr5570921fa.4.1787740105816; Wed, 26 Aug 2026
+ 03:28:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20260806200857.601152-1-sumitg@nvidia.com> <46d81167-1548-4b6a-b6cc-38542b2d093e@nvidia.com>
+ <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
+In-Reply-To: <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Wed, 26 Aug 2026 12:27:40 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
+X-Gm-Features: AcwNN1Vq8ojxPy8S0E7lgKbAolH28ywilxtnQLjWXsCL5FdsGTBnAjbB9hFBo08
+Message-ID: <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
 Subject: Re: [PATCH v4 0/4] cpufreq: CPPC: Preserve OSPM-set registers across
  hotplug and unload
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
- zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
- saket.dumbre@intel.com, ray.huang@amd.com, mario.limonciello@amd.com,
- perry.yuan@amd.com, kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-References: <20260806200857.601152-1-sumitg@nvidia.com>
- <46d81167-1548-4b6a-b6cc-38542b2d093e@nvidia.com>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <46d81167-1548-4b6a-b6cc-38542b2d093e@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To: Christian Loehle <christian.loehle@arm.com>, Sumit Gupta <sumitg@nvidia.com>
+Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com, 
+	zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, saket.dumbre@intel.com, 
+	ray.huang@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com, 
+	kprateek.nayak@amd.com, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, treding@nvidia.com, 
+	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
+	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/25/26 22:20, Sumit Gupta wrote:
-> 
-> On 07/08/26 01:38, Sumit Gupta wrote:
->> This series keeps the CPPC cpufreq policy alive across CPU hotplug and
->> preserves the OSPM-set CPPC registers (Energy Performance Preference,
->> Autonomous Activity Window, Autonomous Selection - set via sysfs).
->>
->> Without online()/offline() callbacks, the core tears a policy down when
->> its last CPU goes offline and rebuilds it on the way back, re-reading the
->> CPPC capabilities each time. The values written to these registers can
->> be lost:
->>
->>   - Across CPU hotplug or suspend/resume: the platform may reset them
->>     while the CPU is offline.
->>   - On driver unload: the driver-written value is left in the register
->>     instead of returning to its pre-driver state.
->>
->> Handle these with:
->>
->>   - Patch 1: adds online()/offline() callbacks so the core keeps policy
->>     alive across CPU hotplug instead of tearing it down and rebuilding it.
->>   - Patch 2: makes the autonomous selection register helpers take a u64.
->>   - Patch 3: adds a table-driven mechanism that captures each register's
->>     firmware value at init(), restores it from offline(), and reapplies
->>     the OSPM-set value from online().
->>   - Patch 4: extends the same save/restore to system suspend/resume.
-> 
-> Gentle reminder.
-> Could this be considered for queuing if nothing further needs addressing.
+On Wed, Aug 26, 2026 at 11:07=E2=80=AFAM Christian Loehle
+<christian.loehle@arm.com> wrote:
+>
+> On 8/25/26 22:20, Sumit Gupta wrote:
+> >
+> > On 07/08/26 01:38, Sumit Gupta wrote:
+> >> This series keeps the CPPC cpufreq policy alive across CPU hotplug and
+> >> preserves the OSPM-set CPPC registers (Energy Performance Preference,
+> >> Autonomous Activity Window, Autonomous Selection - set via sysfs).
+> >>
+> >> Without online()/offline() callbacks, the core tears a policy down whe=
+n
+> >> its last CPU goes offline and rebuilds it on the way back, re-reading =
+the
+> >> CPPC capabilities each time. The values written to these registers can
+> >> be lost:
+> >>
+> >>   - Across CPU hotplug or suspend/resume: the platform may reset them
+> >>     while the CPU is offline.
+> >>   - On driver unload: the driver-written value is left in the register
+> >>     instead of returning to its pre-driver state.
+> >>
+> >> Handle these with:
+> >>
+> >>   - Patch 1: adds online()/offline() callbacks so the core keeps polic=
+y
+> >>     alive across CPU hotplug instead of tearing it down and rebuilding=
+ it.
+> >>   - Patch 2: makes the autonomous selection register helpers take a u6=
+4.
+> >>   - Patch 3: adds a table-driven mechanism that captures each register=
+'s
+> >>     firmware value at init(), restores it from offline(), and reapplie=
+s
+> >>     the OSPM-set value from online().
+> >>   - Patch 4: extends the same save/restore to system suspend/resume.
+> >
+> > Gentle reminder.
+> > Could this be considered for queuing if nothing further needs addressin=
+g.
+>
+> FWIW both sashiko findings look legit to me, the feedback counters one I
+> wouldn't consider that drastic, given that these counters are expected to
+> have 'fuzzy' readings anyhow, the second one is worse (losing sysfs setti=
+ngs
+> on cpu_online())
 
-FWIW both sashiko findings look legit to me, the feedback counters one I
-wouldn't consider that drastic, given that these counters are expected to
-have 'fuzzy' readings anyhow, the second one is worse (losing sysfs settings
-on cpu_online())
+I agree.
 
+Besides, as I said elsewhere, I want this series to go in before any
+other pending changes related to CPPC:
+
+https://lore.kernel.org/linux-acpi/20260826063019.670240-1-christian.loehle=
+@arm.com/
+
+and I really would like to get some tags on it before it goes in.  It
+clearly is not ready for 7.3, but it may be applicable early for 7.4
+if people care to respond to it.
+
+Thanks!
