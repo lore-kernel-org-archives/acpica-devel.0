@@ -1,202 +1,214 @@
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011053.outbound.protection.outlook.com [40.107.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555943B5307
-	for <acpica-devel@lists.linux.dev>; Wed, 26 Aug 2026 19:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9BD75809
+	for <acpica-devel@lists.linux.dev>; Mon, 31 Aug 2026 04:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.179
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787774199; cv=fail; b=u2tnn+d3CCdJJhjDcF/yFUX/UF2+DseOJpPTQ5AxjaFWtf1VsVnihP0axd9BLSvfPZDOcTovr4CUY7tZQc2lbgSeQa5CNbTKQh7eaCYEM0TkcAZEMQgr9D9us0vDkERurAOWuP2PeQMltjyJTZ9REMHdFKngubWZA5L0eIUEf1k=
+	t=1788150474; cv=pass; b=iXJO2UhznJkTBTBg2xd2oMK3Gr4Yp0wA9/s8NsuLySyf3LpdRs56qboF1sBpMlRskG9+pPYcTHoLoeTMzaoMbFg8d0UuUr7vm1BAoXufZKDEh59+VGMw37NkC4WXD/0kQd/m9sNzATj6ur6X87EbPiAsm9+AR4I8lT97KperpDE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787774199; c=relaxed/simple;
-	bh=YSCJHnUXTfgvY3VrPpxz7ND5udJbybhFKsP3kDQpsjc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SKmYuUSZqJgIaCHc0Ruu/FtAhC9xn4T+dec+2nxlbKF4jlEcjBEv+QGWpmpomhZpl0ZUwpECSbv20xLC9a8EGMm4UspAhc31yZoMZe6Nux2gZGLIx+CfYYEDY9R13OCZqWZANsohsWemrd9xfAYcqyR2fjCGAyuj7ZjQM/r33zw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OFqDjYhT; arc=fail smtp.client-ip=40.107.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1788150474; c=relaxed/simple;
+	bh=FAxZP1r6MFSpLsu8CHrIlBjZa/TvAcgjBjWfXeKm0U4=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=eqpIYkuNqd2nR2CzF34PAbcLXWpEZINozADcvVI+DYHYo0O5lVXKSXBG0LPsHdLug4am2vVd0IHKdSXkylmaJp1aCV1ukV4SAtYo8/U3w7BBviVETMt4STiLftwkAqeROQy4h81GXwX2/aPL0GOORIT7aUu1Z+ydTbo5+zhbKzY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=szPkfb+h; arc=pass smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OFqDjYhT"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=LR+IrBGKNDY5rM1l6nXaVJtV00QxgoQmW4csoox7mogiJsit+KRPPBwMvVo+6mc2axY+bfMVC76dziXPWMGAQWFHTh4sowNDB/aw1OehLi+KF4aLO2RB42RkvBH+YSc/RnaKJRsNxMi8BoZ1Zf3yVPk2Q+Z2Z40gffw8isO9Xj7/oE4zjW5hMbzyOj6SeezYybiSbK9XfK+QPXbzbme4UW3KRdZmBSXXGNMFUR7/Z1vMQMhbyhWTxId0BwQToALCCIRbIFt0t9Fno56xFRnnVlAB6grsLbGpoDNRyAHGYxhHihA5ypTncTVMPBDT8wdHiJqm02M+UBUX3j2WWPj7/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ddbxz4gK8caIuwyS6OPC7ig3R0pqszzlcIStVgqGjeg=;
- b=JUSPGxBUKZVz0vfR9g98P7Im9iVT3JuqwbMBaAWFZVFXa50xRiuFcTi9PZaj0xN/8eyrhsEqLN2n8K9Z/MFsWIl9ZOoKqmsPnLuyKpWbixSi6tGU+xXASNxSUTPK6lITaQeQ7c6Z15HkYByLKwqxvfsc9BqRI3J2gTCGGXsYcwoTpBxrXL7KpBU28mB5ntKVofU51gkU6adRLNspoiTK/kLnrxlSAZP4alCHxrV4+Xf5VZcMWclZzPt4zTw3BQeqPJ3KS6jUyKoyyQeHUB29uGfeoy3eMPL+zQa+beyWHj6bX/lqDYeW/KbZ2dVp54twNxlnOy6gzWYOQtpnXV/ZHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ddbxz4gK8caIuwyS6OPC7ig3R0pqszzlcIStVgqGjeg=;
- b=OFqDjYhT5AkXBihZA3vA/GdwJzWKBEwExTXNX2fiSIcN8Nz5zB4q6WL/1YXwfmzm3jscgxoH8TTrH0o2+jcMvxmb7CfW6isVjSlXFI4jLk/eY6Bp3Pj2T8yp5tdYxk//WZ/fge0pnzqagy+bsa7SVvUU2zv2C44n3Ojo/HXcU6mX2i529is2Dc3JjmOufQPytqh2Fojev4y7EBfldPgRsrQT1MCprnXib7HPXm+YCbgAv8A5U/CuarEP742jGQHZzrL73YxRAykG0hUiOwOuOchybbUd7qn6/ic85OwDeBTtln41iPHXX6zkT36V25eLw/QWkNn/BXngRjdkJO1kPg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB5246.namprd12.prod.outlook.com (2603:10b6:5:399::17)
- by DS2PR12MB9710.namprd12.prod.outlook.com (2603:10b6:8:276::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.10; Wed, 26 Aug
- 2026 19:56:26 +0000
-Received: from DM4PR12MB5246.namprd12.prod.outlook.com
- ([fe80::9c9e:30a1:5456:c485]) by DM4PR12MB5246.namprd12.prod.outlook.com
- ([fe80::9c9e:30a1:5456:c485%6]) with mapi id 15.21.0360.005; Wed, 26 Aug 2026
- 19:56:23 +0000
-Message-ID: <067ccb72-5324-4f4a-b21f-d1ce87f78ad0@nvidia.com>
-Date: Thu, 27 Aug 2026 01:26:11 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/4] cpufreq: CPPC: Preserve OSPM-set registers across
- hotplug and unload
-To: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
- Christian Loehle <christian.loehle@arm.com>
-Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
- zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, saket.dumbre@intel.com,
- ray.huang@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com,
- kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-References: <20260806200857.601152-1-sumitg@nvidia.com>
- <46d81167-1548-4b6a-b6cc-38542b2d093e@nvidia.com>
- <146a49c4-5b2a-41db-90fd-6dd2028d2d53@arm.com>
- <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
-Content-Language: en-US
-From: Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <CAJZ5v0hMRNTZbhb1tR7rf5+65Oes-7K__b1dLg5kGkm7NqKvWw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN4PR01CA0057.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:274::16) To DM4PR12MB5246.namprd12.prod.outlook.com
- (2603:10b6:5:399::17)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="szPkfb+h"
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-4a46a53abc9so2736518b6e.3
+        for <acpica-devel@lists.linux.dev>; Sun, 30 Aug 2026 21:27:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788150472; cv=none;
+        d=google.com; s=arc-20260327;
+        b=GlwNc0q4zgq7rQW4P620Au9jIAOdtEkMvBelkuEgTHGw9TgLm/vGQzsgBmhgMbifC8
+         d2TpTYkQp7XlHrdDVc4axi7KGZ8NL4Chsb2X6l+gkkSqXCi0u7FJP66iE4LUEVhpcfOj
+         Z6WHSJPn9yemyNHHfkNJ3MuWncrwhXGZlRg5i3Nvqb5Bmlte7/BvtWEP59QR5/2t1qf9
+         txtFu+BkN7VLXOQCTsRHG22+5dQ8GtI7q/q4ZMf6Coss3VAK64Vj4XbWYEk2RyA4WMOA
+         LwmMBOf+R/KmZ+xltv1+KZUqb7NkKB21VStKh8QODh7k8AQpt4efWrudLTM2tzcthdnx
+         bkmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=w6cfHFWajG2mUYJ/SeqqbFWYHvEkw7VlhhOfJ39ntMs=;
+        fh=RZ5zH9/kJCuxNnlBK1naQoLjTL/QQ5bmY8KxIzqZg2g=;
+        b=QI2bJlG+HIAx+9LZcDtctz+0aXV0hUBf5wUdOEHFP0U2P4ysLY2mZH7qkzN0qXq+tc
+         gotgWRdJoriCNlpJ76nTG0kZ05YylbNeYzClyK249sca1zmgsDaCLBigflOVjRDf1Pig
+         YZiePoeWysJDA2uhA+ZvQpQCpsfjAb6KsUAk/uiPgHR4Vs2DRpG47dP8a/eyVPGfYd63
+         t47j25TpF1nEs6Uvp7Rt2EF9n6NKs5U9lFRF6QrIboL0jRE/G+r/rBqrlFBUoohthPHm
+         GQYAPkPE+aZYNJ9Q+MOE0CxSLgfE9UBVd1V+DkvdP9ltstLEVFdE3AuybUlp4XHjrSdy
+         568w==;
+        darn=lists.linux.dev
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788150472; x=1788755272; darn=lists.linux.dev;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=w6cfHFWajG2mUYJ/SeqqbFWYHvEkw7VlhhOfJ39ntMs=;
+        b=szPkfb+hE835GZLLESOet045Uw6Cv1pdvDUrLkrUBKObpR6PwovXGnkNhX0uunTkTr
+         I3qyaoQXGvLbwM/yMoO7EGu+UlxbD3DrzLG2FA/m+2wjnxtw9bV27guNallX/az29zwY
+         of9jQdlGHJlqRi2Iry8wU4OEnDqoLXemnkfi7JkaakdqvyMkm37+jf4nkAzTupDZtw9/
+         1mkUFq1Gy6aIrulSNKotn4TXE/mDSBJnB305Zwo854eGZ+6u4jMDytYAZWoROw6sgLJh
+         /DQ1JZ6I0dgWzeq6R6dBjJQ+LzJFFbkFoit3Y8ZLH6xakMORFeNibNNwVL341XKjCBfG
+         n2vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1788150472; x=1788755272;
+        h=content-type:cc:to:subject:message-id:date:from:mime-version
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=w6cfHFWajG2mUYJ/SeqqbFWYHvEkw7VlhhOfJ39ntMs=;
+        b=jOEzZKr4wWjer3nggMcP50Vr13FqL8fREsmi6v4k6CHsalLwxeEm9aygA7Bi2dzUI1
+         58bVqOVsTS9XWnOpihjx304BAERRgD7Ob8on0kbYuf/lcaC8gM9scVYpw/6awBbFY1bR
+         +tNDQd/Qcayi2AuuGE2VSrRaY+XkZtSMnNRMpyBoq+f6/kfdzeQHt9K5GiZ8wjTNn6N4
+         Fc/9pACHZ6J2EnTq0w49D9B1bia+JGejbIaZp2V/+xZs+rJzfYbedgDkwdG1/pcD3X6V
+         s5/BDylu87A0f6Y6byzLSn6Fmg3uaK2ZT1IoIlS7AZd68kkAaDD6i3/CopxK1c6sLD0V
+         ArDA==
+X-Gm-Message-State: AFuF++mKDTq2xMZ5GHHEvEtMmqMlcTEGZeHt2gzT6kIZ6OLe73BXSwXG
+	3uPemnKEiDx44DZ+WfV7kcMmQroqvBypUMZIlS8bnkaxPXw5pOO1e7azzug8+t4k9Jq02RsZJPA
+	ucs4pC05yjGv9XTx6meXwKaMRhEnqL98=
+X-Gm-Gg: AR+sD11zh7rsdwmNAyvGGMMMu05azwHeM2E9QUya6lUgGIIDxqCCvKQDwBVKDxkYbLb
+	4TcMm39xEFJqqUOABscJZEJhPapCtx7YTSVrjCFWXALp9RGyoZCp4zr52E07ra8pTnMNHokmlLp
+	d41MiBVP/ycyQ7tEPfAJ5XYc20LcnEMb2V0n+nuoZLQ+VVMpJZxSiMKtV3yhvsLoQ2WbVFsr/dv
+	/l02DB18LnedcE47VzE9XMLx613lHnU6E39ZiPW+sq1IjDajRKR1xj+T+myVyrS+A5UWi0zQFQj
+	6YQQCD4UChBJV3IlA1Nrb9RnS+LH5UqAJ8tk9H8UUmCwP/OhdOIjJRqDwJmx1koeRg8sslpvgxB
+	XXxjPBV8rLgzi
+X-Received: by 2002:a05:6808:538f:b0:4aa:cad:cb4c with SMTP id
+ 5614622812f47-4b398037d1emr29237479b6e.1.1788150471810; Sun, 30 Aug 2026
+ 21:27:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5246:EE_|DS2PR12MB9710:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb640f6c-a0c3-4f6d-268d-08df03ac1ab4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|1800799024|366016|376014|7416014|56012099006|10067099003|6133799003|5023799004|22082099003|18002099003|11063799006|4143699003;
-X-Microsoft-Antispam-Message-Info:
-	MmcvF92dl6S4iIbQ3RbGXsRTK9RZjvX+NZisn4SpHtksvakHA2jncU+v43z5w1A3ofJ5E09MqrkwFkob4cPCZEVxaEonYZc7mkPdU/Q91N6hXLQtC3gagkpHrUOk1iV3G52pbl918R58J68OklNij6B8r1EG+t6nzfgok36ztPhfOrYM/hoTwDs6nUUay4pV8ftDebcoS1+qCH/o4ivowxOiJiesfxQzGOsqiSI3OjdXLqqmJzmogBqbt15j71JRF9OXR4W1eKrfiVkMweu9GKFB5RnFbrfUqfEfzCxEzAhPOEp9tby7UBdo2DgTTqin4qEvP6uqdLNY6MX54aFJRQz3HQtOe3pfKjXyjKt8bJYDiC6vucPaXkoNzZ57FLAlBXNsp73sXYM9QUGsiBK9P/YSuKp9zL/6TnG62KCzoCkULMX/qFxY70rT27BUZNwZurZuXKJ4/Ls52xyEXiyf6U91l0xGujptR7o+4c5X0jXXO4Z4qW0oPAUEcXtRWqgAGgpYdX3CFQXuvUC3HUJP5S7pEOgKXGTHJp5/uumqhM/2GEOq5Ees9T1BB1F59TxbtK0oefnNN/U4udFtN1QMRJPp9Dcj5NXbG4U3IwpEMETZ1F9lenLLwuACuPP1gcoGBB8E1VVBGtSb9DnLJQgZOQ+8tW2tLt1CZVq6YU5Qe/I=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(366016)(376014)(7416014)(56012099006)(10067099003)(6133799003)(5023799004)(22082099003)(18002099003)(11063799006)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SGdVSENBUjFMTFAreG0wTFltTWhYZXd4S1JJWGJlWllldFFRVUNYUU0wQUJQ?=
- =?utf-8?B?d0xDbStiNUxDdEJkT2Y5eG03dlpwRGdoZTZTWHN3M2tFYVVmeko5Y21XeWp2?=
- =?utf-8?B?RXFYUllyUW1GMmpPd005VzZhQk5tQ3hCWU9GNmgzNE9ja1RlcTFXRjBhY2th?=
- =?utf-8?B?aEFTN1NndmVYMTB1dUo1RHdqcmF6RHZpU1hFMXBrRWVTbkpJRG5qbG1tdXh0?=
- =?utf-8?B?RGV4UVREOXdyTDZYZE40b2FyeXU4UDFUcFZHWUFMbFBvNFB6Mmw0ZE1yRGZ4?=
- =?utf-8?B?cGhqVTRybUp3Ylg2RDZjanNLdHFFamtZc2d1eWQ1MVl1ckhGR1FLT2dUSmcv?=
- =?utf-8?B?aTlneUF4ZGpodjN1VFpYU0RTOS95RjREWXpDMjZ2YjdUMG9UUnRTSzVhcWxC?=
- =?utf-8?B?MWNWZjlxbVRPMEhXRU9rTFNEQjNzRE9MNzd3Yzk2WFhjVWNtOUVkTkJJbm42?=
- =?utf-8?B?a3pPTEovblJWUUo1bk8zWUVTSUh6dmMyOG03ckFyZE1MdXVSSlROcGh1VVlE?=
- =?utf-8?B?Zm1yZXdqK05qb2pKMXloRWU3aXdmclE5c2tsR0pvc1VWb1BpZThYakI4bHNW?=
- =?utf-8?B?UEV6eFVqaW5WdmFXdW1UVXhBcXFFUi8zUTRHTVo5dkI3OVB5RGpXLzR3Q1hw?=
- =?utf-8?B?a3ZhRm9DQVRVMEtBbU00bGEyTzBSbUFlQjZZU2dQVDlLSTZYL1dZeWdOUDlp?=
- =?utf-8?B?cVQ0bFFoUklNMzA0UE9kVFVMQ2F1dFFrM2trc01DSWRMQVVwQUUvcmdWRFFG?=
- =?utf-8?B?QmtGN3ZmUjBRYU5QSGduRnh1am1VUzYrcDA1MEdGUFVNNEFWWDVyOFBpK1lD?=
- =?utf-8?B?bVNFallnQXMzdG1mVk9pbkk3Ukt2QzlBS2I3T0Fia2tNNzRXcnpYTTh2eTdC?=
- =?utf-8?B?S25JMjdUODJ6MWowRWhEcHJSdUhrbXRldDlZbmloY0FNKzlpQkJiakxRSC9G?=
- =?utf-8?B?TUR0bGFqbFJaR2ZiekVCWlpsdkxDN3p4SnpobHFDSDI0TzBrQmhIZE1XazUv?=
- =?utf-8?B?dEFKVXhCUG53cnpocEFtYmorNmVvRWN4VTF1VVRreHhzK3lJc2dIanl4LzlC?=
- =?utf-8?B?V1UzeG83SzFGcmV1QXgyMXdZcDBHL0dTbWF0QzY2QkZPbEl6MXdhNFd2MXM3?=
- =?utf-8?B?Zlk1RUNQNW1YWDhuRXRCU0htVHZjSWkvZnFSZ3FEdWFLVUZJNVE2L0d4cDcv?=
- =?utf-8?B?RVpjUVBOOTNpWUpGMktwakxqMHZHdlV3cC9uazdvNmlhUnJla0JzYi9rcEVX?=
- =?utf-8?B?dFREZkQzeFFyT211aFJNZmFwdjBJWmc4M2I0RHFJZmxSRTRCS0h6dTlMVE82?=
- =?utf-8?B?c0pQZVV6OTFvNy9Pbmdxai9xTVZxeTRBcU9oU3g1RWZPaGtTeUcrRlkyenZi?=
- =?utf-8?B?VENTTTVRYkdMdVhYUm05V2VzVHdPQW9hazUzWHFsVUNRcFhUYXZZaS9vbnli?=
- =?utf-8?B?WTNScythdnF6aDZmOEI1Q1BQUWNuZE5oT1FrSEozbEJqNG1uSmpuVlRCS2lS?=
- =?utf-8?B?YXZOS3JyRHBxaXRvdGhKcFArdlREZmpoRVRpOHNvcnJMVmJLYldLQzdBTlhk?=
- =?utf-8?B?SHA3N3UxTndZajlOODVmeXNjeFRtOHI2MVFrZitwd0VDNjN0Ty9TZDBvUWpH?=
- =?utf-8?B?S0dpSkg2WTR4S2REaURkRjNkbFhKWUJNL1p5ZjZ4NUdaNk1ybTk5ODR5ZWw3?=
- =?utf-8?B?UndEa1NRVnF2dURXVUhLZzF4emdXQW03S1VjaTNXTEJla0d2Q1FuVHFXeGlz?=
- =?utf-8?B?SGl4dyttek1iTlB3RzdOZkZMWkloemplU1BXSEVwdEE0Nkhmc25sLzFkTUpI?=
- =?utf-8?B?MFQyR3JENDd1STYyYldoN1JFbWV1bENoSkY1UHFlSUNwNG85ZkZYSi9nU2F4?=
- =?utf-8?B?MERKWC83UEQxdDgyTHFNcmdXaXBmZGRjeWlyYTdoL0lqTlhCU0NYdGlHbkhx?=
- =?utf-8?B?QlJOOFd1QVViNWJST3JjSGluT1NWZWJ2RGozeUZXRjFDMXVFN2xXYkFnd1Nk?=
- =?utf-8?B?QTdaVHhsbDF5SG5wNFBVNndpQnBvM0l1aHV2cW8rY1V0Rlg4dGlKRXpPcmVn?=
- =?utf-8?B?MzZHVzV5M0JBaDhONC8xUVlDSm9FeVhkVXdqTUxUWE52aXBQU2lXa29QQWdM?=
- =?utf-8?B?eE9kcGJGaTVBbXQ3ME5ZQmRVSTdOU01BMlN2ME1TNks0QXkvZ0NmTlBIaVJm?=
- =?utf-8?B?K0g3NUlsUjJsSGNPc2FyQ0RyS3AzY0JlSHY3UGdPWWtrcnUvRjRhNkZISlpj?=
- =?utf-8?B?RDR5MnBYWUxsZXVIaXMxL1pPQmtySGhocHM5b1lqd0xlWU5CUWxsenljbGFC?=
- =?utf-8?Q?Ckn0edoPhhCZP9mbSo?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb640f6c-a0c3-4f6d-268d-08df03ac1ab4
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5246.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2026 19:56:23.1014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +f/w5rVtg8UbH8gNGQAJxIf+NuB+Ry9LCAX/bRLViDCcd65HcmekSZe0VxDWHflEmQoRMi0qz4vCmUOfY1brjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS2PR12MB9710
+From: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
+Date: Mon, 31 Aug 2026 06:27:39 +0200
+X-Gm-Features: AcwNN1WWlRQQDc_CVWJFU7tdu_Z7mCSVr31qkPoeVGpqgtO5des00QYjtXXtn44
+Message-ID: <CAPAw8HGxmd2V5GgjL191f3pwOnbuGp4cfDaxCWiR57EquLOecw@mail.gmail.com>
+Subject: [PATCH] ACPICA: Parser: do not set the AML pointer to a NULL AmlLastWhile
+To: linux-acpi@vger.kernel.org
+Cc: acpica-devel@lists.linux.dev, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Saket Dumbre <saket.dumbre@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
+AcpiPsNextParseState() can set ParserState->Aml to NULL, after which the parse
+loop dereferences it in AcpiPsPeekOpcode(). A malformed ACPI table supplied by
+firmware therefore panics the kernel in PID 1 during acpi_init(), before
+userspace exists - the machine does not boot.
 
-On 26/08/26 15:57, Rafael J. Wysocki (Intel) wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Wed, Aug 26, 2026 at 11:07 AM Christian Loehle
-> <christian.loehle@arm.com> wrote:
->> On 8/25/26 22:20, Sumit Gupta wrote:
->>> On 07/08/26 01:38, Sumit Gupta wrote:
->>>> This series keeps the CPPC cpufreq policy alive across CPU hotplug and
->>>> preserves the OSPM-set CPPC registers (Energy Performance Preference,
->>>> Autonomous Activity Window, Autonomous Selection - set via sysfs).
->>>>
->>>> Without online()/offline() callbacks, the core tears a policy down when
->>>> its last CPU goes offline and rebuilds it on the way back, re-reading the
->>>> CPPC capabilities each time. The values written to these registers can
->>>> be lost:
->>>>
->>>>    - Across CPU hotplug or suspend/resume: the platform may reset them
->>>>      while the CPU is offline.
->>>>    - On driver unload: the driver-written value is left in the register
->>>>      instead of returning to its pre-driver state.
->>>>
->>>> Handle these with:
->>>>
->>>>    - Patch 1: adds online()/offline() callbacks so the core keeps policy
->>>>      alive across CPU hotplug instead of tearing it down and rebuilding it.
->>>>    - Patch 2: makes the autonomous selection register helpers take a u64.
->>>>    - Patch 3: adds a table-driven mechanism that captures each register's
->>>>      firmware value at init(), restores it from offline(), and reapplies
->>>>      the OSPM-set value from online().
->>>>    - Patch 4: extends the same save/restore to system suspend/resume.
->>> Gentle reminder.
->>> Could this be considered for queuing if nothing further needs addressing.
->> FWIW both sashiko findings look legit to me, the feedback counters one I
->> wouldn't consider that drastic, given that these counters are expected to
->> have 'fuzzy' readings anyhow, the second one is worse (losing sysfs settings
->> on cpu_online())
-> I agree.
->
-> Besides, as I said elsewhere, I want this series to go in before any
-> other pending changes related to CPPC:
->
-> https://lore.kernel.org/linux-acpi/20260826063019.670240-1-christian.loehle@arm.com/
->
-> and I really would like to get some tags on it before it goes in.  It
-> clearly is not ready for 7.3, but it may be applicable early for 7.4
-> if people care to respond to it.
->
-> Thanks!
+This is the largest of a set of related findings: it accounts for 110 of 189
+malformed SSDTs that leave a stock x86_64_defconfig kernel unbootable
+(tested on pristine Linux 7.2.2 - tag: v7.2.2). The smallest trigger
+is a 46-byte table containing no While, Break or Continue at all.
 
-Thanks for pointing this out.
+WalkState->AmlLastWhile is only ever assigned in AcpiDsExecEndOp() while
+handling a While loop, so outside a loop it is still NULL from the zeroed walk
+state. AcpiPsNextParseState() assigns it to ParserState->Aml for AE_CTRL_BREAK,
+AE_CTRL_CONTINUE and AE_CTRL_PENDING.
 
-I did not receive a Sashiko review email for this series, so I was
-unaware of the findings. I have found the web review now. I will go
-through both findings and address them in v5.
+The first two are guarded at their source; AE_CTRL_PENDING is not, and it is not
+a loop-only status. AcpiExNameSegment() returns it for any name segment that
+starts with a digit or a non-alpha character - entirely controlled by the AML
+being parsed, with no loop involved. AcpiPsPeekOpcode()'s bounds check does not
+help, because NULL < AmlEnd passes.
 
-Thanks,
-Sumit
+In Linux this is reached from AcpiTbLoadNamespace() during acpi_init(), so a
+table supplied by firmware faults in PID 1 inside do_one_initcall() and
+panics the kernel before userspace exists:
 
+  BUG: kernel NULL pointer dereference at 0000000000000000
+  RIP: 0010:acpi_ps_peek_opcode+0x16/0x40
+   acpi_ps_get_next_arg / acpi_ps_parse_loop / acpi_ps_parse_aml
+   acpi_ns_load_table / acpi_tb_load_namespace / acpi_init
+  Kernel panic - not syncing: Attempted to kill init!
 
+Refuse to take the branch when AmlLastWhile is NULL and fail the parse with
+AE_AML_NO_WHILE, whose existing text is "Break or Continue without a While".
+Also NULL-check WalkState->ControlState on the two paths that dereference it;
+the AE_CTRL_FALSE comment already says "a predicate (if any)".
+
+One detail worth keeping if you rework the patch: it also sets
+ParserState->Aml = ParserState->AmlEnd on the error paths. That is required, not
+cosmetic. During a table load AcpiPsParseLoop() deliberately converts AML
+exceptions back to AE_OK ("keep trying to load the table"), so an error return
+that does not advance the AML pointer re-parses the same position forever. An
+earlier version of this patch omitted it and turned one table's panic into a
+hang.
+
+Why this matters beyond "bad firmware breaks your machine": under confidential
+computing the host is untrusted by design and supplies the guest's ACPI tables.
+Documentation/security/snp-tdx-threat-model.rst lists "Malformed runtime input"
+from a misbehaving host in its guest threat matrix. That is the model in which
+these are security bugs rather than robustness bugs.
+
+Reproducer, evidence and step-by-step instructions can be found at the
+issue reported here:
+https://github.com/open-acpica/acpica/issues/1226
+
+Sending this to the public list rather than security@kernel.org: the attacker
+must already control the platform firmware, no control over the faulting
+pointer was demonstrated, and the fix is small with nothing to coordinate.
+Say so explicitly if you would rather it had gone elsewhere.
+
+Signed-off-by: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
+---
+diff --git a/source/components/parser/psparse.c
+b/source/components/parser/psparse.c
+index 1aacc0c..7fb28dc 100644
+--- a/source/components/parser/psparse.c
++++ b/source/components/parser/psparse.c
+@@ -338,6 +338,15 @@ AcpiPsNextParseState (
+
+     case AE_CTRL_BREAK:
+
++        if (!WalkState->AmlLastWhile || !WalkState->ControlState)
++        {
++            ACPI_ERROR ((AE_INFO,
++                "Break without a valid enclosing While"));
++            ParserState->Aml = ParserState->AmlEnd;
++            Status = AE_AML_NO_WHILE;
++            break;
++        }
++
+         ParserState->Aml = WalkState->AmlLastWhile;
+         WalkState->ControlState->Common.Value = FALSE;
+         Status = AE_CTRL_BREAK;
+@@ -345,12 +354,30 @@ AcpiPsNextParseState (
+
+     case AE_CTRL_CONTINUE:
+
++        if (!WalkState->AmlLastWhile)
++        {
++            ACPI_ERROR ((AE_INFO,
++                "Continue without a valid enclosing While"));
++            ParserState->Aml = ParserState->AmlEnd;
++            Status = AE_AML_NO_WHILE;
++            break;
++        }
++
+         ParserState->Aml = WalkState->AmlLastWhile;
+         Status = AE_CTRL_CONTINUE;
+         break;
+
+     case AE_CTRL_PENDING:
+
++        if (!WalkState->AmlLastWhile)
++        {
++            ACPI_ERROR ((AE_INFO,
++                "Pending control state without a valid enclosing While"));
++            ParserState->Aml = ParserState->AmlEnd;
++            Status = AE_AML_NO_WHILE;
++            break;
++        }
++
+         ParserState->Aml = WalkState->AmlLastWhile;
+         break;
+
+@@ -391,7 +418,10 @@ AcpiPsNextParseState (
+
+         /* In the case of a BREAK, just force a predicate (if any) to FALSE */
+
+-        WalkState->ControlState->Common.Value = FALSE;
++        if (WalkState->ControlState)
++        {
++            WalkState->ControlState->Common.Value = FALSE;
++        }
+         Status = AE_CTRL_END;
+         break;
