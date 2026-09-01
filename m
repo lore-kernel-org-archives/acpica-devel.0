@@ -1,148 +1,274 @@
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012012.outbound.protection.outlook.com [40.107.209.12])
+Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077B0385D90
-	for <acpica-devel@lists.linux.dev>; Mon, 31 Aug 2026 18:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788199355; cv=fail; b=Ho6zWWs2mYsLONbgXkEIr6iU1VMeaXLGKezSCNpLdvFIJjzWYDlDBPzHs4jXT16sJvLAexcBEIgvpyOEXvlLeuBa/xuSzkWT1ZZ3h9RGL8GGzaCfk4i3/knE7Xx5QoaEfYAu8Gghdg6kvlujgGovSq9ytzpF1J1F9b4x4Am4ZHQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788199355; c=relaxed/simple;
-	bh=JQoZddRna1lCvCCULtqHmthEpMykWHkGiH9VMNPXmro=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LWXrMzFj120TtMI54Drks6WcBCSK3ACf4B8ioch0eEHI/ALfEiWtDdqWOlF7bPAkomd4kloMF10cXqobKjmWzWED2PToJJkR48KsS5zq3+B3xhzJEBx8xUXOHRYtd8s5x9Irkhv6ixiuYXt0Gpnh6iYZ2RaGR17QZs9xAjbD+x0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rp6QnnSs; arc=fail smtp.client-ip=40.107.209.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rp6QnnSs"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mHh7VKT07OO+prDnP/7yGsrNeJ5QfPf04STPIQNvvxwhnCyw4muSRXGqaaZU9q0C02YdER02Ig6coigFD6ipNh29vpGuehoSFA+aXOql8zTmiZFGVB4kIMMOWIE6t452/SqtENLYi0jmSHBTNpB4v/ZMepja9xn08dD4ICbjVqa2cETWtNs/q7qiBVwWUmB7cOIg7z0L21EmjUT044ZwPNq/wDVU1JxYqbCeFYLcc8q83rPCNkI122q7RK8Sgtz7abD9EwWcDeYeqK7RykTEi2epZjBt/7MbRm9xfjDWVRUA8VXhBVpcjpUhZZbz51urzat3XaQAdhdxZ3nLoQHD4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vep0fNm5+1q1VJ4xqbtaGqhsizShlFu+a4g2DxWUVjE=;
- b=LDi2rdBlSVRUDhVl3pz+FCytykIyZG0xZAA+538XffEaEj3OHzypF51ZnxW1CABfOWTu/EGFoHcUjDHv5NZAznZvS4N9R2G3NFFVaUkx5M2RbX9JoQXCrPHB9WpseX//sa1GgsPJsCGFvpX0FyKaB4iBsy0C9+iyK4mqlJZ76X6Jw/vc+ey+YgDwJNOXW1WN/OGzwK8aWwgD/iBg+tBDcpOiJoBBLhjtKjqt5W/PpiPPP8OZcMDxZMsbv93nSQAGyJv+rMnyugxEVoYF88yYXN2/GV7dNt3MwQEYTFtKR4jxuywhQhPR/mAOl9dv43goODU6nZR1Rl0pkSgUenwC/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vep0fNm5+1q1VJ4xqbtaGqhsizShlFu+a4g2DxWUVjE=;
- b=rp6QnnSsmhIpkLY/DWTk9hM8crjzLiC/9L6wVew3IOfsicSIzfY/VCYrzr0y1sYH2dkJPCnU4x3o3wrM9HgMZVjXYU4WJZaUKJvpSX/TN9tH/yXTTwVo+jnpGIXGfLwCh+zZJh9IefxO7NayHu38RXJArMc5zu7Fi9P9DUbc4Xc=
-Received: from BN1PR14CA0013.namprd14.prod.outlook.com (2603:10b6:408:e3::18)
- by MN0PR12MB5833.namprd12.prod.outlook.com (2603:10b6:208:378::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.360.13; Mon, 31 Aug
- 2026 18:02:30 +0000
-Received: from BN2PEPF0000A802.namprd02.prod.outlook.com
- (2603:10b6:408:e3:cafe::6a) by BN1PR14CA0013.outlook.office365.com
- (2603:10b6:408:e3::18) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.360.13 via Frontend Transport; Mon,
- 31 Aug 2026 18:02:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- BN2PEPF0000A802.mail.protection.outlook.com (10.167.245.171) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.382.8 via Frontend Transport; Mon, 31 Aug 2026 18:02:30 +0000
-Received: from aus0006770c4n-lx01.amd.com (10.180.168.240) by
- satlexmb07.amd.com (10.181.42.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.46; Mon, 31 Aug 2026 13:02:29 -0500
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: <rafael@kernel.org>, <maciej.wieczor-retman@intel.com>,
-	<pawel.chmielewski@intel.com>, <lenb@kernel.org>
-CC: Mario Limonciello <mario.limonciello@amd.com>,
-	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>
-Subject: [PATCH] ACPI: utils: Ignore leading root scope prefix in string _UID match
-Date: Mon, 31 Aug 2026 13:01:59 -0500
-Message-ID: <20260831180214.2231161-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93FB367B8C
+	for <acpica-devel@lists.linux.dev>; Tue,  1 Sep 2026 08:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788251075; cv=none; b=Fw7/9dazmD6MNK0/tgpMNsjl8sG3EnDQQ1QMviwnJLXqSzLFWCdI0EmnhKXhNl1mNVr8B6M3DMUUq2hKv1XF8tL1OggmTYNkJR3xlanNx5X3WhX0sjxqp8gFtlZxcxKvMetwU6yculYd0Ol7mMds37gOJ4komg5ivcjLtrXRocQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788251075; c=relaxed/simple;
+	bh=ZglE1gUQO+WRY/zhJeoDzQUKvUbB21alqE0CNfeAZK0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=R/VLll844auWnmxjtlPdrgMebSIV4MKCTSkFGOWFVzw7ZXuBX3FX4EiF1R/Uz4gsGt9S7oumQqIVocuhwcq6U1LaC2MSTDDFZ8yC7p87AcHMGvohvXzs7i+zn3YXqL3Oi/NnshZxUXcLrmFLPGQ72CNNjaaMjZBDonmZjznuwnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.104])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4hYzBb5cxzz12LDl;
+	Tue,  1 Sep 2026 16:13:11 +0800 (CST)
+Received: from kwepemf200017.china.huawei.com (unknown [7.202.181.10])
+	by mail.maildlp.com (Postfix) with ESMTPS id AAC124056E;
+	Tue,  1 Sep 2026 16:24:28 +0800 (CST)
+Received: from [10.67.121.58] (10.67.121.58) by kwepemf200017.china.huawei.com
+ (7.202.181.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 1 Sep
+ 2026 16:24:27 +0800
+Message-ID: <c30ddb21-2c97-4b9f-bae6-b29e30aa5e5e@hisilicon.com>
+Date: Tue, 1 Sep 2026 16:24:26 +0800
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: satlexmb07.amd.com (10.181.42.216) To satlexmb07.amd.com
- (10.181.42.216)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF0000A802:EE_|MN0PR12MB5833:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba0ee50f-1afb-438a-14ec-08df078a0637
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|1800799024|36860700016|23010399003|376014|18002099003|3023799007|11063799006|56012099006|10067099003;
-X-Microsoft-Antispam-Message-Info:
-	suEf/lZTB2yZfCN4hh2JdFCUDsWP30k6xb0wDC11kLY5HylNeuDQS4UMXvCoy4551HBKq4e19aE8KX2ba2qfOKiQbf61UDK6LkayhGOLdwgLARPkhQE5/SZAKCu3E6FZ7gXCJtaLkqgl8FMuFs+KLR+i75BsAUVL3wjjnWI/7PcZhttYuFN0AV1pzBCsDZ95EHbjyOsdiffFUk+am1bJVHM89QiyO955X2cBQFqA5IGj200hinhu6ZWYOySFGU72X6VXeP+wI8Dg2B1IlQYTzAX9yaQetSii8de9gzWMbMEiUXpjsyAxwZE6NpLZ0pueHj5WFWv4f0UK5T3nT7SIC/GEGiS05wMpH61itdhMGrlt4ABmRUF664VC2srk/Q9NsXExNdt1HhN6mWuYHEszs3Hx74iD13+QXuAI00Pm2puQhroWebCRG+UWVI13OwmU5U/+pjgTYAgw1I2LMjldrO+qrFge0QJcNLkjIM8cPvXKpW4ff1vdnY5oRQJhmD6YypL1HXIbQ8K8ccPmoFhUPLAPK+7YmGQGjNhinTv+a74iw1I5vydRgm6lp7AnDeN2fZCAfbamN6a8fjrwBg5kFjR4Pfd2TkvoxYZ4CP9XGKKjezjBYwtsEJpx01+G5+q/v3g3B1pIvp7gPgkb2TM+KQUVHJvNdelak0MzNpc5EHUkRqznXDkjovCfINDL3lBU1WZu9SW8gW2f+ybGzQjbeA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700016)(23010399003)(376014)(18002099003)(3023799007)(11063799006)(56012099006)(10067099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	u7vAvUCnJLqqTegaTAwU/UHnkuuDqA6ap8eEfixWkobrtuG1rOuuNM2/qu5dKrLLJOMJ++bLfV98UbEu2AkkMl5XZqPOS2wxXejuLRtI9bJZH+jaXpcX6OehkNIUpgPpw/NW/RmlDq1XRF2QYsR3n8bsQsl+hVP+RXk82pJDpZdxxc61CPe8Wur6flPz9t8E5MMbwbE4wzCOem3MEctBF/E5Pcj6+djVvCZ+GgqOEAik3kwsII23Bf763MYHYrgMY0uVz0TwTKvpuCcRfXczSETUFS4C/IYmSe43o5/U3KLh2ZCnW1HkYqxEFcu6fUbUw50s1MxWw9Jq/it0CpbvtHoWEN7s+/FJ/Pzze+aM1MnvAFPK06TrIOMMVETi2ytMBrnhzhZ5e33N5mEEWvjRVaR/m5jjj3upwGqua3Ig/rRZ4fOEeoZ9IJjSKovnUnx3
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2026 18:02:30.0660
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba0ee50f-1afb-438a-14ec-08df078a0637
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF0000A802.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5833
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
+To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
+	<viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhenglifeng1@huawei.com>, <lenb@kernel.org>, <saket.dumbre@intel.com>,
+	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<kprateek.nayak@amd.com>, <linux-kernel@vger.kernel.org>,
+	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<acpica-devel@lists.linux.dev>, <linux-tegra@vger.kernel.org>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>
+References: <20260806200857.601152-1-sumitg@nvidia.com>
+ <20260806200857.601152-2-sumitg@nvidia.com>
+Content-Language: en-US
+From: Jie Zhan <zhanjie9@hisilicon.com>
+In-Reply-To: <20260806200857.601152-2-sumitg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemf200017.china.huawei.com (7.202.181.10)
 
-Firmware may express an ACPI namespace path used as a _UID with or
-without the leading root scope character ('\'). For example, an AMD
-IVRS IVHD ACPI HID device entry may carry a character UID of
-"\_SB.MHSP" while the corresponding device's _UID evaluates to
-"_SB.MHSP" (or vice versa).  This semantic difference is due to how
-Windows PnP enumerates and uses devices.
 
-acpi_str_uid_match() compared the two strings verbatim, so such
-entries failed to match on the UID even though they refer to the same
-object. In the AMD IOMMU case (get_acpihid_device_id()) this caused
-the exact HID+UID match to be missed and the code to fall through to
-the HID-only path, spuriously raising a FW_BUG.
+Hi Sumit,
 
-Skip a single leading '\' on either string before comparing so that
-paths that differ only by the root scope prefix are treated as a
-match. The integer _UID path is unaffected.
+Sorry for catching up late.
 
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- include/acpi/acpi_bus.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+A few questions inline.
 
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 1a45e0d521d8e..e0bec35953ef1 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -835,7 +835,15 @@ static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2
- {
- 	const char *uid1 = acpi_device_uid(adev);
- 
--	return uid1 && uid2 && !strcmp(uid1, uid2);
-+	if (!uid1 || !uid2)
-+		return false;
-+
-+	if (*uid1 == '\\')
-+		uid1++;
-+	if (*uid2 == '\\')
-+		uid2++;
-+
-+	return !strcmp(uid1, uid2);
- }
- 
- static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
--- 
-2.43.0
+Regards,
+Jie
 
+On 8/7/2026 4:08 AM, Sumit Gupta wrote:
+> Without online()/offline() callbacks, the cpufreq core fully tears
+> down a policy during exit() when its last online CPU is offlined, and
+> rebuilds it during init() when it comes back.
+> 
+> Add lightweight online()/offline() callbacks so the core instead keeps
+> the policy live and reuses the driver's cpu_data across CPU hotplug.
+> This avoids re-reading the CPPC capabilities on every offline/online,
+> making CPU hotplug faster.
+> 
+> Move what init() and exit() did on hotplug into the new callbacks:
+> 
+>   - offline() requests the lowest desired performance, as exit() did.
+>   - online() re-enables CPPC and restores the performance controls, as
+>     the platform may have reset them. Failures are logged, not returned,
+>     as the core would free the policy.
+>   - online() also resyncs the frequency invariance counters, so that the
+>     first tick does not measure across the offline window.
+> 
+> The restore in online() uses cppc_set_perf(), which writes MIN before
+> MAX. If the platform lowered MAX while the CPU was offline, writing the
+> saved MIN could briefly leave MIN above MAX on registers not accessed
+> through PCC, as PCC delivers the writes in one transaction. Raise MAX
+> ahead of the restore when the saved MIN is above it.
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 128 +++++++++++++++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 80893844353c..4b3da9a3e122 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -211,6 +211,29 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
+>  	}
+>  }
+>  
+> +/*
+> + * Resync the counter snapshot, as the policy is kept across CPU hotplug and
+> + * the first tick after online would otherwise span the offline window.
+> + */
+> +static void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_freq_invariance *cppc_fi;
+> +	int cpu, ret;
+> +
+> +	if (fie_disabled)
+> +		return;
+> +
+> +	/* policy->cpus still holds related_cpus here, so skip offline CPUs. */
+> +	for_each_cpu_and(cpu, policy->cpus, cpu_online_mask) {
+> +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
+> +
+> +		ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
+> +		if (ret)
+> +			pr_debug("%s: failed to read perf counters for cpu:%d: %d\n",
+> +				 __func__, cpu, ret);
+> +	}
+> +}
+> +
+>  static void cppc_fie_kworker_init(void)
+>  {
+>  	struct sched_attr attr = {
+> @@ -281,6 +304,10 @@ static inline void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
+>  {
+>  }
+>  
+> +static inline void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
+> +{
+> +}
+> +
+>  static inline void cppc_freq_invariance_init(void)
+>  {
+>  }
+> @@ -735,6 +762,105 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  	return ret;
+>  }
+>  
+> +/*
+> + * With offline() defined, the cpufreq core keeps the policy alive when
+> + * a CPU is hotplugged out.
+> + */
+> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_cpudata *cpu_data = policy->driver_data;
+> +	struct cppc_perf_ctrls perf_ctrls = cpu_data->perf_ctrls;
+> +	unsigned int cpu = policy->cpu;
+> +	int ret;
+> +
+> +	/*
+> +	 * Request the lowest desired performance while the policy has no online
+> +	 * CPU. Zeroing MIN and MAX makes cppc_set_perf() leave them unchanged.
+> +	 */
+> +	perf_ctrls.desired_perf = cpu_data->perf_caps.lowest_perf;
+> +	perf_ctrls.min_perf = 0;
+> +	perf_ctrls.max_perf = 0;
+> +
+> +	ret = cppc_set_perf(cpu, &perf_ctrls);
+> +	if (ret)
+> +		pr_debug("Err setting perf value:%u on CPU:%u. ret:%d\n",
+> +			 cpu_data->perf_caps.lowest_perf, cpu, ret);
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Raise MAX ahead of the full restore when the requested MIN is above the
+> + * current MAX. cppc_set_perf() writes MIN before MAX, so the platform would
+> + * otherwise briefly see MIN above MAX on registers not accessed through PCC.
+> + * Lowering MAX is safe, as the MIN written first is never above it.
+> + */
+> +static int
+> +cppc_cpufreq_prepare_perf_restore(unsigned int cpu,
+> +				  const struct cppc_perf_ctrls *target)
+> +{
+> +	struct cppc_perf_ctrls cur = {}, prep = {};
+> +	int ret;
+> +
+> +	ret = cppc_get_perf(cpu, &cur);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!cur.max_perf || target->min_perf <= cur.max_perf)
+> +		return 0;
+> +
+> +	prep.desired_perf = target->desired_perf;
+> +	prep.min_perf = 0;	/* Zero leaves MIN unchanged. */
+> +	prep.max_perf = target->max_perf;
+> +
+> +	return cppc_set_perf(cpu, &prep);
+> +}
+> +
+> +/*
+> + * Restore what the CPU may have lost while offline, as the platform may have
+> + * disabled CPPC and reset the performance controls. Never fail the callback,
+> + * or the core would free the policy and leave the CPU without cpufreq. The
+> + * governor redoes the control writes, so they are best effort, unlike the
+> + * enable, which only a later online() can retry.
+Sorry, I don't quite understand the last sentence.
+> + */
+> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+> +{
+> +	struct cppc_cpudata *cpu_data = policy->driver_data;
+> +	unsigned int cpu = policy->cpu;
+> +	int ret;
+> +
+> +	cppc_cpufreq_cpu_fie_resync(policy);
+> +
+> +	ret = cppc_set_enable(cpu, true);
+> +	if (ret && ret != -EOPNOTSUPP) {
+> +		pr_warn("Failed to re-enable CPPC for CPU%u (%d)\n", cpu, ret);
+> +		return 0;
+> +	}
+> +
+> +	/*
+> +	 * The platform may reset the controls while the CPU is offline, so
+> +	 * recompute min/max, clamp desired_perf into range, and reprogram them.
+> +	 */
+> +	cppc_cpufreq_update_perf_limits(cpu_data, policy);
+> +
+> +	cpu_data->perf_ctrls.desired_perf =
+> +		clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
+> +			cpu_data->perf_ctrls.min_perf,
+> +			cpu_data->perf_ctrls.max_perf);
+> +
+> +	ret = cppc_cpufreq_prepare_perf_restore(cpu, &cpu_data->perf_ctrls);
+Actually, I don't quite think this is necessary?
+
+The motivation of doing this is fair (as mentioned in v3), but what's the
+real consequence of transiently setting min_perf larger than max_perf?
+Platforms should be able to handle this.
+
+Even if we have to fix it, it's supposed to be done in cppc_acpi.c.  The
+current ABI wraps many things up.  cppc_get_perf() reads 4 values -
+min_perf, max_perf, energy_perf, auto_sel.  cppc_set_perf writes 3
+values - desired_perf, min_perf, max_perf.  The cppc_cpufreq driver would
+be able to handle performance setting cleaner if those are separated.
+
+I don't suggest we complicate the driver for now?
+> +	if (ret)
+> +		pr_debug("Failed to reorder perf restore on CPU%u (%d)\n",
+> +			 cpu, ret);
+> +
+> +	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+> +	if (ret)
+> +		pr_debug("Failed to reapply perf request on CPU%u (%d)\n",
+> +			 cpu, ret);
+> +
+> +	return 0;
+> +}
+> +
+>  static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+>  {
+>  	struct cppc_cpudata *cpu_data = policy->driver_data;
+For neatness, can we place the above functions after cppc_cpufreq_cpu_exit()?
+such that the order of source functions would be the same as the following
+structure, i.e. init, exit, online, offline, and perhaps, suspend, resume.
+> @@ -1047,6 +1173,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
+>  	.fast_switch = cppc_cpufreq_fast_switch,
+>  	.init = cppc_cpufreq_cpu_init,
+>  	.exit = cppc_cpufreq_cpu_exit,
+> +	.online = cppc_cpufreq_cpu_online,
+> +	.offline = cppc_cpufreq_cpu_offline,
+>  	.set_boost = cppc_cpufreq_set_boost,
+>  	.attr = cppc_cpufreq_attr,
+>  	.name = "cppc_cpufreq",
