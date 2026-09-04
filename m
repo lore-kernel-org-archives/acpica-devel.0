@@ -1,274 +1,129 @@
-Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93FB367B8C
-	for <acpica-devel@lists.linux.dev>; Tue,  1 Sep 2026 08:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ED73ACF10;
+	Fri,  4 Sep 2026 02:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788251075; cv=none; b=Fw7/9dazmD6MNK0/tgpMNsjl8sG3EnDQQ1QMviwnJLXqSzLFWCdI0EmnhKXhNl1mNVr8B6M3DMUUq2hKv1XF8tL1OggmTYNkJR3xlanNx5X3WhX0sjxqp8gFtlZxcxKvMetwU6yculYd0Ol7mMds37gOJ4komg5ivcjLtrXRocQ=
+	t=1788490603; cv=none; b=EwO57FmHyR4RXv8koPNuLAZwuz9rF/7QWdI0JwlVPA2HGEP68FEDOGOYY277g7i+5GU33fmkSXmn1IHbvkOyBSRm/xjL5zAgpCI4FEVK1HSIOVgtEVelFyxD8bJ37VMttfdFtF1urpZ4vrG8z4x4duUxnhCPqDEGO2HZ34CVenQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788251075; c=relaxed/simple;
-	bh=ZglE1gUQO+WRY/zhJeoDzQUKvUbB21alqE0CNfeAZK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=R/VLll844auWnmxjtlPdrgMebSIV4MKCTSkFGOWFVzw7ZXuBX3FX4EiF1R/Uz4gsGt9S7oumQqIVocuhwcq6U1LaC2MSTDDFZ8yC7p87AcHMGvohvXzs7i+zn3YXqL3Oi/NnshZxUXcLrmFLPGQ72CNNjaaMjZBDonmZjznuwnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4hYzBb5cxzz12LDl;
-	Tue,  1 Sep 2026 16:13:11 +0800 (CST)
-Received: from kwepemf200017.china.huawei.com (unknown [7.202.181.10])
-	by mail.maildlp.com (Postfix) with ESMTPS id AAC124056E;
-	Tue,  1 Sep 2026 16:24:28 +0800 (CST)
-Received: from [10.67.121.58] (10.67.121.58) by kwepemf200017.china.huawei.com
- (7.202.181.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 1 Sep
- 2026 16:24:27 +0800
-Message-ID: <c30ddb21-2c97-4b9f-bae6-b29e30aa5e5e@hisilicon.com>
-Date: Tue, 1 Sep 2026 16:24:26 +0800
+	s=arc-20240116; t=1788490603; c=relaxed/simple;
+	bh=3107Y7JX220AjVb1rk1TFIvZqJnS2YlFKglQU81emTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=at0ip91yeJW4LE5BHA8m+Oso1zRl/8GxLNqI2/bwH7eMqW7/wM1XekGmMEN+XLWe72Zv0iV1VndtzKtsUgBgNspIXYMxzhuRGXXgP1XXg73Jt4Q8ilZCJQQ0+5gQ3TH309AvzowHEAOtKxcP1MkL2jXxc1WmApXfHJuHa2ScLSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHeozWzm; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHeozWzm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A507E1F000E9;
+	Fri,  4 Sep 2026 02:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788490601;
+	bh=elq1oOXS9izL1eLEUjPGPGm9Oywm4DVxZpNoEOogJK8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=VHeozWzmYAkZZvr/Z1IWKOW4YdwtfBCJoGgRQnGnwxA0Uzgm582QN+aoboEJryMxw
+	 AU38nuQCgXvFtP3t7Yv5A+K31aPrEiN3ftc+9ep4iIYtN5/tMdtzdmaOxF1m+BgOE3
+	 bu849CgT4SoYG6dcCcFnKbe+QftS9ojVD0SU/o4ifYRCC+kWRDQK95/F8290Mx6Ga+
+	 TFNdHohZCuHf3XoYc1O4zmPHncAtYQ+UAUioTwE115iOk5nO3mapj4AbHRNeHD45md
+	 nb3fOkwmKrnVYX5Lw/3bdUKm43V9ukO2kAQYhanN0Se5vMxab/345qUtQtsYz/i5Oi
+	 qj7lfOWfXG0Fg==
+Date: Fri, 4 Sep 2026 03:56:32 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Eliav Farber <farbere@amazon.com>
+Cc: <rafael@kernel.org>, <tony.luck@intel.com>, <bp@alien8.de>,
+ <guohanjun@huawei.com>, <mchehab@kernel.org>, <xueshuai@linux.alibaba.com>,
+ <lenb@kernel.org>, <laurent.pinchart@ideasonboard.com>,
+ <linusw@kernel.org>, <brgl@kernel.org>, <orsonzhai@gmail.com>,
+ <baolin.wang@linux.alibaba.com>, <zhang.lyra@gmail.com>,
+ <dlechner@baylibre.com>, <nuno.sa@analog.com>, <andy@kernel.org>,
+ <dmitry.torokhov@gmail.com>, <hansg@kernel.org>,
+ <ilpo.jarvinen@linux.intel.com>, <W_Armin@gmx.de>, <ukleinek@kernel.org>,
+ <fabio.m.de.francesco@linux.intel.com>, <kaihengf@nvidia.com>,
+ <ankita@nvidia.com>, <leitao@debian.org>, <pedro.pbg@usp.br>,
+ <paulmck@kernel.org>, <frederic@kernel.org>, <kees@kernel.org>,
+ <saket.dumbre@intel.com>, <linux-acpi@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+ <linux-pwm@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+ <linux-input@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
+ <acpica-devel@lists.linux.dev>, Jonathan Cameron
+ <jonathan.cameron@oss.qualcomm.com>
+Subject: Re: [PATCH v5 03/13] iio: light: iqs621-als: use
+ devm_blocking_notifier_chain_register()
+Message-ID: <20260904035632.4aaf4eab@jic23-huawei>
+In-Reply-To: <20260816060648.4030-4-farbere@amazon.com>
+References: <20260816060648.4030-1-farbere@amazon.com>
+	<20260816060648.4030-4-farbere@amazon.com>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
-To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
-	<viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
-	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
-	<zhenglifeng1@huawei.com>, <lenb@kernel.org>, <saket.dumbre@intel.com>,
-	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
-	<kprateek.nayak@amd.com>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-tegra@vger.kernel.org>
-CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
-	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
-	<bbasu@nvidia.com>
-References: <20260806200857.601152-1-sumitg@nvidia.com>
- <20260806200857.601152-2-sumitg@nvidia.com>
-Content-Language: en-US
-From: Jie Zhan <zhanjie9@hisilicon.com>
-In-Reply-To: <20260806200857.601152-2-sumitg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
- kwepemf200017.china.huawei.com (7.202.181.10)
 
+On Sun, 16 Aug 2026 06:06:02 +0000
+Eliav Farber <farbere@amazon.com> wrote:
 
-Hi Sumit,
-
-Sorry for catching up late.
-
-A few questions inline.
-
-Regards,
-Jie
-
-On 8/7/2026 4:08 AM, Sumit Gupta wrote:
-> Without online()/offline() callbacks, the cpufreq core fully tears
-> down a policy during exit() when its last online CPU is offlined, and
-> rebuilds it during init() when it comes back.
+> Replace the blocking_notifier_chain_register() +
+> devm_add_action_or_reset() pattern with a single call to
+> devm_blocking_notifier_chain_register(), removing the
+> iqs621_als_notifier_unregister() callback.
 > 
-> Add lightweight online()/offline() callbacks so the core instead keeps
-> the policy live and reuses the driver's cpu_data across CPU hotplug.
-> This avoids re-reading the CPPC capabilities on every offline/online,
-> making CPU hotplug faster.
-> 
-> Move what init() and exit() did on hotplug into the new callbacks:
-> 
->   - offline() requests the lowest desired performance, as exit() did.
->   - online() re-enables CPPC and restores the performance controls, as
->     the platform may have reset them. Failures are logged, not returned,
->     as the core would free the policy.
->   - online() also resyncs the frequency invariance counters, so that the
->     first tick does not measure across the offline window.
-> 
-> The restore in online() uses cppc_set_perf(), which writes MIN before
-> MAX. If the platform lowered MAX while the CPU was offline, writing the
-> saved MIN could briefly leave MIN above MAX on registers not accessed
-> through PCC, as PCC delivers the writes in one transaction. Raise MAX
-> ahead of the restore when the saved MIN is above it.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> Signed-off-by: Eliav Farber <farbere@amazon.com>
+> Acked-by: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
+Applied (on top of merging the branch) to the testing branch of iio.git
+Upgraded that ack to an SoB as a result.
+
 > ---
->  drivers/cpufreq/cppc_cpufreq.c | 128 +++++++++++++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
+>  drivers/iio/light/iqs621-als.c | 24 +++---------------------
+>  1 file changed, 3 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 80893844353c..4b3da9a3e122 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -211,6 +211,29 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
+> diff --git a/drivers/iio/light/iqs621-als.c b/drivers/iio/light/iqs621-als.c
+> index cd5843e3e2c3..f9d215ef1970 100644
+> --- a/drivers/iio/light/iqs621-als.c
+> +++ b/drivers/iio/light/iqs621-als.c
+> @@ -179,19 +179,6 @@ static int iqs621_als_notifier(struct notifier_block *notifier,
+>  	return NOTIFY_OK;
+>  }
+>  
+> -static void iqs621_als_notifier_unregister(void *context)
+> -{
+> -	struct iqs621_als_private *iqs621_als = context;
+> -	struct iio_dev *indio_dev = iqs621_als->indio_dev;
+> -	int ret;
+> -
+> -	ret = blocking_notifier_chain_unregister(&iqs621_als->iqs62x->nh,
+> -						 &iqs621_als->notifier);
+> -	if (ret)
+> -		dev_err(indio_dev->dev.parent,
+> -			"Failed to unregister notifier: %d\n", ret);
+> -}
+> -
+>  static int iqs621_als_read_raw(struct iio_dev *indio_dev,
+>  			       struct iio_chan_spec const *chan,
+>  			       int *val, int *val2, long mask)
+> @@ -563,19 +550,14 @@ static int iqs621_als_probe(struct platform_device *pdev)
+>  	mutex_init(&iqs621_als->lock);
+>  
+>  	iqs621_als->notifier.notifier_call = iqs621_als_notifier;
+> -	ret = blocking_notifier_chain_register(&iqs621_als->iqs62x->nh,
+> -					       &iqs621_als->notifier);
+> +	ret = devm_blocking_notifier_chain_register(&pdev->dev,
+> +						    &iqs621_als->iqs62x->nh,
+> +						    &iqs621_als->notifier);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Failed to register notifier: %d\n", ret);
+>  		return ret;
 >  	}
+>  
+> -	ret = devm_add_action_or_reset(&pdev->dev,
+> -				       iqs621_als_notifier_unregister,
+> -				       iqs621_als);
+> -	if (ret)
+> -		return ret;
+> -
+>  	return devm_iio_device_register(&pdev->dev, indio_dev);
 >  }
 >  
-> +/*
-> + * Resync the counter snapshot, as the policy is kept across CPU hotplug and
-> + * the first tick after online would otherwise span the offline window.
-> + */
-> +static void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_freq_invariance *cppc_fi;
-> +	int cpu, ret;
-> +
-> +	if (fie_disabled)
-> +		return;
-> +
-> +	/* policy->cpus still holds related_cpus here, so skip offline CPUs. */
-> +	for_each_cpu_and(cpu, policy->cpus, cpu_online_mask) {
-> +		cppc_fi = &per_cpu(cppc_freq_inv, cpu);
-> +
-> +		ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
-> +		if (ret)
-> +			pr_debug("%s: failed to read perf counters for cpu:%d: %d\n",
-> +				 __func__, cpu, ret);
-> +	}
-> +}
-> +
->  static void cppc_fie_kworker_init(void)
->  {
->  	struct sched_attr attr = {
-> @@ -281,6 +304,10 @@ static inline void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
->  {
->  }
->  
-> +static inline void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
-> +{
-> +}
-> +
->  static inline void cppc_freq_invariance_init(void)
->  {
->  }
-> @@ -735,6 +762,105 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	return ret;
->  }
->  
-> +/*
-> + * With offline() defined, the cpufreq core keeps the policy alive when
-> + * a CPU is hotplugged out.
-> + */
-> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	struct cppc_perf_ctrls perf_ctrls = cpu_data->perf_ctrls;
-> +	unsigned int cpu = policy->cpu;
-> +	int ret;
-> +
-> +	/*
-> +	 * Request the lowest desired performance while the policy has no online
-> +	 * CPU. Zeroing MIN and MAX makes cppc_set_perf() leave them unchanged.
-> +	 */
-> +	perf_ctrls.desired_perf = cpu_data->perf_caps.lowest_perf;
-> +	perf_ctrls.min_perf = 0;
-> +	perf_ctrls.max_perf = 0;
-> +
-> +	ret = cppc_set_perf(cpu, &perf_ctrls);
-> +	if (ret)
-> +		pr_debug("Err setting perf value:%u on CPU:%u. ret:%d\n",
-> +			 cpu_data->perf_caps.lowest_perf, cpu, ret);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Raise MAX ahead of the full restore when the requested MIN is above the
-> + * current MAX. cppc_set_perf() writes MIN before MAX, so the platform would
-> + * otherwise briefly see MIN above MAX on registers not accessed through PCC.
-> + * Lowering MAX is safe, as the MIN written first is never above it.
-> + */
-> +static int
-> +cppc_cpufreq_prepare_perf_restore(unsigned int cpu,
-> +				  const struct cppc_perf_ctrls *target)
-> +{
-> +	struct cppc_perf_ctrls cur = {}, prep = {};
-> +	int ret;
-> +
-> +	ret = cppc_get_perf(cpu, &cur);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!cur.max_perf || target->min_perf <= cur.max_perf)
-> +		return 0;
-> +
-> +	prep.desired_perf = target->desired_perf;
-> +	prep.min_perf = 0;	/* Zero leaves MIN unchanged. */
-> +	prep.max_perf = target->max_perf;
-> +
-> +	return cppc_set_perf(cpu, &prep);
-> +}
-> +
-> +/*
-> + * Restore what the CPU may have lost while offline, as the platform may have
-> + * disabled CPPC and reset the performance controls. Never fail the callback,
-> + * or the core would free the policy and leave the CPU without cpufreq. The
-> + * governor redoes the control writes, so they are best effort, unlike the
-> + * enable, which only a later online() can retry.
-Sorry, I don't quite understand the last sentence.
-> + */
-> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	unsigned int cpu = policy->cpu;
-> +	int ret;
-> +
-> +	cppc_cpufreq_cpu_fie_resync(policy);
-> +
-> +	ret = cppc_set_enable(cpu, true);
-> +	if (ret && ret != -EOPNOTSUPP) {
-> +		pr_warn("Failed to re-enable CPPC for CPU%u (%d)\n", cpu, ret);
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * The platform may reset the controls while the CPU is offline, so
-> +	 * recompute min/max, clamp desired_perf into range, and reprogram them.
-> +	 */
-> +	cppc_cpufreq_update_perf_limits(cpu_data, policy);
-> +
-> +	cpu_data->perf_ctrls.desired_perf =
-> +		clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
-> +			cpu_data->perf_ctrls.min_perf,
-> +			cpu_data->perf_ctrls.max_perf);
-> +
-> +	ret = cppc_cpufreq_prepare_perf_restore(cpu, &cpu_data->perf_ctrls);
-Actually, I don't quite think this is necessary?
 
-The motivation of doing this is fair (as mentioned in v3), but what's the
-real consequence of transiently setting min_perf larger than max_perf?
-Platforms should be able to handle this.
-
-Even if we have to fix it, it's supposed to be done in cppc_acpi.c.  The
-current ABI wraps many things up.  cppc_get_perf() reads 4 values -
-min_perf, max_perf, energy_perf, auto_sel.  cppc_set_perf writes 3
-values - desired_perf, min_perf, max_perf.  The cppc_cpufreq driver would
-be able to handle performance setting cleaner if those are separated.
-
-I don't suggest we complicate the driver for now?
-> +	if (ret)
-> +		pr_debug("Failed to reorder perf restore on CPU%u (%d)\n",
-> +			 cpu, ret);
-> +
-> +	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-> +	if (ret)
-> +		pr_debug("Failed to reapply perf request on CPU%u (%d)\n",
-> +			 cpu, ret);
-> +
-> +	return 0;
-> +}
-> +
->  static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
->  {
->  	struct cppc_cpudata *cpu_data = policy->driver_data;
-For neatness, can we place the above functions after cppc_cpufreq_cpu_exit()?
-such that the order of source functions would be the same as the following
-structure, i.e. init, exit, online, offline, and perhaps, suspend, resume.
-> @@ -1047,6 +1173,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->  	.fast_switch = cppc_cpufreq_fast_switch,
->  	.init = cppc_cpufreq_cpu_init,
->  	.exit = cppc_cpufreq_cpu_exit,
-> +	.online = cppc_cpufreq_cpu_online,
-> +	.offline = cppc_cpufreq_cpu_offline,
->  	.set_boost = cppc_cpufreq_set_boost,
->  	.attr = cppc_cpufreq_attr,
->  	.name = "cppc_cpufreq",
