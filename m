@@ -1,387 +1,213 @@
-Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6B3569F19
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=140.211.166.136
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788964951; cv=fail; b=E4gDgJjp9S92E/EsEEvDH3djlg4tpqyfE6/U7LMpRwKfo97GD9EO6rVIlPm6f7LSl+2dn53pDuHJAzhoMYogoo4TOwqMDfiro1+DXCRHyS6lFxggYYElbrbMDYN/WQsH4Mre6RiyrpcDZ4c0MdnVZilCxM45OVfZbIc/Jk7aXhQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788964951; c=relaxed/simple;
-	bh=dvPDYFwQ8RintGRd0HTntD2Yww6HkOurQpSlnULPxDY=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A7C56510E
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788968178; cv=none; b=ZRCKA8Qd9Mq11XDQeXsxNZ/q5atPTrvKHdE5bhSTkx0BV9MedfUr1Knvclp/6Is58TM4BNUqcoZo/3EVPsz3DARCtkN80zu1oHr9+XvlFKyOGoLEOdCFSoLg+/gv5hIYVzyh1K7G+N7JpHXprJROhD1V6m+faJWstqKf6njD10c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788968178; c=relaxed/simple;
+	bh=jDMUsnnYqogjhXxCOn9mNMOrmCNKYoJwQpQTW4uHJzk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D99EWyxGoY4vpO5jiFZ3SV1SW1WbKKRwcvJhSOkUuxuqTi5fFldHUUoeMShnx76VcEyc+TpXNs6NollmpD6gp98TqLpj8+ND5Dciod18LfQ1r4So/deAuaB/wJODkCq+2pO1o8rouCVnnIUYrRBuO1G3NjHiR2IjafZrVcLgNpk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPpCHEix; arc=fail smtp.client-ip=140.211.166.136
+	 To:Cc:Content-Type; b=mvwUPGrRA+F8fxzAZeaicjfppL6CDoqqSb5OiKbKOk2sLzgsLRzQI+HpOCulpLMAfTPAudEMdy8W0KpwuCHCxBte0FQieVSW/Q3ryzefSl0uFaUq29/pQIFXJ8H5DYdiZc6YuRQKerLl0bpYLgmBVRkdvlgUSem57przqPBHayU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zx/HMP63; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPpCHEix"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp3.osuosl.org (Postfix) with ESMTP id C7D956078C
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
-X-Virus-Scanned: amavis at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -0.352
-X-Spam-Level:
-Received: from smtp3.osuosl.org ([127.0.0.1])
- by localhost (smtp3.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id 9faOYB6pCfDc for <acpica-devel@lists.linuxfoundation.org>;
- Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
-ARC-Filter: OpenARC Filter v1.3.0 smtp3.osuosl.org EF30E60787
-Authentication-Results: smtp3.osuosl.org; arc=none smtp.remote-ip="2600:3c0a:e001:78e:0:1991:8:25"
-ARC-Seal: i=1; d=osuosl.org; s=arc; a=rsa-sha256; cv=none; t=1788964949;
-	b=UB+tNnmxCH5tJvuP8ogo44bNaX2eeoBwlKJzFs+XV2ZMddeGlUZrmGxEFKelj50BBVqO
-	 pzHurJkWo1/KKaKwhoe1b7EDkBejOGKad4WaxSobY9tsX7BwksrmhawKKiaq1Eqh3uale
-	 X0SRbxXOZc9wcrjRPRe+r4Pe9j9S92zLYTxlrOJi2pxs55BYi1RYAqTOD49gHQJCt5El0
-	 SgAhIVYiPDbH6Ge4nsrrh3GBcaEAKUNfrG9TBHTsTEIaTwkCEDQ3g9CCz+n+SknRWAdFU
-	 70OU/YF/4V1zN4cCfPy1eWGLpMdDEBML4e1vyu2lf4FA7I6eEmA56k2CfCTh8MsYFhg==
-ARC-Message-Signature: i=1; d=osuosl.org; s=arc; a=rsa-sha256;
-	c=relaxed/relaxed; t=1788964949;
-	h=Received-SPF:Received:Received:DKIM-Signature:Received:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:X-Gmail-Original-Message-ID:
-	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=fh3WnRyJQ9LMq3PODuE5LGdezgqZCEn8MJmFbIl2+yY=;
-	b=mwHqQu+rJQBez3Lm+TihNjwJjM8e5qrwAzgqQKvqMFI0eXfWIlHY8XOEGAI9p0/UwLan
-	 DXG8OmOLXIxOxkEZqpuzxiW6sVqJ/K6bpAu1WnjakfPI5B91UgDsje9ERZ6CF5I4Z9SIa
-	 X06XuuocsO5NWBEu9uqxrOwxXD1QzAaAZjhvGl7tzwRBlGAOTkAqB2PceDNXk5xQWneD/
-	 ZCLvXgF4eheaNBk+sQus59nsiAlIrW3ar3pWb1SfdvbQ/G90lVKMZKCVDQ5LP5wubedMR
-	 m2dZ6nRJl344mgJwH4kTV4wWUlHKTrrcqOp/caq/b3SHAIWK/Ol0YcdnV+U5oi2OBBQ==
-ARC-Authentication-Results: i=1; smtp3.osuosl.org; dmarc=pass header.from=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fPpCHEix;
-	arc=none smtp.remote-ip="2600:3c0a:e001:78e:0:1991:8:25"
-Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2600:3c0a:e001:78e:0:1991:8:25; helo=sea.source.kernel.org; envelope-from=rafael@kernel.org; receiver=<UNKNOWN> 
-Authentication-Results: smtp3.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp3.osuosl.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fPpCHEix
-Received: from sea.source.kernel.org (sea.source.kernel.org [IPv6:2600:3c0a:e001:78e:0:1991:8:25])
-	by smtp3.osuosl.org (Postfix) with ESMTPS id EF30E60787
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:28 +0000 (UTC)
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 67D0840639
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C91F1F00A3D
-	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zx/HMP63"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADFF1F00A3F
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788964947;
-	bh=fh3WnRyJQ9LMq3PODuE5LGdezgqZCEn8MJmFbIl2+yY=;
+	s=k20260515; t=1788968177;
+	bh=XmcpQyokakiNfBd8epSab7pog++2XEktXMmOmQUH1xs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=fPpCHEixX1RLo4IpLv84CazUr3DnrpNH2H1LdBBG52BoUV+iKk8xv13XuMBT+F7Nu
-	 6RBLn+SymQ1f3HFgT/9Zxf9i+hI35Ax9OWtDk1BXYP+vFxHe1zG7c8TLkejgtrscQW
-	 2gNurilH6a0omvPOeY/I9qJa1bgeagipZ3X9f66IIuk3Iy74FkusqqxpLreLR4+Cel
-	 ltJycXdM618YbEnduCwf9mFHTqDyIcnTtR8fxOOidJ8VoY2zCDXl8qYXyF/BdpTB7U
-	 62HGDFRrWvzw5stZ4dIqjVLIEPITuP/EO2jDSFQJ7HpJrsOeprztgVwvxhJT0Q/pia
-	 hPjG5HtEVLiPQ==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5b568dae0e8so4514567e87.0
-        for <acpica-devel@lists.linuxfoundation.org>; Wed, 09 Sep 2026 07:42:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxw2Q70vsa27b1Zz7Jg8Rovn9BA0OPkFps/S1L3dfvo2+zXwh8mBnKFBQCDzTpE3UY3VZtvsE8HI1Ig8fc=@lists.linuxfoundation.org
-X-Gm-Message-State: AFuF++nBXQoBJsw3iSya+11xoL9UsbsmOfoZVRt7IH6u/443NoJKdmde
-	XMwqbJsk5S4Gl7JcSD1R0190+VL7c1DZfChrbfg6Djn7WUzjFV4dgdBC96PzNYeZtisAlF9qKhc
-	/okEK0vxtXHQP4ZnYowSWBiHMDAMWOZg=
-X-Received: by 2002:a05:6512:23a5:b0:5b6:6b8:1fc5 with SMTP id
- 2adb3069b0e04-5b616f5a434mr6190885e87.17.1788964945569; Wed, 09 Sep 2026
- 07:42:25 -0700 (PDT)
+	b=Zx/HMP63ACiRHHGW8SSiPE5bLKcU7H81LIJa2WPSMJhwFUenUV+qRTllpK2bA+xye
+	 W5yw0hWLx4MfSuG8CDUpvKwh8XElEs+lMU/qTNUxXutmzYHoIDNLp7hrfG9sWGDY9G
+	 bFFJhRxrHGb8HXCC6+Hzg9Ur5e95ZWxDyKPu5DHy8IJm2JYPaclaj2JNXlgC927kar
+	 UtAz5AvtHRVtSEt32m4EJGcwC7ahClHpf1sBanqomED3TU987rvsYHqulsvf+dkZFu
+	 zhGiW3cZxTvQANKWhG/RIAxDpnuS6ynGmo/jE9vl56rD1bFcBPyCUaAyAvN9ObkVWn
+	 2q/FId3u+Bd6Q==
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f1e023so973812e87.0
+        for <acpica-devel@lists.linux.dev>; Wed, 09 Sep 2026 08:36:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxPLfp8jHKLpiFJRqUv6vTwjNjZrEmHVhYRZi25zojlZcHZ+JqNgC6nIiXJUNxsQs8chC+kfLKf/kmQ8gk=@lists.linux.dev
+X-Gm-Message-State: AFuF++mVQpuhn3u/5t1G8/lzVaj4SHKO+Q/gfKXhnx39wZ4gXVAhEAIM
+	GX9EbCfs74YLjYejVg25F9SL3vMsNpgDefkfxcXT1D87VeRi6IEyauvnhvlgexcvJ7fUTuR/ws6
+	ZKBYdt5ZlTAwoUEF/oHkwX+J7Gv4axm8=
+X-Received: by 2002:a05:6512:668e:10b0:5b6:10bc:b864 with SMTP id
+ 2adb3069b0e04-5b75c918261mr1494885e87.18.1788968175592; Wed, 09 Sep 2026
+ 08:36:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <20260806122732.533-1-baorliu@amd.com> <20260819085528.575-1-baorliu@amd.com>
- <20260819085528.575-2-baorliu@amd.com>
-In-Reply-To: <20260819085528.575-2-baorliu@amd.com>
+References: <CAPAw8HGxmd2V5GgjL191f3pwOnbuGp4cfDaxCWiR57EquLOecw@mail.gmail.com>
+In-Reply-To: <CAPAw8HGxmd2V5GgjL191f3pwOnbuGp4cfDaxCWiR57EquLOecw@mail.gmail.com>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 9 Sep 2026 16:41:16 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hCS9r4eN4XoEsuJKPED=xdQXOvV72OOkrCZpLqui6oSw@mail.gmail.com>
-X-Gm-Features: AcwNN1UN-21r50zcJGP317drOXU6Y5TqW0M5AQBFuMKIX8k1zzAv6DTnJSyJteI
-Message-ID: <CAJZ5v0hCS9r4eN4XoEsuJKPED=xdQXOvV72OOkrCZpLqui6oSw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ACPI: button: Report wakeup key only for power
- button wakeups
-To: "Baorui.Liu" <baorliu@amd.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	acpica-devel@lists.linuxfoundation.org
+Date: Wed, 9 Sep 2026 17:35:06 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0j1w__nuVEvrYsbUViihJOSbZxPAD2P442FG+DczaDjeg@mail.gmail.com>
+X-Gm-Features: AcwNN1WGuNo66E-I8ww7xj82Tjd0isS2O9w0P0P-WyGDZrV2I0TjaeQO_9kq6co
+Message-ID: <CAJZ5v0j1w__nuVEvrYsbUViihJOSbZxPAD2P442FG+DczaDjeg@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: Parser: do not set the AML pointer to a NULL AmlLastWhile
+To: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
+Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 19, 2026 at 10:56=E2=80=AFAM Baorui.Liu <baorliu@amd.com> wrote=
-:
+On Mon, Aug 31, 2026 at 6:27=E2=80=AFAM Vlatko Kosturjak
+<vlatko.kosturjak@gmail.com> wrote:
 >
-> The ACPI button driver reports KEY_WAKEUP from the Power Button input
-> device to let userspace know that the system was resumed by a power
-> button wakeup.
+> AcpiPsNextParseState() can set ParserState->Aml to NULL, after which the =
+parse
+> loop dereferences it in AcpiPsPeekOpcode(). A malformed ACPI table suppli=
+ed by
+> firmware therefore panics the kernel in PID 1 during acpi_init(), before
+> userspace exists - the machine does not boot.
 >
-> However, reporting KEY_WAKEUP from generic system resume paths can make
-> userspace observe a Power Button wakeup even when the system was resumed
-> by a different wake source.
+> This is the largest of a set of related findings: it accounts for 110 of =
+189
+> malformed SSDTs that leave a stock x86_64_defconfig kernel unbootable
+> (tested on pristine Linux 7.2.2 - tag: v7.2.2). The smallest trigger
+> is a 46-byte table containing no While, Break or Continue at all.
 >
-> This is reproducible on an AMD Android 15 Xen guest. With a kernel
-> without this fix, a non-power-button S3 resume:
+> WalkState->AmlLastWhile is only ever assigned in AcpiDsExecEndOp() while
+> handling a While loop, so outside a loop it is still NULL from the zeroed=
+ walk
+> state. AcpiPsNextParseState() assigns it to ParserState->Aml for AE_CTRL_=
+BREAK,
+> AE_CTRL_CONTINUE and AE_CTRL_PENDING.
 >
->   echo mem > /sys/power/state
->   xl trigger android s3resume
+> The first two are guarded at their source; AE_CTRL_PENDING is not, and it=
+ is not
+> a loop-only status. AcpiExNameSegment() returns it for any name segment t=
+hat
+> starts with a digit or a non-alpha character - entirely controlled by the=
+ AML
+> being parsed, with no loop involved. AcpiPsPeekOpcode()'s bounds check do=
+es not
+> help, because NULL < AmlEnd passes.
 >
-> makes the Power Button input device report KEY_WAKEUP. The same test on
-> a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
-> input device.
+> In Linux this is reached from AcpiTbLoadNamespace() during acpi_init(), s=
+o a
+> table supplied by firmware faults in PID 1 inside do_one_initcall() and
+> panics the kernel before userspace exists:
 >
-> Track whether a power button event/notify is observed while the ACPI
-> button device is suspended, and report KEY_WAKEUP on resume only in that
-> case. Do not synthesize a Power Button input event from generic ACPI
-> sleep resume code.
+>   BUG: kernel NULL pointer dereference at 0000000000000000
+>   RIP: 0010:acpi_ps_peek_opcode+0x16/0x40
+>    acpi_ps_get_next_arg / acpi_ps_parse_loop / acpi_ps_parse_aml
+>    acpi_ns_load_table / acpi_tb_load_namespace / acpi_init
+>   Kernel panic - not syncing: Attempted to kill init!
 >
-> Signed-off-by: Baorui.Liu <baorliu@amd.com>
-
-This doesn't apply on top of 7.3-rc2 for me, so please rebase and resend it=
+> Refuse to take the branch when AmlLastWhile is NULL and fail the parse wi=
+th
+> AE_AML_NO_WHILE, whose existing text is "Break or Continue without a Whil=
+e".
+> Also NULL-check WalkState->ControlState on the two paths that dereference=
+ it;
+> the AE_CTRL_FALSE comment already says "a predicate (if any)".
+>
+> One detail worth keeping if you rework the patch: it also sets
+> ParserState->Aml =3D ParserState->AmlEnd on the error paths. That is requ=
+ired, not
+> cosmetic. During a table load AcpiPsParseLoop() deliberately converts AML
+> exceptions back to AE_OK ("keep trying to load the table"), so an error r=
+eturn
+> that does not advance the AML pointer re-parses the same position forever=
+. An
+> earlier version of this patch omitted it and turned one table's panic int=
+o a
+> hang.
+>
+> Why this matters beyond "bad firmware breaks your machine": under confide=
+ntial
+> computing the host is untrusted by design and supplies the guest's ACPI t=
+ables.
+> Documentation/security/snp-tdx-threat-model.rst lists "Malformed runtime =
+input"
+> from a misbehaving host in its guest threat matrix. That is the model in =
+which
+> these are security bugs rather than robustness bugs.
+>
+> Reproducer, evidence and step-by-step instructions can be found at the
+> issue reported here:
+> https://github.com/open-acpica/acpica/issues/1226
+>
+> Sending this to the public list rather than security@kernel.org: the atta=
+cker
+> must already control the platform firmware, no control over the faulting
+> pointer was demonstrated, and the fix is small with nothing to coordinate=
 .
+> Say so explicitly if you would rather it had gone elsewhere.
 
-When you resend it, don't add a cover letter (cover letters are only
-needed for patch series, not for individual patches).  If there is
-information in the cover letter that is not covered by the patch
-changelog, it can be copied there.
+Yes, this needs to go to the upstream ACPICA project on GitHub as a
+pull request as per
+Documentation/driver-api/acpi/linuxized-acpica.rst.
 
-Thanks!
-
+> Signed-off-by: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
 > ---
->  drivers/acpi/button.c | 38 ++++++++++++++++-------------
->  drivers/acpi/sleep.c  | 56 +++----------------------------------------
->  include/acpi/button.h |  5 ----
->  3 files changed, 24 insertions(+), 75 deletions(-)
+> diff --git a/source/components/parser/psparse.c
+> b/source/components/parser/psparse.c
+> index 1aacc0c..7fb28dc 100644
+> --- a/source/components/parser/psparse.c
+> +++ b/source/components/parser/psparse.c
+> @@ -338,6 +338,15 @@ AcpiPsNextParseState (
 >
-> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
-> index 8d2843bece29..f9b6b7fff5bd 100644
-> --- a/drivers/acpi/button.c
-> +++ b/drivers/acpi/button.c
-> @@ -175,6 +175,7 @@ struct acpi_button {
->         int last_state;
->         ktime_t last_time;
->         bool suspended;
-> +       bool wakeup_pending;
->         bool lid_state_initialized;
->  };
+>      case AE_CTRL_BREAK:
 >
-> @@ -452,6 +453,9 @@ static void acpi_button_notify(acpi_handle handle, u3=
-2 event, void *data)
->         acpi_pm_wakeup_event(&device->dev);
->
->         button =3D acpi_driver_data(device);
-> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
-ed)
-> +               button->wakeup_pending =3D true;
+> +        if (!WalkState->AmlLastWhile || !WalkState->ControlState)
+> +        {
+> +            ACPI_ERROR ((AE_INFO,
+> +                "Break without a valid enclosing While"));
+> +            ParserState->Aml =3D ParserState->AmlEnd;
+> +            Status =3D AE_AML_NO_WHILE;
+> +            break;
+> +        }
 > +
->         if (button->suspended)
->                 return;
+>          ParserState->Aml =3D WalkState->AmlLastWhile;
+>          WalkState->ControlState->Common.Value =3D FALSE;
+>          Status =3D AE_CTRL_BREAK;
+> @@ -345,12 +354,30 @@ AcpiPsNextParseState (
 >
-> @@ -468,23 +472,6 @@ static void acpi_button_notify(acpi_handle handle, u=
-32 event, void *data)
->                                         event, ++button->pushed);
->  }
+>      case AE_CTRL_CONTINUE:
 >
-> -void acpi_power_button_wakeup(struct acpi_device *device)
-> -{
-> -       struct acpi_button *button =3D acpi_driver_data(device);
-> -       struct input_dev *input;
-> -
-> -       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER) {
-> -               input =3D button->input;
-> -               input_report_key(input, KEY_WAKEUP, 1);
-> -               input_sync(input);
-> -               input_report_key(input, KEY_WAKEUP, 0);
-> -               input_sync(input);
-> -       }
-> -
-> -       return;
-> -}
-> -EXPORT_SYMBOL(acpi_power_button_wakeup);
-> -
->  static void acpi_button_notify_run(void *data)
->  {
->         acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
-> @@ -492,6 +479,12 @@ static void acpi_button_notify_run(void *data)
->
->  static u32 acpi_button_event(void *data)
->  {
-> +       struct acpi_device *device =3D data;
-> +       struct acpi_button *button =3D acpi_driver_data(device);
+> +        if (!WalkState->AmlLastWhile)
+> +        {
+> +            ACPI_ERROR ((AE_INFO,
+> +                "Continue without a valid enclosing While"));
+> +            ParserState->Aml =3D ParserState->AmlEnd;
+> +            Status =3D AE_AML_NO_WHILE;
+> +            break;
+> +        }
 > +
-> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
-ed)
-> +               button->wakeup_pending =3D true;
+>          ParserState->Aml =3D WalkState->AmlLastWhile;
+>          Status =3D AE_CTRL_CONTINUE;
+>          break;
+>
+>      case AE_CTRL_PENDING:
+>
+> +        if (!WalkState->AmlLastWhile)
+> +        {
+> +            ACPI_ERROR ((AE_INFO,
+> +                "Pending control state without a valid enclosing While")=
+);
+> +            ParserState->Aml =3D ParserState->AmlEnd;
+> +            Status =3D AE_AML_NO_WHILE;
+> +            break;
+> +        }
 > +
->         acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data)=
-;
->         return ACPI_INTERRUPT_HANDLED;
->  }
-> @@ -503,11 +496,13 @@ static int acpi_button_suspend(struct device *dev)
->         struct acpi_button *button =3D acpi_driver_data(device);
+>          ParserState->Aml =3D WalkState->AmlLastWhile;
+>          break;
 >
->         button->suspended =3D true;
-> +       button->wakeup_pending =3D false;
->         return 0;
->  }
+> @@ -391,7 +418,10 @@ AcpiPsNextParseState (
 >
->  static int acpi_button_resume(struct device *dev)
->  {
-> +       struct input_dev *input;
->         struct acpi_device *device =3D to_acpi_device(dev);
->         struct acpi_button *button =3D acpi_driver_data(device);
+>          /* In the case of a BREAK, just force a predicate (if any) to FA=
+LSE */
 >
-> @@ -518,6 +513,15 @@ static int acpi_button_resume(struct device *dev)
->                 acpi_lid_initialize_state(device);
->         }
->
-> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->wakeup_=
-pending) {
-> +               input =3D button->input;
-> +               input_report_key(input, KEY_WAKEUP, 1);
-> +               input_sync(input);
-> +               input_report_key(input, KEY_WAKEUP, 0);
-> +               input_sync(input);
-> +               button->wakeup_pending =3D false;
-> +       }
-> +
->         return 0;
->  }
->  #endif
-> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> index 0adfcd0fb55e..d655248c20d4 100644
-> --- a/drivers/acpi/sleep.c
-> +++ b/drivers/acpi/sleep.c
-> @@ -22,7 +22,6 @@
->  #include <linux/syscore_ops.h>
->  #include <asm/io.h>
->  #include <trace/events/power.h>
-> -#include <acpi/button.h>
->
->  #include "internal.h"
->  #include "sleep.h"
-> @@ -105,8 +104,6 @@ u32 acpi_target_system_state(void)
->  }
->  EXPORT_SYMBOL_GPL(acpi_target_system_state);
->
-> -static bool pwr_btn_event_pending;
-> -
->  /*
->   * The ACPI specification wants us to save NVS memory regions during hib=
-ernation
->   * and to restore them during the subsequent resume.  Windows does that =
-also for
-> @@ -463,7 +460,6 @@ static int acpi_pm_prepare(void)
->   */
->  static void acpi_pm_finish(void)
->  {
-> -       struct acpi_device *pwr_btn_adev;
->         u32 acpi_state =3D acpi_target_sleep_state;
->
->         acpi_ec_unblock_transactions();
-> @@ -482,24 +478,6 @@ static void acpi_pm_finish(void)
->         acpi_target_sleep_state =3D ACPI_STATE_S0;
->
->         acpi_resume_power_resources();
-> -
-> -       /* If we were woken with the fixed power button, provide a small
-> -        * hint to userspace in the form of a wakeup event on the fixed p=
-ower
-> -        * button device (if it can be found).
-> -        *
-> -        * We delay the event generation til now, as the PM layer require=
-s
-> -        * timekeeping to be running before we generate events. */
-> -       if (!pwr_btn_event_pending)
-> -               return;
-> -
-> -       pwr_btn_event_pending =3D false;
-> -       pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POW=
-ERF,
-> -                                                   NULL, -1);
-> -       if (pwr_btn_adev) {
-> -               pm_wakeup_event(&pwr_btn_adev->dev, 0);
-> -               acpi_power_button_wakeup(pwr_btn_adev);
-> -               acpi_dev_put(pwr_btn_adev);
-> -       }
->  }
->
->  /**
-> @@ -604,27 +582,6 @@ static int acpi_suspend_enter(suspend_state_t pm_sta=
-te)
->         /* Reprogram control registers */
->         acpi_leave_sleep_state_prep(acpi_state);
->
-> -       /* ACPI 3.0 specs (P62) says that it's the responsibility
-> -        * of the OSPM to clear the status bit [ implying that the
-> -        * POWER_BUTTON event should not reach userspace ]
-> -        *
-> -        * However, we do generate a small hint for userspace in the form=
- of
-> -        * a wakeup event. We flag this condition for now and generate th=
-e
-> -        * event later, as we're currently too early in resume to be able=
- to
-> -        * generate wakeup events.
-> -        */
-> -       if (ACPI_SUCCESS(status) && (acpi_state =3D=3D ACPI_STATE_S3)) {
-> -               acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISA=
-BLED;
-> -
-> -               acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_s=
-tatus);
-> -
-> -               if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
-> -                       acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
-> -                       /* Flag for later */
-> -                       pwr_btn_event_pending =3D true;
-> -               }
-> -       }
-> -
->         /*
->          * Disable all GPE and clear their status bits before interrupts =
-are
->          * enabled. Some GPEs (like wakeup GPEs) have no handlers and thi=
-s can
-> @@ -797,19 +754,12 @@ bool acpi_s2idle_wake(void)
->
->  void acpi_s2idle_restore_check_powerkey(void)
->  {
-> -       struct acpi_device *pwr_btn_adev;
->         acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISABLED;
-> +
->         acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
->
-> -       if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
-> -               pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON=
-_HID_POWERF,
-> -                       NULL, -1);
-> -               if (pwr_btn_adev) {
-> -                       pm_wakeup_event(&pwr_btn_adev->dev, 0);
-> -                       acpi_power_button_wakeup(pwr_btn_adev);
-> -                       acpi_dev_put(pwr_btn_adev);
-> -               }
-> -       }
-> +       if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET)
-> +               acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
->  }
->
->  void acpi_s2idle_restore(void)
-> diff --git a/include/acpi/button.h b/include/acpi/button.h
-> index be02d3ff2896..af2fce5d2ee3 100644
-> --- a/include/acpi/button.h
-> +++ b/include/acpi/button.h
-> @@ -8,16 +8,11 @@
->
->  #if IS_ENABLED(CONFIG_ACPI_BUTTON)
->  extern int acpi_lid_open(void);
-> -extern void acpi_power_button_wakeup(struct acpi_device *device);
->  #else
->  static inline int acpi_lid_open(void)
->  {
->         return 1;
->  }
-> -static inline void acpi_power_button_wakeup(struct acpi_device *device)
-> -{
-> -       return;
-> -}
->  #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
->
->  #endif /* ACPI_BUTTON_H */
-> --
-> 2.34.1
->
+> -        WalkState->ControlState->Common.Value =3D FALSE;
+> +        if (WalkState->ControlState)
+> +        {
+> +            WalkState->ControlState->Common.Value =3D FALSE;
+> +        }
+>          Status =3D AE_CTRL_END;
+>          break;
