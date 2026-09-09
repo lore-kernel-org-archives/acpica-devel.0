@@ -1,165 +1,387 @@
-Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013070.outbound.protection.outlook.com [40.93.201.70])
+Received: from smtp3.osuosl.org (smtp3.osuosl.org [140.211.166.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD66C282F26
-	for <acpica-devel@lists.linux.dev>; Tue,  8 Sep 2026 19:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.201.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6B3569F19
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=140.211.166.136
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788896118; cv=fail; b=Q/oHDNacE5xYsBL4Pkc1cdM/6cwhGQM7i4036md4FIZi77XKEm5dR9LE0vBGBNImlj0qKzVyGIQW6O6KiIwJ6/wPXTkICfRw9YJy40X+nEaWLF9wy+3MBg1B3PHONr+/H+OloaNPZ8V75j8hq23dqAqhKurVh0qohVmAqfor424=
+	t=1788964951; cv=fail; b=E4gDgJjp9S92E/EsEEvDH3djlg4tpqyfE6/U7LMpRwKfo97GD9EO6rVIlPm6f7LSl+2dn53pDuHJAzhoMYogoo4TOwqMDfiro1+DXCRHyS6lFxggYYElbrbMDYN/WQsH4Mre6RiyrpcDZ4c0MdnVZilCxM45OVfZbIc/Jk7aXhQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788896118; c=relaxed/simple;
-	bh=KylsEbYr0hTXnDcgL9HQUo8gs2sJfqr3B6WQ5cTwVX4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TMKL6dEoA2o5zdlmv0pGONRuRLXw8Vb94LHDGL94qmpxCO0/64UdMTceYZ9eiccxsXaV2YpJ3bdR6zUtIgD0JR9os1/HypO6pGv5o07KCMbX6zfrNo5ClfsrhYT7Nua01KqXG59qgIORAo1NDOCkAfQbnjUl7pSXkeaoGM4yzpc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZomJAQiP; arc=fail smtp.client-ip=40.93.201.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1788964951; c=relaxed/simple;
+	bh=dvPDYFwQ8RintGRd0HTntD2Yww6HkOurQpSlnULPxDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D99EWyxGoY4vpO5jiFZ3SV1SW1WbKKRwcvJhSOkUuxuqTi5fFldHUUoeMShnx76VcEyc+TpXNs6NollmpD6gp98TqLpj8+ND5Dciod18LfQ1r4So/deAuaB/wJODkCq+2pO1o8rouCVnnIUYrRBuO1G3NjHiR2IjafZrVcLgNpk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPpCHEix; arc=fail smtp.client-ip=140.211.166.136
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZomJAQiP"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xKp/wsFai86KQ3Jf7IZ1RoTn2wDbKKRv4vXGJnJMQTGtGbVg4C4oJsZMdvCMYf7D7Bie8f95eF++43mRqqcR5Rg7xSWyJsBiwJpnunPF0RHRdgcIFK6hvsp+9r+ihfGdQ7V/WhT74lfSXuQi5Y+XETUtoObiJCrT3tdWN2jWVoyLRVl4UTT+xrkPswhuW/bfq102mMD7ERoJpW63gywHC5MSblSiX2vRVS+6Bfxa2HbmUDqdMOM8ep0gm5IFk2gmZHbKSDR6GjfBl3lwcfAd7d0IEaJC3AlQwZFCFMOXEjxI4eziBORQ2RHk1LoHQJoW64R2UnS+PC+TwB/Ez9ks4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O/BiTfecksTtxsldtZ5A7WVz6XqXBaGqOb+8+eqX1dE=;
- b=RsUhmB5cztP+v5Nn6v7yMtcLyAdSNWDk2MLhrjPtCtfdFBQxYz0DsOMDwTq6UT5H+HRInBR7WA4DxBgF4H5C6tN4uSJ7YhN/FhQ2jzelN5GT7d/KC2RCVzeFNLd2nwRziE622uUjgJ6seOxPBSuxZ5Abz64hDn1rlJjVhWHtUuJvZBjc3zapYee3WD7n4kFshIJ+Cr7uxIrHYjGv/zGqEibVjE6MfXLRfVEA5g9+JfbOJTi2aHY9S6cc51eQKwkjS0QAiVSqnvsWvE6yiD4qjpmf/RHijd8jBxX2HjmvRtZTz4IEN0WSIJ/hag3/IvOinwLDRr5ZkBmJs/HyrFXuaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O/BiTfecksTtxsldtZ5A7WVz6XqXBaGqOb+8+eqX1dE=;
- b=ZomJAQiP6LD0NoaDz4fZ46zqC/Ved+ndTDgQN+tyagjygRNgDnNIsgzPEgdhHR+U6hk6EQyHW7ABuokGKfjos67B28LNN2cb92hlnwqBIuAhka8CwtoYywFRbpj99D16OlBk7Pg+QRmJFE7akNN/XIIlMuDBNgFd7gQJ+P4M3kA=
-Received: from MW4PR03CA0324.namprd03.prod.outlook.com (2603:10b6:303:dd::29)
- by SA5PPF530AE3851.namprd12.prod.outlook.com (2603:10b6:80f:fc04::8c9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.15; Tue, 8 Sep
- 2026 19:35:10 +0000
-Received: from MWH0EPF000A672E.namprd04.prod.outlook.com
- (2603:10b6:303:dd:cafe::5) by MW4PR03CA0324.outlook.office365.com
- (2603:10b6:303:dd::29) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.406.7 via Frontend Transport; Tue, 8
- Sep 2026 19:35:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- MWH0EPF000A672E.mail.protection.outlook.com (10.167.249.20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.406.5 via Frontend Transport; Tue, 8 Sep 2026 19:35:10 +0000
-Received: from aus0006770c4n-lx01.amd.com (10.180.168.240) by
- satlexmb07.amd.com (10.181.42.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.46; Tue, 8 Sep 2026 14:35:09 -0500
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>
-CC: Len Brown <lenb@kernel.org>, "open list:ACPI COMPONENT ARCHITECTURE
- (ACPICA)" <linux-acpi@vger.kernel.org>, "open list:ACPI COMPONENT
- ARCHITECTURE (ACPICA)" <acpica-devel@lists.linux.dev>, open list
-	<linux-kernel@vger.kernel.org>, Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH v3] ACPI: utils: Ignore leading root scope prefix in string _UID match
-Date: Tue, 8 Sep 2026 14:34:58 -0500
-Message-ID: <20260908193458.246040-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPpCHEix"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp3.osuosl.org (Postfix) with ESMTP id C7D956078C
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.352
+X-Spam-Level:
+Received: from smtp3.osuosl.org ([127.0.0.1])
+ by localhost (smtp3.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id 9faOYB6pCfDc for <acpica-devel@lists.linuxfoundation.org>;
+ Wed,  9 Sep 2026 14:42:29 +0000 (UTC)
+ARC-Filter: OpenARC Filter v1.3.0 smtp3.osuosl.org EF30E60787
+Authentication-Results: smtp3.osuosl.org; arc=none smtp.remote-ip="2600:3c0a:e001:78e:0:1991:8:25"
+ARC-Seal: i=1; d=osuosl.org; s=arc; a=rsa-sha256; cv=none; t=1788964949;
+	b=UB+tNnmxCH5tJvuP8ogo44bNaX2eeoBwlKJzFs+XV2ZMddeGlUZrmGxEFKelj50BBVqO
+	 pzHurJkWo1/KKaKwhoe1b7EDkBejOGKad4WaxSobY9tsX7BwksrmhawKKiaq1Eqh3uale
+	 X0SRbxXOZc9wcrjRPRe+r4Pe9j9S92zLYTxlrOJi2pxs55BYi1RYAqTOD49gHQJCt5El0
+	 SgAhIVYiPDbH6Ge4nsrrh3GBcaEAKUNfrG9TBHTsTEIaTwkCEDQ3g9CCz+n+SknRWAdFU
+	 70OU/YF/4V1zN4cCfPy1eWGLpMdDEBML4e1vyu2lf4FA7I6eEmA56k2CfCTh8MsYFhg==
+ARC-Message-Signature: i=1; d=osuosl.org; s=arc; a=rsa-sha256;
+	c=relaxed/relaxed; t=1788964949;
+	h=Received-SPF:Received:Received:DKIM-Signature:Received:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:X-Gmail-Original-Message-ID:
+	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=fh3WnRyJQ9LMq3PODuE5LGdezgqZCEn8MJmFbIl2+yY=;
+	b=mwHqQu+rJQBez3Lm+TihNjwJjM8e5qrwAzgqQKvqMFI0eXfWIlHY8XOEGAI9p0/UwLan
+	 DXG8OmOLXIxOxkEZqpuzxiW6sVqJ/K6bpAu1WnjakfPI5B91UgDsje9ERZ6CF5I4Z9SIa
+	 X06XuuocsO5NWBEu9uqxrOwxXD1QzAaAZjhvGl7tzwRBlGAOTkAqB2PceDNXk5xQWneD/
+	 ZCLvXgF4eheaNBk+sQus59nsiAlIrW3ar3pWb1SfdvbQ/G90lVKMZKCVDQ5LP5wubedMR
+	 m2dZ6nRJl344mgJwH4kTV4wWUlHKTrrcqOp/caq/b3SHAIWK/Ol0YcdnV+U5oi2OBBQ==
+ARC-Authentication-Results: i=1; smtp3.osuosl.org; dmarc=pass header.from=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fPpCHEix;
+	arc=none smtp.remote-ip="2600:3c0a:e001:78e:0:1991:8:25"
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2600:3c0a:e001:78e:0:1991:8:25; helo=sea.source.kernel.org; envelope-from=rafael@kernel.org; receiver=<UNKNOWN> 
+Authentication-Results: smtp3.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp3.osuosl.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fPpCHEix
+Received: from sea.source.kernel.org (sea.source.kernel.org [IPv6:2600:3c0a:e001:78e:0:1991:8:25])
+	by smtp3.osuosl.org (Postfix) with ESMTPS id EF30E60787
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:28 +0000 (UTC)
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 67D0840639
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C91F1F00A3D
+	for <acpica-devel@lists.linuxfoundation.org>; Wed,  9 Sep 2026 14:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788964947;
+	bh=fh3WnRyJQ9LMq3PODuE5LGdezgqZCEn8MJmFbIl2+yY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=fPpCHEixX1RLo4IpLv84CazUr3DnrpNH2H1LdBBG52BoUV+iKk8xv13XuMBT+F7Nu
+	 6RBLn+SymQ1f3HFgT/9Zxf9i+hI35Ax9OWtDk1BXYP+vFxHe1zG7c8TLkejgtrscQW
+	 2gNurilH6a0omvPOeY/I9qJa1bgeagipZ3X9f66IIuk3Iy74FkusqqxpLreLR4+Cel
+	 ltJycXdM618YbEnduCwf9mFHTqDyIcnTtR8fxOOidJ8VoY2zCDXl8qYXyF/BdpTB7U
+	 62HGDFRrWvzw5stZ4dIqjVLIEPITuP/EO2jDSFQJ7HpJrsOeprztgVwvxhJT0Q/pia
+	 hPjG5HtEVLiPQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5b568dae0e8so4514567e87.0
+        for <acpica-devel@lists.linuxfoundation.org>; Wed, 09 Sep 2026 07:42:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxw2Q70vsa27b1Zz7Jg8Rovn9BA0OPkFps/S1L3dfvo2+zXwh8mBnKFBQCDzTpE3UY3VZtvsE8HI1Ig8fc=@lists.linuxfoundation.org
+X-Gm-Message-State: AFuF++nBXQoBJsw3iSya+11xoL9UsbsmOfoZVRt7IH6u/443NoJKdmde
+	XMwqbJsk5S4Gl7JcSD1R0190+VL7c1DZfChrbfg6Djn7WUzjFV4dgdBC96PzNYeZtisAlF9qKhc
+	/okEK0vxtXHQP4ZnYowSWBiHMDAMWOZg=
+X-Received: by 2002:a05:6512:23a5:b0:5b6:6b8:1fc5 with SMTP id
+ 2adb3069b0e04-5b616f5a434mr6190885e87.17.1788964945569; Wed, 09 Sep 2026
+ 07:42:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: satlexmb08.amd.com (10.181.42.217) To satlexmb07.amd.com
- (10.181.42.216)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000A672E:EE_|SA5PPF530AE3851:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa029d23-9e66-4577-264c-08df0de04be4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|376014|23010399003|3023799007|10067099003|56012099006|11063799006|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	aecyfIZf7iqadIJvFfokI43GoefqL8kXx437Q/OISg7cuheu5FX6OasYD7iYbcssGX8wT/KUppMCNAIgxZgyEjJBnStgj2lCamRLxF+J8csMY7laQS01L6rxJGWwlBXn2CPMQYEOdoYxt8dIMCNiWPjrOt4uUGtllNGFFBaT+0xGvd3KxSvu8875uGId197DWU2yJI2oGpf+s9zbUGkuY+mlwWHdAlWbM1gfHo7Gpy23aMelbEjHvHvfRyT8fd+hkwf+ZijvOwGCtsnS8onNjXSk0weZI2Eh4VEly2cHq+GtoK1ZLI76pYiRMN6DlLdMYUCbqhYJ58mblRbEu8mWzbbpQfVmvFlb/kb3+wQuiy29YMC2TdLZur5GQV9x3/oe69/WxAwhnaml4BbUZzYziTh54juGsllQFTdj4k3BD7eiRypBiU5fURG2ae7PmS6UkN0Lh4xxWiSdfdsCyfDJAkzW2QFWwy6qyjhAtrwdiSKcEfDr2e3XkrQ5d2veEe+z8Uo5TQJTEUiTBQk3ROnYvtEYi0h8ty3EMfDXOAUqSpI4o3J4+qfGVZzsqgg5iHthYHSeTPnqrnmvFMuLsBW+NCNaTo7zEmL8CTC2EDgbdvxKpxfzgx4yVc7jqUaIa0xB3HPr5eCv8/u5h49vsOuR7oC6f5vRjZtgMqO3+OKn/Hx3suF07nlNM6yZlEq1EaplYZBUIP2b330AI0Nttw2GTg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(376014)(23010399003)(3023799007)(10067099003)(56012099006)(11063799006)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	OkI3iqeCMzpr+31cAwl+NaZQdE6Pt5qq+P/dX8zZZIby7c+4OPmcw6Qyvmh7dGiqwbZ+S4QoL/2IAGBFmW635s/aggGlWodiSjFH1D5HsJObf40PX4ol1Vlp4rlyXRLnLcpaT/5flc6c+RD4EYr7+1fbVfZ6cCcNFvXnR8Gy+blhMd+RZe6kDJzzJxHK1HKJ9K0HWBo3tFMFbg5OZowiyGarbFruj2Wbr5ZtdDnHaulwYk6JMyykj+MjDIAk3/WlIKMfNG5dv/jJox2ZcWgyIqvPqLft4TKXhfG0oza8kCXNuBk+uklaKVla+SAblExUvkvLT9eve6GB2BQcWSRxn54T9vP5gwOIKQNceN0Fex9pl7MYuuRg/eieo8O48sByWK5xpDFJ6k/6SHWHuXLahgM5ri+Us8+rKoDZhaEa6r0pW/IQCN4lHdH5T6RCbE5Z
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2026 19:35:10.6175
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa029d23-9e66-4577-264c-08df0de04be4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000A672E.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA5PPF530AE3851
+References: <20260806122732.533-1-baorliu@amd.com> <20260819085528.575-1-baorliu@amd.com>
+ <20260819085528.575-2-baorliu@amd.com>
+In-Reply-To: <20260819085528.575-2-baorliu@amd.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Wed, 9 Sep 2026 16:41:16 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hCS9r4eN4XoEsuJKPED=xdQXOvV72OOkrCZpLqui6oSw@mail.gmail.com>
+X-Gm-Features: AcwNN1UN-21r50zcJGP317drOXU6Y5TqW0M5AQBFuMKIX8k1zzAv6DTnJSyJteI
+Message-ID: <CAJZ5v0hCS9r4eN4XoEsuJKPED=xdQXOvV72OOkrCZpLqui6oSw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ACPI: button: Report wakeup key only for power
+ button wakeups
+To: "Baorui.Liu" <baorliu@amd.com>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	acpica-devel@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Firmware may express an ACPI namespace path used as a _UID with or
-without the leading root scope character ('\'). For example, an AMD
-IVRS IVHD ACPI HID device entry may carry a character UID of
-"\_SB.MHSP" while the corresponding device's _UID evaluates to
-"_SB.MHSP" (or vice versa).  This semantic difference is due to how
-Windows PnP enumerates and uses devices.
+On Wed, Aug 19, 2026 at 10:56=E2=80=AFAM Baorui.Liu <baorliu@amd.com> wrote=
+:
+>
+> The ACPI button driver reports KEY_WAKEUP from the Power Button input
+> device to let userspace know that the system was resumed by a power
+> button wakeup.
+>
+> However, reporting KEY_WAKEUP from generic system resume paths can make
+> userspace observe a Power Button wakeup even when the system was resumed
+> by a different wake source.
+>
+> This is reproducible on an AMD Android 15 Xen guest. With a kernel
+> without this fix, a non-power-button S3 resume:
+>
+>   echo mem > /sys/power/state
+>   xl trigger android s3resume
+>
+> makes the Power Button input device report KEY_WAKEUP. The same test on
+> a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
+> input device.
+>
+> Track whether a power button event/notify is observed while the ACPI
+> button device is suspended, and report KEY_WAKEUP on resume only in that
+> case. Do not synthesize a Power Button input event from generic ACPI
+> sleep resume code.
+>
+> Signed-off-by: Baorui.Liu <baorliu@amd.com>
 
-acpi_str_uid_match() compared the two strings verbatim, so such
-entries failed to match on the UID even though they refer to the same
-object. In the AMD IOMMU case (get_acpihid_device_id()) this caused
-the exact HID+UID match to be missed and the code to fall through to
-the HID-only path, spuriously raising a FW_BUG.
+This doesn't apply on top of 7.3-rc2 for me, so please rebase and resend it=
+.
 
-Skip a single leading '\' on either string before comparing so that
-paths that differ only by the root scope prefix are treated as a
-match. The integer _UID path is unaffected.
+When you resend it, don't add a cover letter (cover letters are only
+needed for patch series, not for individual patches).  If there is
+information in the cover letter that is not covered by the patch
+changelog, it can be copied there.
 
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-v3:
- * Update kdoc in acpi_dev_uid_match() instead (Rafael)
-v2:
- * Add kdoc
- * Make sure the string is at least two characters long to normalize
----
- include/acpi/acpi_bus.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index a10a591c18b23..f506a73169d6e 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -830,7 +830,15 @@ static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2
- {
- 	const char *uid1 = acpi_device_uid(adev);
- 
--	return uid1 && uid2 && !strcmp(uid1, uid2);
-+	if (!uid1 || !uid2)
-+		return false;
-+
-+	if (*uid1 == '\\' && uid1[1])
-+		uid1++;
-+	if (*uid2 == '\\' && uid2[1])
-+		uid2++;
-+
-+	return !strcmp(uid1, uid2);
- }
- 
- static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
-@@ -856,6 +864,9 @@ static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
-  * @uid2: Unique ID of the device.
-  *
-  * Matches UID in @adev with given @uid2.
-+ * If both the UID in @adev and @uid2 are strings, they are compared
-+ * after optionally skipping a leading backslash ('\') if the given
-+ * string contains additional characters.
-  *
-  * Returns: %true if matches, %false otherwise.
-  */
--- 
-2.43.0
-
+> ---
+>  drivers/acpi/button.c | 38 ++++++++++++++++-------------
+>  drivers/acpi/sleep.c  | 56 +++----------------------------------------
+>  include/acpi/button.h |  5 ----
+>  3 files changed, 24 insertions(+), 75 deletions(-)
+>
+> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+> index 8d2843bece29..f9b6b7fff5bd 100644
+> --- a/drivers/acpi/button.c
+> +++ b/drivers/acpi/button.c
+> @@ -175,6 +175,7 @@ struct acpi_button {
+>         int last_state;
+>         ktime_t last_time;
+>         bool suspended;
+> +       bool wakeup_pending;
+>         bool lid_state_initialized;
+>  };
+>
+> @@ -452,6 +453,9 @@ static void acpi_button_notify(acpi_handle handle, u3=
+2 event, void *data)
+>         acpi_pm_wakeup_event(&device->dev);
+>
+>         button =3D acpi_driver_data(device);
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
+ed)
+> +               button->wakeup_pending =3D true;
+> +
+>         if (button->suspended)
+>                 return;
+>
+> @@ -468,23 +472,6 @@ static void acpi_button_notify(acpi_handle handle, u=
+32 event, void *data)
+>                                         event, ++button->pushed);
+>  }
+>
+> -void acpi_power_button_wakeup(struct acpi_device *device)
+> -{
+> -       struct acpi_button *button =3D acpi_driver_data(device);
+> -       struct input_dev *input;
+> -
+> -       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER) {
+> -               input =3D button->input;
+> -               input_report_key(input, KEY_WAKEUP, 1);
+> -               input_sync(input);
+> -               input_report_key(input, KEY_WAKEUP, 0);
+> -               input_sync(input);
+> -       }
+> -
+> -       return;
+> -}
+> -EXPORT_SYMBOL(acpi_power_button_wakeup);
+> -
+>  static void acpi_button_notify_run(void *data)
+>  {
+>         acpi_button_notify(NULL, ACPI_BUTTON_NOTIFY_STATUS, data);
+> @@ -492,6 +479,12 @@ static void acpi_button_notify_run(void *data)
+>
+>  static u32 acpi_button_event(void *data)
+>  {
+> +       struct acpi_device *device =3D data;
+> +       struct acpi_button *button =3D acpi_driver_data(device);
+> +
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
+ed)
+> +               button->wakeup_pending =3D true;
+> +
+>         acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data)=
+;
+>         return ACPI_INTERRUPT_HANDLED;
+>  }
+> @@ -503,11 +496,13 @@ static int acpi_button_suspend(struct device *dev)
+>         struct acpi_button *button =3D acpi_driver_data(device);
+>
+>         button->suspended =3D true;
+> +       button->wakeup_pending =3D false;
+>         return 0;
+>  }
+>
+>  static int acpi_button_resume(struct device *dev)
+>  {
+> +       struct input_dev *input;
+>         struct acpi_device *device =3D to_acpi_device(dev);
+>         struct acpi_button *button =3D acpi_driver_data(device);
+>
+> @@ -518,6 +513,15 @@ static int acpi_button_resume(struct device *dev)
+>                 acpi_lid_initialize_state(device);
+>         }
+>
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->wakeup_=
+pending) {
+> +               input =3D button->input;
+> +               input_report_key(input, KEY_WAKEUP, 1);
+> +               input_sync(input);
+> +               input_report_key(input, KEY_WAKEUP, 0);
+> +               input_sync(input);
+> +               button->wakeup_pending =3D false;
+> +       }
+> +
+>         return 0;
+>  }
+>  #endif
+> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+> index 0adfcd0fb55e..d655248c20d4 100644
+> --- a/drivers/acpi/sleep.c
+> +++ b/drivers/acpi/sleep.c
+> @@ -22,7 +22,6 @@
+>  #include <linux/syscore_ops.h>
+>  #include <asm/io.h>
+>  #include <trace/events/power.h>
+> -#include <acpi/button.h>
+>
+>  #include "internal.h"
+>  #include "sleep.h"
+> @@ -105,8 +104,6 @@ u32 acpi_target_system_state(void)
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_target_system_state);
+>
+> -static bool pwr_btn_event_pending;
+> -
+>  /*
+>   * The ACPI specification wants us to save NVS memory regions during hib=
+ernation
+>   * and to restore them during the subsequent resume.  Windows does that =
+also for
+> @@ -463,7 +460,6 @@ static int acpi_pm_prepare(void)
+>   */
+>  static void acpi_pm_finish(void)
+>  {
+> -       struct acpi_device *pwr_btn_adev;
+>         u32 acpi_state =3D acpi_target_sleep_state;
+>
+>         acpi_ec_unblock_transactions();
+> @@ -482,24 +478,6 @@ static void acpi_pm_finish(void)
+>         acpi_target_sleep_state =3D ACPI_STATE_S0;
+>
+>         acpi_resume_power_resources();
+> -
+> -       /* If we were woken with the fixed power button, provide a small
+> -        * hint to userspace in the form of a wakeup event on the fixed p=
+ower
+> -        * button device (if it can be found).
+> -        *
+> -        * We delay the event generation til now, as the PM layer require=
+s
+> -        * timekeeping to be running before we generate events. */
+> -       if (!pwr_btn_event_pending)
+> -               return;
+> -
+> -       pwr_btn_event_pending =3D false;
+> -       pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POW=
+ERF,
+> -                                                   NULL, -1);
+> -       if (pwr_btn_adev) {
+> -               pm_wakeup_event(&pwr_btn_adev->dev, 0);
+> -               acpi_power_button_wakeup(pwr_btn_adev);
+> -               acpi_dev_put(pwr_btn_adev);
+> -       }
+>  }
+>
+>  /**
+> @@ -604,27 +582,6 @@ static int acpi_suspend_enter(suspend_state_t pm_sta=
+te)
+>         /* Reprogram control registers */
+>         acpi_leave_sleep_state_prep(acpi_state);
+>
+> -       /* ACPI 3.0 specs (P62) says that it's the responsibility
+> -        * of the OSPM to clear the status bit [ implying that the
+> -        * POWER_BUTTON event should not reach userspace ]
+> -        *
+> -        * However, we do generate a small hint for userspace in the form=
+ of
+> -        * a wakeup event. We flag this condition for now and generate th=
+e
+> -        * event later, as we're currently too early in resume to be able=
+ to
+> -        * generate wakeup events.
+> -        */
+> -       if (ACPI_SUCCESS(status) && (acpi_state =3D=3D ACPI_STATE_S3)) {
+> -               acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISA=
+BLED;
+> -
+> -               acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_s=
+tatus);
+> -
+> -               if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+> -                       acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+> -                       /* Flag for later */
+> -                       pwr_btn_event_pending =3D true;
+> -               }
+> -       }
+> -
+>         /*
+>          * Disable all GPE and clear their status bits before interrupts =
+are
+>          * enabled. Some GPEs (like wakeup GPEs) have no handlers and thi=
+s can
+> @@ -797,19 +754,12 @@ bool acpi_s2idle_wake(void)
+>
+>  void acpi_s2idle_restore_check_powerkey(void)
+>  {
+> -       struct acpi_device *pwr_btn_adev;
+>         acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISABLED;
+> +
+>         acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
+>
+> -       if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+> -               pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON=
+_HID_POWERF,
+> -                       NULL, -1);
+> -               if (pwr_btn_adev) {
+> -                       pm_wakeup_event(&pwr_btn_adev->dev, 0);
+> -                       acpi_power_button_wakeup(pwr_btn_adev);
+> -                       acpi_dev_put(pwr_btn_adev);
+> -               }
+> -       }
+> +       if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET)
+> +               acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+>  }
+>
+>  void acpi_s2idle_restore(void)
+> diff --git a/include/acpi/button.h b/include/acpi/button.h
+> index be02d3ff2896..af2fce5d2ee3 100644
+> --- a/include/acpi/button.h
+> +++ b/include/acpi/button.h
+> @@ -8,16 +8,11 @@
+>
+>  #if IS_ENABLED(CONFIG_ACPI_BUTTON)
+>  extern int acpi_lid_open(void);
+> -extern void acpi_power_button_wakeup(struct acpi_device *device);
+>  #else
+>  static inline int acpi_lid_open(void)
+>  {
+>         return 1;
+>  }
+> -static inline void acpi_power_button_wakeup(struct acpi_device *device)
+> -{
+> -       return;
+> -}
+>  #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
+>
+>  #endif /* ACPI_BUTTON_H */
+> --
+> 2.34.1
+>
