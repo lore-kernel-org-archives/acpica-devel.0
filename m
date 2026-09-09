@@ -1,213 +1,154 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A7C56510E
-	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3388563297
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788968178; cv=none; b=ZRCKA8Qd9Mq11XDQeXsxNZ/q5atPTrvKHdE5bhSTkx0BV9MedfUr1Knvclp/6Is58TM4BNUqcoZo/3EVPsz3DARCtkN80zu1oHr9+XvlFKyOGoLEOdCFSoLg+/gv5hIYVzyh1K7G+N7JpHXprJROhD1V6m+faJWstqKf6njD10c=
+	t=1788969090; cv=none; b=id/8eU4yXRN9WZ3GOebojOa1Gpp7ci2TIWGDYTSsDJhmkSD6FMBtkp/PqrbEs/OfTOj602G69Bsl1ReIaDhMCxbCcetbLFnhDoAhyYX0oWD+5dxr9Q4B0rba9sHUx7UIydrUkzmsLE89YOQicnPbHX2UvgK2PtAHqVU/hW5Z3hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788968178; c=relaxed/simple;
-	bh=jDMUsnnYqogjhXxCOn9mNMOrmCNKYoJwQpQTW4uHJzk=;
+	s=arc-20240116; t=1788969090; c=relaxed/simple;
+	bh=J84DnhF2iNA+Z0YQIt+R3q+B0m8blDvEMZw+S27BxhY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mvwUPGrRA+F8fxzAZeaicjfppL6CDoqqSb5OiKbKOk2sLzgsLRzQI+HpOCulpLMAfTPAudEMdy8W0KpwuCHCxBte0FQieVSW/Q3ryzefSl0uFaUq29/pQIFXJ8H5DYdiZc6YuRQKerLl0bpYLgmBVRkdvlgUSem57przqPBHayU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zx/HMP63; arc=none smtp.client-ip=100.103.45.18
+	 To:Cc:Content-Type; b=W1s8va6/sxQQOD5yK5SQ/cJUmZUQQl4YM7NV6px4ROcjzXfSI7L8gX8ra07VElJ3OCi4xcxRBdTCnYftoeqlnTPvZ+nB9z1GkF8bCfO0aJPdzR2gDB1zvooPda65MhGXyNhezPIHPfKrnA0RqWMFPet08JuVuP5VJG/KDvkQOtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H33K90gY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zx/HMP63"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADFF1F00A3F
-	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:36:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H33K90gY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 920791F00A3E
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 15:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788968177;
-	bh=XmcpQyokakiNfBd8epSab7pog++2XEktXMmOmQUH1xs=;
+	s=k20260515; t=1788969088;
+	bh=psZ4LqGN1zUJTB7Z5ulSLkiFWMNZREF5JXAlayWlxdk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=Zx/HMP63ACiRHHGW8SSiPE5bLKcU7H81LIJa2WPSMJhwFUenUV+qRTllpK2bA+xye
-	 W5yw0hWLx4MfSuG8CDUpvKwh8XElEs+lMU/qTNUxXutmzYHoIDNLp7hrfG9sWGDY9G
-	 bFFJhRxrHGb8HXCC6+Hzg9Ur5e95ZWxDyKPu5DHy8IJm2JYPaclaj2JNXlgC927kar
-	 UtAz5AvtHRVtSEt32m4EJGcwC7ahClHpf1sBanqomED3TU987rvsYHqulsvf+dkZFu
-	 zhGiW3cZxTvQANKWhG/RIAxDpnuS6ynGmo/jE9vl56rD1bFcBPyCUaAyAvN9ObkVWn
-	 2q/FId3u+Bd6Q==
-Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f1e023so973812e87.0
-        for <acpica-devel@lists.linux.dev>; Wed, 09 Sep 2026 08:36:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxPLfp8jHKLpiFJRqUv6vTwjNjZrEmHVhYRZi25zojlZcHZ+JqNgC6nIiXJUNxsQs8chC+kfLKf/kmQ8gk=@lists.linux.dev
-X-Gm-Message-State: AFuF++mVQpuhn3u/5t1G8/lzVaj4SHKO+Q/gfKXhnx39wZ4gXVAhEAIM
-	GX9EbCfs74YLjYejVg25F9SL3vMsNpgDefkfxcXT1D87VeRi6IEyauvnhvlgexcvJ7fUTuR/ws6
-	ZKBYdt5ZlTAwoUEF/oHkwX+J7Gv4axm8=
-X-Received: by 2002:a05:6512:668e:10b0:5b6:10bc:b864 with SMTP id
- 2adb3069b0e04-5b75c918261mr1494885e87.18.1788968175592; Wed, 09 Sep 2026
- 08:36:15 -0700 (PDT)
+	b=H33K90gY74B5WMl2GTG5ZOWpFMS6LgY3tDsaunIVJtqbmZwTg4UM+Kn7h5IGolia6
+	 WM0gFD+tgiV77k2gaViW9rBfj7d+smX2zJVQsuASV+4Ap/E+Iz+U5vEcIorIY0nxjd
+	 zpym8bT4ACpM9e/C5Fc/xerDumzHS4qcTmv4wxJ0y4nBpuVI2Am8I5zb1AIYhdzloH
+	 mdPKb2O5dO69c+/DU+NwF7rUyLHYZ6fAThBmA9EbSM5gB9xD4SpbzOIDMuIOmpLm7p
+	 CO0Qzs7g5UMpgqTK0EQqySrfOMZhlckirsPRoFEuZ0V0chvZEWOMVv+1RA1iDdo75X
+	 /bNeJ8iBQUhjA==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5b4af730f8aso6609068e87.1
+        for <acpica-devel@lists.linux.dev>; Wed, 09 Sep 2026 08:51:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBx4aopX412k6mrm6H0rUk5UTQWUuNyfJrELxcPlB0ExHVnM1Vz61YrdwPtvWilUEVQsjNfSC8vI0e2Eu14=@lists.linux.dev
+X-Gm-Message-State: AFuF++nvuEssQdeqJ+zgiOyMhbxs4pE0YJAin3hhsMhxc/mXSIClFNv0
+	jhGznrA/1VySoAktAJHsnbEXi91Hdx8eyisSh7iy1H3rB8GTULtdojE4seJ6+Rb2lSaQfyoZtQx
+	ETXqs0487UzPMdQtYfhW5HKMBEH6GFr0=
+X-Received: by 2002:a05:6512:108b:b0:5b0:23cb:91ea with SMTP id
+ 2adb3069b0e04-5b616f41fbdmr5969063e87.22.1788969086896; Wed, 09 Sep 2026
+ 08:51:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <CAPAw8HGxmd2V5GgjL191f3pwOnbuGp4cfDaxCWiR57EquLOecw@mail.gmail.com>
-In-Reply-To: <CAPAw8HGxmd2V5GgjL191f3pwOnbuGp4cfDaxCWiR57EquLOecw@mail.gmail.com>
+References: <20260831053420.1729024-1-superm1@kernel.org>
+In-Reply-To: <20260831053420.1729024-1-superm1@kernel.org>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 9 Sep 2026 17:35:06 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0j1w__nuVEvrYsbUViihJOSbZxPAD2P442FG+DczaDjeg@mail.gmail.com>
-X-Gm-Features: AcwNN1WGuNo66E-I8ww7xj82Tjd0isS2O9w0P0P-WyGDZrV2I0TjaeQO_9kq6co
-Message-ID: <CAJZ5v0j1w__nuVEvrYsbUViihJOSbZxPAD2P442FG+DczaDjeg@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Parser: do not set the AML pointer to a NULL AmlLastWhile
-To: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
-Cc: linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Saket Dumbre <saket.dumbre@intel.com>
+Date: Wed, 9 Sep 2026 17:50:16 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0ip5QM62Xc+xFAXDu8bv-nyXNmqd647AoERXO99HfkvTw@mail.gmail.com>
+X-Gm-Features: AcwNN1Uf_eyrBhZR6SuyVKpiuUK5_Jw4a5iAheQZD6tm3TNZbtd_NpgtyVkt0js
+Message-ID: <CAJZ5v0ip5QM62Xc+xFAXDu8bv-nyXNmqd647AoERXO99HfkvTw@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
+To: "Mario Limonciello (AMD)" <superm1@kernel.org>
+Cc: mario.limonciello@amd.com, maciej.wieczor-retman@intel.com, 
+	pawel.chmielewski@intel.com, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 31, 2026 at 6:27=E2=80=AFAM Vlatko Kosturjak
-<vlatko.kosturjak@gmail.com> wrote:
+On Mon, Aug 31, 2026 at 7:34=E2=80=AFAM Mario Limonciello (AMD)
+<superm1@kernel.org> wrote:
 >
-> AcpiPsNextParseState() can set ParserState->Aml to NULL, after which the =
-parse
-> loop dereferences it in AcpiPsPeekOpcode(). A malformed ACPI table suppli=
-ed by
-> firmware therefore panics the kernel in PID 1 during acpi_init(), before
-> userspace exists - the machine does not boot.
+> acpi_debug_print() emits ACPI debug output using multi-part
+> acpi_os_printf() and acpi_os_vprintf() calls without any loglevel
+> prefix.
 >
-> This is the largest of a set of related findings: it accounts for 110 of =
-189
-> malformed SSDTs that leave a stock x86_64_defconfig kernel unbootable
-> (tested on pristine Linux 7.2.2 - tag: v7.2.2). The smallest trigger
-> is a 46-byte table containing no While, Break or Continue at all.
+> When acpi_os_vprintf() processes a chunk without a loglevel prefix
+> (printk_get_level() returns 0), it prepends KERN_CONT. Because the initia=
+l
+> header chunk lacks a loglevel prefix, it either attaches to a preceding
+> unfinalized log message (inheriting its level) or, when split across
+> printk buffer records, falls back to the default message loglevel rather
+> than KERN_DEBUG. This can cause dmesg to misinterpret and colorize debug
+> messages as errors.
 >
-> WalkState->AmlLastWhile is only ever assigned in AcpiDsExecEndOp() while
-> handling a While loop, so outside a loop it is still NULL from the zeroed=
- walk
-> state. AcpiPsNextParseState() assigns it to ParserState->Aml for AE_CTRL_=
-BREAK,
-> AE_CTRL_CONTINUE and AE_CTRL_PENDING.
+> Define ACPI_MSG_DEBUG as KERN_DEBUG in aclinux.h (with an empty fallback
+> in acutils.h for ACPICA OS-independence) and prefix debug message headers
+> and context switch output in acpi_debug_print() with ACPI_MSG_DEBUG so
+> that printk records are properly tagged with KERN_DEBUG.
 >
-> The first two are guarded at their source; AE_CTRL_PENDING is not, and it=
- is not
-> a loop-only status. AcpiExNameSegment() returns it for any name segment t=
-hat
-> starts with a digit or a non-alpha character - entirely controlled by the=
- AML
-> being parsed, with no loop involved. AcpiPsPeekOpcode()'s bounds check do=
-es not
-> help, because NULL < AmlEnd passes.
->
-> In Linux this is reached from AcpiTbLoadNamespace() during acpi_init(), s=
-o a
-> table supplied by firmware faults in PID 1 inside do_one_initcall() and
-> panics the kernel before userspace exists:
->
->   BUG: kernel NULL pointer dereference at 0000000000000000
->   RIP: 0010:acpi_ps_peek_opcode+0x16/0x40
->    acpi_ps_get_next_arg / acpi_ps_parse_loop / acpi_ps_parse_aml
->    acpi_ns_load_table / acpi_tb_load_namespace / acpi_init
->   Kernel panic - not syncing: Attempted to kill init!
->
-> Refuse to take the branch when AmlLastWhile is NULL and fail the parse wi=
-th
-> AE_AML_NO_WHILE, whose existing text is "Break or Continue without a Whil=
-e".
-> Also NULL-check WalkState->ControlState on the two paths that dereference=
- it;
-> the AE_CTRL_FALSE comment already says "a predicate (if any)".
->
-> One detail worth keeping if you rework the patch: it also sets
-> ParserState->Aml =3D ParserState->AmlEnd on the error paths. That is requ=
-ired, not
-> cosmetic. During a table load AcpiPsParseLoop() deliberately converts AML
-> exceptions back to AE_OK ("keep trying to load the table"), so an error r=
-eturn
-> that does not advance the AML pointer re-parses the same position forever=
-. An
-> earlier version of this patch omitted it and turned one table's panic int=
-o a
-> hang.
->
-> Why this matters beyond "bad firmware breaks your machine": under confide=
-ntial
-> computing the host is untrusted by design and supplies the guest's ACPI t=
-ables.
-> Documentation/security/snp-tdx-threat-model.rst lists "Malformed runtime =
-input"
-> from a misbehaving host in its guest threat matrix. That is the model in =
-which
-> these are security bugs rather than robustness bugs.
->
-> Reproducer, evidence and step-by-step instructions can be found at the
-> issue reported here:
-> https://github.com/open-acpica/acpica/issues/1226
->
-> Sending this to the public list rather than security@kernel.org: the atta=
-cker
-> must already control the platform firmware, no control over the faulting
-> pointer was demonstrated, and the fix is small with nothing to coordinate=
-.
-> Say so explicitly if you would rather it had gone elsewhere.
-
-Yes, this needs to go to the upstream ACPICA project on GitHub as a
-pull request as per
-Documentation/driver-api/acpi/linuxized-acpica.rst.
-
-> Signed-off-by: Vlatko Kosturjak <vlatko.kosturjak@gmail.com>
+> Signed-off-by: Mario Limonciello (AMD) <superm1@kernel.org>
 > ---
-> diff --git a/source/components/parser/psparse.c
-> b/source/components/parser/psparse.c
-> index 1aacc0c..7fb28dc 100644
-> --- a/source/components/parser/psparse.c
-> +++ b/source/components/parser/psparse.c
-> @@ -338,6 +338,15 @@ AcpiPsNextParseState (
+> Given this is purely for Linux - it's not obvious to me if it should
+> go upstream to ACPICA or directly to Linux.  Sending here for now.
+
+Defining ACPI_MSG_DEBUG upstream would make sense in my view, so why
+don't you submit it there?
+
+> ---
+>  drivers/acpi/acpica/acutils.h   | 3 +++
+>  drivers/acpi/acpica/utdebug.c   | 4 ++--
+>  include/acpi/platform/aclinux.h | 1 +
+>  3 files changed, 6 insertions(+), 2 deletions(-)
 >
->      case AE_CTRL_BREAK:
+> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.=
+h
+> index 9049bfee409c4..766a3080b5ea1 100644
+> --- a/drivers/acpi/acpica/acutils.h
+> +++ b/drivers/acpi/acpica/acutils.h
+> @@ -100,6 +100,9 @@ extern const char *acpi_gbl_clock_input_scale[];
+>  #ifndef ACPI_MSG_BIOS_WARNING
+>  #define ACPI_MSG_BIOS_WARNING   "Firmware Warning (ACPI): "
+>  #endif
+> +#ifndef ACPI_MSG_DEBUG
+> +#define ACPI_MSG_DEBUG          ""
+> +#endif
 >
-> +        if (!WalkState->AmlLastWhile || !WalkState->ControlState)
-> +        {
-> +            ACPI_ERROR ((AE_INFO,
-> +                "Break without a valid enclosing While"));
-> +            ParserState->Aml =3D ParserState->AmlEnd;
-> +            Status =3D AE_AML_NO_WHILE;
-> +            break;
-> +        }
-> +
->          ParserState->Aml =3D WalkState->AmlLastWhile;
->          WalkState->ControlState->Common.Value =3D FALSE;
->          Status =3D AE_CTRL_BREAK;
-> @@ -345,12 +354,30 @@ AcpiPsNextParseState (
+>  /*
+>   * Common message suffix
+> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.=
+c
+> index a31e07400c34d..1f2cab491637f 100644
+> --- a/drivers/acpi/acpica/utdebug.c
+> +++ b/drivers/acpi/acpica/utdebug.c
+> @@ -156,7 +156,7 @@ acpi_debug_print(u32 requested_debug_level,
+>         if (thread_id !=3D acpi_gbl_previous_thread_id) {
+>                 if (ACPI_LV_THREADS & acpi_dbg_level) {
+>                         acpi_os_printf
+> -                           ("\n**** Context Switch from TID %u to TID %u=
+ ****\n\n",
+> +                           (ACPI_MSG_DEBUG "\n**** Context Switch from T=
+ID %u to TID %u ****\n\n",
+>                              (u32)acpi_gbl_previous_thread_id, (u32)threa=
+d_id);
+>                 }
 >
->      case AE_CTRL_CONTINUE:
+> @@ -168,7 +168,7 @@ acpi_debug_print(u32 requested_debug_level,
+>          * Display the module name, current line number, thread ID (if re=
+quested),
+>          * current procedure nesting level, and the current procedure nam=
+e
+>          */
+> -       acpi_os_printf("%9s-%04d ", module_name, line_number);
+> +       acpi_os_printf(ACPI_MSG_DEBUG "%9s-%04d ", module_name, line_numb=
+er);
 >
-> +        if (!WalkState->AmlLastWhile)
-> +        {
-> +            ACPI_ERROR ((AE_INFO,
-> +                "Continue without a valid enclosing While"));
-> +            ParserState->Aml =3D ParserState->AmlEnd;
-> +            Status =3D AE_AML_NO_WHILE;
-> +            break;
-> +        }
-> +
->          ParserState->Aml =3D WalkState->AmlLastWhile;
->          Status =3D AE_CTRL_CONTINUE;
->          break;
+>  #ifdef ACPI_APPLICATION
+>         /*
+> diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/acli=
+nux.h
+> index 9b30bb9ed711c..5e2ed5e79d3b8 100644
+> --- a/include/acpi/platform/aclinux.h
+> +++ b/include/acpi/platform/aclinux.h
+> @@ -169,6 +169,7 @@
 >
->      case AE_CTRL_PENDING:
+>  #define ACPI_MSG_BIOS_ERROR     KERN_ERR "ACPI BIOS Error (bug): "
+>  #define ACPI_MSG_BIOS_WARNING   KERN_WARNING "ACPI BIOS Warning (bug): "
+> +#define ACPI_MSG_DEBUG          KERN_DEBUG
 >
-> +        if (!WalkState->AmlLastWhile)
-> +        {
-> +            ACPI_ERROR ((AE_INFO,
-> +                "Pending control state without a valid enclosing While")=
-);
-> +            ParserState->Aml =3D ParserState->AmlEnd;
-> +            Status =3D AE_AML_NO_WHILE;
-> +            break;
-> +        }
-> +
->          ParserState->Aml =3D WalkState->AmlLastWhile;
->          break;
+>  /*
+>   * Linux wants to use designated initializers for function pointer struc=
+ts.
+> --
+> 2.53.0
 >
-> @@ -391,7 +418,10 @@ AcpiPsNextParseState (
->
->          /* In the case of a BREAK, just force a predicate (if any) to FA=
-LSE */
->
-> -        WalkState->ControlState->Common.Value =3D FALSE;
-> +        if (WalkState->ControlState)
-> +        {
-> +            WalkState->ControlState->Common.Value =3D FALSE;
-> +        }
->          Status =3D AE_CTRL_END;
->          break;
