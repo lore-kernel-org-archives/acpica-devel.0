@@ -1,143 +1,111 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64CB57ED98;
-	Wed,  9 Sep 2026 16:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6933C9890
+	for <acpica-devel@lists.linux.dev>; Wed,  9 Sep 2026 16:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788969830; cv=none; b=DPfL/bADvKPeXo5m4+azPW+tC1BYlQidbe+1iTC6JpQUMqPrMCTqLLMTEsH4Tv7WpGy3XHSwbEbryd0rnTtQp2znr597JyrHZMR3XSf5fJOi1s3sklYLu4aIRb/HuLEVVRh0QPjFMMQDi1+oTuYGfDyuhvZn1aloQ9ZNMfzs+0M=
+	t=1788971964; cv=none; b=pKINreN+kLcBLveo+fjCQWTtgh3aiYWou0Y79epHuy5MLkU39vA2JQ9V818H+dvLe8MnV/8A05KCUph3bdtrrCVgrjp5k80IdPM9H1DdBktom7r1S/AtvBAAJZfhXS16+R/cMnLYuTGg6lnHSwxI7DqU5omzU9B+ZBXIvMFUvpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788969830; c=relaxed/simple;
-	bh=c9NqLg6Yn6AnzBlRYM1XDFEzegqRQkO/9VyLHbpBlTQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lciEeFCDtQItYP+X6nmRqwVfzFYkON1RqyOdVCZUp+7g1HSXZyRl4fQPoshHG/L7sP8IrMycOcvZh7YKGQGihehXI3N0qhrxPM7X58cY59ZrS/5KNzGL0LndCx2/K2xrboAYRKHvOhI8OVmFHjjknGeGlfjDIONqg6iLZGddFxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HvSm52B9; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1788971964; c=relaxed/simple;
+	bh=FOm1fIw0DMQpAGmJi8JiagS47H8KggFhPCfSsm4vK+Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kn9S4cEAS/h3yEdZD8NccbfhJPjFdXqUulTu4guhOgTW4fc+Jj6ohaw7T+Ex1YFW50WY13VLSVFJySlMJnY7go9So3w2+veZn+LtuAgj8d+CIsNQcTLGRn5h2D/pThquesOLRqIfrHIWZA6zlPjC6Qz+b/Xkh+u9DRMr1+2NrFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Im87FuBm; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HvSm52B9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F06BE1F00A3A;
-	Wed,  9 Sep 2026 16:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788969828;
-	bh=OX6FrUZ8cTdJayq48jS2CIaaaz7PuLHMGIF/xlZ/rSY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=HvSm52B9HoHrizk+RsrfdgdcKwepmWbkdl8jk34/lMXDl9VA+nJiFaRyd3CERHfDv
-	 zsU6w3THyvu+ichhp5XoImtGPv2LPvLG8k+0d+PsxHQ6OAygsZL5V/zqyljLNIIwhh
-	 QT2AQq4hANN8b6e2F/dFV0cTMpldbpDFNnjNglf2p41M/hBzwqMXltid9oL6O6ytRY
-	 6J9lohCIDVxO5jh5dSsuL4LUPQmehjhb/NQxGj8veYE38MLwpu+k5OzrXPXq6mKWwR
-	 v3hlTyFNeIxwgo2XAuAhMBjv6mrENninYrzJqGTCX7s/DVpAWSv55GG+mLGhvn3Pj9
-	 kc6U2w1UBREgA==
-Message-ID: <67885235-8a79-4899-8639-1fe68d93dfd3@kernel.org>
-Date: Wed, 9 Sep 2026 11:03:47 -0500
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Im87FuBm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1788971963; x=1820507963;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FOm1fIw0DMQpAGmJi8JiagS47H8KggFhPCfSsm4vK+Y=;
+  b=Im87FuBm3frEvf4c10a0VMO75pJA1fqYaUX6KwYDb1lmL9udF7fCXAW3
+   iB6CzS6JMBmCkmYUYTubvyVkjS6GVgGwfq6/2HIjK8WBQxj4PVJClGpTD
+   d0ey9cGGmuNwrgNuMNUqocHWwJS0qIMWIRcZcGYizIGRcZTwsGBDRQ6A6
+   Fm8Dh28zM4evAQbiznVh8LbR0SE2rVQmfuhkTWW5V94zdb+VZDH2Y9gM4
+   bDy83HlBthfzG8Qs8WEihhSOCc3V8IEAvAUePalb+HtXjzl0SwhoIYJwP
+   yjafEQJxEJdhUuPC1NTq8qfdrcTL6iX5OLxAywWWsA+3SYqXZTK1AUV0e
+   Q==;
+X-CSE-ConnectionGUID: Df5j/DgRSQadIxDY3PxQdA==
+X-CSE-MsgGUID: B66PzmM/RPyiFzIss34mbg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11900"; a="76964849"
+X-IronPort-AV: E=Sophos;i="6.25,270,1779174000"; 
+   d="scan'208";a="76964849"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2026 09:39:22 -0700
+X-CSE-ConnectionGUID: FchodqDrRu6u56mwT6YlEQ==
+X-CSE-MsgGUID: R9Zcv4YjRTC0iXfF0jXuCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,270,1779174000"; 
+   d="scan'208";a="267688901"
+Received: from black.igk.intel.com ([10.91.253.5])
+  by fmviesa010.fm.intel.com with ESMTP; 09 Sep 2026 09:39:20 -0700
+Received: by black.igk.intel.com (Postfix, from userid 1003)
+	id 8EC0D99; Wed, 09 Sep 2026 18:39:19 +0200 (CEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ACPI: bus: Reduce runtime memory footprint of struct acpi_device
+Date: Wed,  9 Sep 2026 18:39:18 +0200
+Message-ID: <20260909163918.368017-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH] ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug
- output
-Content-Language: en-US
-To: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Cc: mario.limonciello@amd.com, maciej.wieczor-retman@intel.com,
- pawel.chmielewski@intel.com, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20260831053420.1729024-1-superm1@kernel.org>
- <CAJZ5v0ip5QM62Xc+xFAXDu8bv-nyXNmqd647AoERXO99HfkvTw@mail.gmail.com>
-From: Mario Limonciello <superm1@kernel.org>
-In-Reply-To: <CAJZ5v0ip5QM62Xc+xFAXDu8bv-nyXNmqd647AoERXO99HfkvTw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 9/9/26 10:50, Rafael J. Wysocki (Intel) wrote:
-> On Mon, Aug 31, 2026 at 7:34 AM Mario Limonciello (AMD)
-> <superm1@kernel.org> wrote:
->>
->> acpi_debug_print() emits ACPI debug output using multi-part
->> acpi_os_printf() and acpi_os_vprintf() calls without any loglevel
->> prefix.
->>
->> When acpi_os_vprintf() processes a chunk without a loglevel prefix
->> (printk_get_level() returns 0), it prepends KERN_CONT. Because the initial
->> header chunk lacks a loglevel prefix, it either attaches to a preceding
->> unfinalized log message (inheriting its level) or, when split across
->> printk buffer records, falls back to the default message loglevel rather
->> than KERN_DEBUG. This can cause dmesg to misinterpret and colorize debug
->> messages as errors.
->>
->> Define ACPI_MSG_DEBUG as KERN_DEBUG in aclinux.h (with an empty fallback
->> in acutils.h for ACPICA OS-independence) and prefix debug message headers
->> and context switch output in acpi_debug_print() with ACPI_MSG_DEBUG so
->> that printk records are properly tagged with KERN_DEBUG.
->>
->> Signed-off-by: Mario Limonciello (AMD) <superm1@kernel.org>
->> ---
->> Given this is purely for Linux - it's not obvious to me if it should
->> go upstream to ACPICA or directly to Linux.  Sending here for now.
-> 
-> Defining ACPI_MSG_DEBUG upstream would make sense in my view, so why
-> don't you submit it there?
+The ACPI handler is heavily used by the ACPI code. Making it as
+the first member in the struct acpi_device reduces code size.
+For instance, the drivers/acpi/scan.o (with `make allyesconfig`)
+gives this statistics:
 
-OK - No problem.  I've submitted there.
+add/remove: 0/0 grow/shrink: 3/8 up/down: 50/-169 (-119)
+Function                                     old     new   delta
+acpi_device_add                             2294    2319     +25
+acpi_add_single_object                      6523    6544     +21
+acpi_dev_get_next_consumer_dev               602     606      +4
+acpi_tie_acpi_dev                            169     165      -4
+acpi_scan_drop_device                        319     315      -4
+acpi_dev_clear_dependencies                 1151    1147      -4
+acpi_bus_attach                             2898    2894      -4
+acpi_dma_get_range                          1420    1415      -5
+acpi_init_device_object                     5497    5485     -12
+acpi_bus_check_add                          1940    1923     -17
+acpi_device_hotplug                         3407    3288    -119
+Total: Before=77509, After=77390, chg -0.15%
 
-https://github.com/open-acpica/acpica/pull/1231
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/acpi/acpi_bus.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
->> ---
->>   drivers/acpi/acpica/acutils.h   | 3 +++
->>   drivers/acpi/acpica/utdebug.c   | 4 ++--
->>   include/acpi/platform/aclinux.h | 1 +
->>   3 files changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
->> index 9049bfee409c4..766a3080b5ea1 100644
->> --- a/drivers/acpi/acpica/acutils.h
->> +++ b/drivers/acpi/acpica/acutils.h
->> @@ -100,6 +100,9 @@ extern const char *acpi_gbl_clock_input_scale[];
->>   #ifndef ACPI_MSG_BIOS_WARNING
->>   #define ACPI_MSG_BIOS_WARNING   "Firmware Warning (ACPI): "
->>   #endif
->> +#ifndef ACPI_MSG_DEBUG
->> +#define ACPI_MSG_DEBUG          ""
->> +#endif
->>
->>   /*
->>    * Common message suffix
->> diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
->> index a31e07400c34d..1f2cab491637f 100644
->> --- a/drivers/acpi/acpica/utdebug.c
->> +++ b/drivers/acpi/acpica/utdebug.c
->> @@ -156,7 +156,7 @@ acpi_debug_print(u32 requested_debug_level,
->>          if (thread_id != acpi_gbl_previous_thread_id) {
->>                  if (ACPI_LV_THREADS & acpi_dbg_level) {
->>                          acpi_os_printf
->> -                           ("\n**** Context Switch from TID %u to TID %u ****\n\n",
->> +                           (ACPI_MSG_DEBUG "\n**** Context Switch from TID %u to TID %u ****\n\n",
->>                               (u32)acpi_gbl_previous_thread_id, (u32)thread_id);
->>                  }
->>
->> @@ -168,7 +168,7 @@ acpi_debug_print(u32 requested_debug_level,
->>           * Display the module name, current line number, thread ID (if requested),
->>           * current procedure nesting level, and the current procedure name
->>           */
->> -       acpi_os_printf("%9s-%04d ", module_name, line_number);
->> +       acpi_os_printf(ACPI_MSG_DEBUG "%9s-%04d ", module_name, line_number);
->>
->>   #ifdef ACPI_APPLICATION
->>          /*
->> diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/aclinux.h
->> index 9b30bb9ed711c..5e2ed5e79d3b8 100644
->> --- a/include/acpi/platform/aclinux.h
->> +++ b/include/acpi/platform/aclinux.h
->> @@ -169,6 +169,7 @@
->>
->>   #define ACPI_MSG_BIOS_ERROR     KERN_ERR "ACPI BIOS Error (bug): "
->>   #define ACPI_MSG_BIOS_WARNING   KERN_WARNING "ACPI BIOS Warning (bug): "
->> +#define ACPI_MSG_DEBUG          KERN_DEBUG
->>
->>   /*
->>    * Linux wants to use designated initializers for function pointer structs.
->> --
->> 2.53.0
->>
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index a10a591c18b2..64ae66ca456e 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -435,9 +435,9 @@ struct acpi_device_software_nodes {
+ 
+ /* Device */
+ struct acpi_device {
++	acpi_handle handle;		/* no handle for fixed hardware */
+ 	u32 pld_crc;
+ 	int device_type;
+-	acpi_handle handle;		/* no handle for fixed hardware */
+ 	struct fwnode_handle fwnode;
+ 	struct list_head wakeup_list;
+ 	struct list_head del_list;
+-- 
+2.50.1
 
