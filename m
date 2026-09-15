@@ -1,23 +1,23 @@
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A184B421EE7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5E5420897;
 	Tue, 15 Sep 2026 03:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789443251; cv=none; b=ff5VLGT4GfGN3zNrWofpy0qY82GOuiunpM5tYzbeNGjdPfXvY+BDbS20G1Hets75F8g5E8hKAdKKAIjQTEafmodSZdzJdJAUMG7EkA6+jFk7ZlR+iPLKLeVsEaI/O1vbmRJRN3KiwnowrD1kuw4yntN0iA/epuBRdPm5UHqjuuU=
+	t=1789443250; cv=none; b=FCTdLrENfwn6n2RNXEyYZoiHvRpduDJQG6+ywPGf9KgE+OsGgB7BS087bVU4lvz3t6FsZdvJ0r9mS52toW7t2MJO1b2d88FJvIXi7AsFo10UFkKxEUV5u3C9pClGZSjHYJQ1YWVpQHU9GHBTDWXvmMWSEVFe7mIcUKIAHl/Hy3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789443251; c=relaxed/simple;
-	bh=d/PzSr+pBWwRCmGUUPhTcFzuPPuRKZn8WKjlMX5ulvQ=;
+	s=arc-20240116; t=1789443250; c=relaxed/simple;
+	bh=BHw8oYA5cUdxj0Pv1MbAjMukmRTWHNxTlSixQVJdkmQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N1Ur16z+PZlkUmsSsaAK0MgPHOY1gT+w+5UJD0CQt+IXnVBuFaeUugMZAkueEZSNxzJ93XDyP0dqJ6P1F20tu68d4orUQz6YO6FkauJFqDsEBHmije6Sv4XzpGyIXEXLV8AadquvM3NrjKzTwxZfPF4ZUSt3ZaR+uC3RMdD6srM=
+	 MIME-Version; b=EG2ubtxG7UflnluJWqaHdcqxcFSnSgZYgWO0Cr/6sxESTjSQfXBgvm8KcXc2FnXMI13tkhjrUpgr7+UuhINMD17dm4fZZscvY+uTSboEEp3ICoxxRoJdV7bmv8uAGRXQCK03/Vad0VZohx9PI5+JwzaXiWaDbAz8QFAw2Poz2aE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8AxHNKnvKhqtxEMAA--.35042S3;
-	Tue, 15 Sep 2026 11:33:59 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Cx+9GivKhqqxEMAA--.35297S3;
+	Tue, 15 Sep 2026 11:33:54 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowJDxDc+mvKhqk90gAA--.37043S2;
-	Tue, 15 Sep 2026 11:33:58 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJAxHs+bvKhqkd0gAA--.36959S3;
+	Tue, 15 Sep 2026 11:33:53 +0800 (CST)
 From: Bibo Mao <maobibo@loongson.cn>
 To: Huacai Chen <chenhuacai@kernel.org>,
 	"Rafael J . Wysocki" <rafael@kernel.org>,
@@ -29,9 +29,9 @@ Cc: Len Brown <lenb@kernel.org>,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	lixianglai@loongson.cn
-Subject: [PATCH v3 4/4] MAINTAINERS: Add entry for drivers/acpi/loongarch
-Date: Tue, 15 Sep 2026 11:26:27 +0800
-Message-Id: <20260915032627.2796747-5-maobibo@loongson.cn>
+Subject: [PATCH v3 1/4] ACPICA: actbl2.h: Add bit constants of the Flags field in the IOVT IOMMU structure
+Date: Tue, 15 Sep 2026 11:26:24 +0800
+Message-Id: <20260915032627.2796747-2-maobibo@loongson.cn>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20260915032627.2796747-1-maobibo@loongson.cn>
 References: <20260915032627.2796747-1-maobibo@loongson.cn>
@@ -42,54 +42,39 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJDxDc+mvKhqk90gAA--.37043S2
+X-CM-TRANSID:qMiowJAxHs+bvKhqkd0gAA--.36959S3
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
 	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
 	nUUI43ZEXa7xR_UUUUUUUUU==
 
-ACPI defines few LoongArch specific tables which need parsing code
-added in drivers/acpi/loongarch. Add maintainer entries for this newly
-created folder.
+According to the IOVT specification, define macros for each bit of the
+Flags field in the IOVT IOMMU structure.
 
+Link: https://github.com/open-acpica/acpica/commit/352f750e4cc0
 Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- MAINTAINERS            | 9 +++++++++
- arch/loongarch/Kconfig | 1 +
- 2 files changed, 10 insertions(+)
+ include/acpi/actbl2.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c2414447892c..e19be0c1654e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -347,6 +347,15 @@ S:	Maintained
- F:	drivers/acpi/riscv/
- F:	include/linux/acpi_rimt.h
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index baef525367b5..76e4a5bc79b4 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -919,6 +919,13 @@ struct acpi_iovt_iommu {
+ 	u32 device_entry_offset;
+ };
  
-+ACPI FOR LoongArch (ACPI/LoongArch)
-+M:	Bibo Mao <maobibo@loongson.cn>
-+R:	Huacai Chen <chenhuacai@kernel.org>
-+L:	linux-acpi@vger.kernel.org
-+L:	loongarch@lists.linux.dev
-+S:	Maintained
-+F:	drivers/acpi/loongarch/
-+F:	include/linux/acpi_iovt.h
++/* Masks for Flags field above */
++#define ACPI_IOVT_IOMMU_PCI_DEVICE		(1<<0)
++#define ACPI_IOVT_IOMMU_PXM_VALID		(1<<1)
++#define ACPI_IOVT_IOMMU_MAGAGE_BY_SEGMENT	(1<<2)
++#define ACPI_IOVT_IOMMU_HW_CAP_SUPPORT		(1<<3)
++#define ACPI_IOVT_IOMMU_MSI_INT_BYPASS		(1<<4)
 +
- ACPI PCC(Platform Communication Channel) MAILBOX DRIVER
- M:	Sudeep Holla <sudeep.holla@kernel.org>
- L:	linux-acpi@vger.kernel.org
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 2067d1f2ad7a..d7f8e4fec952 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -6,6 +6,7 @@ config LOONGARCH
- 	select ACPI_GENERIC_GSI if ACPI
- 	select ACPI_MCFG if ACPI
- 	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-+	select ACPI_IOVT if ACPI
- 	select ACPI_PPTT if ACPI
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_BINFMT_ELF_STATE
+ struct acpi_iovt_device_entry {
+ 	u8 type;
+ 	u8 length;
 -- 
 2.39.3
 
