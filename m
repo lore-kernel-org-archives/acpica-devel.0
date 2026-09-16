@@ -1,265 +1,334 @@
-Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011068.outbound.protection.outlook.com [52.101.57.68])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEBE503BC1
-	for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 10:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789555204; cv=fail; b=LJ9ixMapX6TPOvYprqlh+zjvV/nQv4odmcBDsALHaBgXBgU3KWmtseAblLsNhb1StBJgxdXr2upwdUdlD4I4x7hXydvpJgOxHnWrVXdahBqCANTo+4P0DErA/smy72i/WoC+c1ofDf4S/HrZPskn/255+a5B00D2oKnLjN6aVEo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789555204; c=relaxed/simple;
-	bh=Qvduej68MGeX+BC3BOqc01C35uajYgGBUbKkzN7f7tk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aiwExWg+GyOKlnycDZ9eP/uVuxr85FhDAdBgYav5fitrrsRd9pMOtnA1e8XSRBiJEhCSt1vGyck84YlIfxU/0iTddRhQVWoVMr2ov63hjdwaMQMd3zJffoLIiorORscHuS6nmQZ5Nqt0zlQA8X3pSAmGuCyHnTg+cSCDd8omXmM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=EWRzkJLv; arc=fail smtp.client-ip=52.101.57.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA9E4F0537
+	for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 13:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789563693; cv=none; b=iWZyGUIGN/ZSwISzUtNDSAZ4KyctuWoZq8z++G5xYzqbBDA0ZSqy6uQU9VgiOzG+RRrdElH/ZC9EhyjU5npsgOLPRXDni2ZOKezY8ydTM/Ue5emAZIY0upfzXjF+tRza6qpQrZRZ+qxry5CwcZHlBbWIUp4sOwQUDNiGtL/FKs8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789563693; c=relaxed/simple;
+	bh=9Q9J73qi6nlaR+ALL3stMitLVEeYmfR69v79qdvQNVE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pWAkfaIEtiy6BmRLBqrS+saN3EQlBfCO7sSAEsgKTYsH7k6PzTidAzhFMSWiarP8iVHgKLNNZjQr0/3CW7xNQHU0TlK9AAOOLz3S2tyMH77se7t7YJz9mZC3UyY7APSaTpQy9kLCqouhLC0NKIzbdDxXHnDcCsIGPu3QgmZ2/iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lqOhPR23; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="EWRzkJLv"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AvDduda84gbr1CwU92a/JTb/7GNpZCcJB9kh5DtICP5C7fRxISMriTqf5eKbmoZlj9cmC9pz/dwaAhReFEpiVpVIz9nnKSY+ITneVguEPC4ag2PPWsYM/n+HdI+kUMN92KWksUB2lkSF9sEIz7Ab+Wun7LvXhLt3nOtXW7tyofan7M4AusrNAkXsIixlHx+uqAwDhUR9y6YpGJFJhKaZ5UB4AKeFBojz8p6WXALF7lDAIti+f/3JhEKhGNqfasKpJgTTLUBrTJXgCesn6svVXaSQFMrGMknBQSRcH1VYEi7VZv0OSAX+JvhyAoaATyrhgBVvZFMMQMc2wVVvWxB7Fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vGoWmDSTUR34xt2WPPu+cAoxUpR34J7mn0r46m34R3k=;
- b=JVKiHOl3IH0+oqYsU+MvbzeSoJpXEx/j+wYyW/EzXM43ZeKiolL1IBQ6T+oaOtcO7f1xBWTF+22FM1DMrW+RXcNA9lBcJPkiRJ3oHIScsS6GcCSXv9mJYYrfzsCeaCUoJg/Evir9MaoMvIFn+L3ZZZdT0luyAyzhCnlrSmfwgb2z/M5Iwpllny4zdPxWfhlk/+sDQDmnCVz0kwO0XAjvqfJsjQK/CciibLVPV0xG6ddb4WVoFGsCSzGttezFkxxwPTRScuTyFrOrSe23d5W1cyJ+IeMYWkCw16Q6spvO8mi7SHnjoY+JCrKbo0m0XXDfZwzav4flPcnZL1EHJSxwbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vGoWmDSTUR34xt2WPPu+cAoxUpR34J7mn0r46m34R3k=;
- b=EWRzkJLvUzivTA3D6OPrjBjhu5P/YUptOnmL6hH/IiT9jiwETLMTMbV+c4rPpcYZ+g27XT7ogSQAetIbJJAIBwmrl8ZoF+vRCHGIHPCmwtSSsDINQVzKmXJpmfij0sTOM5WYHrX0jjAWlY9mQ7a86lJAaqtNJXJqEjxoRa5oMYOEHZZ+QHCAffQVnCJjVx+Dkf2mjOyNo2WnTFWzzzh9ZB0WWJeLqi0rgAWLXK79m6fod16QmNU/QMbnns3UFgUpk/Wd633/9NN9mu+5Z3xhStYzb7c3ff3abxmYXNNNFV60bZTGfuKGT72G4YhTiiZiczKBSTgXOIRmn51cQKOjFQ==
-Received: from SJ2PR07CA0014.namprd07.prod.outlook.com (2603:10b6:a03:505::7)
- by DSVPR12MB999150.namprd12.prod.outlook.com (2603:10b6:8:388::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.11; Wed, 16 Sep
- 2026 10:39:31 +0000
-Received: from BY1PEPF00026966.namprd05.prod.outlook.com
- (2603:10b6:a03:505:cafe::28) by SJ2PR07CA0014.outlook.office365.com
- (2603:10b6:a03:505::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.9 via Frontend Transport; Wed, 16
- Sep 2026 10:39:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BY1PEPF00026966.mail.protection.outlook.com (10.167.244.150) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.428.7 via Frontend Transport; Wed, 16 Sep 2026 10:39:30 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Wed, 16 Sep
- 2026 03:39:13 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.46; Wed, 16 Sep
- 2026 03:39:13 -0700
-Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.2562.46 via Frontend
- Transport; Wed, 16 Sep 2026 03:39:06 -0700
-From: Sumit Gupta <sumitg@nvidia.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
-	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
-	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
-	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
-	<kprateek.nayak@amd.com>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-	<acpica-devel@lists.linux.dev>, <linux-tegra@vger.kernel.org>
-CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
-	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
-	<bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [PATCH v5 4/4] cpufreq: CPPC: Preserve OSPM-set registers across suspend/resume
-Date: Wed, 16 Sep 2026 16:08:20 +0530
-Message-ID: <20260916103820.1760297-5-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260916103820.1760297-1-sumitg@nvidia.com>
-References: <20260916103820.1760297-1-sumitg@nvidia.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lqOhPR23"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB3A1F0089E
+	for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 13:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789563691;
+	bh=jj4FtNav4TXPQvbVBqNyUNxnC9aC+86pLnGTjTl9G+U=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=lqOhPR23imVGibuT+IQxwHW1NzR7E0mGwlDdW7PkPChAidRFDD/AK3aiww09+NiHW
+	 LxLSKFFBCfnv5e9PZJ52P+dQAu+Q2GUGetsPdcYFj8prRtvQdjnJ5+NwVKnC1kqJkn
+	 giTfzSjOgE3ygkeZ9XQz0sy8p9pffILoNoTpPSZEXubl80DuvEk3e3VWKQ0fmJeXfA
+	 uK6uHdgi30PQqRTj2GKl2apn2mMecyj5sg2QEVFknpnaXYQIml7qSMZMFbiLr+2uiK
+	 biSlzLZG5NRBBsaRrJI70XRoBGCxDNaNEJ1A/fh2ldfLNOpEDUbEFbuYhl5YKqmQJg
+	 2Zn4OAOQpSRdQ==
+Received: by mail-lf2-f12.google.com with SMTP id 2adb3069b0e04-5b5e4f1651cso858097e87.0
+        for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 06:01:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvByIFPf0qzxgsndLCnFCNmMj2pzeiaAy98g9fgr6LAu7JvbPa9xuFJ3F0gr5KfbF3yZBVrQW5b1aQHxZ9r0=@lists.linux.dev
+X-Gm-Message-State: AFuF++mSNYTwPRGlpuZSyEJCL+y/ZCGWpkCGTE0dLg188EJA3kXOpcCf
+	0pvmJdNqBgHZ6Ss7gxyDJbJwrgUas+sdNeVaj8Ah3lXHPIJWygazh1C4A763Gufl8puBWQkOSRx
+	ddEW/BpxeyQpYX73/dMrSc26qiu0gp/4=
+X-Received: by 2002:a05:6512:2347:b0:5b6:184c:7da3 with SMTP id
+ 2adb3069b0e04-5b8b664e970mr692970e87.44.1789563689604; Wed, 16 Sep 2026
+ 06:01:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY1PEPF00026966:EE_|DSVPR12MB999150:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6562345d-f95a-414d-97f9-08df13deca37
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|1800799024|7416014|23010399003|36860700016|22082099003|18002099003|921020|11063799006|10067099003|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	fcGNp9R8LhFLhRLxhW5oG5+NZY5PXvsjr/7q8lPp1qlcSjHjScdTvzbMHafE618M0NuEnPY6HAa8xKhVAzfITZqgP75G8w1h7I2JCarUEOAW8TIEou26tSLJL5kav+24VF36rSdNpTzt3q5o8UgFM3TUB8m7lFfOGHFOYdJr2sEcpjNb6IUwQnWBb9qZvi9QdIFmnqutJLP2YZkt74WepWWgbadQl5yU/3UfNOwc2T7W9D/YdJOHvp35kntfPWjsxaMmPZAP+vy/pariksePhM9JZ9A1pgfuGTwlY0OXxH7dCxxoqn+aCx7quDS2+MbJ3nhtRO/82OMzriRGDb4Z1Siqj7Q2GDvJZ9eEpJeU7gOxPJLooUjSWevTPTk+xRB1jUGK34MUQD1nSooduOGKq8AxAk22P5zU/tNUjY8uSiBU8IrT13+aFB5EGGf/GxpgxsQGcOSKCK3HEBjTRqMT12ieKcL0nwRnS+gGh7MNFG0lE4qMHgNg9PyxNIl17rqzJsBK3DZA/heyvr9hhnRL7nuj5AAdHySREUqPi4+5f3hX8G4RIP+xQVCYlogTrIp98GMLyKOi1Szvt7pReIc5XAaOQT+oHz5ZKYjKImF0PLYMj85E2k18ZxBvN8bKtdLI5Y/1YSRX2X5DuoZWrlombrZb2OSKN8jk8e3Kpt1DWRiofrzJOKJ/p2lonjKpv7HkH8FSvBqvXombkeEUuz2fJ87Pyd6a6JgkXGOANbJkzqmNPfO+QmofrG/xbFcboSOu
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(7416014)(23010399003)(36860700016)(22082099003)(18002099003)(921020)(11063799006)(10067099003)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	ye1sYuSm5OhWDqJOOgM+g9Z7Kxu31eyjAxefdHQbcOBcXlSiJCUWkCbtU4k7YiOQSGef38hShxzxXCRD27+c/ufciaUPTRzmGZzdclopHb1+7u02c8P3ZPw0JYZkdyevaR3SA6KH7IEx6855vGa58I2gOLylOoCP2Sd9ETGmAYYXBOK02aZ9WguAgTWbfyq3mFZsoStxJZOGbc2mxczLWWU4TmxRXoA5H4D1rd7nr1rOHKTl6E+9vUYAglgARZ1DEdQ3viT0++0kyljIKR0I7tAys1or3SIdQOGvZIsWBd86CS7khXRfgCeab7337sA94tAZTSdqfhJ85cVb+kuvai1Dzek5HEfOoV3RZCIlWlCEv2ahn1Fsr+1s7thWqvvdQHVbFnZXWqxh7fW/RQMwFCZT4/leVuCYiz9ajAb/71bwodcGY23paVIcbbkJUPIT
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2026 10:39:30.5760
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6562345d-f95a-414d-97f9-08df13deca37
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BY1PEPF00026966.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DSVPR12MB999150
+References: <20260913231410.416922-1-jordan@brough.org> <20260913231410.416922-2-jordan@brough.org>
+In-Reply-To: <20260913231410.416922-2-jordan@brough.org>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Wed, 16 Sep 2026 15:00:07 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jajXFU8B-YLirtH3NTjM-+bXe2M2+xuJWJbwK4m9O=Zg@mail.gmail.com>
+X-Gm-Features: AcwNN1UU6k1jyFh_G-zYTLAqbYe_0fCs1p5wXgbrrbSo74l9sMUVYr1q5lznoS4
+Message-ID: <CAJZ5v0jajXFU8B-YLirtH3NTjM-+bXe2M2+xuJWJbwK4m9O=Zg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ACPI: sbs: add battery hook mechanism for
+ SBS-registered batteries
+To: Jordan Brough <jordan@brough.org>
+Cc: rafael@kernel.org, rydberg@bitmath.org, linux@roeck-us.net, 
+	lenb@kernel.org, maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The driver preserves the OSPM-set registers across CPU hotplug, but system
-suspend/resume is a separate path. On platforms that reset those registers
-or the performance controls across suspend, the values are lost.
+On Mon, Sep 14, 2026 at 1:14=E2=80=AFAM Jordan Brough <jordan@brough.org> w=
+rote:
+>
+> drivers/acpi/battery.c provides a battery_hook_register()/unregister()
+> mechanism that lets other drivers (e.g. hwmon drivers exposing vendor-
+> specific charge control) attach extra power_supply properties to an
+> ACPI Control Method Battery (HID PNP0C0A, "CmBatt").
+>
+> Some machines instead expose their battery through the ACPI Smart
+> Battery System (HID ACPI0002, "SBS") driver in drivers/acpi/sbs.c,
+> which has no equivalent hook point. On these machines a hwmon driver
+> has no supported way to attach additional properties to the battery's
+> power_supply device.
+>
+> Add a parallel sbs_battery_hook_register()/unregister() mechanism to
+> drivers/acpi/sbs.c, mirroring the existing CmBatt hook API in name and
+> behavior so that callers can support both battery registration paths
+> symmetrically. This is purely additive: no existing hook consumer or
+> code path in drivers/acpi/battery.c is touched, and sbs.c's own
+> behavior is unchanged for any driver that does not call the new API.
+>
+> This is a prerequisite for hwmon/applesmc gaining
+> charge_control_end_threshold support, since the Intel MacBook hardware
+> being targeted registers its battery via SBS, not CmBatt.
+>
+> Signed-off-by: Jordan Brough <jordan@brough.org>
 
-The hotplug callbacks cannot cover suspend on their own. Secondary CPUs go
-offline only after devices are suspended, too late to touch the CPPC
-registers. offline() does not run for every policy either, as the boot CPU
-stays up during suspend-to-RAM and no CPU goes offline during
-suspend-to-idle. The driver's suspend() callback runs earlier, from
-cpufreq_suspend(), while all CPUs are still online and no device is
-suspended, so CPPC access is still safe.
+Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org>
 
-Reuse the same save/restore mechanism for suspend/resume:
+and feel free to route this patch along with the hwmon changes depending on=
+ it.
 
-  - suspend() saves the current OSPM-set values, restores the firmware
-    ones and sets a per-policy flag, suspend_regs_handled, to record that.
-    It also stops the frequency invariance updates, so that no sample
-    spans the suspend window.
-  - offline() sees the flag and skips the save and restore, as suspend()
-    has already done both. Saving again would capture the firmware values
-    that suspend() wrote back and lose what the OS set. It still requests
-    the lowest desired performance.
-  - online() clears the flag, so that a later offline() takes a fresh
-    snapshot. It also restarts the frequency invariance updates.
-  - resume() calls online() for a policy that still has the flag set. CPUs
-    offlined during suspend come back before the core calls resume(), so
-    online() has already run for their policies and cleared the flag.
+Thanks!
 
-Suggested-by: Christian Loehle <christian.loehle@arm.com>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
- drivers/cpufreq/cppc_cpufreq.c | 63 ++++++++++++++++++++++++++++++++--
- 1 file changed, 60 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index ac315071a979..11f2e8111ef9 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -87,6 +87,12 @@ struct cppc_saved_vals {
- 
- struct cppc_policy_state {
- 	struct cppc_saved_vals regs[CPPC_NR_SAVED_REGS];
-+	/*
-+	 * Set by suspend() after it saves the OSPM-set values and restores the
-+	 * firmware ones, so a later offline() does not repeat those accesses.
-+	 * Cleared at init() and by online().
-+	 */
-+	bool suspend_regs_handled;
- };
- 
- static DEFINE_PER_CPU(struct cppc_policy_state, cppc_policy_state);
-@@ -895,6 +901,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	policy->cur = cppc_perf_to_khz(caps, caps->highest_perf);
- 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
- 
-+	cppc_cpufreq_policy_state(policy)->suspend_regs_handled = false;
- 	cppc_cpufreq_save_regs(policy, CPPC_SAVED_FIRMWARE);
- 
- 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
-@@ -986,6 +993,8 @@ static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
- 	unsigned int cpu = policy->cpu;
- 	int ret;
- 
-+	cppc_cpufreq_policy_state(policy)->suspend_regs_handled = false;
-+
- 	ret = cppc_set_enable(cpu, true);
- 	if (ret && ret != -EOPNOTSUPP) {
- 		pr_warn("Failed to re-enable CPPC for CPU%u (%d)\n", cpu, ret);
-@@ -1034,9 +1043,14 @@ static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
- 	unsigned int cpu = policy->cpu;
- 	int ret;
- 
--	/* Save what the OS set, and leave the platform in its pre-driver state. */
--	cppc_cpufreq_save_regs(policy, CPPC_SAVED_REQUESTED);
--	cppc_cpufreq_apply_saved_regs(policy, CPPC_SAVED_FIRMWARE);
-+	/*
-+	 * Save what the OS set and leave the platform in its pre-driver state,
-+	 * unless suspend() already did so earlier in this suspend cycle.
-+	 */
-+	if (!cppc_cpufreq_policy_state(policy)->suspend_regs_handled) {
-+		cppc_cpufreq_save_regs(policy, CPPC_SAVED_REQUESTED);
-+		cppc_cpufreq_apply_saved_regs(policy, CPPC_SAVED_FIRMWARE);
-+	}
- 
- 	/*
- 	 * Stop the frequency invariance updates and cancel the pending work, so
-@@ -1061,6 +1075,47 @@ static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
- 	return 0;
- }
- 
-+/*
-+ * Run for every active policy when the system suspends, before any CPU goes
-+ * offline.
-+ *
-+ * Save the OSPM-set values and restore the firmware values here, while CPPC
-+ * access is still safe. Secondary CPUs go offline much later, with devices
-+ * already suspended. That is too late for these accesses, so offline() skips
-+ * them. Doing it here also covers a policy whose CPUs stay online, for which
-+ * offline() never runs.
-+ *
-+ * Stop the frequency invariance updates here as well, so that no sample spans
-+ * the suspend window. offline() would not do it for a policy whose CPUs stay
-+ * online. online() restarts them on the way back.
-+ */
-+static int cppc_cpufreq_cpu_suspend(struct cpufreq_policy *policy)
-+{
-+	cppc_cpufreq_save_regs(policy, CPPC_SAVED_REQUESTED);
-+	cppc_cpufreq_apply_saved_regs(policy, CPPC_SAVED_FIRMWARE);
-+	cppc_cpufreq_policy_state(policy)->suspend_regs_handled = true;
-+
-+	cppc_cpufreq_cpu_fie_exit(policy);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Run the online() restore for a policy whose CPUs stayed online through
-+ * suspend.
-+ *
-+ * CPUs offlined during suspend come back before the core calls resume(), so
-+ * online() has already run for their policies and cleared the flag. Only a
-+ * policy that still has it set needs online() here.
-+ */
-+static int cppc_cpufreq_cpu_resume(struct cpufreq_policy *policy)
-+{
-+	if (!cppc_cpufreq_policy_state(policy)->suspend_regs_handled)
-+		return 0;
-+
-+	return cppc_cpufreq_cpu_online(policy);
-+}
-+
- static inline u64 get_delta(u64 t1, u64 t0)
- {
- 	if (t1 > t0 || t0 > ~(u32)0)
-@@ -1356,6 +1411,8 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
- 	.exit = cppc_cpufreq_cpu_exit,
- 	.online = cppc_cpufreq_cpu_online,
- 	.offline = cppc_cpufreq_cpu_offline,
-+	.suspend = cppc_cpufreq_cpu_suspend,
-+	.resume = cppc_cpufreq_cpu_resume,
- 	.set_boost = cppc_cpufreq_set_boost,
- 	.attr = cppc_cpufreq_attr,
- 	.name = "cppc_cpufreq",
--- 
-2.34.1
-
+> ---
+>  drivers/acpi/sbs.c     | 147 ++++++++++++++++++++++++++++++++++++++++-
+>  include/acpi/battery.h |  16 +++++
+>  2 files changed, 162 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/sbs.c b/drivers/acpi/sbs.c
+> index 86b7c797585..305bf62eae3 100644
+> --- a/drivers/acpi/sbs.c
+> +++ b/drivers/acpi/sbs.c
+> @@ -10,6 +10,7 @@
+>  #define pr_fmt(fmt) "ACPI: " fmt
+>
+>  #include <linux/init.h>
+> +#include <linux/list.h>
+>  #include <linux/slab.h>
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+> @@ -54,6 +55,7 @@ struct acpi_battery {
+>         struct power_supply *bat;
+>         struct power_supply_desc bat_desc;
+>         struct acpi_sbs *sbs;
+> +       struct list_head list;          /* node in sbs_hook_battery_list =
+*/
+>         unsigned long update_time;
+>         char name[8];
+>         char manufacturer_name[ACPI_SBS_BLOCK_MAX];
+> @@ -518,6 +520,145 @@ static int acpi_battery_read(struct acpi_battery *b=
+attery)
+>         return result;
+>  }
+>
+> +/*
+> + * Battery hook support, mirroring the mechanism in drivers/acpi/battery=
+.c
+> + * for batteries registered there. That mechanism only sees batteries
+> + * added via drivers/acpi/battery.c, not the ones this driver registers,
+> + * so drivers wanting to attach optional functionality (e.g. an extra
+> + * power_supply_ext) to an SBS battery need this separate copy; see the
+> + * comment above the declarations in include/acpi/battery.h.
+> + */
+> +static LIST_HEAD(sbs_hook_list);
+> +static LIST_HEAD(sbs_hook_battery_list);
+> +static DEFINE_MUTEX(sbs_hook_mutex);
+> +
+> +static void sbs_battery_hook_unregister_unlocked(struct acpi_battery_hoo=
+k *hook)
+> +{
+> +       struct acpi_battery *battery;
+> +
+> +       /*
+> +        * In order to remove a hook, we first need to
+> +        * de-register all the batteries that are registered.
+> +        */
+> +       list_for_each_entry(battery, &sbs_hook_battery_list, list) {
+> +               if (!hook->remove_battery(battery->bat, hook))
+> +                       power_supply_changed(battery->bat);
+> +       }
+> +       list_del_init(&hook->list);
+> +}
+> +
+> +void sbs_battery_hook_unregister(struct acpi_battery_hook *hook)
+> +{
+> +       mutex_lock(&sbs_hook_mutex);
+> +       /*
+> +        * Ignore already unregistered battery hooks. This might happen
+> +        * if a battery hook was previously unloaded due to an error when
+> +        * adding a new battery.
+> +        */
+> +       if (!list_empty(&hook->list))
+> +               sbs_battery_hook_unregister_unlocked(hook);
+> +       mutex_unlock(&sbs_hook_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(sbs_battery_hook_unregister);
+> +
+> +void sbs_battery_hook_register(struct acpi_battery_hook *hook)
+> +{
+> +       struct acpi_battery *battery;
+> +
+> +       mutex_lock(&sbs_hook_mutex);
+> +       list_add(&hook->list, &sbs_hook_list);
+> +       /*
+> +        * Now that the driver is registered, we need
+> +        * to notify the hook that a battery is available
+> +        * for each battery, so that the driver may add
+> +        * its attributes.
+> +        */
+> +       list_for_each_entry(battery, &sbs_hook_battery_list, list) {
+> +               if (hook->add_battery(battery->bat, hook)) {
+> +                       /*
+> +                        * If a add-battery returns non-zero,
+> +                        * the registration of the hook has failed,
+> +                        * and we will not add it to the list of loaded
+> +                        * hooks.
+> +                        */
+> +                       pr_err("hook failed to load: %s", hook->name);
+> +                       sbs_battery_hook_unregister_unlocked(hook);
+> +                       goto end;
+> +               }
+> +
+> +               power_supply_changed(battery->bat);
+> +       }
+> +       pr_info("new hook: %s\n", hook->name);
+> +end:
+> +       mutex_unlock(&sbs_hook_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(sbs_battery_hook_register);
+> +
+> +static void devm_sbs_battery_hook_unregister(void *data)
+> +{
+> +       struct acpi_battery_hook *hook =3D data;
+> +
+> +       sbs_battery_hook_unregister(hook);
+> +}
+> +
+> +int devm_sbs_battery_hook_register(struct device *dev, struct acpi_batte=
+ry_hook *hook)
+> +{
+> +       sbs_battery_hook_register(hook);
+> +
+> +       return devm_add_action_or_reset(dev, devm_sbs_battery_hook_unregi=
+ster, hook);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_sbs_battery_hook_register);
+> +
+> +/*
+> + * This function gets called right after the battery sysfs
+> + * attributes have been added, so that the drivers that
+> + * define custom sysfs attributes can add their own.
+> + */
+> +static void sbs_battery_hook_add_battery(struct acpi_battery *battery)
+> +{
+> +       struct acpi_battery_hook *hook_node, *tmp;
+> +
+> +       mutex_lock(&sbs_hook_mutex);
+> +       INIT_LIST_HEAD(&battery->list);
+> +       list_add(&battery->list, &sbs_hook_battery_list);
+> +       /*
+> +        * Since we added a new battery to the list, we need to
+> +        * iterate over the hooks and call add_battery for each
+> +        * hook that was registered. This usually happens
+> +        * when a battery gets hotplugged or initialized
+> +        * during the battery module initialization.
+> +        */
+> +       list_for_each_entry_safe(hook_node, tmp, &sbs_hook_list, list) {
+> +               if (hook_node->add_battery(battery->bat, hook_node)) {
+> +                       /*
+> +                        * The notification of the hook has failed, to
+> +                        * prevent further errors we will unload the hook=
+.
+> +                        */
+> +                       pr_err("error in hook, unloading: %s",
+> +                              hook_node->name);
+> +                       sbs_battery_hook_unregister_unlocked(hook_node);
+> +               }
+> +       }
+> +       mutex_unlock(&sbs_hook_mutex);
+> +}
+> +
+> +static void sbs_battery_hook_remove_battery(struct acpi_battery *battery=
+)
+> +{
+> +       struct acpi_battery_hook *hook;
+> +
+> +       mutex_lock(&sbs_hook_mutex);
+> +       /*
+> +        * Before removing the hook, we need to remove all
+> +        * custom attributes from the battery.
+> +        */
+> +       list_for_each_entry(hook, &sbs_hook_list, list) {
+> +               hook->remove_battery(battery->bat, hook);
+> +       }
+> +       /* Then, just remove the battery from the list */
+> +       list_del(&battery->list);
+> +       mutex_unlock(&sbs_hook_mutex);
+> +}
+> +
+>  /* Smart Battery */
+>  static int acpi_battery_add(struct acpi_sbs *sbs, int id)
+>  {
+> @@ -555,6 +696,8 @@ static int acpi_battery_add(struct acpi_sbs *sbs, int=
+ id)
+>                 goto end;
+>         }
+>
+> +       sbs_battery_hook_add_battery(battery);
+> +
+>        end:
+>         pr_info("%s [%s]: Battery Slot [%s] (battery %s)\n",
+>                ACPI_SBS_DEVICE_NAME, acpi_device_bid(sbs->device),
+> @@ -566,8 +709,10 @@ static void acpi_battery_remove(struct acpi_sbs *sbs=
+, int id)
+>  {
+>         struct acpi_battery *battery =3D &sbs->battery[id];
+>
+> -       if (battery->bat)
+> +       if (battery->bat) {
+> +               sbs_battery_hook_remove_battery(battery);
+>                 power_supply_unregister(battery->bat);
+> +       }
+>  }
+>
+>  static int acpi_charger_add(struct acpi_sbs *sbs)
+> diff --git a/include/acpi/battery.h b/include/acpi/battery.h
+> index c93f16dfb94..ddbfa4ed135 100644
+> --- a/include/acpi/battery.h
+> +++ b/include/acpi/battery.h
+> @@ -18,8 +18,24 @@ struct acpi_battery_hook {
+>         struct list_head list;
+>  };
+>
+> +/*
+> + * battery_hook_register() and friends only see batteries registered by
+> + * drivers/acpi/battery.c, the ACPI Control Method Battery driver (ACPI =
+HID
+> + * "PNP0C0A"). Batteries registered by drivers/acpi/sbs.c, the ACPI Smar=
+t
+> + * Battery System driver (ACPI HID "ACPI0002", common on hardware with
+> + * SMBus/SBS fuel-gauge chips such as many Intel MacBooks), are invisibl=
+e
+> + * to them; use the sbs_battery_hook_* equivalents below for those. A
+> + * caller wanting to support both kinds of hardware needs two separate
+> + * struct acpi_battery_hook instances, one per registration call, since =
+a
+> + * given instance's embedded list node can only belong to one list at a
+> + * time.
+> + */
+>  void battery_hook_register(struct acpi_battery_hook *hook);
+>  void battery_hook_unregister(struct acpi_battery_hook *hook);
+>  int devm_battery_hook_register(struct device *dev, struct acpi_battery_h=
+ook *hook);
+>
+> +void sbs_battery_hook_register(struct acpi_battery_hook *hook);
+> +void sbs_battery_hook_unregister(struct acpi_battery_hook *hook);
+> +int devm_sbs_battery_hook_register(struct device *dev, struct acpi_batte=
+ry_hook *hook);
+> +
+>  #endif
+> --
+> 2.55.0
+>
