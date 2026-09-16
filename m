@@ -1,92 +1,146 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from BN8PR05CU002.outbound.protection.outlook.com (mail-eastus2azon11011049.outbound.protection.outlook.com [52.101.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83C04B0E27
-	for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 17:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789579369; cv=none; b=KYQu+dQPAmKKm0cHvVeGdLoOD1mzbw4pStio4qfeYDJ2IMHD8v20PvhN3zVFZDQ/jRj9i2pfdlwrmf/XvSV8/5YiBiNnpOets3VGU+BrddBwIK5BXzAP5rW7tZDT6Zs/calCZmtddXeiwAqlsu5VhuDijg1WkK6I0WyeMwujnss=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789579369; c=relaxed/simple;
-	bh=DWgt2LzcztFfh2+x/mFEkw6gG1oj4varf62qZTyeixM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fF9cYcXx0ENvvlTM9BsTn6hVZUouA7Jz53QrGZ5y4zQaiMvOh0KCL1SJnXQi/N40kF/HkA1+GNHQm9GfKqxjOEZ56GGpgnv5rthcsHwPP4i0pOyr7JJCmrnmEVY/RPyMTAB4alwC7bCFmSmFwpClaDfvr4VXhFpLzojEtcyO1Tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=iGWrL/EK; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D444D9F6E
+	for <acpica-devel@lists.linux.dev>; Wed, 16 Sep 2026 18:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.57.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789584558; cv=fail; b=mNBt4LHhcpsCnKDIG1TNNxqWUr+d1M5Nu8hYGoGDT2LjjZsJOBBza3de/OsI0JAnVfENhmmvqSfXsmL/wNUo1qfWFSL1J+tnl5FXhXAD5gUvXrv7ceDnjXrIW9BNxtpM5owffZEan3NlwqV3khiEEESHvWkQi74zLKsNnA1FT0I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789584558; c=relaxed/simple;
+	bh=mjw8lwt8A9brlw65cBBlDUWhOTcLA8FsKt7qfQlePkU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=onz7mVK+JvUAHuCOjf5z+Gw/rCw31vkemUhASSKJe/dRHJ6wPR4DyCyFuTFx+rvJ93rpvrwhTJqW/ndYZplfs32/sSdl4VgkUxCriqG9Mus92ivLY/YtUTjarOPAr3rkJzaPc/SjhOsnQRO5jbWgESv8horKnfNzsu9wbGPQAR8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Qu95vjzX; arc=fail smtp.client-ip=52.101.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="iGWrL/EK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1789579359;
-	bh=DWgt2LzcztFfh2+x/mFEkw6gG1oj4varf62qZTyeixM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iGWrL/EK7qATmCY5X22oQrljzYdFkH+oJGYk0iUCfxWvPITvZ4vl2H+9xOvCfPTT9
-	 MppvZTIOrPj/SdwOfxmKiAD5+JTNmDh3CDNvl1GDYnqP9NZwisMs5SZ2a0Cwgif0OI
-	 vybx76Z5JQSVrpr1lbXrysTPTKR8YSdxumSYeHhk=
-Date: Wed, 16 Sep 2026 19:22:37 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Jordan Brough <jordan@brough.org>
-Cc: rafael@kernel.org, rydberg@bitmath.org, linux@roeck-us.net, 
-	lenb@kernel.org, maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-hwmon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ACPI: sbs: add battery hook mechanism for
- SBS-registered batteries
-Message-ID: <3bf6e328-f0d5-49d8-807e-9a212fbbb7e0@t-8ch.de>
-References: <20260913231410.416922-1-jordan@brough.org>
- <20260913231410.416922-2-jordan@brough.org>
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Qu95vjzX"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=gmv3bMfilf+Ak71m3SWC5vF4CXkCwi/H/HrqWks5G+i8dEaXGwYHAzP+ZH67C+GwPNpmsPa9gjOtVeP5GR/0I3Ua2ZQcX21JjHCKCElEdrZFNngQj2DwS1qcDmrSResEnDw5uFy/tgRn8SBH/iFUKO0lhrqVY9k+StyiZ3yroK9Yalp5hLxbMmTxl6udUPQV8b8ELGkzxk4r0pBWemcXSJy6ZHDy6meJ9t5p9a9Ykxx6OLmLmCY3A1IyLkswMIb/Pm/+TsAgzAP5eUEJa8IcudnEKYQY+JPa+xc8KPZAMZV35SaXO2mEJNBctrHbwacYBDmT2/9KsX3g2XI7nBuI8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N7QvFUG/fS9CjWAD2Do+aZL5ccqwaMmT7jFBcP1Neks=;
+ b=q/TZfDAgRDN6VSyIZeGww9KQss1OQahMC5mqQ++YGy2m45hlZ3ad0PKPZEP09EPy/y+IXpEUutfZwBZJcVhhgVpvBwL5PKQOamHdmG9aqbKBOxXcPGQmwroIscNsq9smLCgAZByakmOVOHOVSvxhIheu8sBspapd5R9Qb9kueIZk8qeRtmrwFj8yh3eStAt72vNQodAfOGWJA6ybhL0kJ7XO/hk5Zw2/kWNP2+XnriydOGqyTa7L1c7Axz6sJrLEirErH+M5951o1Vbg10lp8FSKPNZycLJNQdiYuxPIhT/iNJL1XgwXT23+ETA9qC47GfzEfYxRYYcpAnS5Z1DFQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N7QvFUG/fS9CjWAD2Do+aZL5ccqwaMmT7jFBcP1Neks=;
+ b=Qu95vjzXl+eM32Jp05Ojily9TDEu1SHAUcOqrbCx72r9pc35Cb2spacR8u7oKFHJkUsDyymVy/LoUtu9AqEX5OkH4b3BMcZ8VbzhEIPwPIc4k6AAyYu61qAyBFzejP8s7nAGTcpdBJ5GOsYfvxNpDH1yyg58CZGhvppbQVbWT/M=
+Received: from BY3PR03CA0002.namprd03.prod.outlook.com (2603:10b6:a03:39a::7)
+ by LV3PR12MB9093.namprd12.prod.outlook.com (2603:10b6:408:19d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.9; Wed, 16 Sep
+ 2026 18:48:29 +0000
+Received: from SJ1PEPF000037B6.namprd05.prod.outlook.com
+ (2603:10b6:a03:39a:cafe::1e) by BY3PR03CA0002.outlook.office365.com
+ (2603:10b6:a03:39a::7) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.11 via Frontend Transport; Wed,
+ 16 Sep 2026 18:48:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ SJ1PEPF000037B6.mail.protection.outlook.com (10.167.244.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.428.7 via Frontend Transport; Wed, 16 Sep 2026 18:48:29 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Wed, 16 Sep
+ 2026 13:48:28 -0500
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb09.amd.com
+ (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Wed, 16 Sep
+ 2026 13:48:28 -0500
+Received: from [192.168.0.226] (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.49 via Frontend
+ Transport; Wed, 16 Sep 2026 13:48:20 -0500
+Message-ID: <3c251348-b3cc-4ab1-bac1-5209ac4f52ce@amd.com>
+Date: Thu, 17 Sep 2026 00:18:19 +0530
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260913231410.416922-2-jordan@brough.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/4] ACPI: CPPC: Make autonomous selection helpers take
+ a u64
+To: Sumit Gupta <sumitg@nvidia.com>, <rafael@kernel.org>,
+	<viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
+	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-tegra@vger.kernel.org>
+CC: <treding@nvidia.com>, <jonathanh@nvidia.com>, <vsethi@nvidia.com>,
+	<ksitaraman@nvidia.com>, <sanjayc@nvidia.com>, <mochs@nvidia.com>,
+	<bbasu@nvidia.com>
+References: <20260916103820.1760297-1-sumitg@nvidia.com>
+ <20260916103820.1760297-3-sumitg@nvidia.com>
+Content-Language: en-US
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <20260916103820.1760297-3-sumitg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000037B6:EE_|LV3PR12MB9093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1add4ca2-fca1-402a-4690-08df14231964
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700016|376014|7416014|1800799024|82310400026|23010399003|921020|10067099003|4143699003|56012099006|11063799006|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	Aipp9tCZkMkYUcaMfmzoV974XS4NTTsvQfIGwiaAwzwU/F5VnYrcrgBKYzGSwMtQnjHTXTW1RlLfVlMHde2PDk4OQLlNtjlc8UGjBPWWtnyKF6pINUzoxaAZzljBU3hbXVC/2+N0EhaLThqIIjaUgdYZNUZyCcBVUpIZWg6xnGODjnTH4kWwG+Pcr5uWyZVAYNJevzWQidApKOvKg7jA53Hmwwcd1WllytK+RJ/GzB26NAq2kwww8uaquLDWODJQU2Ixpt8g4ynwpDBOUkMfihlCY6HHvbGJa6BLmvlsAn9Xt+V7H1PQurLkvj493wNxQd0PMUUspdPN/XTFojKjPpmT+M1YrixGc5nmM6SudJ8FaKW3BTA/cbfiudDghxrgTt04Iba9TME0gkKUcZzbnX8KHePKnTTtGalVSKatA9+IjQIiJ1PJTK//0hF1rDzNcOARUR7fuWXsczOa88luWPSVC1mtyBpGT7ng2BoPTOgh5YXUf9f4CmAAIXIrWInDk7TjVzwn8AvUAvZgLTAHdoc9OE1fwxCGFubWhrafpFpbygyfQ2k2/I6OGZK0Csgn8DpDwDSKvNiLJuMZ8tQCJiIBuGEjy9jSUbnjCxbJPZUciDzYxonrQO2hGI8hA9yH1gu/Jd4egr/W0hYbXage3ELNh8NZJA4x81MCMJ0TaIFAL6KKUWnVBuI5dPQK1iI7GmB+XO3xghs/iaNE8nMUwQ69c2loKvWih1LgdWEvUhnP6d3MUQ3quzt+bmWrMPMo
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(376014)(7416014)(1800799024)(82310400026)(23010399003)(921020)(10067099003)(4143699003)(56012099006)(11063799006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	RxTsTbG48pn5di4sO3grKUrOtII2QePaRwi9GLmidGJ7ZL/tL/yN+7wyMHEVtC5kmfYX9pm13Te2vzmBm/AVQXBKmEypCDtydw2r23k7IR+BaO/o9XKYllnBy8CByvq3n6j7vfAktoDwOIT0AwZM150000N7rloPvxc4bMbpV3ckhkG7REnvCdRVo40laeAD4vy8gqGAz1O2d/u/02xfXSC1/KGWZj25j5O7M3NpI5uijrNgo6mhbGr/hKDN6fMtzbbWtlkYj8lF1uKuD8ucdliY5VHp8GewHL++tQU0Aiho6kLDZaRkVhk52FBCk8Ye/4t5ll5oztdLAe9wSWnhOWpuch5Y2nghqGLfYkhXSvpcpszQCevfpOPNoz018sq72zGLBCLRv9eQm2swoFpuZyxRDUfmmLO0yKrr3jjQwlgbCb4d0kmXESs6lKGk0uZa
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2026 18:48:29.1028
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1add4ca2-fca1-402a-4690-08df14231964
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF000037B6.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9093
 
-On 2026-09-13 17:14:09-0600, Jordan Brough wrote:
-(...)
+Hello Sumit,
 
-> Add a parallel sbs_battery_hook_register()/unregister() mechanism to
-> drivers/acpi/sbs.c, mirroring the existing CmBatt hook API in name and
-> behavior so that callers can support both battery registration paths
-> symmetrically. This is purely additive: no existing hook consumer or
-> code path in drivers/acpi/battery.c is touched, and sbs.c's own
-> behavior is unchanged for any driver that does not call the new API.
-
-(...)
-
-> ---
->  drivers/acpi/sbs.c     | 147 ++++++++++++++++++++++++++++++++++++++++-
->  include/acpi/battery.h |  16 +++++
->  2 files changed, 162 insertions(+), 1 deletion(-)
+On 9/16/2026 4:08 PM, Sumit Gupta wrote:
+> cppc_get_auto_sel()/cppc_set_auto_sel() use a bool, unlike the other
+> CPPC register get/set helpers which use a u64.
 > 
-> diff --git a/drivers/acpi/sbs.c b/drivers/acpi/sbs.c
-> index 86b7c797585..305bf62eae3 100644
-> --- a/drivers/acpi/sbs.c
-> +++ b/drivers/acpi/sbs.c
+> The next patch in this series saves and restores the OSPM-set registers
+> across CPU hotplug and driver unload through a common table of register
+> get/set helpers that all take a u64. The bool autonomous selection
+> helpers cannot be added to that table.
+> 
+> Change cppc_get_auto_sel()/cppc_set_auto_sel() to take a u64 so the
+> autonomous selection register fits alongside the others, and update
+> their callers.
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 
-(...)
+For amd-pstate bits, feel free to include:
 
-> +/*
-> + * Battery hook support, mirroring the mechanism in drivers/acpi/battery.c
-> + * for batteries registered there. That mechanism only sees batteries
-> + * added via drivers/acpi/battery.c, not the ones this driver registers,
-> + * so drivers wanting to attach optional functionality (e.g. an extra
-> + * power_supply_ext) to an SBS battery need this separate copy; see the
-> + * comment above the declarations in include/acpi/battery.h.
-> + */
+Reviewed-by: K Prateek Nayak <kprateek.nayak@amd.com>
+Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
 
-(...)
+-- 
+Thanks and Regards,
+Prateek
 
-This completely duplicates the hooking logic in battery.c.
-Also it forces drivers to register both kinds of hooks explicitly.
-
-Couldn't we have a single shared hooking infrastructure and registry
-which avoid both issues?
-
-(...)
-
-
-Thomas
