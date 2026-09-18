@@ -1,413 +1,294 @@
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012000.outbound.protection.outlook.com [40.107.209.0])
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C8E4B7A30
-	for <acpica-devel@lists.linux.dev>; Thu, 17 Sep 2026 18:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92013DF008
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 14:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=140.211.166.133
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789671570; cv=fail; b=hTvJi/S5teIhsc6EJ+i4gZjPcqhGZ5rjjPdztNffvg9yRUxssaPIBXGxviysfSRoEZAnY7fAbvK/VTxSpvm3Zk6B9xD6mJ1Lsa26bhKqxcfZkCtJvb/CTzN+Lamr2KoM+0afnRX2lQQdaMyEanYZN6nx8A9drVckvTSnCPlLjD4=
+	t=1789742286; cv=fail; b=NfjVAG4Lbf0wrGPEN8Fd+TupCEgo1VbdzBDrySa5lylxEt942aOR/rkJNCQzKZvQT0xN0LuhP+D7zemLjZU2IjoKdeWc4Ipwp4FvSWQJM6JnP1AiT5yc9iSOeyaYfzGRZxrDKz148PXmuJPeehkPVPYCqbJytn4xBjCxfe0CbB8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789671570; c=relaxed/simple;
-	bh=tg29YTX42MazPYzzrCdPj03Yln3W+7CPv8fS6FYIWAM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dPvM5j5JYC71UbFabkMP+TAFHF20RsDv044n+pFNfopcCAJJJWZ9USz/KP6nyvpGPb+GJNMgaNI1z+yeyC86CXLYAvnc7wWyImBVOE1DiAiHScbcFNLBAiwsMQdv2B3AOPndwDdXko+k4dXBHqFHfX66sqlvchn3hVREmP25LsM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KE4Di7Wk; arc=fail smtp.client-ip=40.107.209.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1789742286; c=relaxed/simple;
+	bh=4ZilZJNHHY87uCtwLNAsqLEpobd2WFMMgoU4Rj3aqPI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oVZtShiNezNRHtug5YlPojYas4FefJhhxDD8Oiby6AH+mZIlq7lPdS4+hjcBNlBelYNTN5j9zeNQ+5YKY/WiyLTzc2jTC5RFWsG+GF7wJNPewMKGmWxlfCO16xNJEZyRsn/y0DMFL/0v9KUfgR4txBnbFsO+5PEkYCuVjMTlnws=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m2dv6BPy; arc=fail smtp.client-ip=140.211.166.133
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KE4Di7Wk"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sdZDiVMwdI/jdwU7oDCGzBnRcKNw1SjbdV7J8yc+BJShrrbTlh5EJoNcPPOnqI+TNCdM6Co3/h4Atvqh7AsO+zjdNvTx54WiuTvMUl2TS2WNVQQ8vYnWr7AB4K8B4Auf8BgK05OIQ0d6XnqBhWM1s1v+RTYHWbbhnhOyz8M7Ze9PTm66DPQulNNFRxTW+DuEzheFbLjNc5/a0kt7WHbLg7rWStjvWzQjvpAzpvOOyZRXB1focR5NDYOu5aNuqajb2Gz0aVLgHlBwRjmxP6ae+MvOoYLjXoVqwjQr9rF7qavWM2LyUm27V+ATPR7ykskyEJJbnUEFh4fljqCMb9pf9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=82cQHuh5Qgo+fp1DcF6QU/KB+k+4HBH3Pkr1/vm+scA=;
- b=YFAwxFcp7t3ph+tK7tMAmBCVeD6Tw0OYYr0rZnfGDPxWNYn4vcVqXPbEN04OOMIrVN1QNH2IVaFV384IqxExAjIiZEqa2TWkDb1vUPL6XVIWkNJT+0tHmaYLerrqi5SJK86eBBmRODqx3gNVs3tiqqqbLG9ibX1E9erg8n6UJgYunJhK0H6NFN3VeqH5GiwLZXEMS/UrDU5dY33cEHkcV3DlkdAthUGQChtzXgqtkr3atd7sruPPe1AJ4g/B6S0fktY3TyDqS5Q2yiPZI3PLszD+y8gsQo3XaQntygIkaAez5/vH8Q777dNSAqQUCufA6kEFX0O72EglfPpawLDGJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=82cQHuh5Qgo+fp1DcF6QU/KB+k+4HBH3Pkr1/vm+scA=;
- b=KE4Di7Wkc7H1zTYhvPftYECHNOzmK81Pz/yJlhu+JH0rfbRy/CcetOlO3J+INHlBh16BIULFDtvGJvFO3BJYM0zyryMZ00XfVjQ8Wli4EP6Wj2PAp4LXtZ/n9iWFfKX3/B6/pwIrAxVAtGuqZRfZxDe/I7BBFPbD2kRozZCBXFqmB2ncbhxIDctq2xzZnjKA/J2f+4V0j5XNxrQHzh27bqqHkd26vnLaVOkD/H2bu1oqdRH+C5klOs02ExULMxyLUDfUFx5hSaijxBYXjf0Z+RfFdrm6ZdAiozcnky7arBPgvgwQdZ380tLI8sGLaLJDdnKGuP89w3XareyPuiDS9g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB5246.namprd12.prod.outlook.com (2603:10b6:5:399::17)
- by CY5PR12MB6108.namprd12.prod.outlook.com (2603:10b6:930:27::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.12; Thu, 17 Sep
- 2026 18:59:19 +0000
-Received: from DM4PR12MB5246.namprd12.prod.outlook.com
- ([fe80::9c9e:30a1:5456:c485]) by DM4PR12MB5246.namprd12.prod.outlook.com
- ([fe80::9c9e:30a1:5456:c485%4]) with mapi id 15.21.0428.011; Thu, 17 Sep 2026
- 18:59:19 +0000
-Message-ID: <19b236de-ec1d-4abd-a78e-17e4faa3b75a@nvidia.com>
-Date: Fri, 18 Sep 2026 00:29:07 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/4] cpufreq: CPPC: Keep the policy across CPU hotplug
-To: Christian Loehle <christian.loehle@arm.com>,
- Jie Zhan <zhanjie9@hisilicon.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
- zhenglifeng1@huawei.com, lenb@kernel.org, saket.dumbre@intel.com,
- ray.huang@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com,
- kprateek.nayak@amd.com, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-References: <20260806200857.601152-1-sumitg@nvidia.com>
- <20260806200857.601152-2-sumitg@nvidia.com>
- <c30ddb21-2c97-4b9f-bae6-b29e30aa5e5e@hisilicon.com>
- <753b98a6-b3f7-431b-a867-eccbfd15d357@nvidia.com>
- <26439302-6759-446b-a498-310c218e4102@hisilicon.com>
- <404f0fea-4980-4e7f-ae05-eadcc2b13d7d@nvidia.com>
- <7d250745-bed7-4e75-a3b5-17565d8ff662@arm.com>
-Content-Language: en-US
-From: Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <7d250745-bed7-4e75-a3b5-17565d8ff662@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PNYPR01CA0044.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:25b::6) To DM4PR12MB5246.namprd12.prod.outlook.com
- (2603:10b6:5:399::17)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m2dv6BPy"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id A4B4240530
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 14:38:04 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.35
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+ by localhost (smtp2.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id kDeotJoKqXKz for <acpica-devel@lists.linuxfoundation.org>;
+ Fri, 18 Sep 2026 14:38:03 +0000 (UTC)
+ARC-Filter: OpenARC Filter v1.3.0 smtp2.osuosl.org 0B87A40524
+Authentication-Results: smtp2.osuosl.org; arc=none smtp.remote-ip="2600:3c04:e001:324:0:1991:8:25"
+ARC-Seal: i=1; d=osuosl.org; s=arc; a=rsa-sha256; cv=none; t=1789742283;
+	b=Tq0nVUsxKmJIyCpCP7V7HVwczJcAbS5Cc7jhIc1epmfWmiBXJ1gz9w3pMWjMnevAuy2y
+	 YCvQfRKUNETqutuvD0SpY3fXoDKIIuKe5sbYnMCN7bv5AGmq3Z6kI+e32HJxS93uXq4Vi
+	 puPkamHV77XeDy9yLewMjSOylmGmPJCHVeg6yt0U0Is1AyqFH27sWiq+yzwiSuEn7vcfj
+	 ux9hjIo16yvb1UQmRMHHTqkx9gblgmFVw9UX+ipq6I27z75dCw9018l4CEPL5RQMmf2ZL
+	 7F26rZRk/jl6PN6gTxCAZ9I0WFNh3xfhdWsXPKUgx3963fOi1FXGAwK+LcTkHQRXiKA==
+ARC-Message-Signature: i=1; d=osuosl.org; s=arc; a=rsa-sha256;
+	c=relaxed/relaxed; t=1789742283;
+	h=Received-SPF:Received:Received:DKIM-Signature:Received:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:X-Gmail-Original-Message-ID:
+	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=KBw1bExSXtsJEi/GDDkJ47SHkVdg0QHT3EHGaCOfe8o=;
+	b=T70sv2EmlmgWhIM/W/2fIVBjnhvsYnxCQ0q1pVZU063R7ltrTjz34DlLjOq/0nSLO4yb
+	 RyrXVzb51s7wwhU/tvfS0dIFZbq26S+zlmbxtuooSc9lKnrGSKEVauxjQmS5rc3oUhz83
+	 dvTa3y35EWQwx9Gl2m5tgXu67FKcYuQbDAVBxwbiEKrNrUrfZAG0GY8DkUhIkliP9R4E3
+	 jTc2GhJM9kM9cNehXMkTF0d6z32tz6DQxvspLtC5t2anropLyfh6nZP3KE4xu2jAS11GO
+	 UPzLiVgcQHabU8k/afwKcWLPYBBhGaZMRWPHoVLYUFpeb1dmVMlRLjTsh0HpvpOlR+g==
+ARC-Authentication-Results: i=1; smtp2.osuosl.org; dmarc=pass header.from=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m2dv6BPy;
+	arc=none smtp.remote-ip="2600:3c04:e001:324:0:1991:8:25"
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2600:3c04:e001:324:0:1991:8:25; helo=tor.source.kernel.org; envelope-from=rafael@kernel.org; receiver=<UNKNOWN> 
+Authentication-Results: smtp2.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m2dv6BPy
+Received: from tor.source.kernel.org (tor.source.kernel.org [IPv6:2600:3c04:e001:324:0:1991:8:25])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 0B87A40524
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 14:38:02 +0000 (UTC)
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id B45086053B
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 14:38:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD9C1F00898
+	for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 14:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789742280;
+	bh=KBw1bExSXtsJEi/GDDkJ47SHkVdg0QHT3EHGaCOfe8o=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=m2dv6BPyx3Zy0FMn6TPuVg7/QX11VEhW37M9oxxdKp0jNtCn17z/OrIpFaV/c10vJ
+	 Wb8255I3NUyDZSP0NtNYbHkOgKimMPPu9LGMjgs1XaFefwD5l11n58XV94KQoFi0FY
+	 OdoEUzjtdG3sOL5VhWAjcV7u6opNo3CXZh5pWdJLny8dJ2wqQgBEjxt6d8tdncdY0X
+	 r2yUAJOFHG7mpFrxJcr9xDqYaz/OteVE3u9Ybb1TIZOdtVDokQ6svAY8y4tG5byVI0
+	 mH/b1Tlk+H/xlq0fv9GEPDU/QL7VR9podspu67YlGNX46TjUsu6ZzgK+uMw0+iwh49
+	 JQ0nzmAcAd+0Q==
+Received: by mail-lr2-f12.google.com with SMTP id 38308e7fff4ca-3a5b2864f1cso7576951fa.3
+        for <acpica-devel@lists.linuxfoundation.org>; Fri, 18 Sep 2026 07:38:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxPjsDEKsEv9VEtBOGk69EHOZZPoWvcw1c6Sn8CtYe3EEM6yyx+7gZrBDn9WLiRH7E9y9V9RPOxU7VBY4M=@lists.linuxfoundation.org
+X-Gm-Message-State: AFuF++kbG4MVubnEfBpR2zgwZqGlCV6gOzIl2s1W8El8S8G39w+sd47l
+	QFQDM3X1gliEOVredv/bL9SxTrn5aWY17nJGfVI9YPo2m/JCFanEo+c2aiWe07huPIyPTyZnB0p
+	AuS2hLIGgPxsGQqaQ+CWUNJ4Fpl76dcY=
+X-Received: by 2002:a2e:be1b:0:b0:39a:da70:2c77 with SMTP id
+ 38308e7fff4ca-3a5fbf05d53mr6133881fa.3.1789742278585; Fri, 18 Sep 2026
+ 07:37:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5246:EE_|CY5PR12MB6108:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21f17392-50c8-4beb-5ade-08df14edc6dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|23010399003|376014|366016|1800799024|6133799003|18002099003|22082099003|921020|4143699003|10067099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	KV2vYPmYv6WyeTtBrhoCjEmbJkcusmYqd+OWV4dZkcYuxt/vYI8L4CuPEJfNPr6uyi2AjtsGgA+ZYmCA+VaeYdrFji1oKOxPph/TnAoMrZ+OXayFW8fWobMkLkmyzKICWyyk1T2xv91J1jYfVL1yGB2uJFJc3G1/Df0jT7E3e/yE32fmfyUdlXqrBcxqDAyH8N+ZIZB1wbyMDaHkwxp1qED+UT2XaewKnfCy+fqTQLWXZSqLQYcntTVr1VutEMWSuxWO8c1nMVR92xQwleYjcExpQ+PFOZ3G2DwQrQLnYnf77zGb/IeruURA3VBBffM89edZLYhJHO6wy0GuaLqM4saTiaDWGWI/bJfTNmjgQ9Wze4LOF4vzm922Ur2yqxqDoFXbDIn1WG79e1xrXX5U1NzW5bHZB7f78oc9ilR/MUcQCNQ4sWw+M66YI8HAsKucHDxKRaIYx2THarHk0krZdQqni31lAfPYWRs/ADWSpb/kHZ4U4TDDxj3CdtJLacKz6D2LhAJjR3sctzt0g6G1seSF7f90dOYS8hfPPPyBO6xsyX7qekTkSm7NgNDGEQoO6Yrhmy1VZfimebP9oSy7xBDY+cg4Nklz1X6YyHHAPo3SHlrQfZJ97u31lT1JfxypIM2OcFp5BsqAF5mWk0VXFBTIUUVW3aq8qXCwTIHbrqMjYUhtWIqJWjjgC220QdexkNp2mxUvirlvvqWsGmwR5w==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5246.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(23010399003)(376014)(366016)(1800799024)(6133799003)(18002099003)(22082099003)(921020)(4143699003)(10067099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?c0xTaml4alV5cjlEeXpOMytkOEx5NXhtODI5QThyUkMwaXFsSE9nZXhLVEFz?=
- =?utf-8?B?T1UxVnVPUWxab2tuN1ZGSUc1ZnVYUmc5QWdaNHBVdHQ3R05VZXJxZ3MxSUJs?=
- =?utf-8?B?SWNncytVbDhnUm5ZTXRobHYxMWtscnBiMzFmYWxlaXgyMDBzU2Z1cmVNYXUx?=
- =?utf-8?B?STdyUXg3SVRNTndLY1UwTjFqbmJaTTRMaFA0L1RxWTFZU1ZaMVlLUlgzZHAx?=
- =?utf-8?B?OTcwelhPeDlhbk9ZbUlsRGVUQXhXUFhEaGJvU2hCMk5DVGt2WFM3bVczRmFQ?=
- =?utf-8?B?aFhXaFlPRWc2ckplUjdpbTh1RHRGbWsrTXM3djM0NDU1SHAzNTkzZW5NRVBW?=
- =?utf-8?B?dGtCTzkwUjdPaS9DTHRYSGRlUXhUaDhWRUJvYUVsUjhrVkNYUkoyMzlrL3Nu?=
- =?utf-8?B?R2o3R1ZFR3I2cmNKRU9oY1h0Wlk5NTBCNmRQK2RmOVZ1eDFjUUxDQTdvU0hp?=
- =?utf-8?B?T3BQRWp4QUQwRlZxL3FzV1Y0cW1tc1RlRkJEcThzbVJyUVIxazMzUExBZGpl?=
- =?utf-8?B?YzFoekxBVWxMRUxqbjFEbGUzeUQ2MFY4QmJWWVRka1BCZHNmdUtaTU5OK0M5?=
- =?utf-8?B?TVNBQkRvK0dWdG5BNGhiTCtQN014SHVZcjhQZ2xXYTBoRm9XdkZ4UFFScVdp?=
- =?utf-8?B?MGxMMDRWQ1N4SU5ObDVneUJBb3ZtQ3dFc0l5cFFoWEZJUFFCU1BJMkI5Qy92?=
- =?utf-8?B?SFF5T3EzZXBGTjhZSElkK2pXSkExNEcveUUxMUd0K3hDblpabUtSOEF0dGRB?=
- =?utf-8?B?N2xCS2hZczBheUxLdnQ5VEJBYTE4ZTE3S0xqSmtJanpoWnFhWmFIeExkSnRJ?=
- =?utf-8?B?VGRxNnFpVzR2eExJNko1dVBXYkVJRVlTaHFmeUZtZVg3WEY5N0luYjNWNCtv?=
- =?utf-8?B?V3ljYWlOWHdvb0Y1RHpnaVBWbkV4a2txMkJXTUh6ejVmZkdLUUJ4ODJnUVU3?=
- =?utf-8?B?ZERnOGJ1RWhXY00yNDdnQUdyVEdGbFVUSVZTSUxqNnlwN3ZoNzNyYW1rSTZt?=
- =?utf-8?B?dXFkd3BCUWFLdGVZSUZaby9uUHM4N1dXT3hLOGxNZjJwS2xkU2M0QVdya24z?=
- =?utf-8?B?anJtN3RYOUViWVdSb1hSRG9ycXg1enVJTk1rYUM0T1YrNjA4NUsxTDFjd2RQ?=
- =?utf-8?B?STdoQWNtYjdoR1pCVStGT1lRWDNadHVISVRnb0hjdks5QkNIVlQ1NFhuUjRE?=
- =?utf-8?B?cHZwYWtESVBWanM4cjUrUzJHSkVxNEZ1Qy9iMklZZS9QVTRqeGV5TXdkSEF5?=
- =?utf-8?B?cEhwcm9Va2dxSGJSNFNhMFB5SDVxb2xmRStwMGdZM2dpYnRpTGV1UDlTRWha?=
- =?utf-8?B?b3hyakprdGRoZ3dlQi9QNy8wZ0VldFpOYUZkRTFxcXUzck1xVkJ6VndJQTVM?=
- =?utf-8?B?ZE1tczJQVHAraXpMV3VKaFA5NWQ0OUY2cjNPRXFpMCtDNHh3d1JROGdjdS9v?=
- =?utf-8?B?SWFRYWMvclZlNjZWYUh5S09uNmt5dXFGUTlReC9XeFBFNlFQYUw5TkN5MmtC?=
- =?utf-8?B?RWZLSkQydzU0Vk04dU9USnhiSURyMUpVZy9lWW5ic1lzWjgzemgzL0d0bDRw?=
- =?utf-8?B?L2NvNDBJeHFMeWRCZzUwMUlScHM2REJ4RDc0R2VhUEw2K2pEMEIyU1dldHBU?=
- =?utf-8?B?M0dGbFV6OUxZdStkV1BsdnJ1aWhpZXIrLzhHVHNTaHdXK2lVdkJGT1lBV3VM?=
- =?utf-8?B?WEFIOHJGLzlRTWJtaXdDeWdHdlJ2N1RGUnhHL2pOTVVhN0V0Tld4R3M2UXht?=
- =?utf-8?B?eEZXKzg0eW5zQzlrZHl6cEEwMUpOaHlSaW9VblZQTHNtMlNrRW1JQU0vYnJq?=
- =?utf-8?B?a213UFo5LzgxaEpENlZJTHRLRyszNnArUGJtdGxKVkZEQit5Z3RIU2N2VEpR?=
- =?utf-8?B?bmoxVFdES2VobzY0TVQ5OEI2dHAxbWdqaTM2bWNINDYyUllTWU9mM0dTLzZI?=
- =?utf-8?B?ZEZPWU9ObUJLUGsySDg5bXkzY215WWJjUVl0K1ViWk5DeWZlMjY5QmN4eWFH?=
- =?utf-8?B?dVE1TVZFZHhsbXk3QVJuNmdYTklvM1FOVWJLbXhCTWxqdUliYWJpK1RkTlBN?=
- =?utf-8?B?T2RERWw2N0FHT0E1U3lWKzJkOWM0OTBIM0ZFVDFsSExCaHFYbGZrbFdlNTV1?=
- =?utf-8?B?enBDcVd1ZnZvVTNqNndiNDYyQkFCWVlrV0h2QlpsUU1WcitMSkhZMENaQnpP?=
- =?utf-8?B?MDZ2V1ErMUE3NGlsQjZWcDZadlJOU25INFJTbzVwcmM4eERPSkgxNGltakJF?=
- =?utf-8?B?czErWDZDMjI0ZEhpK211dnpqS3RKT0lDNEo2Q2pFVHJQWEs5NkVvQ08yMUE4?=
- =?utf-8?Q?pUhVlcHsF28Lt14hCh?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21f17392-50c8-4beb-5ade-08df14edc6dc
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5246.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2026 18:59:19.0537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5UQ+LJyVMHttkqoE7tNA3Oq91m4opQ1qQYb+qSn1nbgaDvHAaga07KB8WtbIKTQvLPJXERftz0ZRqrbfpyBobA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6108
+References: <20260819085528.575-2-baorliu@amd.com> <20260917143116.445-1-baorliu@amd.com>
+In-Reply-To: <20260917143116.445-1-baorliu@amd.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Fri, 18 Sep 2026 16:36:31 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jb7QNF32To0AoOBxXHObUAS7QCrFAGObFJU1=VtOqm+w@mail.gmail.com>
+X-Gm-Features: AcwNN1V21dznaWjpABNHjALTzsqliOCTgu4KiEbEf1Vn8RT6Yw4NYIp6-UdFsSY
+Message-ID: <CAJZ5v0jb7QNF32To0AoOBxXHObUAS7QCrFAGObFJU1=VtOqm+w@mail.gmail.com>
+Subject: Re: [PATCH v3] ACPI: button: Report wakeup key only for power button wakeups
+To: "Baorui.Liu" <baorliu@amd.com>
+Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	acpica-devel@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Sep 17, 2026 at 4:31=E2=80=AFPM Baorui.Liu <baorliu@amd.com> wrote:
+>
+> The ACPI button driver reports KEY_WAKEUP from the Power Button input
+> device to let userspace know that the system was resumed by a power
+> button wakeup.
+>
+> However, reporting KEY_WAKEUP from generic system resume paths can make
+> userspace observe a Power Button wakeup even when the system was resumed
+> by a different wake source.
+>
+> This is reproducible on an AMD Android 15 Xen guest. With a kernel
+> without this fix, a non-power-button S3 resume:
+>
+>   echo mem > /sys/power/state
+>   xl trigger android s3resume
+>
+> makes the Power Button input device report KEY_WAKEUP. The same test on
+> a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
+> input device.
+>
+> Track whether a power button event/notify is observed while the ACPI
+> button device is suspended, and report KEY_WAKEUP on resume only in that
+> case. Do not synthesize a Power Button input event from generic ACPI
+> sleep resume code.
+>
+> Signed-off-by: Baorui.Liu <baorliu@amd.com>
 
+Please see
 
-On 17/09/26 18:38, Christian Loehle wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 9/17/26 12:01, Sumit Gupta wrote:
->>
->>
->>>>>
->>>>> On 8/7/2026 4:08 AM, Sumit Gupta wrote:
->>>>>> Without online()/offline() callbacks, the cpufreq core fully tears
->>>>>> down a policy during exit() when its last online CPU is offlined, and
->>>>>> rebuilds it during init() when it comes back.
->>>>>>
->>>>>> Add lightweight online()/offline() callbacks so the core instead keeps
->>>>>> the policy live and reuses the driver's cpu_data across CPU hotplug.
->>>>>> This avoids re-reading the CPPC capabilities on every offline/online,
->>>>>> making CPU hotplug faster.
->>>>>>
->>>>>> Move what init() and exit() did on hotplug into the new callbacks:
->>>>>>
->>>>>>      - offline() requests the lowest desired performance, as exit() did.
->>>>>>      - online() re-enables CPPC and restores the performance controls, as
->>>>>>        the platform may have reset them. Failures are logged, not returned,
->>>>>>        as the core would free the policy.
->>>>>>      - online() also resyncs the frequency invariance counters, so that the
->>>>>>        first tick does not measure across the offline window.
->>>>>>
->>>>>> The restore in online() uses cppc_set_perf(), which writes MIN before
->>>>>> MAX. If the platform lowered MAX while the CPU was offline, writing the
->>>>>> saved MIN could briefly leave MIN above MAX on registers not accessed
->>>>>> through PCC, as PCC delivers the writes in one transaction. Raise MAX
->>>>>> ahead of the restore when the saved MIN is above it.
->>>>>>
->>>>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->>>>>> ---
->>>>>>     drivers/cpufreq/cppc_cpufreq.c | 128 +++++++++++++++++++++++++++++++++
->>>>>>     1 file changed, 128 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
->>>>>> index 80893844353c..4b3da9a3e122 100644
->>>>>> --- a/drivers/cpufreq/cppc_cpufreq.c
->>>>>> +++ b/drivers/cpufreq/cppc_cpufreq.c
->>>>>> @@ -211,6 +211,29 @@ static void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
->>>>>>          }
->>>>>>     }
->>>>>>
->>>>>> +/*
->>>>>> + * Resync the counter snapshot, as the policy is kept across CPU hotplug and
->>>>>> + * the first tick after online would otherwise span the offline window.
->>>>>> + */
->>>>>> +static void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
->>>>>> +{
->>>>>> +     struct cppc_freq_invariance *cppc_fi;
->>>>>> +     int cpu, ret;
->>>>>> +
->>>>>> +     if (fie_disabled)
->>>>>> +             return;
->>>>>> +
->>>>>> +     /* policy->cpus still holds related_cpus here, so skip offline CPUs. */
->>>>>> +     for_each_cpu_and(cpu, policy->cpus, cpu_online_mask) {
->>>>>> +             cppc_fi = &per_cpu(cppc_freq_inv, cpu);
->>>>>> +
->>>>>> +             ret = cppc_get_perf_ctrs(cpu, &cppc_fi->prev_perf_fb_ctrs);
->>>>>> +             if (ret)
->>>>>> +                     pr_debug("%s: failed to read perf counters for cpu:%d: %d\n",
->>>>>> +                              __func__, cpu, ret);
->>>>>> +     }
->>>>>> +}
->>>>>> +
->>>>>>     static void cppc_fie_kworker_init(void)
->>>>>>     {
->>>>>>          struct sched_attr attr = {
->>>>>> @@ -281,6 +304,10 @@ static inline void cppc_cpufreq_cpu_fie_exit(struct cpufreq_policy *policy)
->>>>>>     {
->>>>>>     }
->>>>>>
->>>>>> +static inline void cppc_cpufreq_cpu_fie_resync(struct cpufreq_policy *policy)
->>>>>> +{
->>>>>> +}
->>>>>> +
->>>>>>     static inline void cppc_freq_invariance_init(void)
->>>>>>     {
->>>>>>     }
->>>>>> @@ -735,6 +762,105 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->>>>>>          return ret;
->>>>>>     }
->>>>>>
->>>>>> +/*
->>>>>> + * With offline() defined, the cpufreq core keeps the policy alive when
->>>>>> + * a CPU is hotplugged out.
->>>>>> + */
->>>>>> +static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
->>>>>> +{
->>>>>> +     struct cppc_cpudata *cpu_data = policy->driver_data;
->>>>>> +     struct cppc_perf_ctrls perf_ctrls = cpu_data->perf_ctrls;
->>>>>> +     unsigned int cpu = policy->cpu;
->>>>>> +     int ret;
->>>>>> +
->>>>>> +     /*
->>>>>> +      * Request the lowest desired performance while the policy has no online
->>>>>> +      * CPU. Zeroing MIN and MAX makes cppc_set_perf() leave them unchanged.
->>>>>> +      */
->>>>>> +     perf_ctrls.desired_perf = cpu_data->perf_caps.lowest_perf;
->>>>>> +     perf_ctrls.min_perf = 0;
->>>>>> +     perf_ctrls.max_perf = 0;
->>>>>> +
->>>>>> +     ret = cppc_set_perf(cpu, &perf_ctrls);
->>>>>> +     if (ret)
->>>>>> +             pr_debug("Err setting perf value:%u on CPU:%u. ret:%d\n",
->>>>>> +                      cpu_data->perf_caps.lowest_perf, cpu, ret);
->>>>>> +
->>>>>> +     return 0;
->>>>>> +}
->>>>>> +
->>>>>> +/*
->>>>>> + * Raise MAX ahead of the full restore when the requested MIN is above the
->>>>>> + * current MAX. cppc_set_perf() writes MIN before MAX, so the platform would
->>>>>> + * otherwise briefly see MIN above MAX on registers not accessed through PCC.
->>>>>> + * Lowering MAX is safe, as the MIN written first is never above it.
->>>>>> + */
->>>>>> +static int
->>>>>> +cppc_cpufreq_prepare_perf_restore(unsigned int cpu,
->>>>>> +                               const struct cppc_perf_ctrls *target)
->>>>>> +{
->>>>>> +     struct cppc_perf_ctrls cur = {}, prep = {};
->>>>>> +     int ret;
->>>>>> +
->>>>>> +     ret = cppc_get_perf(cpu, &cur);
->>>>>> +     if (ret)
->>>>>> +             return ret;
->>>>>> +
->>>>>> +     if (!cur.max_perf || target->min_perf <= cur.max_perf)
->>>>>> +             return 0;
->>>>>> +
->>>>>> +     prep.desired_perf = target->desired_perf;
->>>>>> +     prep.min_perf = 0;      /* Zero leaves MIN unchanged. */
->>>>>> +     prep.max_perf = target->max_perf;
->>>>>> +
->>>>>> +     return cppc_set_perf(cpu, &prep);
->>>>>> +}
->>>>>> +
->>>>>> +/*
->>>>>> + * Restore what the CPU may have lost while offline, as the platform may have
->>>>>> + * disabled CPPC and reset the performance controls. Never fail the callback,
->>>>>> + * or the core would free the policy and leave the CPU without cpufreq. The
->>>>>> + * governor redoes the control writes, so they are best effort, unlike the
->>>>>> + * enable, which only a later online() can retry.
->>>>> Sorry, I don't quite understand the last sentence.
->>>>
->>>>
->>>> Will rewrite in v5 as below:
->>>>
->>>>    Report failures without returning them, or the core would free the
->>>>    policy and leave the CPU without cpufreq. A failed write to the
->>>>    performance controls is not fatal, as the governor's next request
->>>>    programs them again. A failed CPPC enable stops the restore, as the
->>>>    writes that follow may not reach the platform.
->>>>
->>>>>> + */
->>>>>> +static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
->>>>>> +{
->>>>>> +     struct cppc_cpudata *cpu_data = policy->driver_data;
->>>>>> +     unsigned int cpu = policy->cpu;
->>>>>> +     int ret;
->>>>>> +
->>>>>> +     cppc_cpufreq_cpu_fie_resync(policy);
->>>>>> +
->>>>>> +     ret = cppc_set_enable(cpu, true);
->>>>>> +     if (ret && ret != -EOPNOTSUPP) {
->>>>>> +             pr_warn("Failed to re-enable CPPC for CPU%u (%d)\n", cpu, ret);
->>>>>> +             return 0;
->>>>>> +     }
->>>>>> +
->>>>>> +     /*
->>>>>> +      * The platform may reset the controls while the CPU is offline, so
->>>>>> +      * recompute min/max, clamp desired_perf into range, and reprogram them.
->>>>>> +      */
->>>>>> +     cppc_cpufreq_update_perf_limits(cpu_data, policy);
->>>>>> +
->>>>>> +     cpu_data->perf_ctrls.desired_perf =
->>>>>> +             clamp_t(u32, cpu_data->perf_ctrls.desired_perf,
->>>>>> +                     cpu_data->perf_ctrls.min_perf,
->>>>>> +                     cpu_data->perf_ctrls.max_perf);
->>>>>> +
->>>>>> +     ret = cppc_cpufreq_prepare_perf_restore(cpu, &cpu_data->perf_ctrls);
->>>>> Actually, I don't quite think this is necessary?
->>>>>
->>>>> The motivation of doing this is fair (as mentioned in v3), but what's the
->>>>> real consequence of transiently setting min_perf larger than max_perf?
->>>>> Platforms should be able to handle this.
->>>>>
->>>>> Even if we have to fix it, it's supposed to be done in cppc_acpi.c.  The
->>>>> current ABI wraps many things up.  cppc_get_perf() reads 4 values -
->>>>> min_perf, max_perf, energy_perf, auto_sel.  cppc_set_perf writes 3
->>>>> values - desired_perf, min_perf, max_perf.  The cppc_cpufreq driver would
->>>>> be able to handle performance setting cleaner if those are separated.
->>>>>
->>>>> I don't suggest we complicate the driver for now?
->>>>
->>>> Agreed that it is not hotplug specific and can be done in the
->>>> generic API.
->>>>
->>>> cppc_set_perf() would have to know the programmed MIN and MAX to pick
->>>> the write order. Separate accessors would let it read only those two,
->>>> but that would add a read before every write, including fast_switch().
->>> fast_switch() doesn't have to touch min/max_perf, but it did at the moment.
->>>> Caching what was last written would avoid that, but the platform can
->>>> reset the registers while the CPU is offline or suspended.
->>> Yeah, understood.  My question is still whether it's practically useful and
->>> we're complicating this.
->>>
->>> Two reasons.
->>>
->>> 1. Platform should be able to handle min_perf being trasiently larger than
->>> max_perf, otherwise it would be fragile.
->>>
->>> 2. It depends on the reset values of the two registers.
->>>
->>> I went over the ACPI Spec and didn't manage to find a descprition on what
->>> the default/reset values of min/max perf registers should be.
->>>
->>> For a sensisble design, min_perf defaults to be 0 or lowest perf, and
->>> max_perf defaults to be all 1s or highest perf.  In those cases, we are
->>> safe to directly restore the saved values.
->>
->> Hi Jie,
-> 
-> Hi Sumit, Jie
-> 
->>
->> Agreed, those values would be safe, although they are not required
->> reset defaults. A platform could reset MAX to a lower value, such as
->> lowest_perf, while the saved policy MIN is higher.
->> Restoring MIN first would then temporarily result in MIN greater than
->> MAX on non-PCC systems.
->>
->> This preparation was added in response to Christian’s v3 comment [1].
->> I had already posted v5 [2] before receiving this reply, and it retains
->> the preparation.
-> 
-> I basically agree(d) with Jie here when I commented on v3:
-> "I think cppc_set_perf() needs some prep first before using it on reset values.
-> We assume that reset value may be Autonomous Mode on, right? So we must never
-> write MIN>MAX and vice versa. I think we may just have to read and write
-> the 'otherwise-offending' value first on reset."
-> So I wanted to have this (as prep work) within cppc_set_perf() not in cppc-cpufreq,
-> 
->>
->> Christian, are you okay with dropping it and restoring the controls
->> directly with cppc_set_perf(), as in v3?
->> Any general requirement for ordered MIN/MAX updates can then be handled
->> in a separate CPPC core series.
->>
->> [1] https://lore.kernel.org/lkml/40d72385-0b3f-46e5-9f32-a27be3842d7c@arm.com/
->> [2] https://lore.kernel.org/lkml/20260916103820.1760297-1-sumitg@nvidia.com/
-> 
+https://sashiko.dev/#/patchset/20260917143116.445-1-baorliu%40amd.com
 
-Hi Christian, Jie,
+and tell me what you think.
 
-Thanks for the clarification. I will drop the preparation from
-cppc_cpufreq in v6 and restore the controls directly using
-cppc_set_perf(). I will address the MIN/MAX write ordering in
-cppc_set_perf() in a separate series soon.
+Thanks!
 
-Thanks,
-Sumit
-
-
+> ---
+>  drivers/acpi/button.c | 13 ++++++++++++-
+>  drivers/acpi/sleep.c  | 41 -----------------------------------------
+>  2 files changed, 12 insertions(+), 42 deletions(-)
+>
+> diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+> index cdbb1023a8ee..7a708fe351fb 100644
+> --- a/drivers/acpi/button.c
+> +++ b/drivers/acpi/button.c
+> @@ -191,6 +191,7 @@ struct acpi_button {
+>         bool last_state;
+>         ktime_t last_time;
+>         bool suspended;
+> +       bool wakeup_pending;
+>         bool lid_state_initialized;
+>         bool gpe_enabled;
+>  };
+> @@ -476,6 +477,9 @@ static void acpi_button_notify(acpi_handle handle, u3=
+2 event, void *data)
+>
+>         acpi_pm_wakeup_event(button->dev);
+>
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
+ed)
+> +               button->wakeup_pending =3D true;
+> +
+>         if (button->suspended || event =3D=3D ACPI_BUTTON_NOTIFY_WAKE)
+>                 return;
+>
+> @@ -498,6 +502,11 @@ static void acpi_button_notify_run(void *data)
+>
+>  static u32 acpi_button_event(void *data)
+>  {
+> +       struct acpi_button *button =3D data;
+> +
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->suspend=
+ed)
+> +               button->wakeup_pending =3D true;
+> +
+>         acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data)=
+;
+>         return ACPI_INTERRUPT_HANDLED;
+>  }
+> @@ -508,6 +517,7 @@ static int acpi_button_suspend(struct device *dev)
+>         struct acpi_button *button =3D dev_get_drvdata(dev);
+>
+>         button->suspended =3D true;
+> +       button->wakeup_pending =3D false;
+>         return 0;
+>  }
+>
+> @@ -523,12 +533,13 @@ static int acpi_button_resume(struct device *dev)
+>                 acpi_lid_initialize_state(button);
+>         }
+>
+> -       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER) {
+> +       if (button->type =3D=3D ACPI_BUTTON_TYPE_POWER && button->wakeup_=
+pending) {
+>                 input =3D button->input;
+>                 input_report_key(input, KEY_WAKEUP, 1);
+>                 input_sync(input);
+>                 input_report_key(input, KEY_WAKEUP, 0);
+>                 input_sync(input);
+> +               button->wakeup_pending =3D false;
+>         }
+>         return 0;
+>  }
+> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+> index 132a9df98471..7296e4bb0e4d 100644
+> --- a/drivers/acpi/sleep.c
+> +++ b/drivers/acpi/sleep.c
+> @@ -104,8 +104,6 @@ u32 acpi_target_system_state(void)
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_target_system_state);
+>
+> -static bool pwr_btn_event_pending;
+> -
+>  /*
+>   * The ACPI specification wants us to save NVS memory regions during hib=
+ernation
+>   * and to restore them during the subsequent resume.  Windows does that =
+also for
+> @@ -484,7 +482,6 @@ static int acpi_pm_prepare(void)
+>   */
+>  static void acpi_pm_finish(void)
+>  {
+> -       struct acpi_device *pwr_btn_adev;
+>         u32 acpi_state =3D acpi_target_sleep_state;
+>
+>         acpi_ec_unblock_transactions();
+> @@ -503,23 +500,6 @@ static void acpi_pm_finish(void)
+>         acpi_target_sleep_state =3D ACPI_STATE_S0;
+>
+>         acpi_resume_power_resources();
+> -
+> -       /* If we were woken with the fixed power button, provide a small
+> -        * hint to userspace in the form of a wakeup event on the fixed p=
+ower
+> -        * button device (if it can be found).
+> -        *
+> -        * We delay the event generation til now, as the PM layer require=
+s
+> -        * timekeeping to be running before we generate events. */
+> -       if (!pwr_btn_event_pending)
+> -               return;
+> -
+> -       pwr_btn_event_pending =3D false;
+> -       pwr_btn_adev =3D acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POW=
+ERF,
+> -                                                   NULL, -1);
+> -       if (pwr_btn_adev) {
+> -               pm_wakeup_event(&pwr_btn_adev->dev, 0);
+> -               acpi_dev_put(pwr_btn_adev);
+> -       }
+>  }
+>
+>  /**
+> @@ -626,27 +606,6 @@ static int acpi_suspend_enter(suspend_state_t pm_sta=
+te)
+>         /* Reprogram control registers */
+>         acpi_leave_sleep_state_prep(acpi_state);
+>
+> -       /* ACPI 3.0 specs (P62) says that it's the responsibility
+> -        * of the OSPM to clear the status bit [ implying that the
+> -        * POWER_BUTTON event should not reach userspace ]
+> -        *
+> -        * However, we do generate a small hint for userspace in the form=
+ of
+> -        * a wakeup event. We flag this condition for now and generate th=
+e
+> -        * event later, as we're currently too early in resume to be able=
+ to
+> -        * generate wakeup events.
+> -        */
+> -       if (ACPI_SUCCESS(status) && (acpi_state =3D=3D ACPI_STATE_S3)) {
+> -               acpi_event_status pwr_btn_status =3D ACPI_EVENT_FLAG_DISA=
+BLED;
+> -
+> -               acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_s=
+tatus);
+> -
+> -               if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+> -                       acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+> -                       /* Flag for later */
+> -                       pwr_btn_event_pending =3D true;
+> -               }
+> -       }
+> -
+>         /*
+>          * Disable all GPE and clear their status bits before interrupts =
+are
+>          * enabled. Some GPEs (like wakeup GPEs) have no handlers and thi=
+s can
+> --
+> 2.34.1
+>
