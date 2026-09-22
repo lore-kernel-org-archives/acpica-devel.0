@@ -1,52 +1,42 @@
-Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE5F545D91
-	for <acpica-devel@lists.linux.dev>; Tue, 22 Sep 2026 12:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A475505D5;
+	Tue, 22 Sep 2026 14:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790081038; cv=none; b=rjiGPrRw95vEjcUapyRG1SxX1MoMzF85yGICiZord9aAI+9E01y6DKfQEu2fR7blqHSAwrmnAzur4muLDy7g9yzlbvb4O346/GQM1Y6oUivjjcAs+NViSX7XWHsjRj2AG0KIZrRk//O619UcUuxvGMBoc+pDf2ythY4Lv4jvdp0=
+	t=1790088198; cv=none; b=igyHBZeq13oXTqzJxe2vIYGCgQenh1YScODFkCiFu2HzFldxw2JnAEPyYxMYkuRuKqQH/rGx4RQf1JHCGDcz1ab6/HQUKfJ985u9UB+5GYhzfKOiJF7cyoLv+/HMf13FkzPjo+lFt/ykRkiZbhBkMuv0fR4JUMmA7qXPgmVh9vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790081038; c=relaxed/simple;
-	bh=N4HtkiWf7I6T2lTSMu8KrEBHfC1CNXw2MeRawSnuvXU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h9BqfH5UekxAQfEPDX/L0xa3tTxa3mt92Fz3iy8Od6w7OnbrUz9n3zpgKV2eL6N5LqmupF1GPld2ABiuzT7EhQdHml/Z4DqzYKk2kMpKn6+35+KoKJMuBCYKmb2PZ2viVwyhQJyGj0QokTwckZdF07xdmeBhdLDcibirCrDOzyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=A6MLL1lL; arc=none smtp.client-ip=113.46.200.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+	s=arc-20240116; t=1790088198; c=relaxed/simple;
+	bh=JZJVIPZZoKsa1rpY9XVt5M445g7Lk4mF4ToVMYP/bXY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dlPQxW2+vB3LqWopDtLfKB5aOLiRfnfsyJvzVnsahPjjx3WSa9Y8qT+Hlw1h9Ju0pS/E5LNrzqmP1jlP5SrLhfg/u4DCOJaJYupZhoAypr+jRgJYTRd1cWPTDByMv4DjpBQtyR9R9xs5By+KUNRNIpBQ8dC9AIvooDOdWr8m1eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JzQF3V+G; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="A6MLL1lL"
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=uuTlAjbFVG3K4wNEikSMGRwn8CiTCyTwtRqd8LgITfc=;
-	b=A6MLL1lLoqRqLjMnIUrkIz7uyVDYEI7+6iMBwg379KlmGhDk2YI4eNS+GqCXAfUABQafn2U9p
-	k5VwnFEKgWv6vb/w2CNZrvQOGeiOxdDzfuxq9C5JYIKiIW6RBiO/lRBs+NB+Uo26BE3mTyy9vEe
-	zicGgEAClSO49nqGfFRLpLY=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
-	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4hpzyP0v8lznTWH;
-	Tue, 22 Sep 2026 20:32:45 +0800 (CST)
-Received: from kwepemf100001.china.huawei.com (unknown [7.202.181.215])
-	by mail.maildlp.com (Postfix) with ESMTPS id A739A40586;
-	Tue, 22 Sep 2026 20:43:46 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- kwepemf100001.china.huawei.com (7.202.181.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.45; Tue, 22 Sep 2026 20:43:45 +0800
-From: Lifeng Zheng <zhenglifeng1@huawei.com>
-To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <saket.dumbre@intel.com>,
-	<lenb@kernel.org>, <ionela.voinescu@arm.com>, <zhanjie9@hisilicon.com>,
-	<pierre.gondois@arm.com>, <sumitg@nvidia.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pm@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
-	<linuxarm@huawei.com>, <yubowen8@huawei.com>, <zhangpengjie2@huawei.com>,
-	<wangzhi12@huawei.com>, <linhongye@h-partners.com>, <zhenglifeng1@huawei.com>
-Subject: [PATCH v4 6/8] ACPI: CPPC: Factor out cpc_read_reg() and cpc_write_reg()
-Date: Tue, 22 Sep 2026 20:41:19 +0800
-Message-ID: <20260922124121.3426219-7-zhenglifeng1@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20260922124121.3426219-1-zhenglifeng1@huawei.com>
-References: <20260922124121.3426219-1-zhenglifeng1@huawei.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JzQF3V+G"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C581F00899;
+	Tue, 22 Sep 2026 14:43:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790088196;
+	bh=qbYBkOOlxLNZZu0j/59r3TALf3s/98MgaNlvJtSmRmA=;
+	h=From:To:Cc:Subject:Date;
+	b=JzQF3V+Gb+L47zONt108exNmBnNxnU8KYxX84jqjDtNI3hWwWw08NOnUJ08e+Erwh
+	 FXmnXz4FyWij+k5N6C6bufqJAgYMc8b9uJcSIiEVAYOA74Xusf8GhbwMHd3kWZ4BDo
+	 Yq9gXmlM02IxYDguVb/mAA83YtvwdKfSRPPNBae5x2rv0jSprRDtQa/RFp3z1w4nv1
+	 5asKtbO8w4BleZi6WCNYD+sfF2x7NRb768CC2db1SvI53Tn4qYAmaWlw0KHLTXjl9/
+	 QODqC41aRuVMHtwK6BJVaRkw1cO+795hmGGxxJEH3Hb1DjPeRv1d4pDM5mKngTMXes
+	 uAFB2SrEkKLVQ==
+From: Sudeep Holla <sudeep.holla@kernel.org>
+To: linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Cc: Sudeep Holla <sudeep.holla@kernel.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Huisong Li <lihuisong@huawei.com>
+Subject: [PATCH v3 0/4] ACPI/PCC: Correct PCC OperationRegion handling
+Date: Tue, 22 Sep 2026 15:42:58 +0100
+Message-ID: <20260922144302.3847593-1-sudeep.holla@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -54,165 +44,65 @@ List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemf100001.china.huawei.com (7.202.181.215)
 
-cppc_get_reg_val() and cppc_set_reg_val() combine two responsibilities:
-looking up the per-CPU cpc_desc and then performing the actual register
-read/write (including null/optional checks and PCC handling).
+Hi,
 
-Split out the register I/O logic into cpc_read_reg() and cpc_write_reg()
-that accept a struct cpc_register_resource pointer directly.  This allows
-callers that already hold a register reference -- such as the upcoming
-Resource Priority accessors -- to read or write a register without going
-through the per-CPU descriptor lookup by index.
+This series corrects the handling of PCC OperationRegions and their
+shared memory.
 
-Also rename the PCC wrappers from cppc_get/set_reg_val_in_pcc() to
-cpc_read/write_in_pcc() to align with the new naming convention.
+ACPI 6.3 states that a PCC OperationRegion describes the shared memory
+following the PCC signature. Consequently, COMMAND fields at raw shared
+memory offsets 4 and 12 appear at OperationRegion offsets 0 and 8.
 
-Signed-off-by: Lifeng Zheng <zhenglifeng1@huawei.com>
+The first patch corrects those offsets in ACPICA. This change has already
+been submitted upstream:
+
+  https://github.com/acpica/acpica/pull/1205
+
+The ACPICA patch is included here only to document the complete
+dependency and aid review and testing. It must enter the kernel through
+the ACPICA pull/import process and will not be merged directly through
+the Linux ACPI tree.
+
+The remaining Linux patches:
+
+- Preserve the platform-populated PCC signature when copying
+  OperationRegion data.
+- Release the mailbox channel and region context when ACPICA
+  deactivates an OperationRegion.
+- Compute and cache the command timeout during channel setup.
+
+There is no strict build dependency in case ACPICA and other 3 changes
+need to be merged at different timeline or via different branch.
+
+Regards,
+Sudeep
+
 ---
- drivers/acpi/cppc_acpi.c | 89 ++++++++++++++++++++++++++--------------
- 1 file changed, 58 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 53c71888108d..2c2b25ec3e27 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -1374,7 +1374,7 @@ static int cpc_write(int cpu, struct cpc_register_resource *reg_res, u64 val)
- 	return ret_val;
- }
- 
--static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
-+static int cpc_read_in_pcc(int cpu, struct cpc_register_resource *reg, u64 *val)
- {
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
-@@ -1399,35 +1399,52 @@ static int cppc_get_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u
- 	return ret;
- }
- 
--static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
-+/**
-+ * cpc_read_reg - Read value from a register element that may be Integer or Buffer.
-+ * @cpu: CPU number.
-+ * @reg: Pointer to the CPC register element.
-+ * @val: Output value.
-+ *
-+ * Return: 0 on success, -EOPNOTSUPP if null/unsupported, negative on error.
-+ */
-+static int cpc_read_reg(int cpu, struct cpc_register_resource *reg, u64 *val)
- {
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
--	struct cpc_register_resource *reg;
--
- 	if (val == NULL)
- 		return -EINVAL;
- 
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
--		return -ENODEV;
--	}
--
--	reg = &cpc_desc->cpc_regs[reg_idx];
--
--	if ((reg->type == ACPI_TYPE_INTEGER && reg->optional &&
--	     !reg->cpc_entry.int_value) || (reg->type != ACPI_TYPE_INTEGER &&
--	     IS_NULL_REG(&reg->cpc_entry.reg))) {
--		pr_debug("CPC register is not supported\n");
--		return -EOPNOTSUPP;
-+	if (reg->type == ACPI_TYPE_INTEGER) {
-+		if (reg->optional && !reg->cpc_entry.int_value)
-+			goto err_unsupported;
-+	} else if (reg->type == ACPI_TYPE_BUFFER) {
-+		if (IS_NULL_REG(&reg->cpc_entry.reg))
-+			goto err_unsupported;
-+	} else {
-+		goto err_unsupported;
- 	}
- 
- 	if (CPC_IN_PCC(reg))
--		return cppc_get_reg_val_in_pcc(cpu, reg, val);
-+		return cpc_read_in_pcc(cpu, reg, val);
- 
- 	return cpc_read(cpu, reg, val);
-+
-+err_unsupported:
-+	pr_debug("CPC register is not supported\n");
-+	return -EOPNOTSUPP;
-+}
-+
-+static int cppc_get_reg_val(int cpu, enum cppc_regs reg_idx, u64 *val)
-+{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+		return -ENODEV;
-+	}
-+
-+	return cpc_read_reg(cpu, &cpc_desc->cpc_regs[reg_idx], val);
- }
- 
--static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
-+static int cpc_write_in_pcc(int cpu, struct cpc_register_resource *reg, u64 val)
- {
- 	int pcc_ss_id = per_cpu(cpu_pcc_subspace_idx, cpu);
- 	struct cppc_pcc_data *pcc_ss_data = NULL;
-@@ -1452,18 +1469,16 @@ static int cppc_set_reg_val_in_pcc(int cpu, struct cpc_register_resource *reg, u
- 	return ret;
- }
- 
--static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
-+/**
-+ * cpc_write_reg - Write a CPC register.
-+ * @cpu: CPU number.
-+ * @reg: Pointer to the CPC register resource.
-+ * @val: Value to write.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int cpc_write_reg(int cpu, struct cpc_register_resource *reg, u64 val)
- {
--	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
--	struct cpc_register_resource *reg;
--
--	if (!cpc_desc) {
--		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
--		return -ENODEV;
--	}
--
--	reg = &cpc_desc->cpc_regs[reg_idx];
--
- 	/* if a register is writeable, it must be a buffer and not null */
- 	if ((reg->type != ACPI_TYPE_BUFFER) || IS_NULL_REG(&reg->cpc_entry.reg)) {
- 		pr_debug("CPC register is not supported\n");
-@@ -1471,11 +1486,23 @@ static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
- 	}
- 
- 	if (CPC_IN_PCC(reg))
--		return cppc_set_reg_val_in_pcc(cpu, reg, val);
-+		return cpc_write_in_pcc(cpu, reg, val);
- 
- 	return cpc_write(cpu, reg, val);
- }
- 
-+static int cppc_set_reg_val(int cpu, enum cppc_regs reg_idx, u64 val)
-+{
-+	struct cpc_desc *cpc_desc = per_cpu(cpc_desc_ptr, cpu);
-+
-+	if (!cpc_desc) {
-+		pr_debug("No CPC descriptor for CPU:%d\n", cpu);
-+		return -ENODEV;
-+	}
-+
-+	return cpc_write_reg(cpu, &cpc_desc->cpc_regs[reg_idx], val);
-+}
-+
- /**
-  * cppc_get_desired_perf - Get the desired performance register value.
-  * @cpunum: CPU from which to get desired performance.
+Changes in v3:
+ - Updated the ACPICA patch to the version accepted as part of
+   https://github.com/acpica/acpica/pull/1205
+ - Rebased other patches to v7.3-rc4
+ - v2: https://lore.kernel.org/all/20260722131553.2117835-1-sudeep.holla@kernel.org/
+
+Changes in v2:
+ - Updated the commit message to include correct example of PCC Opregion
+   as the example added by original commit 77e2a04745ff ("ACPI: PCC:
+   Implement OperationRegion handler for the PCC Type 3 subtype")
+   incorrectly included the signature as an OperationRegion field.
+ - v1: https://lore.kernel.org/all/20260717081005.470013-1-sudeep.holla@kernel.org/
+
+Sudeep Holla (4):
+  ACPICA: Fix PCC OperationRegion command offsets
+  ACPI: PCC: Preserve shared memory signature in OpRegion handler
+  ACPI: PCC: Free channel on OpRegion deactivation
+  ACPI: PCC: Cache OpRegion command timeout
+
+ drivers/acpi/acpi_pcc.c       | 55 ++++++++++++++++++++++++++---------
+ drivers/acpi/acpica/exfield.c | 11 +++----
+ 2 files changed, 48 insertions(+), 18 deletions(-)
+
 -- 
-2.33.0
+2.43.0
 
