@@ -1,33 +1,33 @@
-Received: from mta0.migadu.com (out-197.mta0.migadu.com [91.218.175.197])
+Received: from mta1.migadu.com (out-169.mta1.migadu.com [95.215.58.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1CF4A4EE6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2684AA02B
 	for <acpica-devel@lists.linux.dev>; Mon,  5 Oct 2026 15:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.197
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791214653; cv=none; b=ZC3jr2siroqqxM/A9I8GKaIGuilzdVr0I7h5brczmA+Nl+Fv3wwhYLJ9rjefPPnRGXuLrdLegByGEiowhctjc4Umi2p7b4iv6w+XSam8TYVC/KWy1q1/ZRozYt42EKlJJk649VRb/Hbhtdw2GGhKfbzVleydPtawsZ2U8DIRsB0=
+	t=1791214654; cv=none; b=vGdc0G48cNsdXAGjOZPYXx26QZNTaw6UOMVLl2IZZyuGpEuRMHd6AX3MaFj+mOjK+VmmFnfOFyH7NR340AKuiUeBUr98mdZDVaFRJzfHN6NUIPTtYPorWrtkUsLvBsrabeio6GQosMdo0C6ed+B+lp4/8PbGue+Wt49VqYMDQEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791214653; c=relaxed/simple;
-	bh=FKotCGMw7JFlVthC3POWKatbcuPz2i306Y5Jwy9RYaQ=;
+	s=arc-20240116; t=1791214654; c=relaxed/simple;
+	bh=XB7k5IpF/f3jTyUabM2/XihTVg2rq2ysH+wSG7w0HHI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N19tpyBcSKkKPmZj6NT9Hd9G/+2Se3wxg8FT3lYUsJ7/t9YNmypq7veuIITP9NMBVt2EOTmAgFfeBy8txQ5qJFRYrblK1kYn3MfcBMwCx2/uwTuPAEuRPF8ywVnvbV0os73joAR0ZwUrKuwQN/dV+a0u/d6vbRpIBy1ZaL/hRN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q8ZNpPO4; arc=none smtp.client-ip=91.218.175.197
+	 MIME-Version; b=nYg3yZG13tHGOynqwHAOSfKQBDfoCmYhFc6rNBVkfRNK6N1uZ8jQrKxUhcbPYJi7CFhcTLmyHQU0OwnPEF9oru084tnRmuVUcgsLefDtKyvl7QrC1rQ1tQNDP/BhARRPtvztPjEDdKIgfDmqcDWXzFMlSAacdtc7YjnstG54YsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ULGWEgFa; arc=none smtp.client-ip=95.215.58.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q8ZNpPO4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ULGWEgFa"
 X-Envelope-To: acpica-devel@lists.linux.dev
-DKIM-Signature: a=rsa-sha256; bh=FKotCGMw7JFlVthC3POWKatbcuPz2i306Y5Jwy9RYaQ=;
+DKIM-Signature: a=rsa-sha256; bh=XB7k5IpF/f3jTyUabM2/XihTVg2rq2ysH+wSG7w0HHI=;
  c=simple/simple; d=linux.dev;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
  t=1791214648; v=1; x=1791819448;
- b=q8ZNpPO4YYU8mX7DKuYFT184Fkoja+BeaAy38r/8IAqfNBK8eMoXCqj503qDYwZoGRTgFNtq
- ZKI2kK8zvrOoD/GLPfkOxCRnqP1o/6VVbSRh5n3VHgLexnaY2O5jzMPBUm9Ry/4Hw4WowJwS78C
- P2FnD+APJj+28F7SjZ6a/qC4=
+ b=ULGWEgFafyCuLMXz80WQ0sScB1CJIOiXxgZjrmgLDC/KFjs22mcjiDlNOJzIeE3JGf59HhR/
+ d/kFQVEpKo6u29ilEy5xT3JLBaRMSgK5XMGG+c2Fg36ccBXf3e3GpJ0kGOwX285YDRdQtv5uo1S
+ XzlKm21GCA8S7FRyp2qQh3kI=
 X-Envelope-To: acpica-devel@lists.linux.dev
-Received: by smtp.migadu.com with ESMTPS id f99529c0cd29c776;
+Received: by smtp.migadu.com with ESMTPS id 8fb8ff2d339af07d;
 	Mon, 05 Oct 2026 15:37:28 +0000
-X-Mizu-Trace-ID: f99529c0cd29c776
+X-Mizu-Trace-ID: 8fb8ff2d339af07d
 X-Migadu-Flow: FLOW_OUT
 From: Fuad Tabba <fuad.tabba@linux.dev>
 To: "Rafael J. Wysocki" <rafael@kernel.org>
@@ -38,9 +38,9 @@ Cc: Len Brown <lenb@kernel.org>,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Fuad Tabba <tabba@google.com>
-Subject: [PATCH 2/2] ACPI: tools: Rebuild objects when a header they include changes
-Date: Mon,  5 Oct 2026 16:37:23 +0100
-Message-Id: <20261005153723.2644331-3-fuad.tabba@linux.dev>
+Subject: [PATCH 1/2] ACPI: tools: Link include/acpi instead of copying it
+Date: Mon,  5 Oct 2026 16:37:22 +0100
+Message-Id: <20261005153723.2644331-2-fuad.tabba@linux.dev>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20261005153723.2644331-1-fuad.tabba@linux.dev>
 References: <20261005153723.2644331-1-fuad.tabba@linux.dev>
@@ -52,43 +52,47 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-An incremental build of the ACPI tools recompiles an object only when
-its .c file changes. The objects have no dependencies on the headers
-they include, from include/acpi, drivers/acpi/acpica or the tools
-themselves, so a header change leaves them built against the old one.
+An incremental build of the ACPI tools uses an old copy of the
+include/acpi headers after they change. The copy under $(OUTPUT)include
+is made by a rule for the directory with no prerequisites, so once it
+exists it's never refreshed.
 
-Generate a dependency file beside each object with -MMD, adding -MP so
-that a removed header doesn't break the build, include those files, and
-remove them on clean.
+Link $(OUTPUT)include/acpi to include/acpi instead, which keeps the rest
+of include/ out of the tools' include path as the copy did. The link is
+recreated on every build, so it also replaces a copy left by an earlier
+one, and the objects take it as an order-only prerequisite so that
+recreating it rebuilds nothing. Rebuilding them when a header changes
+is the next patch.
 
+Fixes: d5a4b1a540b8 ("tools/power/acpi: Remove direct kernel source include reference")
 Assisted-by: LLM
 Signed-off-by: Fuad Tabba <fuad.tabba@linux.dev>
 ---
- tools/power/acpi/Makefile.rules | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/power/acpi/Makefile.rules | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/tools/power/acpi/Makefile.rules b/tools/power/acpi/Makefile.rules
-index 48d9280a63f72..b520a966c1c1b 100644
+index b71aada776889..48d9280a63f72 100644
 --- a/tools/power/acpi/Makefile.rules
 +++ b/tools/power/acpi/Makefile.rules
-@@ -21,13 +21,15 @@ $(KERNEL_INCLUDE)/acpi: FORCE
- $(objdir)%.o: %.c | $(KERNEL_INCLUDE)/acpi
+@@ -13,13 +13,12 @@ $(OUTPUT)$(TOOL): $(toolobjs) FORCE
+ 	$(ECHO) "  STRIP   " $(subst $(OUTPUT),,$@)
+ 	$(QUIET) $(STRIPCMD) $@
+ 
+-$(KERNEL_INCLUDE):
+-	$(ECHO) "  MKDIR   " $(subst $(OUTPUT),,$@)
++$(KERNEL_INCLUDE)/acpi: FORCE
+ 	$(QUIET) mkdir -p $(KERNEL_INCLUDE)
+-	$(ECHO) "  CP      " $(subst $(OUTPUT),,$@)
+-	$(QUIET) cp -rf $(srctree)/../../../include/acpi $(KERNEL_INCLUDE)/
++	$(QUIET) rm -rf $@
++	$(QUIET) ln -s $(abspath $(srctree)/../../../include/acpi) $@
+ 
+-$(objdir)%.o: %.c $(KERNEL_INCLUDE)
++$(objdir)%.o: %.c | $(KERNEL_INCLUDE)/acpi
  	$(ECHO) "  CC      " $(subst $(OUTPUT),,$@)
  	$(QUIET) $(MKDIR) -p $(objdir) 2>/dev/null
--	$(QUIET) $(CC) -c $(CFLAGS) -o $@ $<
-+	$(QUIET) $(CC) -c $(CFLAGS) -MMD -MP -o $@ $<
-+
-+-include $(toolobjs:.o=.d)
- 
- all: $(OUTPUT)$(TOOL)
- clean:
- 	$(ECHO) "  RMOBJ   " $(subst $(OUTPUT),,$(objdir))
- 	$(QUIET) find $(objdir) \( -not -type d \)\
--		 -and \( -name '*~' -o -name '*.[oas]' \)\
-+		 -and \( -name '*~' -o -name '*.[oasd]' \)\
- 		 -type f -print | xargs rm -f
- 	$(ECHO) "  RM      " $(TOOL)
- 	$(QUIET) rm -f $(OUTPUT)$(TOOL)
+ 	$(QUIET) $(CC) -c $(CFLAGS) -o $@ $<
 -- 
 2.39.5
 
