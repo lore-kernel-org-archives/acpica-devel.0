@@ -1,285 +1,390 @@
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0405D2C237C
-	for <acpica-devel@lists.linux.dev>; Thu,  8 Oct 2026 03:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.200
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791429155; cv=none; b=nPlsg+yQOObLBPQHZeXLvcjFzZic7bjCy5VrPmCydlCSFqxPcCIlF8Gvjry5CyrxlMlEn59jBSbFeJcwX2vwKJIFF75YrMWa2ulZrw7nBlYmKvN5n8lUntC7IbwPVYvzKqsJu0RR5fM+9tb6CpSMC/BFuERP8rYm8tXG4NL42lA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791429155; c=relaxed/simple;
-	bh=0WtJGUa2Ei1qT4G2+P8o7gdOU6/Tk4RPwU5TXDvYfXU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=erwIt5gHWlQFtF4YCMKFGNUePM8MddwicItJjTTEqlmFEcmDdUqEGAxd7UQuKeb463GsfXZwoHaTVBY/9EyRacbtV/SN1enPMqQNAp7u0rhh+Yj0FKBNi1ShH45NqABlv6nI7TbWAgst0g4na4j+2/QGNR93l9qE0onZBa3Kqw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-4c7f887ac6bso3957907b6e.3
-        for <acpica-devel@lists.linux.dev>; Wed, 07 Oct 2026 20:12:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791429153; x=1792033953;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=k4GFIqZuYztypf5nVdacwFxbDWwpq1vZGFNBg/M0eKc=;
-        b=MtlAfc69sY3QgJRg8pTqBfpoZaQ2P8DpbHUNJRjqHSyWqKvT2DqBT+QEbGDGFyJhVI
-         oQvJvgAoJSYxSDmm9eViX+gGfKmHDJkqlqwEmBbwkPJNTvpvuSpuhe1Db7c0BzOPg1qe
-         6KHGg2Faivib+EbjGj+cFP+PmAlGRAaJSKWdq/JZq3ru3PG07wvl7DmOv/prkp301qff
-         KP9V/1o1O+8LGBcvMA/wDlPScNAFmBcBcJ0dQG/rx/vLNzQ4ySqHYfiJBh1ebZHIXOyO
-         wm/m6gn/dBKK4sRTRgTPrlsJCVAQre7/l6CyeKN99srLfz7EKKrXpptFZdaL6Qjfu9+B
-         czrQ==
-X-Gm-Message-State: AFuF++na/2X4KYHMh1w9NeeZRTHNRB/rBUo6/Dc9fJTUjy59a7t4bum2
-	nlvRVkUoLOR9ElbM8FJgIC19VwpgEKZ4Wio6xNlsqGq7vo5xfysWL/XcGkJmb7shUNGFNQm317f
-	2RVjXA1LPF0IRjN1gg6LDGcGkK2zLrAWb0p1Z8Ur+TKiaDHOPSVMrEbm3UEk=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D768271443
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 12 Oct 2026 06:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=140.211.166.133
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791785350; cv=fail; b=tvgDsdr3WRSqTMJ1QNTyPBubdpX18lo4hxUCOZzk8jsR0mBFJcsnN9OFM9XaovcJDAHJ1kVHoeDgKp85hO7oAGc7MnuMPgcwQSwk7rPBtrk5DfMPwfXZDGOd2F9d6ANcRgpECFhnUwzjEgVQTDR0549p/MSzncYb63pPNAy0OWU=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791785350; c=relaxed/simple;
+	bh=LmjosT6kLaPczGdyy1VlL1z22GYmTRa4zmhYXZk4MCY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Uqt9OT/Q6XshfMiV7WpUh4dQin5DKel0QDhc1CyoJu8FZtW5VaEzwF2HLfDYiRhkWIzsxIK9SnNiD1xkaZWhinH/LmCC0WqNmnTvL0dh8oMvc8ljBX/mdvUiYQul2uuI+KjvIE/r8jABYf9CzdsuyhS82/D2nVWT1MsIB0kZUok=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=RbaYzL5L; arc=fail smtp.client-ip=140.211.166.133
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="RbaYzL5L"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id 2F6A7400AF
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 12 Oct 2026 06:09:08 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.592
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+ by localhost (smtp2.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id p6mbKD85wVuR for <acpica-devel@lists.linuxfoundation.org>;
+ Mon, 12 Oct 2026 06:09:07 +0000 (UTC)
+ARC-Filter: OpenARC Filter v1.3.2 smtp2.osuosl.org 563464002B
+Authentication-Results: smtp2.osuosl.org; arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::5"
+ARC-Seal: i=2; d=osuosl.org; s=arc; a=rsa-sha256; cv=pass; t=1791785347;
+	b=VT9HOt8A9pJu6CQf7CPXpl6BU2Y5g3qCUN6TLRvEpREXN1k9upmi40DJ8R5n4X7au/+4
+	 LMtpehXhjuN2sl+v6V5xs6bB/1SY4CxyFMAp5BNaIQN2mPamIaaO7DtOGSn4/W/DYKsc6
+	 dBejWVYV7RiuOGOUvsA8yM1SKMYExYrAD9BUOJMvmnlr8MGb5k/UvdQcE3p752J8S+lsj
+	 vsqDyDo8etkQlrNdjprn3ZXEXhaJ2eOM1EKy4YG9DmiYSSabBG0B09ZqymU3dhXWbr1FZ
+	 3fiSjbwdEbM/JsKZwXVKrdNQxUDFPNfYZOKJB+Gd8mGyWDZVBm+HXj6EO/IDOZvJEyw==
+ARC-Message-Signature: i=2; d=osuosl.org; s=arc; a=rsa-sha256;
+	c=relaxed/relaxed; t=1791785347;
+	h=Received-SPF:DKIM-Signature:Received:Received:
+	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
+	 Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type:
+	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=tFDtviAjCI6Fm2/ci961TLfayoagnPWvlihuuzr/lfU=;
+	b=iXtS9WOK3aywdMT/C2uVgDEQP6uow2fkj4hyX4yYvABFcsHhQh8DnJBRkl6Z/HwUesYj
+	 ZRQz8jrsXNRzFylLkJMWmRXoF08AVYh9Oh5TNiVOZNnJ/SVfcGR9PfskG3oSJYQbOQd7Y
+	 NTaEakk6N+JhLX650Mxej4liGINSd0Fl/OTIU/P8KYwcmiO8H4075qdIn9SHCQyNKlu2/
+	 zhdFisvOQccobHmW1M5f+jF8vaiLYwxmONFSRVlV4Oqwh88aba43nfO3wwGijMrswj0gl
+	 CpU/t/9gbWyPAsVaqKzaX69gM5xxB6hY6J1+aDXA7QFbFz4WtI1iPoUXahgcZuHsa0A==
+ARC-Authentication-Results: i=2; smtp2.osuosl.org; 
+	dmarc=pass header.from=amd.com;
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=RbaYzL5L;
+	arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::5"
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a01:111:f403:c105::5; helo=ch5pr02cu005.outbound.protection.outlook.com; envelope-from=baorui.liu@amd.com; receiver=<UNKNOWN> 
+Authentication-Results: smtp2.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=RbaYzL5L
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazlp170120005.outbound.protection.outlook.com [IPv6:2a01:111:f403:c105::5])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id 563464002B
+	for <acpica-devel@lists.linuxfoundation.org>; Mon, 12 Oct 2026 06:09:04 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wtqDKiFyX4dzkUpSZV37BkDLT2yTPlU6kUTzd0Bdks6vFNLMnLWDru0DqbciAr9jJHd2RNVHyfZH3mXNUgAlbMUIATUQVmzzv5J3dJ/k60TvM0wyIQ0DDQfQNC53QWIvYYXqaIXVvS+OxaanB8Hi7JhqOY12lR/P5Gh8N/wVVQWEyjRHk999mBTNFMWAfGZ4A+Bw2bA9bqvNx0bFxFAzwyzWs9jTTP8Vxpy9LZ+KA9INJz7K2ConTK1a6Rad9JimodvSighHBVGlaRqhIj2JP52sX4vXs6F+iuitA0oTaJ51BlVz5kU4aTC69BIJ2AOjdTR91/a0cY5Wh5MBIojEEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tFDtviAjCI6Fm2/ci961TLfayoagnPWvlihuuzr/lfU=;
+ b=vHej2989CbFUCOSlSk+S7zofGeOTKCctipZY1qPuCz7Uhhr+U74yGqQHfPJZ6hs0WtR2eaq2yyqoPWD5fvfbvv/a9sTUZpXW8mVkUiDV25cGG3TIohsE/tUi1XNYzswNIoKLakoDxfYQXCURVSg7hpwXWDeBQmhJRXcWQ16IEao2it/dVUu+XokRcvgReWHBFgoeR11mlIVePjQvwSi8PXxsWGxkoTi+JOj13U6fNk4Rh35on8aTTKOptBMCqxThT3tUC/fpIIT7Qk0gzUdGYgkbhTKm9Lgbdzphh6nwgsbavt78RneK8fSKpA60Q1wxif8QILnUrL4Ml1a06c7EJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tFDtviAjCI6Fm2/ci961TLfayoagnPWvlihuuzr/lfU=;
+ b=RbaYzL5LTSARrDV/EaZgk+YBVW5ctgtWHenrIYWbHHy+IKI5ViTjvFuuDk57gXm/NezAzYvzJoAXSd+Adm4AVtEw5uQoYuJx7RsPKzvno/HwZ3wZMU1n/pLtM3squIPlC0fdvUOjuA3jnjeUC7Do2y7dS9erh4aUfrZWzHiOBrY=
+Received: from BN9PR03CA0395.namprd03.prod.outlook.com (2603:10b6:408:111::10)
+ by EAYPR12MB141103.namprd12.prod.outlook.com (2603:10b6:303:300::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.21; Mon, 12 Oct
+ 2026 06:09:00 +0000
+Received: from BN2PEPF0000A804.namprd02.prod.outlook.com
+ (2603:10b6:408:111:cafe::51) by BN9PR03CA0395.outlook.office365.com
+ (2603:10b6:408:111::10) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.496.5 via Frontend Transport; Mon, 12
+ Oct 2026 06:08:59 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ BN2PEPF0000A804.mail.protection.outlook.com (10.167.245.168) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.522.6 via Frontend Transport; Mon, 12 Oct 2026 06:08:59 +0000
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Mon, 12 Oct
+ 2026 01:08:53 -0500
+Received: from localhost.amd.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53 via Frontend
+ Transport; Mon, 12 Oct 2026 01:08:51 -0500
+From: Baorui.Liu <baorliu@amd.com>
+To: <rafael@kernel.org>
+CC: <lenb@kernel.org>, <robert.moore@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	Baorui.Liu <baorliu@amd.com>, kernel test robot <lkp@intel.com>
+Subject: [PATCH v5] ACPI: button: Report wakeup key only for power button wakeups
+Date: Mon, 12 Oct 2026 14:08:47 +0800
+Message-ID: <20261012060847.486-1-baorliu@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260922024232.816-1-baorliu@amd.com>
+References: <20260922024232.816-1-baorliu@amd.com>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:138e:b0:4d6:9113:25b0 with SMTP id
- 5614622812f47-4fc4739b36emr4054169b6e.51.1791429152951; Wed, 07 Oct 2026
- 20:12:32 -0700 (PDT)
-Date: Wed, 07 Oct 2026 20:12:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6ac70a20.a36481ec.1ba24c.0006.GAE@google.com>
-Subject: [syzbot] [acpica?] KASAN: slab-use-after-free Read in acpi_ns_check_package_list
-From: syzbot <syzbot+eb4f9a996f9ad47f435d@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	saket.dumbre@intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF0000A804:EE_|EAYPR12MB141103:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8aa2024c-f4a9-4fae-2a56-08df28274e5d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700016|23010399003|82310400026|1800799024|376014|6133799003|10067099003|22082099003|18002099003|260925022911599003|260925021311599003|260925021911599003|13003099007|11063799006|261009223027099003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	qqsMGMkmzA0k57izhIPjz0aRe2w22AsSIJQwxtZoxmn6pAhg+wKZYasWMbpNFQecCy+3EcUYkZfR9aQmbRVdAfxMjtVDuUbfsUg/kToYirk3mmuauMLZ76djdvQx/oASOTTTqFenFQRhHAOVIdC95uw6Oj2zN9CyvOhSIV+BeTqPT+yRGwbJA/XGDddvY9H2a7bNRP452Bgcf5sJBs3yyf6d+APyoEXOGhw3a1VhOcJH2DRV3M4wBkojfSVHYcmnq64dPY7okB3b5Mu0ty5yPnhPJhbFBNWXDoW3OGmvtgqhhdUIQJZ8zpFFKoccy+jHJw6F/eNRsDsYbMkrfxiKNnwlqUxYE0kKiwWE0GYmVLaMKDkKkml2mzTTsAQzgx6d33vd5XD4b2tbn7JBljRkXPWvd3PcXOTgLgGNmcSYH7H9TV9d5H0PVJdPjlRnhWnrTr05X7XMykfzS8hbeQFUHh3bZlvhdePmnKXvqsxtyRpn2OFrjvAk+yoZjeLiUFUn9TYxqZYAMhlGxJIhHF+KIjazP0zD9+3bamUEJuuqUzMalNyU0Arf+mycQmNMg/LZTfyf0iAdXJEdyHJgmpjwWIl9dvxlBHnDdvYpuZzGyj9tLgGGSCoMQbmpuF4mCOGtBx41M5tHoIdxXdOnQU0sndwp2EnWK3U13vVbteJWeF0=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(23010399003)(82310400026)(1800799024)(376014)(6133799003)(10067099003)(22082099003)(18002099003)(260925022911599003)(260925021311599003)(260925021911599003)(13003099007)(11063799006)(261009223027099003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	VcHQgi+MYsLWUUpRl/k8YgFi3x04/J96YmkQAmt85qEoRp+E+Vori0/+VWA+HsFM4YkID/uaoBR/FAcf54A/TdO4c5T2i59Vc94SPQKnNSGrIfanTWo6TZ86Qx0nrNrr/mVX5p+dY3ttFGy8TtnsTB/7/bV8JdLdjt6Zq6i4kX0kD3XT8ckrxdIs2Dz+S/fBLsuQVrGKvxrNNBY4DNBFNfKRs8Qj1lSaWw4KDdnS/7Yq+hK1lc4mm9W5FhrLJaqJwMCuI5lRWQ/LxGP8SelGCeJPfhbgdUSuJG5ZcUSqCsLZ+prsx0RF1Lox6oZVYr7HYfbSaEeI5udj3SsB/E72z62xBscQ8/UQzaLlFN05HfwFOOqFB59L7J6ymmYViXpuhOm7iVfO2ZNAHLDHS7Cy3GRrrljYMuX5/YBsRQPj59xL8SQVYErvCQCELOHy7y21
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2026 06:08:59.3016
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8aa2024c-f4a9-4fae-2a56-08df28274e5d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF0000A804.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: EAYPR12MB141103
 
-Hello,
+The ACPI button driver reports KEY_WAKEUP from the Power Button input
+device to let userspace know that the system was resumed by a power
+button wakeup.
 
-syzbot found the following issue on:
+However, reporting KEY_WAKEUP from generic system resume paths can make
+userspace observe a Power Button wakeup even when the system was resumed
+by a different wake source.
 
-HEAD commit:    f5098b6bae76 Linux 7.2-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10dfc6b9580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f221a1b5d497ed15
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb4f9a996f9ad47f435d
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-userspace arch: i386
+This is reproducible on an AMD Android 15 Xen guest. With a kernel
+without this fix, a non-power-button S3 resume:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  echo mem > /sys/power/state
+  xl trigger android s3resume
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-f5098b6b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/29f89292ccd5/vmlinux-f5098b6b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6b54f72b862e/bzImage-f5098b6b.xz
+makes the Power Button input device report KEY_WAKEUP. The same test on
+a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
+input device.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+eb4f9a996f9ad47f435d@syzkaller.appspotmail.com
+Track whether a power button event/notify is observed while the ACPI
+button device is suspended, and report KEY_WAKEUP on resume only in that
+case.
 
-ACPI Error: AE_NO_MEMORY, 
-Could not update object reference count (20260408/utdelete-651)
-==================================================================
-BUG: KASAN: slab-use-after-free in acpi_ns_check_object_type+0x5c8/0x760 drivers/acpi/acpica/nspredef.c:202
-Read of size 1 at addr ffff888020923688 by task kworker/u33:8/1163
+When the fixed power-button status bit is set during early S3 resume,
+clear it to avoid a deferred KEY_POWER delivery to userspace, and mark
+wakeup_pending so button resume can still report KEY_WAKEUP. Also clear
+wakeup_pending before setting suspended to avoid a race with a power
+button SCI during suspend entry.
 
-CPU: 3 UID: 0 PID: 1163 Comm: kworker/u33:8 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Workqueue: async async_run_entry_fn
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0x13d/0x4b0 mm/kasan/report.c:482
- kasan_report+0xdf/0x1c0 mm/kasan/report.c:595
- acpi_ns_check_object_type+0x5c8/0x760 drivers/acpi/acpica/nspredef.c:202
- acpi_ns_check_package_list+0x6c6/0xaf0 drivers/acpi/acpica/nsprepkg.c:495
- acpi_ns_check_package+0xac4/0x1740 drivers/acpi/acpica/nsprepkg.c:295
- acpi_ns_check_return_value+0x38d/0x420 drivers/acpi/acpica/nspredef.c:136
- acpi_ns_evaluate+0x69e/0x1670 drivers/acpi/acpica/nseval.c:261
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
- pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
- do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:1998
- pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2089
- usb_hcd_pci_probe+0x56/0xcb0 drivers/usb/core/hcd-pci.c:184
- ehci_pci_probe+0x35/0x50 drivers/usb/host/ehci-pci.c:385
- local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
- pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
- __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
- pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
- call_driver_probe drivers/base/dd.c:628 [inline]
- really_probe+0x241/0xa60 drivers/base/dd.c:706
- __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
- driver_probe_device+0x4a/0x140 drivers/base/dd.c:898
- __device_attach_driver+0x1df/0x320 drivers/base/dd.c:1026
- bus_for_each_drv+0x159/0x1e0 drivers/base/bus.c:500
- __device_attach_async_helper+0x1d1/0x2b0 drivers/base/dd.c:1055
- async_run_entry_fn+0x9f/0x580 kernel/async.c:129
- process_one_work+0xa23/0x1940 kernel/workqueue.c:3322
- process_scheduled_works kernel/workqueue.c:3405 [inline]
- worker_thread+0x5ef/0xe50 kernel/workqueue.c:3486
- kthread+0x370/0x450 kernel/kthread.c:436
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Declare acpi_button_power_wakeup_pending() with IS_REACHABLE so that
+CONFIG_ACPI_BUTTON=m does not leave an unresolved reference in built-in
+sleep.c.
 
-Allocated by task 1:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- unpoison_slab_object mm/kasan/common.c:340 [inline]
- __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:366
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4584 [inline]
- slab_alloc_node mm/slub.c:4917 [inline]
- kmem_cache_alloc_noprof+0x26b/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x173/0x790 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_build_internal_package_obj+0x481/0xe60 drivers/acpi/acpica/dspkginit.c:202
- acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_parse_table+0xcb/0x160 drivers/acpi/acpica/nsparse.c:268
- acpi_ns_load_table+0xc9/0x490 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x2b0/0x8f0 drivers/acpi/acpica/tbxfload.c:158
- acpi_load_tables+0x89/0x160 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init drivers/acpi/bus.c:1479 [inline]
- acpi_init+0x146/0x840 drivers/acpi/bus.c:1592
- do_one_initcall+0x11d/0x700 init/main.c:1347
- do_initcall_level init/main.c:1409 [inline]
- do_initcalls init/main.c:1425 [inline]
- do_basic_setup init/main.c:1445 [inline]
- kernel_init_freeable+0x6ea/0x7b0 init/main.c:1658
- kernel_init+0x1f/0x1e0 init/main.c:1548
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-Freed by task 1163:
- kasan_save_stack+0x30/0x50 mm/kasan/common.c:57
- kasan_save_track+0x14/0x30 mm/kasan/common.c:78
- kasan_save_free_info+0x3b/0x70 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:253 [inline]
- __kasan_slab_free+0x5f/0x80 mm/kasan/common.c:285
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2677 [inline]
- slab_free mm/slub.c:6377 [inline]
- kmem_cache_free+0x127/0x6b0 mm/slub.c:6504
- acpi_os_release_object+0x1c/0x30 drivers/acpi/osl.c:1661
- acpi_ut_delete_object_desc+0xea/0x130 drivers/acpi/acpica/utobject.c:402
- acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
- acpi_ut_update_ref_count.part.0+0x510/0x2250 drivers/acpi/acpica/utdelete.c:436
- acpi_ut_update_ref_count drivers/acpi/acpica/utdelete.c:374 [inline]
- acpi_ut_update_object_reference+0x258/0x800 drivers/acpi/acpica/utdelete.c:553
- acpi_ut_remove_reference drivers/acpi/acpica/utdelete.c:740 [inline]
- acpi_ut_remove_reference+0x192/0x1d0 drivers/acpi/acpica/utdelete.c:710
- acpi_ds_clear_implicit_return drivers/acpi/acpica/dsutils.c:55 [inline]
- acpi_ds_clear_implicit_return+0x137/0x220 drivers/acpi/acpica/dsutils.c:34
- acpi_ds_exec_end_control_op+0x319/0xf60 drivers/acpi/acpica/dscontrol.c:226
- acpi_ds_exec_end_op+0xff7/0x1e60 drivers/acpi/acpica/dswexec.c:462
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x5c4/0xe90 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0x640/0x1670 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xf7/0x610 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xa0/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0xb8/0x140 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x179/0xdd0 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x8e/0x6b0 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_enable+0x1f5/0x6f0 drivers/acpi/pci_irq.c:414
- pcibios_enable_device+0xb6/0xe0 arch/x86/pci/common.c:699
- do_pci_enable_device+0x21f/0x4a0 drivers/pci/pci.c:1998
- pci_enable_device_flags+0x27c/0x370 drivers/pci/pci.c:2089
- usb_hcd_pci_probe+0x56/0xcb0 drivers/usb/core/hcd-pci.c:184
- ehci_pci_probe+0x35/0x50 drivers/usb/host/ehci-pci.c:385
- local_pci_probe+0xdd/0x1b0 drivers/pci/pci-driver.c:332
- pci_call_probe+0x176/0x800 drivers/pci/pci-driver.c:394
- __pci_device_probe drivers/pci/pci-driver.c:455 [inline]
- pci_device_probe+0x1cd/0x370 drivers/pci/pci-driver.c:489
- call_driver_probe drivers/base/dd.c:628 [inline]
- really_probe+0x241/0xa60 drivers/base/dd.c:706
- __driver_probe_device+0x20e/0x450 drivers/base/dd.c:868
- driver_probe_device+0x4a/0x140 drivers/base/dd.c:898
- __device_attach_driver+0x1df/0x320 drivers/base/dd.c:1026
- bus_for_each_drv+0x159/0x1e0 drivers/base/bus.c:500
- __device_attach_async_helper+0x1d1/0x2b0 drivers/base/dd.c:1055
- async_run_entry_fn+0x9f/0x580 kernel/async.c:129
- process_one_work+0xa23/0x1940 kernel/workqueue.c:3322
- process_scheduled_works kernel/workqueue.c:3405 [inline]
- worker_thread+0x5ef/0xe50 kernel/workqueue.c:3486
- kthread+0x370/0x450 kernel/kthread.c:436
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
-The buggy address belongs to the object at ffff888020923680
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 8 bytes inside of
- freed 72-byte region [ffff888020923680, ffff8880209236c8)
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20923
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 00fff00000000000 ffff88801bc4da40 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000800270027 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2238826461, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0xfd/0x120 mm/page_alloc.c:1859
- prep_new_page mm/page_alloc.c:1867 [inline]
- get_page_from_freelist+0xf48/0x3530 mm/page_alloc.c:3946
- __alloc_frozen_pages_noprof+0x299/0x2dc0 mm/page_alloc.c:5304
- alloc_slab_page mm/slub.c:3266 [inline]
- allocate_slab mm/slub.c:3380 [inline]
- new_slab+0xa2/0x640 mm/slub.c:3426
- refill_objects+0xe3/0x410 mm/slub.c:7310
- refill_sheaf mm/slub.c:2804 [inline]
- __pcs_replace_empty_main+0x376/0x680 mm/slub.c:4675
- alloc_from_pcs mm/slub.c:4773 [inline]
- slab_alloc_node mm/slub.c:4905 [inline]
- kmem_cache_alloc_noprof+0x46e/0x6a0 mm/slub.c:4931
- acpi_ut_allocate_object_desc_dbg+0x86/0x240 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x51/0x260 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_package_obj+0xa8c/0xe60 drivers/acpi/acpica/dspkginit.c:92
- acpi_ds_eval_data_object_operands+0x2fd/0x640 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0xe41/0x1e60 drivers/acpi/acpica/dswexec.c:617
- acpi_ps_parse_loop+0x5e1/0x26e0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x81e/0x1120 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x393/0x500 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x596/0x970 drivers/acpi/acpica/nsparse.c:116
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888020923580: 00 00 fc fc fc fc 00 00 00 00 00 00 00 00 00 fc
- ffff888020923600: fc fc fc fa fb fb fb fb fb fb fb fb fc fc fc fc
->ffff888020923680: fa fb fb fb fb fb fb fb fb fc fc fc fc 00 00 00
-                      ^
- ffff888020923700: 00 00 00 00 00 00 fc fc fc fc fa fb fb fb fb fb
- ffff888020923780: fb fb fb fc fc fc fc 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202609290454.LJrhMCb3-lkp@intel.com/
+Signed-off-by: Baorui.Liu <baorliu@amd.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes since v4:
+- Fix LKP build ERROR when CONFIG_ACPI_BUTTON=m by declaring
+  acpi_button_power_wakeup_pending() with IS_REACHABLE().
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ drivers/acpi/button.c | 46 ++++++++++++++++++++++++++++++++++++++++++-
+ drivers/acpi/sleep.c  | 27 +++++++++++--------------
+ include/acpi/button.h | 13 ++++++++++++
+ 3 files changed, 70 insertions(+), 16 deletions(-)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+index cdbb1023a8ee..c07de417df5d 100644
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -191,6 +191,7 @@ struct acpi_button {
+ 	bool last_state;
+ 	ktime_t last_time;
+ 	bool suspended;
++	bool wakeup_pending;
+ 	bool lid_state_initialized;
+ 	bool gpe_enabled;
+ };
+@@ -397,6 +398,34 @@ static void acpi_lid_forget(struct acpi_device *adev)
+ }
+ 
+ /* Driver Interface */
++/**
++ * acpi_button_power_wakeup_pending - Mark fixed power button wakeup pending.
++ *
++ * Used when the fixed power-button status bit is observed and cleared during
++ * early S3 resume, so KEY_WAKEUP can still be reported from button resume
++ * without delivering a deferred KEY_POWER to userspace.
++ */
++void acpi_button_power_wakeup_pending(void)
++{
++	struct acpi_device *adev;
++	struct device *phys_dev;
++	struct acpi_button *button;
++
++	adev = acpi_dev_get_first_match_dev(ACPI_BUTTON_HID_POWERF, NULL, -1);
++	if (!adev)
++		return;
++
++	phys_dev = acpi_get_first_physical_node(adev);
++	if (phys_dev) {
++		button = dev_get_drvdata(phys_dev);
++		if (button && button->type == ACPI_BUTTON_TYPE_POWER)
++			button->wakeup_pending = true;
++	}
++
++	acpi_dev_put(adev);
++}
++EXPORT_SYMBOL_GPL(acpi_button_power_wakeup_pending);
++
+ int acpi_lid_open(void)
+ {
+ 	guard(mutex)(&acpi_lid_lock);
+@@ -476,6 +505,9 @@ static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
+ 
+ 	acpi_pm_wakeup_event(button->dev);
+ 
++	if (button->type == ACPI_BUTTON_TYPE_POWER && button->suspended)
++		button->wakeup_pending = true;
++
+ 	if (button->suspended || event == ACPI_BUTTON_NOTIFY_WAKE)
+ 		return;
+ 
+@@ -498,6 +530,11 @@ static void acpi_button_notify_run(void *data)
+ 
+ static u32 acpi_button_event(void *data)
+ {
++	struct acpi_button *button = data;
++
++	if (button->type == ACPI_BUTTON_TYPE_POWER && button->suspended)
++		button->wakeup_pending = true;
++
+ 	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+ 	return ACPI_INTERRUPT_HANDLED;
+ }
+@@ -507,6 +544,12 @@ static int acpi_button_suspend(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+ 
++	/*
++	 * Clear wakeup_pending before marking suspended. Otherwise a power
++	 * button SCI between the two stores could set wakeup_pending and then
++	 * be overwritten here, losing a real wakeup.
++	 */
++	button->wakeup_pending = false;
+ 	button->suspended = true;
+ 	return 0;
+ }
+@@ -523,12 +566,13 @@ static int acpi_button_resume(struct device *dev)
+ 		acpi_lid_initialize_state(button);
+ 	}
+ 
+-	if (button->type == ACPI_BUTTON_TYPE_POWER) {
++	if (button->type == ACPI_BUTTON_TYPE_POWER && button->wakeup_pending) {
+ 		input = button->input;
+ 		input_report_key(input, KEY_WAKEUP, 1);
+ 		input_sync(input);
+ 		input_report_key(input, KEY_WAKEUP, 0);
+ 		input_sync(input);
++		button->wakeup_pending = false;
+ 	}
+ 	return 0;
+ }
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index 132a9df98471..30e268987e37 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -22,6 +22,7 @@
+ #include <linux/syscore_ops.h>
+ #include <asm/io.h>
+ #include <trace/events/power.h>
++#include <acpi/button.h>
+ 
+ #include "internal.h"
+ #include "sleep.h"
+@@ -504,12 +505,11 @@ static void acpi_pm_finish(void)
+ 
+ 	acpi_resume_power_resources();
+ 
+-	/* If we were woken with the fixed power button, provide a small
+-	 * hint to userspace in the form of a wakeup event on the fixed power
+-	 * button device (if it can be found).
+-	 *
+-	 * We delay the event generation til now, as the PM layer requires
+-	 * timekeeping to be running before we generate events. */
++	/*
++	 * If woken by the fixed power button, provide a wakeup event on that
++	 * device. KEY_WAKEUP input reporting is handled by the button driver
++	 * via wakeup_pending; do not synthesize KEY_POWER here.
++	 */
+ 	if (!pwr_btn_event_pending)
+ 		return;
+ 
+@@ -626,14 +626,11 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 	/* Reprogram control registers */
+ 	acpi_leave_sleep_state_prep(acpi_state);
+ 
+-	/* ACPI 3.0 specs (P62) says that it's the responsibility
+-	 * of the OSPM to clear the status bit [ implying that the
+-	 * POWER_BUTTON event should not reach userspace ]
+-	 *
+-	 * However, we do generate a small hint for userspace in the form of
+-	 * a wakeup event. We flag this condition for now and generate the
+-	 * event later, as we're currently too early in resume to be able to
+-	 * generate wakeup events.
++	/*
++	 * ACPI 3.0 (P62): OSPM should clear the fixed power-button status bit
++	 * so the event does not reach userspace as KEY_POWER. Remember that a
++	 * power-button wake occurred so button resume can report KEY_WAKEUP
++	 * and acpi_pm_finish() can emit a PM wakeup event.
+ 	 */
+ 	if (ACPI_SUCCESS(status) && (acpi_state == ACPI_STATE_S3)) {
+ 		acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
+@@ -642,8 +639,8 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 
+ 		if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+ 			acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+-			/* Flag for later */
+ 			pwr_btn_event_pending = true;
++			acpi_button_power_wakeup_pending();
+ 		}
+ 	}
+ 
+diff --git a/include/acpi/button.h b/include/acpi/button.h
+index af2fce5d2ee3..c909c00664c7 100644
+--- a/include/acpi/button.h
++++ b/include/acpi/button.h
+@@ -15,4 +15,17 @@ static inline int acpi_lid_open(void)
+ }
+ #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
+ 
++/*
++ * sleep.c is built-in and calls this helper. Use IS_REACHABLE so that when
++ * CONFIG_ACPI_BUTTON=m the call site gets an inline stub instead of an
++ * unresolved vmlinux link reference (0day/LKP ERROR).
++ */
++#if IS_REACHABLE(CONFIG_ACPI_BUTTON)
++extern void acpi_button_power_wakeup_pending(void);
++#else
++static inline void acpi_button_power_wakeup_pending(void)
++{
++}
++#endif /* IS_REACHABLE(CONFIG_ACPI_BUTTON) */
++
+ #endif /* ACPI_BUTTON_H */
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+base-commit: 4a819ee5f2834330656d6ac168c4c8cf27fdeec2
+-- 
+2.34.1
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
