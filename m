@@ -1,83 +1,88 @@
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6AB4EB859
-	for <acpica-devel@lists.linux.dev>; Mon, 12 Oct 2026 20:33:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D46D3B893C
+	for <acpica-devel@lists.linux.dev>; Tue, 13 Oct 2026 08:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791837209; cv=none; b=R7PLOe2cNnuvjH5vBmIHAe0++omX9V5uS6FtrjKcs/cz+35QV6uRAEeZiRLVgeKG8n4DMZQBMPs2q5XBy2l9+k6ce6fY71oqE0uCD0KkPrJ4yZJ67+WnXY839f314JP+3Xk6BoRfA0/Z541z1uF1lSNr6YCAXDwANYkLAkkF3s0=
+	t=1791880803; cv=none; b=OUhOPDqqD57ZkkTIuGoM07ItvF1t3cLRBRUZwzCfUxFZAdnuWdzIC4LesPRvLjkDFrMrT5LMOLUDti2jC4xUNVRR47dF2P5ReRSXSeW1D5oNA/U93KcKmu4f4IH5zpBgroIFNBxuyocg4z7XFIssIHGSYMT9UmOItjedo1ytFlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791837209; c=relaxed/simple;
-	bh=flx+0YegQYNnL8FPHVWYuh5E766nIBcTVJ1VXmbYJKU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mYLuILRDARGJQ9PIFdV7iYhkfnRWzywtizp3TgcXhDfcDWfJSWiV4VA0y5y1PQy867AFGZdx7z6tRPSGAvPJoHMzfQ4h6ukcVVSUIizTi2CY7Iz9u64vAlhoRgiQSVM5iHkgvR6TRUNNxYxqfnIuhufRVIP01WtbuK/P3NWY/t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-4cd3e90ff97so1901722b6e.2
-        for <acpica-devel@lists.linux.dev>; Mon, 12 Oct 2026 13:33:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791837207; x=1792442007;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=vlwBIdkC5Za4lrbLuNoAfmgoay+0uZk9pdIJnkA6ntM=;
-        b=Q07+o6oaOghbuEh4WtmdWtF8CllKPeAzvYf9VTjz5nTAjPXzUTGiji4TXtd7l+Ukht
-         9NjIjknZeI+iMMi9mYiTblgCuJu/Q7ry1q/gXFk+MqfbpMMt5uCsujiaOztwIlP+WssQ
-         FI0GxuqPEeYF0eH75US4+UrfrNYeQlw/WHdhGCNPXywZY0QC8S89E4f8o8efA7wVh9hY
-         4V6UtA+v0M8qvBoU2c1NXD0F9bywomAdo8Aary5SbLh0xp3h2JGcnDlm3OrUicLzB6VC
-         vHTUstu12qzqnVjKEhIXMTNvqFaoh2yR4nDVPBTVdtfE25liNnjFQcBzFKoc8Jo5C/oe
-         RThA==
-X-Gm-Message-State: AFq9FYIeQKXKYSG2LXBUBLxCYpiS8K4MPgTuBL0XlDS4+hXthqBJ/kNu
-	IFrhElzLzeeMZhLB1uuOafDWTy1kpfKqM4Wvk0NvalusxiejQ61hcgWncECLi1bTevNVxJTGbRT
-	dX5FXCq2P2ihSI1YwVZGzE4VgEm9zki1ptIrkM3JNL3LaeaJZimFgD6+rWiE=
+	s=arc-20240116; t=1791880803; c=relaxed/simple;
+	bh=zYodpRJl2sTx4KeDMYM4tddxsAs05qKU0E+V6KZSlRU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B9W6+Onkt6OSrgvdaRgt7aRjJ6AjuXDsl+b7L1kvIpWpWr4Qfy/hHOYpGKB2iUCbtR8nSAfeP+jw9r3mQQ19wlHAqbAIujpNTTKUmzwkzVFAjbfYKO1pdtfgq8wd0/YLPQMUPi15RG2ttsV1SujTYMjv1x+NUCkmM5oLsDliVWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BdZedCPe; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BdZedCPe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C331F0089B
+	for <acpica-devel@lists.linux.dev>; Tue, 13 Oct 2026 08:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791880802;
+	bh=zYodpRJl2sTx4KeDMYM4tddxsAs05qKU0E+V6KZSlRU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=BdZedCPeO9CwxRpDFBDz0VYWDfdqBszx8mATvuUddMSxUC8P5SrgsNWNfs/NL/Q/O
+	 4IdihQ+BPI1U9ApanBGuC58E8E0GpuWfGTlRXVhINRKt3vam9f9hf1JGy1sdRCYwtU
+	 3uu3d0w0vLAk46rlX9NjZJNgsSWhzinzit3+wi0Fzud2N7iwCTeur3ew6NZ4uqoepZ
+	 WxfSiqvYkPWfBmoBzyxfnM11tf931JjZzrN0nlRO6XP81RubAIujY+MVgWU80bLpE5
+	 Lmm3yKl+feMBzVeBScHr+bKjF2fPWYZuft1o4z5ErZ/xvpWNYXl1RHD5OMwcyNKDDs
+	 Zck+arstH/VHA==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6b167ffd132so4024302a12.1
+        for <acpica-devel@lists.linux.dev>; Tue, 13 Oct 2026 01:40:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxkrH6t+MAYZrpBPJegaIZC8BcHBetUSeCXVgL2JPEHHxSf8v9qvkS70c4yx4UZMhOUmcG+e+Q9HHvDxQY=@lists.linux.dev
+X-Gm-Message-State: AFq9FYI7KzFmo3iyMf7JPybGewhOMXsOiJnj0G5Dar/ufBflgtnTBddw
+	xTZHMtATK0IWgeOPtAdbvaeLhmNL2m18FrMs0tdOiWRo1QSA+SJ5D4X3Q5D57SOGjXw9vrIbJ05
+	hddNl24rGGmbD2gen6V+xB8xpLvehjY8=
+X-Received: by 2002:a05:6402:21cb:b0:6b1:c355:c7b3 with SMTP id
+ 4fb4d7f45d1cf-6b1c355cdf1mr3702607a12.25.1791880800689; Tue, 13 Oct 2026
+ 01:40:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:5091:b0:4c3:7073:8c4d with SMTP id
- 5614622812f47-50c4e962005mr11261872b6e.20.1791837206857; Mon, 12 Oct 2026
- 13:33:26 -0700 (PDT)
-Date: Mon, 12 Oct 2026 13:33:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6acd4416.8cdf6287.1eb53.0140.GAE@google.com>
-Subject: [syzbot] Monthly acpica report (Oct 2026)
-From: syzbot <syzbot+listd8169cae82b905f87325@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, robert.moore@intel.com, 
-	syzkaller-bugs@googlegroups.com
+References: <20260922121058.972734-2-maobibo@loongson.cn> <10bd45f8-2d37-42f0-b7d2-a4a84933c9b3@loongson.cn>
+ <CAAhV-H40TW01vpaNSDgm86DVM4Mwf0sUvnAt2KEwUB=pPFhhqw@mail.gmail.com> <CAJZ5v0gpFDaS8sLdDBbS4tU-F7fKPKOkXtb7nqjfNhagEB_Cgw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gpFDaS8sLdDBbS4tU-F7fKPKOkXtb7nqjfNhagEB_Cgw@mail.gmail.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 13 Oct 2026 16:39:49 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4hdq_2rGAw9LtCcxLUnQuKBgYTJeMXkAfjCuM+yck9HQ@mail.gmail.com>
+X-Gm-Features: AclHuK9oQiH82PB9ry9ALpvacw_4qobdW-etWeXxZBWjotSguWim_HyWbwXpPU8
+Message-ID: <CAAhV-H4hdq_2rGAw9LtCcxLUnQuKBgYTJeMXkAfjCuM+yck9HQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] ACPICA: actbl2.h: Add bit constants of the Flags
+ field in the IOVT IOMMU structure
+To: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Cc: Bibo Mao <maobibo@loongson.cn>, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, lenb@kernel.org, linux-kernel@vger.kernel.org, 
+	lixianglai@loongson.cn, loongarch@lists.linux.dev, 
+	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello acpica maintainers/developers,
+On Mon, Oct 12, 2026 at 10:49=E2=80=AFPM Rafael J. Wysocki (Intel)
+<rafael@kernel.org> wrote:
+>
+> On Mon, Oct 12, 2026 at 9:21=E2=80=AFAM Huacai Chen <chenhuacai@kernel.or=
+g> wrote:
+> >
+> > On Mon, Oct 12, 2026 at 3:16=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> =
+wrote:
+> > >
+> > > This change is already merged in acpica tree.
+> > >
+> > > slightly ping.
+> > I will merge the last three patches once the acpica changes are synced
+> > to git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git.
+>
+> I've applied the $subject patch as 7.4 material.
+>
+> When it propagates to linux-next, I can expose it on an immutable
+> branch if that helps, in which case please let me know.
+If that commit is contained by the tag such as 'acpi-7.4-rc1', then it
+is enough for me. The loongarch pull request is usually after the acpi
+pull request.
 
-This is a 31-day syzbot report for the acpica subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/acpica
+Huacai
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 5 issues are still open.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 3       No    KASAN: slab-use-after-free Read in acpi_ex_resolve_to_value
-                  https://syzkaller.appspot.com/bug?extid=ddf04485ab0b8f938ed4
-<2> 2       No    KASAN: slab-use-after-free Read in acpi_ut_update_object_reference
-                  https://syzkaller.appspot.com/bug?extid=c6c92a97a9907f92fa1c
-<3> 51      Yes   KASAN: use-after-free Read in acpi_ns_get_attached_object
-                  https://syzkaller.appspot.com/bug?extid=5725792ce6a9938d1b24
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+>
+> Thanks!
