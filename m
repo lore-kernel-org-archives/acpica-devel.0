@@ -1,37 +1,37 @@
 Received: from layka.disroot.org (layka.disroot.org [178.21.23.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F9E41BA61
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 19:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DA341D659
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 19:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.21.23.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792004762; cv=none; b=T66qCe7Oxqk9cdoMC1UqVgxSyjoBunbAMswojSPSfnD4SShEyM8V1OtDmmwwzbptu7Vseviy0peiY+ijJ+zlixs2/llr8oNvr4akiHY04lNwcPV37BL3xyjDgnzjUxQ5qk/MKt6vZtlKs6s9iFWBrElt7j2LgFpisu2i/yWfm0I=
+	t=1792004764; cv=none; b=AV4WlCUR1yC3U39/4ue2xf/opw3tiZRXst91wsIIrYgIbWlGgCAHvt79TSTIn5l2FUuie7xRgTRuYkQMSXAlx0UsLVqpaqUulX1bhECJgBFb7AahfCm6UpxDCOEoN2UrzwbiJBJBddw5vK7Cagfyvk8N1fBfhVLSdcLCcoGJIq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792004762; c=relaxed/simple;
-	bh=cFFwZgxIAz797KN9F08BtOyHGb4+W9+w5rCoIbeC920=;
+	s=arc-20240116; t=1792004764; c=relaxed/simple;
+	bh=rfRX1iHfQxYvt82fLACLtUFEcjdoTxE/BnzihATepfY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gPHnoX4Z/SUISGZ9bnKeRMVKNmYjJLxZeBmcX82isH8qdaFXruEvM+XMfbqYDdJy4i6IPwIHJlRTZ5jonMB3sJBjYY2pZM5pzRJnKVQX+PEN0zbe1U9HXX3onw25UurFpf8Ob/kOCoUEw18eBHxjtWmJDUXT+F0+gjVEruN+zak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=kAteC5Qt; arc=none smtp.client-ip=178.21.23.139
+	 MIME-Version:Content-Type; b=Bnqp6h1aI9kfiw/WetumAyeC1t+y9hgtBpR/1oXhQHQo59BrjwkoG/WI5QBwzFM2wEejeezVSp+yS24jyWBjb01ID5e0fgmarB8xIOEvdkR46t8SZpcJolgP/V3RhVttC1ZqFPHt3UmGJ81ktBrKjLwjw1IwUK/yyKrMWSdjSXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=HGqw1lvC; arc=none smtp.client-ip=178.21.23.139
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=disroot.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="kAteC5Qt"
+	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="HGqw1lvC"
 Received: from mail01.layka.lan (localhost [127.0.0.1])
-	by disroot.org (Postfix) with ESMTP id E6A3C808E7;
-	Wed, 14 Oct 2026 21:05:58 +0200 (CEST)
+	by disroot.org (Postfix) with ESMTP id 4969B8090C;
+	Wed, 14 Oct 2026 21:06:00 +0200 (CEST)
 X-Virus-Scanned: SPAM Filter at disroot.org
 Received: from layka.disroot.org ([127.0.0.1])
  by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id 6ZC3vkLDG1jv; Wed, 14 Oct 2026 21:05:58 +0200 (CEST)
+ id REbw_tkE7iV4; Wed, 14 Oct 2026 21:05:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
-	t=1792004758; bh=cFFwZgxIAz797KN9F08BtOyHGb4+W9+w5rCoIbeC920=;
+	t=1792004759; bh=rfRX1iHfQxYvt82fLACLtUFEcjdoTxE/BnzihATepfY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=kAteC5QtrGz/GVo1zrZ1jt4775cQVl5d1ftvY+T0NoDSV4zOscnh8BTl0wC+rvQgX
-	 qsbK367oRJ/MiK6rCJN5IwgQ3gbqlhfT3RweFbntZgsAVSMyPqdU8KbqtsQ+0nX8Ra
-	 b0HjgKGH82JkuDcjrqcx2BA591TNmeaZFEPGn/nAxApij2QUFD9QsZ+qff5hbk8Q1J
-	 suLPk5sT/9eRNrghcYBzkJKuUNDFkrywyc9h+wMGTPg6rqBFmqQ63DrKOpzWznb7Zl
-	 waPH/qt20oFHVN29mKraz7ijuBGQ/amVJRZHSqNlaGFHtWJxdq3xWhrtFWZS7RZtDX
-	 76jrYcoh97ohw==
+	b=HGqw1lvCGmfwlhNZZ6Vv+DMAO9iHejQus5aZHVSJ2tLBZGSQQ0B5p/IPIDNHga4ey
+	 1Kb/HQEvuFxShMhZd5xaAY+wdPDSYn9Q0wdU9VTFNK9yVz8M7lcN0GAVyjnCm42K7r
+	 9xyVqlNLCH6BZkwZcV89ZOjfadpKFgejhXSp4fHZ+9rtcbW8kKzr7MElXQpUpTe8T0
+	 k3OBN2QjKOZwuAg5H2MSlXDePSjPtdktB7Eaxlwn0+6LhyLuVc22gXb3hTyfm/SMiV
+	 LYWqP0orIMrj5R4S5KvxkCMmyn+/s8yQEw1ZjwHqyKjwx/dhRNykfuoocjKFr6RvJ4
+	 iJNZO9pGXdvVw==
 From: =?UTF-8?q?Ali=20Ahmet=20Memi=C5=9F?= <aliamemis@disroot.org>
 To: "Rafael J . Wysocki" <rafael@kernel.org>
 Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
@@ -52,9 +52,9 @@ Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
 	linux-usb@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] ACPI: utils: Add acpi_evaluate_dsm_exclusive()
-Date: Wed, 14 Oct 2026 22:04:53 +0300
-Message-ID: <20261014190544.150093-2-aliamemis@disroot.org>
+Subject: [PATCH 2/4] ACPI: EC: Evaluate _Qxx methods exclusively
+Date: Wed, 14 Oct 2026 22:04:54 +0300
+Message-ID: <20261014190544.150093-3-aliamemis@disroot.org>
 In-Reply-To: <20261014190544.150093-1-aliamemis@disroot.org>
 References: <20261014190544.150093-1-aliamemis@disroot.org>
 Precedence: bulk
@@ -66,130 +66,40 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add an exclusive variant of acpi_evaluate_dsm() for _DSM methods that
-are known to break when interleaved with other AML.
+On some Lenovo IdeaPad and Yoga models, _Q0A, _Q0B and the UCSI
+notification query _Q16 take the same AML mutex as the battery, UCSI and
+ideapad methods. Making those exclusive does not help as long as the
+_Qxx methods still run interleaved with them.
 
+Evaluate _Qxx with acpi_evaluate_object_exclusive().
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221065
 Signed-off-by: Ali Ahmet Memiş <aliamemis@disroot.org>
 ---
- drivers/acpi/utils.c    | 54 +++++++++++++++++++++++++++--------------
- include/acpi/acpi_bus.h |  3 +++
- include/linux/acpi.h    |  8 ++++++
- 3 files changed, 47 insertions(+), 18 deletions(-)
+ drivers/acpi/ec.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index f28680424f14..32689c901564 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -799,23 +799,9 @@ acpi_status acpi_evaluate_reg(acpi_handle handle, u8 space_id, u32 function)
- }
- EXPORT_SYMBOL(acpi_evaluate_reg);
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index a89f10256dbb..6cec5a319ec2 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1154,10 +1154,15 @@ static void acpi_ec_event_processor(struct work_struct *work)
  
--/**
-- * acpi_evaluate_dsm - evaluate device's _DSM method
-- * @handle: ACPI device handle
-- * @guid: GUID of requested functions, should be 16 bytes
-- * @rev: revision number of requested function
-- * @func: requested function number
-- * @argv4: the function specific parameter
-- *
-- * Evaluate device's _DSM method with specified GUID, revision id and
-- * function number. Caller needs to free the returned object.
-- *
-- * Though ACPI defines the fourth parameter for _DSM should be a package,
-- * some old BIOSes do expect a buffer or an integer etc.
-- */
--union acpi_object *
--acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 func,
--		  union acpi_object *argv4)
-+static union acpi_object *
-+__acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 func,
-+		    union acpi_object *argv4, bool exclusive)
- {
- 	acpi_status ret;
- 	struct acpi_buffer buf = {ACPI_ALLOCATE_BUFFER, NULL};
-@@ -840,7 +826,10 @@ acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 func,
- 		params[3].package.elements = NULL;
- 	}
+ 	ec_dbg_evt("Query(0x%02x) started", handler->query_bit);
  
--	ret = acpi_evaluate_object(handle, "_DSM", &input, &buf);
-+	if (exclusive)
-+		ret = acpi_evaluate_object_exclusive(handle, "_DSM", &input, &buf);
-+	else
-+		ret = acpi_evaluate_object(handle, "_DSM", &input, &buf);
- 	if (ACPI_SUCCESS(ret))
- 		return (union acpi_object *)buf.pointer;
++	/*
++	 * Evaluate _Qxx exclusively, as on some laptops they take the same
++	 * AML mutex as the battery, UCSI and platform methods, which then
++	 * time out waiting for it.
++	 */
+ 	if (handler->func)
+ 		handler->func(handler->data);
+ 	else if (handler->handle)
+-		acpi_evaluate_object(handler->handle, NULL, NULL, NULL);
++		acpi_evaluate_object_exclusive(handler->handle, NULL, NULL, NULL);
  
-@@ -851,8 +840,37 @@ acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 func,
+ 	ec_dbg_evt("Query(0x%02x) stopped", handler->query_bit);
  
- 	return NULL;
- }
-+
-+/**
-+ * acpi_evaluate_dsm - evaluate device's _DSM method
-+ * @handle: ACPI device handle
-+ * @guid: GUID of requested functions, should be 16 bytes
-+ * @rev: revision number of requested function
-+ * @func: requested function number
-+ * @argv4: the function specific parameter
-+ *
-+ * Evaluate device's _DSM method with specified GUID, revision id and
-+ * function number. Caller needs to free the returned object.
-+ *
-+ * Though ACPI defines the fourth parameter for _DSM should be a package,
-+ * some old BIOSes do expect a buffer or an integer etc.
-+ */
-+union acpi_object *
-+acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 func,
-+		  union acpi_object *argv4)
-+{
-+	return __acpi_evaluate_dsm(handle, guid, rev, func, argv4, false);
-+}
- EXPORT_SYMBOL(acpi_evaluate_dsm);
- 
-+union acpi_object *
-+acpi_evaluate_dsm_exclusive(acpi_handle handle, const guid_t *guid, u64 rev,
-+			    u64 func, union acpi_object *argv4)
-+{
-+	return __acpi_evaluate_dsm(handle, guid, rev, func, argv4, true);
-+}
-+EXPORT_SYMBOL_GPL(acpi_evaluate_dsm_exclusive);
-+
- /**
-  * acpi_check_dsm - check if _DSM method supports requested functions.
-  * @handle: ACPI device handle
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index e7a671dba624..e9859fdf76e8 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -66,6 +66,9 @@ bool acpi_dock_match(acpi_handle handle);
- bool acpi_check_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 funcs);
- union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const guid_t *guid,
- 			u64 rev, u64 func, union acpi_object *argv4);
-+union acpi_object *acpi_evaluate_dsm_exclusive(acpi_handle handle,
-+			const guid_t *guid, u64 rev, u64 func,
-+			union acpi_object *argv4);
- #ifdef CONFIG_ACPI
- bool
- acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld);
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index ddacac812094..6a798d5bde5c 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1042,6 +1042,14 @@ static inline union acpi_object *acpi_evaluate_dsm(acpi_handle handle,
- 	return NULL;
- }
- 
-+static inline union acpi_object *acpi_evaluate_dsm_exclusive(acpi_handle handle,
-+							     const guid_t *guid,
-+							     u64 rev, u64 func,
-+							     union acpi_object *argv4)
-+{
-+	return NULL;
-+}
-+
- static inline union acpi_object *acpi_evaluate_dsm_typed(acpi_handle handle,
- 							 const guid_t *guid,
- 							 u64 rev, u64 func,
 -- 
 2.55.0
 
