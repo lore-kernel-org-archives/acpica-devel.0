@@ -1,37 +1,37 @@
 Received: from layka.disroot.org (layka.disroot.org [178.21.23.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DA341D659
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 19:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEF4433050
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 19:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.21.23.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792004764; cv=none; b=AV4WlCUR1yC3U39/4ue2xf/opw3tiZRXst91wsIIrYgIbWlGgCAHvt79TSTIn5l2FUuie7xRgTRuYkQMSXAlx0UsLVqpaqUulX1bhECJgBFb7AahfCm6UpxDCOEoN2UrzwbiJBJBddw5vK7Cagfyvk8N1fBfhVLSdcLCcoGJIq8=
+	t=1792004767; cv=none; b=f3/3i5eEroUPkDR/0Rw1GAIAzXvuGklM4ATeHJivyhm65+vGqmik4hST6uLmqyDAU81hpty8AAYUjzko2r5nsPWNJGohJUR1hvg3UBAJtTxp2MnvRt7FWPRDWWEUpx1IxeE5kW7XOguQmbAcf4Ruok7VGYxSgI8BvFUa0Kk7tNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792004764; c=relaxed/simple;
-	bh=rfRX1iHfQxYvt82fLACLtUFEcjdoTxE/BnzihATepfY=;
+	s=arc-20240116; t=1792004767; c=relaxed/simple;
+	bh=T0HGTTse7JgGal4jEjqGboGEfv+qM3L0V+D9r39mdWc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Bnqp6h1aI9kfiw/WetumAyeC1t+y9hgtBpR/1oXhQHQo59BrjwkoG/WI5QBwzFM2wEejeezVSp+yS24jyWBjb01ID5e0fgmarB8xIOEvdkR46t8SZpcJolgP/V3RhVttC1ZqFPHt3UmGJ81ktBrKjLwjw1IwUK/yyKrMWSdjSXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=HGqw1lvC; arc=none smtp.client-ip=178.21.23.139
+	 MIME-Version:Content-Type; b=UFYqz5/xpi1IC8NFLnBOy5LHTU3LMsudQT076frMzNfVC6AsxxcggLyXRx79HZL7KkjRxU+TAkeov4D4G401ATSjjignLOYWnX6Bc4Ejm1J83ckIsZNv6iY7x9XoiaKJSbUSc9pCNShMkBB1n5jECAIHfREpbBctozsa4dPiibs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=NaG/A/50; arc=none smtp.client-ip=178.21.23.139
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=disroot.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="HGqw1lvC"
+	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="NaG/A/50"
 Received: from mail01.layka.lan (localhost [127.0.0.1])
-	by disroot.org (Postfix) with ESMTP id 4969B8090C;
-	Wed, 14 Oct 2026 21:06:00 +0200 (CEST)
+	by disroot.org (Postfix) with ESMTP id D395E82B59;
+	Wed, 14 Oct 2026 21:06:01 +0200 (CEST)
 X-Virus-Scanned: SPAM Filter at disroot.org
 Received: from layka.disroot.org ([127.0.0.1])
  by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id REbw_tkE7iV4; Wed, 14 Oct 2026 21:05:59 +0200 (CEST)
+ id oDC2TBvo-w5v; Wed, 14 Oct 2026 21:06:00 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
-	t=1792004759; bh=rfRX1iHfQxYvt82fLACLtUFEcjdoTxE/BnzihATepfY=;
+	t=1792004760; bh=T0HGTTse7JgGal4jEjqGboGEfv+qM3L0V+D9r39mdWc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=HGqw1lvCGmfwlhNZZ6Vv+DMAO9iHejQus5aZHVSJ2tLBZGSQQ0B5p/IPIDNHga4ey
-	 1Kb/HQEvuFxShMhZd5xaAY+wdPDSYn9Q0wdU9VTFNK9yVz8M7lcN0GAVyjnCm42K7r
-	 9xyVqlNLCH6BZkwZcV89ZOjfadpKFgejhXSp4fHZ+9rtcbW8kKzr7MElXQpUpTe8T0
-	 k3OBN2QjKOZwuAg5H2MSlXDePSjPtdktB7Eaxlwn0+6LhyLuVc22gXb3hTyfm/SMiV
-	 LYWqP0orIMrj5R4S5KvxkCMmyn+/s8yQEw1ZjwHqyKjwx/dhRNykfuoocjKFr6RvJ4
-	 iJNZO9pGXdvVw==
+	b=NaG/A/50h7MLW1yTvKoP8jNkxVwrJ47N10iOYjxTEaFnquwIX/u9aZMTgmYHNKbFE
+	 u8mPx+6K1RYuo0W2VpR4H/3vC0zuL34sFS7qgViccX5s/8u2iWEL4bDItEqJfUxXyQ
+	 LcbaJ0wl7QWUXSIzuUD3UL9VBBhdbkUnaMszKtrLqDywLWBalo8ljUw/VXholBln5i
+	 PVSKMDlwjn2NLO//0L2lbNHX3ajzax6GI2zKXGS9Kvvs042W6rMbNf0dGPaEkuMOtO
+	 AU9GluV6LcPd8Q4Ur4YWFTtlX/7IQGasz0m779XVMmNlg2wZzV7cc7VaWTsH+Vqitj
+	 4Zt0eTj5dEB4w==
 From: =?UTF-8?q?Ali=20Ahmet=20Memi=C5=9F?= <aliamemis@disroot.org>
 To: "Rafael J . Wysocki" <rafael@kernel.org>
 Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
@@ -52,9 +52,9 @@ Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
 	linux-usb@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] ACPI: EC: Evaluate _Qxx methods exclusively
-Date: Wed, 14 Oct 2026 22:04:54 +0300
-Message-ID: <20261014190544.150093-3-aliamemis@disroot.org>
+Subject: [PATCH 3/4] usb: typec: ucsi: acpi: Evaluate _DSM exclusively
+Date: Wed, 14 Oct 2026 22:04:55 +0300
+Message-ID: <20261014190544.150093-4-aliamemis@disroot.org>
 In-Reply-To: <20261014190544.150093-1-aliamemis@disroot.org>
 References: <20261014190544.150093-1-aliamemis@disroot.org>
 Precedence: bulk
@@ -66,40 +66,38 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On some Lenovo IdeaPad and Yoga models, _Q0A, _Q0B and the UCSI
-notification query _Q16 take the same AML mutex as the battery, UCSI and
-ideapad methods. Making those exclusive does not help as long as the
-_Qxx methods still run interleaved with them.
+On some Lenovo IdeaPad and Yoga models, the UCSI _DSM accesses the EC 25
+times through helpers that take a shared AML mutex with a 1 s timeout
+and return 0 when it times out, so UCSI commands fail under contention
+with the battery and ideapad methods.
 
-Evaluate _Qxx with acpi_evaluate_object_exclusive().
+Evaluate the _DSM with acpi_evaluate_dsm_exclusive().
 
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=221065
 Signed-off-by: Ali Ahmet Memiş <aliamemis@disroot.org>
 ---
- drivers/acpi/ec.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/usb/typec/ucsi/ucsi_acpi.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index a89f10256dbb..6cec5a319ec2 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1154,10 +1154,15 @@ static void acpi_ec_event_processor(struct work_struct *work)
+diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
+index 5697ccc24ec3..0b9aaf317d2b 100644
+--- a/drivers/usb/typec/ucsi/ucsi_acpi.c
++++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
+@@ -30,8 +30,12 @@ static int ucsi_acpi_dsm(struct ucsi_acpi *ua, int func)
+ {
+ 	union acpi_object *obj;
  
- 	ec_dbg_evt("Query(0x%02x) started", handler->query_bit);
- 
+-	obj = acpi_evaluate_dsm(ACPI_HANDLE(ua->dev), &ua->guid, 1, func,
+-				NULL);
 +	/*
-+	 * Evaluate _Qxx exclusively, as on some laptops they take the same
-+	 * AML mutex as the battery, UCSI and platform methods, which then
-+	 * time out waiting for it.
++	 * On some Lenovo laptops the _DSM times out on the AML mutex it
++	 * shares with the battery and platform methods.
 +	 */
- 	if (handler->func)
- 		handler->func(handler->data);
- 	else if (handler->handle)
--		acpi_evaluate_object(handler->handle, NULL, NULL, NULL);
-+		acpi_evaluate_object_exclusive(handler->handle, NULL, NULL, NULL);
- 
- 	ec_dbg_evt("Query(0x%02x) stopped", handler->query_bit);
- 
++	obj = acpi_evaluate_dsm_exclusive(ACPI_HANDLE(ua->dev), &ua->guid, 1,
++					  func, NULL);
+ 	if (!obj) {
+ 		dev_err(ua->dev, "%s: failed to evaluate _DSM %d\n",
+ 			__func__, func);
 -- 
 2.55.0
 
