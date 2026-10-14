@@ -1,226 +1,100 @@
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from layka.disroot.org (layka.disroot.org [178.21.23.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8765625F2
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 16:47:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE43A4195A3
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 19:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.21.23.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791996472; cv=none; b=n8ZU22aJ/eTPI0JvvR7InXIIQmsxetnVhfdOmhuZIE+KNXDrYmX5NOo3jB2xgHP4CSriRQI2Kjc9OIYzrDpAjjjE/UQ1oC0z3krCyFtoYn1Qjr/mSuCgiRGvmOWDD1o6oglCSVzdY7ToQNZT3s5bTSU897xKi7Memhs6U7DCcXc=
+	t=1792004762; cv=none; b=t1AdmOpFD7TVIxViG1FDCVEKZZRoLdizM5ls0bywqYhUKMAf+7kJjDmcFsnHPWJL1Td3XX3DM7JZ1nGJPWH7EjcvU5bP1+2HuNHyRRSlpL239d3CkzcnM4Gs/XqFnHdgkNGLsACc8H7McLny4PDs2tn+2jzr4RF6KaJKpN3YpnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791996472; c=relaxed/simple;
-	bh=ep11eUjGaRYZD5Y5tVL923e3l8aN0sPspZm3DI41NHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bmD9UcHAXQD3K14EWE3EFmXJLT076IbTgcat2K7Zyk5h66PV7Ai2oLuGg6MTs7nJmG7Q3r0TlREbq3F1lcj7yxLU7Y34Cc03w5TM8f1E2FaWVahekwtTzCrTa0CBwnOE4Pw6FWm+b5agV953o4YmYAqX9YW12mFfe2mgqXniT5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=M8V7I8E5; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=V7ij3OHA; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	s=arc-20240116; t=1792004762; c=relaxed/simple;
+	bh=tai74cT1U2n+M8s3mfCvRqPe0rFgUGBdipz6EPcscOo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=byAcsxNRrSrp9Ph18bwPVnGAdSCi22ouJhjlPdDq90s13Wqo9GKiFr1aYW9rH2E563neJdhDatu7NkN0lP/XHlut6qIkmpotqZNfN3Dw9kqNmFFfOuj5MWHSAVyb/JpYY5ACu7m/NSQHVtfsA54gyrrqR5ys/fbhxDpnoKR5fqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=hLidZkIr; arc=none smtp.client-ip=178.21.23.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=disroot.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="M8V7I8E5";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="V7ij3OHA"
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69EFpa9p1672215
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 16:47:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	B6/IglL+b+wtFPZ5EstJiD1NM9orXL5+hMxkr3Qx2XI=; b=M8V7I8E5HgeGS4S8
-	a9c5Tr8E9X2SaAREIjIFFWKD+uGumnMXVPRMJjQX6xNxdOG2L2o045+kC3PcP+Pc
-	hTB9oPiggtORrRdRrYfijzEF8xXuPlMhf/wI9tAHvVJ2IJGG3dvn8bCnw1RjLbYn
-	a19PMwwfJY8UWdJlrlmi8K8Iv2kfvMhFwnEjZWgNN6m+XC3bzHD0PxB/oLC8wjI4
-	pwz9a2eN89NO674EKMw8xZcegr9YTDUfiajgesUe6MY7fVp144aI/xTF1FtvrbgU
-	q15dhY2slV31YQ9KJssvJwBLhjoKx2rV1TUNmRr8qQvqBvBh9riQDAo8zU6hj8oG
-	D7jWmQ==
-Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com [74.125.82.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hacrh879t-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 16:47:50 +0000 (GMT)
-Received: by mail-dy1-f198.google.com with SMTP id 5a478bee46e88-35c3c370b17so4081196eec.0
-        for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 09:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1791996470; x=1792601270; darn=lists.linux.dev;
-        h=content-transfer-encoding:content-type:mime-version:organization
-         :references:in-reply-to:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=B6/IglL+b+wtFPZ5EstJiD1NM9orXL5+hMxkr3Qx2XI=;
-        b=V7ij3OHAH0bCDUBLs6+o8qKHugcBiSSLbMSukMaddMGZNmg1My6TdyFUpzzHTu8Z96
-         4dmdMKbHsAB8ZAQ77O3zcGOLiy+MdyXmEYVH9abEbwHTkEFhyvbNBBvBFJqPCf4lqhsQ
-         0Mhev9LnvZxctCHX3+MAjaK1OhwGL1VVzXY/Sj2NtHVD4WZUvdRBPOqP8BEb7wZieTLJ
-         Hvu/bYmSKKrcHpB9Z5PBkmWvVD8V8NJfWDtQJEN4NQ4lHuyy0lrXUkbTHDi7Gxzyg1tj
-         U0YG7zUcltvlggYiiif8cxEd2D+ekqMBSzyUbA8mKbsr0u9khAdf2eXFAf9C+++dEv8L
-         NfFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791996470; x=1792601270;
-        h=content-transfer-encoding:content-type:mime-version:organization
-         :references:in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=B6/IglL+b+wtFPZ5EstJiD1NM9orXL5+hMxkr3Qx2XI=;
-        b=ifz71AasXIMbtyVGsxf0r0UuygnkYExYDDv9hX3CUpb5VVH/48hGOvMh4h8VEpCH1K
-         gyeayrM6ziTt4hn3tPauaigdczk6leUCjT/35CIp4Rc2RlfC8/b3ytZK5A3hekOLq0nY
-         41OrC2ksIxnS21PejJhrrCtwP3YRqukZtntAoq6NFJPre/uM7YYtd5zFBsZ3EbunciG1
-         5XkRgbSvmQRMouK1ExT6Gx4vcIsfawKv9hq/176DanAfvVfiq8un//dG0K1VphBLzBQf
-         SK7unUDVvZnbFWRrhz/U0Xg8t+6x1u3LQbuEMGftSXw6Gnq2JmVvN14uOJ2HEH7B/YVh
-         lI7w==
-X-Forwarded-Encrypted: i=1; AKwUvBwnsfc1aKxCdm30Srx7yptJawJobPekUgcWtW/zO5jpgeMBnudoAeckSndzESbVHPK0hpGwhNFF2kU45po=@lists.linux.dev
-X-Gm-Message-State: AFq9FYKu6SHjux5p/KhS2lotxclPHA71OZItLyZNnyOmMqb73ndXi+lF
-	8jWD66aU4twBQSIo0WDxmu6NOW7w6NCXeimhY3InPnL/DtSefxln/GKlipamWkCLt0BMhjPwGPV
-	jrx+Mqu8D78Nmu2+wn3GzxHyoMa7wcLpRj3Zld5zBNIMZDg7/n5/ONotl8cHLAMIrpCU=
-X-Gm-Gg: AYBFou0/CqNgzOBqpc6bWTt08S75iLarMpQkQuOA6aQq/7AavBkP6RBpCe2hEl/5YDD
-	YDVFdhyT329+riAIVIEv3ee7j07qZB2qwj6It+m4Rl3ZHU8Tp8mkMhr4jzD6jFt78ysy4oCN1px
-	c4JLpH9haw79cA/PRVQ+pMdEO7bH+V1YHtMpx44agv9DbAGZ5Gn+NJfIM1+8ga22Dc2v5Dgg/ro
-	v8fHQlN0zuYzUs3dGPSAKwTtzwP0s+gbmWEuOyyG3OjSkqNEC0yPmKFG1KQ59Rxj4XgC2g+9xGz
-	aKv8nGRP/S6iTsMdU3qf9S/M5DJzimP661bz4PPFK0aaZHHJWoVDYyf5i8YK7sUgiFU3vMNjXVD
-	irpJUaqT7qsEFhos3gS75UOmhR0N4cSQC1d9i4dtdes+TwMZ4zuVfqzI=
-X-Received: by 2002:a05:693c:87c7:20b0:33b:fc17:e786 with SMTP id 5a478bee46e88-3537e020a08mr23634047eec.16.1791996469839;
-        Wed, 14 Oct 2026 09:47:49 -0700 (PDT)
-X-Received: by 2002:a05:693c:87c7:20b0:33b:fc17:e786 with SMTP id 5a478bee46e88-3537e020a08mr23634013eec.16.1791996469242;
-        Wed, 14 Oct 2026 09:47:49 -0700 (PDT)
-Received: from localhost (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-35977229a6esm39681092eec.8.2026.10.14.09.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2026 09:47:48 -0700 (PDT)
-Date: Wed, 14 Oct 2026 09:47:44 -0700
-From: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Mark
- Brown <broonie@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-        Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin"
- <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown
- <lenb@kernel.org>,
-        Tony Luck <tony.luck@intel.com>, Hanjun Guo
- <guohanjun@huawei.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shuai
- Xue <xueshuai@linux.alibaba.com>,
-        Maciej Wieczor-Retman
- <maciej.wieczor-retman@intel.com>,
-        Pawel Chmielewski
- <pawel.chmielewski@intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>, Radu
- Rendec <radu@rendec.net>,
-        Avadhut Naik <avadhut.naik@amd.com>, Kees Cook
- <kees@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Fabio M. De
- Francesco" <fabio.m.de.francesco@linux.intel.com>,
-        Breno Leitao
- <leitao@debian.org>, Terry Bowman <terry.bowman@amd.com>,
-        Dan Williams
- <djbw@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Morduan Zang
- <zhangdandan@uniontech.com>, linux-acpi@vger.kernel.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [RFC PATCH 0/6] CPER: Add Memory Error Section 2 support
-Message-ID: <20261014094744.00007c0c@oss.qualcomm.com>
-In-Reply-To: <94bf3539-6a94-4efb-a57e-c0e1ecf243fd@arm.com>
-References: <20260929074659.2587216-1-pierre.gondois@arm.com>
-	<20260929093516.00003781@oss.qualcomm.com>
-	<94bf3539-6a94-4efb-a57e-c0e1ecf243fd@arm.com>
-Organization: Qualcomm
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.51; x86_64-w64-mingw32)
+	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="hLidZkIr"
+Received: from mail01.layka.lan (localhost [127.0.0.1])
+	by disroot.org (Postfix) with ESMTP id A36E680B59;
+	Wed, 14 Oct 2026 21:05:57 +0200 (CEST)
+X-Virus-Scanned: SPAM Filter at disroot.org
+Received: from layka.disroot.org ([127.0.0.1])
+ by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id o7FGUn6_ISzO; Wed, 14 Oct 2026 21:05:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
+	t=1792004756; bh=tai74cT1U2n+M8s3mfCvRqPe0rFgUGBdipz6EPcscOo=;
+	h=From:To:Cc:Subject:Date;
+	b=hLidZkIrFd0SAKq98dQszt27CbM4TtfkM/uarDMsdVfYgKKSrg6e27pzveMyprIuF
+	 x9puc1q5b/+u0TamUkXjfgdLV0mv0XeLXnH/QcPZTc1blhLWBWhLubVMo9dXDsoOg0
+	 0Zt6phlY3Cpfm/ROyIL0RWkQEnowkRXhrcVBn3McOKam9BaLBf96CHh9GZpQHdl2g/
+	 4Xhf9+qr3O1xQUHJ4z/dNiLockD/3/yTNDp2E8lKeXUBotkaFp/hwO+ed2DpdH01q+
+	 NRrP3pVaAyZqtuKCovatnOGnDbn+a3sAJY/FihbU1nlEH72GDDSlgqxckhGNLYUBPy
+	 NyNTWBymYOh6g==
+From: =?UTF-8?q?Ali=20Ahmet=20Memi=C5=9F?= <aliamemis@disroot.org>
+To: "Rafael J . Wysocki" <rafael@kernel.org>
+Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Len Brown <lenb@kernel.org>,
+	Ike Panhc <ikepanhc@gmail.com>,
+	"Derek J . Clark" <derekjohn.clark@gmail.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Rong Zhang <i@rong.moe>,
+	Armin Wolf <W_Armin@gmx.de>,
+	Avraham Hollander <anhollander516@gmail.com>,
+	=?UTF-8?q?Jeffrey=20W=C3=A4lti?= <jeffrey@waelti.dev>,
+	Rick <rickk1166@gmail.com>,
+	linux-acpi@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] ACPI: Serialize EC queries, UCSI and ideapad methods
+Date: Wed, 14 Oct 2026 22:04:52 +0300
+Message-ID: <20261014190544.150093-1-aliamemis@disroot.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: Jv6s0PYm5fSHNE3jod6N0RqlxtaRXczk
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDA2NiBTYWx0ZWRfX6Z2GTtyyQa+e
- LFMVxytGp3dMdXw6zLaDVGv7+vG5d5V+BUFghlwUpDKfSvNQBGeUIm9oWrHJZhh6DAlrPtFMpvu
- C6PK7VgBiblS6AagUrFiO7hhj8J1EPM=
-X-Proofpoint-GUID: Jv6s0PYm5fSHNE3jod6N0RqlxtaRXczk
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDA2NiBTYWx0ZWRfX4T0l6CPkMlO9
- QVvd6zEbRRcpr5Qj0cPfhguNGNf3Tkk80k0sd4/CMekn9JaE3uhEw6J+LcdLBaX/jabvuPzBiSZ
- nE3umFYAflmjNzkpa47jVPDRRf25089Zmo3D/XOLL7vLxlmBI4HdydC9+twz6tKWqqZd9K9p9E+
- f/6n1VxfpN+eRPUqzFPBLriXVcb6WfvOpHkWLnJDQ6Q6xmwgczPbGsyzHxSSeN+bUVzdt3V0c2+
- TFMfuu3NoGJ1/OEbJbhpzhHLzrKvHKXm9A6mfzfXgYG/uNSAcL4vpLftNnd8dozy/cbtqwJBu4M
- 7m2IQpfpWoA9bd879xH9ee+sYesl2GTm7w54PdmLgzfZiQGzYO8z0jF0QUwFVQbHkaT8766IREL
- EI7+84qqXVJR/b9b5GjZ+qlgCk3J+a7VKqKYmuenjDWM/i1qv2iSCcIXCF0JTVayKA7EnNWN8Lu
- CwSog6pF6UmQ1ShkEyg==
-X-Authority-Analysis: v=2.4 cv=SYZi5fRu c=1 sm=1 tr=0 ts=6acfb236 cx=c_pps
- a=wEP8DlPgTf/vqF+yE6f9lg==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=kj9zAlcOel0A:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=Um2Pa8k9VHT-vaBCBUpS:22
- a=7CQSdrXTAAAA:8 a=oD4Dqva4uQW2vlo4LloA:9 a=CjuIK1q_8ugA:10
- a=bBxd6f-gb0O0v-kibOvt:22 a=a-qgeE7W1pNrGK8U0ZQC:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-10-13_01,2026-10-14_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 bulkscore=0 phishscore=0 suspectscore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610140066
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, 7 Oct 2026 15:35:08 +0200
-Pierre Gondois <pierre.gondois@arm.com> wrote:
+This goes on top of [1] and uses its exclusive helpers for the other
+users of the shared EC mutex in bko221065: the _Qxx methods, the UCSI
+_DSM and the ideapad-laptop methods, as discussed in [2].
 
-> On 9/29/26 18:35, Jonathan Cameron wrote:
-> > On Tue, 29 Sep 2026 09:45:59 +0200
-> > Pierre Gondois <pierre.gondois@arm.com> wrote:
-> >  
-> >> Add support for Memory Error Section 2 records.
-> >>
-> >> Extend cper_mem_err_compact to hold both legacy and section-2 records.
-> >> Add a common parser and convert the CPER, GHES, EDAC, extlog and x86 APEI
-> >> paths to use it.
-> >>
-> >> The extlog_mem_event payload layout changes with this series.
-> >> Compatibility with existing userspace decoders still needs to be
-> >> addressed. More specifically, the rasdaemon relies on the current
-> >> struct cper_mem_err_compact definition.
-> >> Either:
-> >> A-
-> >> this patchset should not modify struct cper_mem_err_compact and
-> >> create a new structure to handle Memory Error Section 2 events,
-> >> but this would ignore the similarities of Memory Error Section (1)/2
-> >> B-
-> >> userspace should not rely on the struct cper_mem_err_compact
-> >> layout. extlog_mem_event trace events should instead emit data
-> >> that relies on the actual layout of the CPER records, as defined
-> >> in the ACPI spec.
-> >>
-> >> I am looking for guidance on how to handle the above question.
-> >> Current implementation lean toward B, but emits data in the trace
-> >> event that maps the new/updated struct cper_mem_err_compact.  
-> > My initial thought is a no to modifying the usespace ABI.
-> >
-> > It isn't particularly painful to just have separate handling code
-> > for the new record.  Unfortunately the ext_log tracepoints don't
-> > split out the fields in a fashion that would let you change
-> > the structure.  Other RAS tracepoints do it field by field which
-> > would have been possible to augment - even then it would have
-> > required care to deal with field size changes.
-> >
-> > It may be worth considering a much more 'expanded' tracepoint for
-> > memory error section 2 to reduce similar future extension problems.
-> > That is express ever field and don't use a compact structure at all.
-> >
-> > Mauro, perhaps you can give input on what works better over the
-> > long term?
-> >  
-> Just to be sure I understand correclty, this means that you would prefer
-> to add a 'struct cper_mem_err2_compact'. All the functions currently using
-> 'struct cper_mem_err_compact' or 'struct cper_sec_mem_err' as input/output
-> parameter would have to be duplicated right ?
-> E.g. arch_apei_report_mem_error(), cper_dimm_err_location(), ...
+Patches 3 and 4 depend on patch 1 and on [1], so it is probably easiest
+to take the whole set through the ACPI tree.
 
-Yes - if that's the cleanest path to not modify existing userspace ABI
-(and ras tracepoints definitely count as that).
+The ideapad part is only build-tested, so it would be great if someone
+with one of the bko221065 machines could try both series together.
+
+[1] https://lore.kernel.org/all/20261014132703.93355-1-aliamemis@disroot.org/
+[2] https://lore.kernel.org/all/8be1a245-6061-4f86-9223-0da18d5e423a@oss.qualcomm.com/
+
+Ali Ahmet Memiş (4):
+  ACPI: utils: Add acpi_evaluate_dsm_exclusive()
+  ACPI: EC: Evaluate _Qxx methods exclusively
+  usb: typec: ucsi: acpi: Evaluate _DSM exclusively
+  platform/x86: ideapad-laptop: Evaluate ACPI methods exclusively
+
+ drivers/acpi/ec.c                            |  7 ++-
+ drivers/acpi/utils.c                         | 54 +++++++++++++-------
+ drivers/platform/x86/lenovo/ideapad-laptop.c | 21 ++++++--
+ drivers/usb/typec/ucsi/ucsi_acpi.c           |  8 ++-
+ include/acpi/acpi_bus.h                      |  3 ++
+ include/linux/acpi.h                         |  8 +++
+ 6 files changed, 76 insertions(+), 25 deletions(-)
 
 
-Jonathan
-> 
-> Regards,
-> 
-> Pierre
-> 
+base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+prerequisite-patch-id: 4bd123d6caded06beb9a977d502370df046f82aa
+prerequisite-patch-id: 19de145660fffa3651defed4e6d536cb78418940
+prerequisite-patch-id: 01d8992be9ebc2b28dd3986fe06269eb2fe959f5
+-- 
+2.55.0
 
