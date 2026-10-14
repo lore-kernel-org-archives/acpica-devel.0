@@ -1,87 +1,87 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE3B5335B2
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81605335AB
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791985183; cv=none; b=lqiVYO4x9AQHtRI1lZYCE3tDGstHTjk/Gns4aXE4D0TJ0AV4v/KPHMoAI+g/oOUzmW6Ac2P5nfni336932mN1QChjghNZDVTR4S1JdAQ2SoW3toYN5QmFDP7GJrfZGsbeYTGD8U5XO0VnS82rJvQyySeHo9VoTMCPiVltqon4PM=
+	t=1791985201; cv=none; b=lUb0Ps8lcFV0XR/z4knWhn8HQiytmms2i+ilfmhKCddr8dt3TiHB5iC7fOCXnk4hRRswX1ITsXu6TktMHyAJlThiExciyP7o2RVb75VxaA6SF2dKkI1RYQZFui1U18qg3hPJTa6Qn//F95J74Sfv5UwcwQBx1Vi6qLW/i2tEk/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791985183; c=relaxed/simple;
-	bh=yJRtTsx1Z/dlS18YF82FYZYEB/5T+QeuKE2x3uhnYLA=;
+	s=arc-20240116; t=1791985201; c=relaxed/simple;
+	bh=0xfdTrDLB2gWOdwJBkzEjPw0cKgTkhuJdf6y1UsT6YM=;
 	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=iM8rquyRhd6UKEClGxnmeYn8ORGSWM0yP4LJ4szwp4SrVFAbOhBjkHaEaOUgP2rHsl/adpVv5l8dth57fRDQpzHHV5LvrUVfD/kRyrdZpq4d37jUvISbo8ZRC1ymQigNeYVv2qfgkf08MfsdMK0TpjZc70stroQQ3akKvOfZyyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=YtA1vLiV; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=TZzGmu60; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:Content-Type; b=ShUcjyWrKLB2yQdhd0m15YEkgKs8Nv3AMBc/r0PPJjM9JZlRjKyNRZlMnZOsknGddgS3goyTpvwJDpwNm9fjm23FyPP0vjHTJ89nCP7W46QuuL7ENtA+mvrdysUtkYo+flxduF7MlSWZcGaYzGpppZuEFH5EuDizcRMnxG3QupU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=m5kxVZpb; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=TLheYqYP; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="YtA1vLiV";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="TZzGmu60"
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69EARC3p466347
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:34 GMT
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="m5kxVZpb";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="TLheYqYP"
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69ECLQuF2088499
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	LU5iwxOOYRR9huRXhO8Bq+2PBVQhVFp9657Vu6mwVmk=; b=YtA1vLiVcUl2KR1m
-	No50nfDkZJL942+jlsU/WOkZtwrlW2gbPRPY1BCnktLUQvF5Cm8zcnXJfLCC5FC/
-	faE0yendvZ2SgPCtTZAgwNr2Sy4p8rLENtynYy3geCT63vIuTRDhnvioRzYjFDXL
-	VNXJp5htxGIwSdmtwH57RPHmnjjR8V2d6SuV8ewgB82LeuSNABEfgU5lbhzdYSzw
-	6VL3brA6BH9nS6Ijk3X6ifXUe8fhl/4MndKm0vXT7iVEcsJPR3x/zX5dpb8hVjy4
-	RahcgPvUYhLmx9lzBowBJT+0Wfw2mRmRLnS8BhIW9iU5cOHV8A735abU/haK8eqE
-	Xyk9zg==
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4ha80crqfq-1
+	NKJXy1eO5vGiVrxvsBEG/GIMF2FHbHhV5DLbt20ey20=; b=m5kxVZpbI7GUQhYx
+	Diuw2Cb7PXF2g6Kk1nf81YlMx8pkB+qU1KrTO49M1fg/2pg+9GIBh0oZ2qhU18m0
+	OlTVhT2PClDiT5R4bvvnbThWGaBEEB1sQizX6fNJZMIAvmP0NmUcNCIkGJkCqlsl
+	GdSbpDp2H8JmUuCTeHGRduB42x8lbbtT1GrxcqkwgOo78w+ZUS4Czv44bIEFLwf2
+	kcaIz2ZfZHeRI2lY/2u8J0ektqC3HP3UmsupYKEkt/sBfqQdqpasMZXrGTQGugG5
+	KGdqAYJ2z0AceXufVEwCSQfO9PePeCvoM4x/MCakC8A//Yzojrvm7JHg48eyIhVe
+	TpkCaA==
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com [209.85.219.71])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4h9x49k3rw-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:34 +0000 (GMT)
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-93cb93c874bso181981185a.0
-        for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 06:39:34 -0700 (PDT)
+	for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 13:39:53 +0000 (GMT)
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-91b7e7d5f56so70550376d6.3
+        for <acpica-devel@lists.linux.dev>; Wed, 14 Oct 2026 06:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1791985174; x=1792589974; darn=lists.linux.dev;
+        d=oss.qualcomm.com; s=google; t=1791985193; x=1792589993; darn=lists.linux.dev;
         h=content-transfer-encoding:content-type:in-reply-to:content-language
          :references:cc:to:subject:from:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=LU5iwxOOYRR9huRXhO8Bq+2PBVQhVFp9657Vu6mwVmk=;
-        b=TZzGmu60ppbB3q9bkvKZq+2qhMAQqewI6+Eb598Nj/cnC+0BSskBJDVS+vGTlKxxvM
-         EmErS2gnSXkDzePobMdO2UAYHdy4MMEhHiJKRWwPeqAH7/DYK3vr7sIs7NmpCDWCtCIl
-         AaSmrfdhejOK7VTbk/HI6o3aJm2Uf1k4fsj4iWjhdIUzOQVrklOqpVP4NW4ZmabsFZnU
-         3i12nS5GT3Ef/4NWPQiMAWu+HyOIAYZiBYgyQkqbSE13nK9zanV3PA+/5/LiQup0WqvC
-         fOLZTgK97TUYtjvanG8tz8AJ36qY5dqnwLJGMgjqXGZDTr97zbliWiEpJagCizQ//DST
-         SWNA==
+        bh=NKJXy1eO5vGiVrxvsBEG/GIMF2FHbHhV5DLbt20ey20=;
+        b=TLheYqYP1tH3ABpts0bb2yffKUDdRnujUXTZspsgHqVfTuNqFh98L/Fvof1fyk+OtV
+         Cqt28wUiW3rEafO8XZ3CD78bIaRizXVlx94lAytVhEUxWuWZCm6wzlMGkwl9Km8qLJKy
+         9pqGNNDA1izZbWuDL4uiv9mDFVp3iOfVVOYg3hPfCSYmcd260JJUApWxHGZ/+8jjimBo
+         7u9+iv5oXzHbGguLVMBpWy/g/faMt4Ca/K819wOBr42Sd/mfL9u+NrbzTJUV28T0lg3Q
+         PQiOcUxM24T+dgdIWXLst+RaFkreWgGvtNpYReJdZZ1cBczjWBbSJaccdA8L1O6zwbsK
+         +l7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791985174; x=1792589974;
+        d=1e100.net; s=20260707; t=1791985193; x=1792589993;
         h=content-transfer-encoding:content-type:in-reply-to:content-language
          :references:cc:to:subject:from:user-agent:mime-version:date
          :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=LU5iwxOOYRR9huRXhO8Bq+2PBVQhVFp9657Vu6mwVmk=;
-        b=p7KExZHIQn+CtIJkR9sDH5PiAE8GdyocbId6tO+3y9NII4qsYnyskT0bTjYCVK4eup
-         voVdR8PVnn5w976+9imoGdZgrBHNrTYwxgmwk652FinjCF5yglHSZHrVBjc1rwPcSAUg
-         twPb7/fKuHtRtG7h5Ki5oCk6d4JwY0y9FSINyrhl33vCmXAu6rDeLyjkOdL/+Hv1FBFW
-         GYiPByOPstJHhcpnIhCcK5qUVxcD3hOg+y29fxnZcMM7WAtxF2a4bkouMQOieaH+VyB+
-         m8cuJW6v0RDrAIWZa6TnQT4db/i5gbyPjhdkckTiGqz3sjAr7BRLNv1NdXpBGsmcDrkH
-         FQZQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwtqnnzCtrXLI0Z0Zu8ugxRZqq5j3LX9wzlFT64Utc/wX3IIyZlArDi07yqlbW7VNOLqf2eVtyOQFXVNpk=@lists.linux.dev
-X-Gm-Message-State: AFq9FYJ86plRH4wBEbaruiMDwj2oFr4RB9mdw5cPXoibsv1VsB0AeXoE
-	jR6Djfwo00AFgnmtm9852iEtekXRzX3zDiu16I21coJgv6uD57l1f57R76HxEkeXwLzVu3GaoIR
-	HVqxDyufLJTp4vGzx6N/pygZmlSLD26mOgh1g4iIRH9dNZq4efOYHQOAwVSt9i8xJ8y0=
-X-Gm-Gg: AYBFou152CinmxhDCpn0udaJh27hnD842ggoBBIKC13eqlc3KDRawHziXs5IHCjo1ga
-	czxZ9hYclu0u9ArIZbn/NCt2dwaCybvLYMos4uNWX3e9ppnLcvg9CrnD25NZk1Rgw9O7kvmjcG3
-	0RRV1Ld9AnuWIIwvQRc3q2mlwUKL+EGz+X4FX5wXlwFJhtE4JzFUnMew0iuCMuRN1yn85jmAXzC
-	mOCrsvuRu78TouMDp2gsPmr1w9K9g0WPFmRnYh3zXfDqCbC0IOUsvfx/BS6RRDt6ykywq3vzbcR
-	7f/MZiDTyr3DzPPQVNc3TVpR/z2OCwZr1xsPLRpMZyMk8KmrJM+IH1nO7agY1v0RXmIhM0NxzPh
-	Q9CjiTWjhXuHQtSm6MF+ppZnmSNPjLD7jluN43WwapOLMxr6HEPZuhFyaJpWEKnw4nX7H49zIIK
-	g+drWaQ9ioACzKsqOJUwFenlF/rz+IPwmIBB7o9x9+b5FixmW1uMBNTFew1daN8T9AvA==
-X-Received: by 2002:a05:620a:294a:b0:93e:60e8:c9ae with SMTP id af79cd13be357-93eb95e2c20mr2595643785a.10.1791985173674;
-        Wed, 14 Oct 2026 06:39:33 -0700 (PDT)
-X-Received: by 2002:a05:620a:294a:b0:93e:60e8:c9ae with SMTP id af79cd13be357-93eb95e2c20mr2595639485a.10.1791985173150;
-        Wed, 14 Oct 2026 06:39:33 -0700 (PDT)
+        bh=NKJXy1eO5vGiVrxvsBEG/GIMF2FHbHhV5DLbt20ey20=;
+        b=r8naKhrFd4Dse8lh9ZM/78vQy2zYrZBDDuty+259JedtG2fgM5AHzrExsxuE7w+ZOQ
+         79N1EltuKrJfJkexk7TCK9htIykBeHljK9EkwMWr/0w8E7uv52K0kskIS7tA4QofBcSO
+         yzl3v8h0hF378ecTWkOBK5ak/su6L9saha7D5ndMiH3T07r0uGbME5hdLwoXVSztQjRS
+         AgUIyVJahyFb2FIPLRSG6H2oLNRMEWqk8nEgnJFsmJmmd5WYyehRtGqA1R5HSzu/nDnT
+         kexnK68ms2+EW/a2Tsqf7/sE4q3l9bVpUDzCQnuBGlLk0clSRjIavxiOy/EnGb4Vjflf
+         rYcQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwSxBgMwWqqwEnB4ahJ8CzA1UwedHGIUV/ZVxM4+/5pb2GOduD6Yv8U4dH3k8feG290K293RLPn+idmiqo=@lists.linux.dev
+X-Gm-Message-State: AFq9FYJWtDSYBWc47LTU/DduzwN8Y/J7PgB+xq4/DtjLKZQscG2BZonF
+	WxxDI/NghOvMlhC4umjeysJhlDAoeo5H9Gg5g6fPFE+K6mnxAEKzibPBS8ciYEeICs/2BkPs9b/
+	9JsnoK65oH4ptNhcswfXfjXPBOb9y+FaufFuEDAawey2SE8tQr95IyMV69JzPwAF2vxU=
+X-Gm-Gg: AYBFou0lrE1d1cgmYnrBqHwU0BClZ23+J8JVxZ/Ol7VTTAs1Uj8rvSPiE2MkR/eiYfX
+	2fLCI8JLUCFDe9WOpCyfuOTqBuUp2Pu/xaWAa5eoghoPWVwtJ6Ihm0ppn0803a205ReSAN3ZxSO
+	Y8+Ykr04dh0kvTAMYkxyNp/KGlcaLDCA1cY12lw5UJ45JotfNUGCLAA4HwkPbcWfK1NoUO5wSuO
+	VLM8/IuQurwxhPLixa5jW5X2YRzXDCGbJCHgADyi2dlFvJlFalVQjutttSWFDQhJKD9TRRwfsAr
+	FS15DC+tj3lAw7DUuQuybVm8xTtmtbWtX4e/ubja9uZDIddRVFGLT01HH74hb5Jo8VsjTr5mTEt
+	uLl/FWpocP9f63a1QYF5PFzS6JRvzdoc+o3SSa6TporkT2fxduk3Fqe43I/nym+oHUFe/nVR5NI
+	H6kfAihZqNM16giVj477iunr0AQVZvfHWOAsVEhNbvm6yHmIbLFFXQKpguZ3iqXrO2cP4=
+X-Received: by 2002:a05:620a:2a09:b0:93e:b685:ae70 with SMTP id af79cd13be357-93ebd228f11mr2646645685a.26.1791985192702;
+        Wed, 14 Oct 2026 06:39:52 -0700 (PDT)
+X-Received: by 2002:a05:620a:2a09:b0:93e:b685:ae70 with SMTP id af79cd13be357-93ebd228f11mr2646638785a.26.1791985191965;
+        Wed, 14 Oct 2026 06:39:51 -0700 (PDT)
 Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c31a9766209sm720315966b.3.2026.10.14.06.39.31
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6b203839a13sm1110061a12.9.2026.10.14.06.39.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2026 06:39:32 -0700 (PDT)
-Message-ID: <21f3a18d-88a8-4c0b-9ccc-590b311f0aeb@oss.qualcomm.com>
-Date: Wed, 14 Oct 2026 15:39:31 +0200
+        Wed, 14 Oct 2026 06:39:50 -0700 (PDT)
+Message-ID: <26a3cd51-37ba-4b2d-8f56-cff4ad4de086@oss.qualcomm.com>
+Date: Wed, 14 Oct 2026 15:39:49 +0200
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -90,7 +90,7 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From: Hans de Goede <johannes.goede@oss.qualcomm.com>
-Subject: Re: [PATCH 2/3] ACPI: battery: Evaluate battery methods exclusively
+Subject: Re: [PATCH 3/3] thermal: intel: int340x: Evaluate _TMP exclusively
 To: =?UTF-8?Q?Ali_Ahmet_Memi=C5=9F?= <aliamemis@disroot.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>
 Cc: Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
@@ -100,36 +100,36 @@ Cc: Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
         linux-pm@vger.kernel.org, acpica-devel@lists.linux.dev,
         linux-kernel@vger.kernel.org, stable@vger.kernel.org
 References: <20261014132703.93355-1-aliamemis@disroot.org>
- <20261014133013.94097-2-aliamemis@disroot.org>
+ <20261014133013.94097-3-aliamemis@disroot.org>
 Content-Language: en-US, nl
-In-Reply-To: <20261014133013.94097-2-aliamemis@disroot.org>
+In-Reply-To: <20261014133013.94097-3-aliamemis@disroot.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDA1NCBTYWx0ZWRfX1/x98rDZ41Md
- SFV1oec4mGPjn45NIQqOmHR911DSvgMe7Iy33y66YbHrr26hsPTsoYiSv2C29AVWkbJtx8z+yA3
- lOLJA6sBlw2pNCA7iHn4KjmIX01YH7Y=
-X-Proofpoint-GUID: NUrihAq9O9fUTaXn-uVde-wAvIbZohM1
-X-Proofpoint-ORIG-GUID: NUrihAq9O9fUTaXn-uVde-wAvIbZohM1
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDA1NCBTYWx0ZWRfX6ysNV+uMlOXw
- rnFWeLVCoBiAZyPokLsfmKBzLOSBf/jAQixtbfcmNbD5ga1CtJ9Q2YmekoUQeBIIUUEKs/vjZfb
- sRuwgXvz6NKkxALKB0u1nmRqV4bX9om3IJskhSNs2aoc1vc6GXfZ0h1KjcazoJ5MPGx/zUi6yWz
- yGBhMd5l6yhL5ntI/Pgomz2k8wa64lzOHYSk3aZegGYwhMtdVTdgHC/ccZXRQ/A7YlBvSGW43b7
- 99tzDPJo0e+v+ip1vG7Dt3CbUh4XtoOC+GKc8pjEmZDX635rc/nELHYqA7sTnFNiV4JIU/Pl4qA
- HW/3O7j8l7or7t6WidTh7IqOJEW2ZsXRVuf6doHZ6UHuLh+g96idf5qe9ELM4KZtVEO/Xa68ZwB
- 8C5X3zYO8vIJRLcN/rnnz5AD3F3XknpPsvwX2Ku3zqAZbZzf6kiAY+XR74n6Y9dPB+vUjwHSNVC
- Iu1s1tdOIp8jWhavfnA==
-X-Authority-Analysis: v=2.4 cv=JegpPkKV c=1 sm=1 tr=0 ts=6acf8616 cx=c_pps
- a=qKBjSQ1v91RyAK45QCPf5w==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
+X-Authority-Analysis: v=2.4 cv=YJcKWhGx c=1 sm=1 tr=0 ts=6acf8629 cx=c_pps
+ a=UgVkIMxJMSkC9lv97toC5g==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
  a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=u7WPNUs3qKkmUXheDGA7:22 a=3WHJM1ZQz_JShphwDgj5:22 a=VwQbUJbxAAAA:8
- a=LpNgXrTXAAAA:8 a=EUspDBNiAAAA:8 a=RHI-k3j4eS9Gi5hBZt8A:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=NFOGd7dJGGMPyQGDc5-O:22 a=LqOpv0_-CX5VL_7kjZO3:22
+ a=u7WPNUs3qKkmUXheDGA7:22 a=_K5XuSEh1TEqbUxoQ0s3:22 a=VwQbUJbxAAAA:8
+ a=LpNgXrTXAAAA:8 a=EUspDBNiAAAA:8 a=yqPNUEQ4FSmsfWAeDTUA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=1HOtulTD9v-eNWfpl4qZ:22 a=LqOpv0_-CX5VL_7kjZO3:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE0MDA1NCBTYWx0ZWRfX/KsDanh5AjVY
+ EpzH7Pvq5cweDMTl2ef2+4PgoobPnNM3rgCfRK78lwMS57sFFmWq+sIrolu6BwVJEIDJZZNthkj
+ LGEXGmoAya5hy3THbUwxRDE+jI4Z2w+toDpuOxJAp+sG6PkFZg2vQ6n85X45i/TqQcYQ52SfiHb
+ /me3IITd9dPV2lqtZRayNew0RvQb7QZ5sgLbd03gGbe5Pp+nUpYYrHkd64nS6PSwSb/mUaJxCLZ
+ ngCfL4OCzCQBAudx8wkHfzsP7/xS4kmVh5Sckwd555guHRzgxPRlJJzA+ofiD3/41zYjHDOME2m
+ 319fFkuLPVvDoPJ1ZIRgn9IGKbQ/uqUUCdXp83lAlx4ih3CeHQ8/uuz7o7V7zUv2KYM2UmyDX/4
+ 5qeUwW8Za7YZdb2NMm6tvYr1rYbwKVtitZezy8n+pbpsrbPBsx4gNfXRgR4iSZnJH6W/AzkzRc9
+ 2F6nQkLIKMIAFldkt8A==
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE0MDA1NCBTYWx0ZWRfXxL0XCkzBtsO0
+ 64qzx76l1HpK2MWefBURFqWx7qv8UZfUZcZuZgY8apfVqBnBx6s8Wmg7dmlgBXv5JAJA2eEzJVd
+ a3NRigSF3Hh5TLaDiUKThnqlTSXVINw=
+X-Proofpoint-GUID: enpOoF5O_d_d_jznjiynOm2sKKoRYP-H
+X-Proofpoint-ORIG-GUID: enpOoF5O_d_d_jznjiynOm2sKKoRYP-H
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-10-13_01,2026-10-09_01,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 clxscore=1011 phishscore=0 suspectscore=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 clxscore=1011 impostorscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.22.0-2610080000 definitions=main-2610140054
 
@@ -137,12 +137,10 @@ Hi,
 
 On 14-Oct-26 15:30, Ali Ahmet Memiş wrote:
 > On ThinkPad P1 Gen2 and P53, INT3403 _TMP switches the EC page selector
-> without taking the AML mutex the battery methods use, so _BIX and _BST
-> running at the same time can read the wrong page. Since commit d33e89d12295
-> ("thermal: core: Suspend thermal zones later and resume them earlier")
-> this happens on most resumes.
+> without taking the mutex the battery methods use, so it must not run
+> interleaved with them.
 > 
-> Evaluate the battery methods with acpi_evaluate_object_exclusive().
+> Evaluate _TMP with acpi_evaluate_integer_exclusive().
 > 
 > Fixes: d33e89d12295 ("thermal: core: Suspend thermal zones later and resume them earlier")
 > Reported-by: Charis Stratakis <c.stratakis@proton.me>
@@ -159,57 +157,28 @@ Regards,
 Hans
 
 
+
+
 > ---
->  drivers/acpi/battery.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
+>  .../thermal/intel/int340x_thermal/int340x_thermal_zone.c   | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-> index 670853ec3a4d..61de3f5be51f 100644
-> --- a/drivers/acpi/battery.c
-> +++ b/drivers/acpi/battery.c
-> @@ -583,9 +583,9 @@ static int acpi_battery_get_info(struct acpi_battery *battery)
->  		struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->  		acpi_status status = AE_ERROR;
+> diff --git a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> index 965700ee6962..de0a1fc7b817 100644
+> --- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> +++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+> @@ -18,7 +18,12 @@ static int int340x_thermal_get_zone_temp(struct thermal_zone_device *zone,
+>  	unsigned long long tmp;
+>  	acpi_status status;
 >  
-> -		status = acpi_evaluate_object(battery->device->handle,
-> -					      use_bix ? "_BIX":"_BIF",
-> -					      NULL, &buffer);
-> +		status = acpi_evaluate_object_exclusive(battery->device->handle,
-> +							use_bix ? "_BIX":"_BIF",
-> +							NULL, &buffer);
->  
->  		if (ACPI_FAILURE(status)) {
->  			acpi_handle_info(battery->device->handle,
-> @@ -624,8 +624,8 @@ static int acpi_battery_get_state(struct acpi_battery *battery)
->  			msecs_to_jiffies(cache_time)))
->  		return 0;
->  
-> -	status = acpi_evaluate_object(battery->device->handle, "_BST",
-> -				      NULL, &buffer);
-> +	status = acpi_evaluate_object_exclusive(battery->device->handle, "_BST",
-> +						NULL, &buffer);
->  	if (ACPI_FAILURE(status)) {
->  		acpi_handle_info(battery->device->handle,
->  				 "_BST evaluation failed: %s",
-> @@ -667,6 +667,8 @@ static int acpi_battery_get_state(struct acpi_battery *battery)
->  
->  static int acpi_battery_set_alarm(struct acpi_battery *battery)
->  {
-> +	union acpi_object arg = { .type = ACPI_TYPE_INTEGER };
-> +	struct acpi_object_list args = { .count = 1, .pointer = &arg };
->  	acpi_status status = 0;
->  
->  	lockdep_assert_held(&battery->property_lock);
-> @@ -675,8 +677,9 @@ static int acpi_battery_set_alarm(struct acpi_battery *battery)
->  	    !test_bit(ACPI_BATTERY_ALARM_PRESENT, &battery->flags))
->  		return -ENODEV;
->  
-> -	status = acpi_execute_simple_method(battery->device->handle, "_BTP",
-> -					    battery->alarm);
-> +	arg.integer.value = battery->alarm;
-> +	status = acpi_evaluate_object_exclusive(battery->device->handle, "_BTP",
-> +						&args, NULL);
+> -	status = acpi_evaluate_integer(d->adev->handle, "_TMP", NULL, &tmp);
+> +	/*
+> +	 * On some ThinkPads _TMP switches the EC page selector without
+> +	 * taking the mutex the battery methods use.
+> +	 */
+> +	status = acpi_evaluate_integer_exclusive(d->adev->handle, "_TMP", NULL,
+> +						 &tmp);
 >  	if (ACPI_FAILURE(status))
->  		return -ENODEV;
+>  		return -EIO;
 >  
 
