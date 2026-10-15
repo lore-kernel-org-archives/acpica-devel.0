@@ -1,185 +1,275 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C8A530DF4
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 16:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C735412BE4
+	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792080399; cv=none; b=BSMgZ+LuVO7Tglsdof4VQZ/LOVLMsusQhbgB/65p93/loY1DW+wBnhrCM/AAYrQE70Kz6nSUYBcz9svQx/pa2pG0/+dbj66LHFuLgtL0gcHprl90AwB8XN3TM5pSQOH9R/20U8QUMgGsuS+m6ypj2G4jQYg0MNG8q6HAOnXDyWI=
+	t=1792089338; cv=none; b=CCLcUMa7QIqD/D4bbv1Dq2dlD/Q2Laq84CP+ACIfEr49qdxZYiz3VLWAzCqbz4NIV2QigIHeqnQcprYDomcsFWvvFRHcFI9Ip7w06VRiuzJFOyuHt/61hTdirYtOtO3WeOfqinAlK5qnBFLzgSYD/HFH/vOFRJI1THDsRhMwJo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792080399; c=relaxed/simple;
-	bh=JRy8WuV4exW7p4qIs/BOc/PGDmmlLPaMWFRApWxRLWY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VJySRXe3CaqTPmb9ZTivCEJ7hfNqmwgc6ecYBcsWnUbYLH8X8SA3kC2Yamxv4X71uEC9D8wLTJScbUPxx2X0nVukZWEEuhtWyGdXEz/kp0BTGbLqeF0o/hF8F+JahVX0cssXqlnNByi3N0yzLSzX71IPSEb7jp3WaHwCr+aHlj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RL/FSkDx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792089338; c=relaxed/simple;
+	bh=KYDXplaztsx1U000X58CB6h3NVEyy6BQoRPvrsqVwwQ=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=g7rlPzLvKzmJBvHFqjzBDyYZSOJB8yZxfgeFF2cEeqRBCDHsv7H8bwb/auq/ts7zSsbfasCD1qM0aWMCbcz8s0aP0uhXmLzEHkyhLQX/cLCyY874lPGJROIkhxrUEj6vjbweC68MkXIM7H7Cvj2H0Yb04L/PvMVqKao33JvZji0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=etaI/YDC; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=ATiEGp/h; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RL/FSkDx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF4D81F000C9
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 16:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792080380;
-	bh=hI8KOglwVfLjpgYGNPmiWMcfPdIInUXk4KoNDHDeaws=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=RL/FSkDxyTHM/crL00t1O2DIbgrWNf9GW/nzewnXjTsU5EoawiSyzXJZR6/GJ3nKd
-	 RiFGd4Fa1MAcz2k17wcsEvfCo2VsPIldf/iNJglWLMuPiyx9iPiIElA9VYvSirGtb8
-	 eatsM3L5b/yyFvnG0D5OqGdy+FQ3tHk8m/6i/ee8RC63hJGcPx2GgpFc4fUUySimOp
-	 zzx7CYi/QmyrHat3fO/9M/mvjajIk0BKtzExx82870slGwzTc+e7CJe9u3J435KVhs
-	 kpK/9CUl5oiqHNSi3Qbh6EuCsNqhEYA10qODbLmAurpLyRkRMGBEnYKA8bN3OhaEw9
-	 ezOXGYtSalw2Q==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5ba357a1929so5419592e87.0
-        for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 09:06:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBy7P6FsH+eC1gdglUaFTqHRaGUr4tnJJZFi2581/p/63QNp3B9YZ+33DmI+mxmbHJyhR1prcZTk51LqMYA=@lists.linux.dev
-X-Gm-Message-State: AFq9FYJj1zZNIb+yfm9HUyvj8AvkxXOv/IO/Inor8zzrxVSO3/JPlW2H
-	UgZV/EUT/9ayrIX//rwi9MWWNc9BnXS+DBr3S2qG837zFBhvdjKpBHg7ijqIIWwExqq7EI3zg45
-	7p9+caqFlcZtbQsonTRaj/lbCu20v18Q=
-X-Received: by 2002:a05:6512:12d0:b0:5bc:a9f9:b641 with SMTP id
- 2adb3069b0e04-5bcde8d8464mr6434245e87.67.1792080378235; Thu, 15 Oct 2026
- 09:06:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="etaI/YDC";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="ATiEGp/h"
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69FFFusa4077455
+	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=; b=etaI/YDCQmWknRCE
+	xBv21JQs5fAsFM8O93GxtSMa/geJJelFzvr2WbS/KCzhX4uqIpeQ+CVqWniuZVQ5
+	IYhvCPycG01kA85eRnTnebhtuDP2xU9SryvWZcBcjgdQ3DWQ5T3zrO7BYoIoeyrL
+	fx3oPkQrZwZ0yi1iwl758SKIkiqVB0z61HRLQ/9dXf95l4zxttBZ0+brbk2AtXAF
+	qV500+1sJI3MA8Ddy5tsOMPIXX+CmwQ6ASM+bNaW13TiMFiXmmubd5Qg16rZbBZf
+	PO3zKahw0ypF4SMHgRuGYCDfVKLUel0RQc2GcSgLZJaaZuBFcQHhm9dcgqTyTIUf
+	RFvEcg==
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4havbc27ne-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 +0000 (GMT)
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-93caa0ce0cdso234834485a.2
+        for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 11:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1792089334; x=1792694134; darn=lists.linux.dev;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :references:cc:to:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=;
+        b=ATiEGp/hFtbRG0IWdi/Mes4TxzLx+ezcnkIPFHABL5isqby48ryjqy5RHP8gjt6CUU
+         lKyQDzLd9U3/IBNvevOy4Im4rHCQF/Y7vuir4B704nfbWNfmdUJdO+HmWndNVlorClTb
+         wXA9JEb+bjW9N91MeToX6T7VFKXu7KN877Qh6JEsA+WQ1snm12b0hE7jy2wihQm0yvjC
+         ZzKSeqKPDgJtfPRKJxM5grQHT6VmollF7J/KmWzEUSdjaHy3rQy/sWTfOs0uNCluPxh4
+         tOgVezgcpdQ7pFsgAvCkgk81xj881456T8VOwS8zTyFTFtd0bp0NO4rDVZrLnNYb/XZk
+         tW1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792089334; x=1792694134;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :references:cc:to:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=;
+        b=2aiOtl7hSUWP2ZbQDbYYP9VVHA2Wi8QTemhLe4k0UEJ+NAwaznRlRKlr7uIgSQiR4m
+         eJQbedSiv0FlceqzRWC3wCx02Z/sHXDNRrbndr+RhMGA2fLe9UTAo5YKBn5ecuMINJci
+         ewjAwbpin/ZDdNjBaQgIkLf4rjSYnUdJxTB76AhsPBADZloGhd8oUPC/UXnkJ6tjAn26
+         evhpnr1MZbVThDEOFKHTAz4Z+KaO2Z5E7UM69AjHIGpv/f/jGNr0zvzO+1t6ThQeOOfo
+         tQk/pT4DlzWKzLDa44bOmzirZhNlr5jKIO9wxSSPsWG25RLmg9UScCheZoKEwhl1W6XF
+         e2Tw==
+X-Forwarded-Encrypted: i=1; AKwUvBz9OStqYLmyVfECitdP+c+EKsMFAcJ+HRV+UdGi37kILP4vEwq+331S2fIZVEhQyHd20/POHlKpooez4yE=@lists.linux.dev
+X-Gm-Message-State: AFq9FYI+me+wi8YwOeXQHujTcVfIpzKf91C8N1HXkAGfs5AOQnY3fxmC
+	TfrIlEMIVB5rsYFKluyWpukmmwLhgEjRnE5F2W02ghaeNJ3sJJeCU16LeD/Me56DVutPTKu0jHq
+	r7ciW2SJLjsCF9X3OL56aXqmsB/fRruejT98TbSbvljvi/dtNZEFwNeseYlHEtDmWn+Y=
+X-Gm-Gg: AYBFou3e5te9U7z2zsoeZdCdQsuOZTC0KlAXFXn7Mwhp51y9ZXLe5EpbfmeDIsb/Tn7
+	49h05cnqemsexbkZOknA0s9M86eaH1jk2wHGj6sKQV8EJbTaM8GBAHcIOfzV4feIDEbGq7GOZxK
+	6hAuHBXwv7KcI0ywD1ITaws4E/WK2nWUSwCI0g/MXrVcnNab46S6MHZ8j8Ze/Iz6m0RDw5/6dc9
+	i+RFDP9G+VeHspZ4Bax4pmNgzeDa/SfivZ8tiHyndMOysIm3wUOaMb3TUstbL4Ve9Y/RpkpSJaJ
+	2sY39mOWpqdEzK0dZKFwdpSFGv3oDUZR7vA2cFQ7Pp0trLhx1uFl8YJVq0shQupmeM1rSlO//2X
+	Q8ipefK3eoK0XB/wvpwrrt6mpZ+kTkmPOVRxpZT3eCh64B1aYjSGErMUSr+TWTv7Jww==
+X-Received: by 2002:a05:620a:199a:b0:93c:746d:7c72 with SMTP id af79cd13be357-93ebd29a3b1mr3089709185a.64.1792089334018;
+        Thu, 15 Oct 2026 11:35:34 -0700 (PDT)
+X-Received: by 2002:a05:620a:199a:b0:93c:746d:7c72 with SMTP id af79cd13be357-93ebd29a3b1mr3089703385a.64.1792089333389;
+        Thu, 15 Oct 2026 11:35:33 -0700 (PDT)
+Received: from [192.168.1.35] (85-147-213-205.cable.dynamic.v4.ziggo.nl. [85.147.213.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3fd83464a7sm63267966b.76.2026.10.15.11.35.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2026 11:35:32 -0700 (PDT)
+Message-ID: <33a935e1-1417-455c-8776-59ccd04230cb@oss.qualcomm.com>
+Date: Thu, 15 Oct 2026 20:35:29 +0200
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-References: <CAOx7e9+Vv8Pdyks=AbE5XG0ZyDgtKToKyBLTnt+H5RPn6VymVg@mail.gmail.com>
-In-Reply-To: <CAOx7e9+Vv8Pdyks=AbE5XG0ZyDgtKToKyBLTnt+H5RPn6VymVg@mail.gmail.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Thu, 15 Oct 2026 18:04:08 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jtuTdGckoMQMauPDrn1KZ9_-EyLx5LjD1Ndqj50pC7-g@mail.gmail.com>
-X-Gm-Features: AclHuK_vMeKHThNLYW_RgnbUq11vQH6_X7jpU9aX6o1NklQD-30YX5Igk_rVtcs
-Message-ID: <CAJZ5v0jtuTdGckoMQMauPDrn1KZ9_-EyLx5LjD1Ndqj50pC7-g@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Fix parse tree memory leak on AML execution error unwind
-To: Iurii Trukhin <yuri@trukhin.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Erik Kaneda <erik.kaneda@intel.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, 
-	Pawel Chmielewski <pawel.chmielewski@intel.com>, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Hans de Goede <johannes.goede@oss.qualcomm.com>
+Subject: Re: [PATCH 0/3] ACPI: Serialize battery methods and INT3403 _TMP
+To: Rong Zhang <i@rong.moe>,
+        =?UTF-8?Q?Ali_Ahmet_Memi=C5=9F?=
+ <aliamemis@disroot.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+        Armin Wolf <W_Armin@gmx.de>, Charis Stratakis <c.stratakis@proton.me>,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20261014132703.93355-1-aliamemis@disroot.org>
+ <58586fa666f09c209f9d7fe8c692a8bdda6d4410.camel@rong.moe>
+ <7ecfd94c-7083-4d76-a5f7-490ba1e650d7@oss.qualcomm.com>
+ <db52af80e3d52f16a609071db79a29e012f4fcd9.camel@rong.moe>
+Content-Language: en-US, nl
+In-Reply-To: <db52af80e3d52f16a609071db79a29e012f4fcd9.camel@rong.moe>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authority-Analysis: v=2.4 cv=QbvzLcbv c=1 sm=1 tr=0 ts=6ad11cf7 cx=c_pps
+ a=50t2pK5VMbmlHzFWWp8p/g==:117 a=Y5s2KDXI4nyRj/ULHr3D4g==:17
+ a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
+ a=Wruc98bIDj3zykDVo-cA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=IoWCM6iH3mJn3m4BftBB:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE1MDA3NCBTYWx0ZWRfXzpXp8p/nV29w
+ yOtIRNJusMzOsWzdmw29K/JvwOtly2fHfJw97mJDUdxK69PFAwUdp3YzliJWsgr2FQpgyUoLYeI
+ 03EM8oplFBZnp/ykYjZR64LKIyCmO78=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE1MDA3NCBTYWx0ZWRfXykqYKdqTjfTK
+ 7a3ARuXb4o/B5aT1Xxm272AXHe+LBVo5LctHUInC/i2jz1oeukMUaL395Qe2qye6nRpq7KJncGr
+ qlCob7AfbIKPSsnKQd5AjWb86zp4qWZgrsBTwSIrCW1gprNuoZawDTgriwJRXByJIE4YOlavNd3
+ dHYEzvz2JZfKr/TC5eidPedj4/bWqq+yoSLVbY+DubO2o3yiG41XPzSkx08OUsSna4JyTz3oQ98
+ 1AzxC6eeEg2hP324WCywO8HV30bX9dlFQ+H+aVJS7DvsNvfi8wS+6gk2sQUIGq+pTo6TVjwFwV4
+ 0tMN3Mq8JUXcRA4v4/4VBLdoz71C876rp/7qq28WfCtPg1DETRGN0GphndnCqUrgS2oCmcV5X91
+ M+pu/lzawMdmFvENOHiOZMvz89hUXyYkboACMKEqIXbhwpsfC259TgraYaSiHfGMQXQIcVWOD7M
+ /BRcgEOt/Zsv9UfXtyQ==
+X-Proofpoint-ORIG-GUID: 1W0VM02-EVUthJRD7BtUFuZqhyEYAWsa
+X-Proofpoint-GUID: 1W0VM02-EVUthJRD7BtUFuZqhyEYAWsa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-10-14_01,2026-10-14_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 phishscore=0 suspectscore=0
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610080000
+ definitions=main-2610150074
 
-On Thu, Oct 15, 2026 at 3:28=E2=80=AFAM Iurii Trukhin <yuri@trukhin.com> wr=
-ote:
->
-> acpi_ps_complete_this_op() decides whether to defer deletion of an
-> AML_CLASS_ARGUMENT parse object to its enclosing parent by checking
-> walk_state->op_info->class instead of the opcode class of the op being
-> completed.
->
-> When acpi_ps_complete_op() or acpi_ps_complete_final_op() unwinds open
-> parser scopes on AE_CTRL_TERMINATE or an execution error (such as
-> AE_NOT_FOUND when resolving a missing symbol inside a control method),
-> it pops each enclosing parent op and passes it to
-> acpi_ps_complete_this_op() while walk_state->op_info still points to the
-> last child op that failed. If that failing child op was of class
-> AML_CLASS_ARGUMENT (for example, AML_INT_NAMEPATH_OP when
-> acpi_ps_get_arguments() fails to resolve a method call or predicate
-> operand), acpi_ps_complete_this_op() sees AML_CLASS_ARGUMENT for every
-> popped parent op and returns AE_OK early without deleting any of the
-> enclosing parent subtrees.
->
-> For nested control methods invoked via acpi_ds_call_control_method(),
-> the walk state is initialized with root_op =3D NULL, so top-level ops in
-> the called method (such as AML_IF_OP) have op->common.parent =3D=3D NULL
-> and are never attached to a root scope op. Skipping
-> acpi_ps_delete_parse_tree() during error unwind leaks the entire parse
-> subtree (both Acpi-ParseExt and Acpi-Parse objects, the latter merged
-> by SLUB into the 80-byte Acpi-State kmem_cache on 64-bit kernels) on
-> every failed GPE or method evaluation.
->
-> Look up the opcode info of op->common.aml_opcode directly in
-> acpi_ps_complete_this_op() and only defer deletion of
-> AML_CLASS_ARGUMENT ops when op->common.parent is non-NULL, without
-> mutating walk_state->opcode during error unwind (which acpi_ps_parse_loop=
-()
-> still inspects when skipping failed module-level scopes). Remove the
-> now-redundant acpi_ps_delete_parse_tree(*op) inside the AML_REGION_OP /
-> AML_DATA_REGION_OP error block in acpi_ps_complete_op(), which previously
-> worked around this bug only for region ops and caused a double-free when
-> region creation failed on a non-argument child op. Also use
-> acpi_ut_delete_generic_state() instead of ACPI_FREE() when draining
-> walk_state->control_state in acpi_ps_parse_loop().
->
-> Fixes: 5088814a6e93 ("ACPICA: AML parser: attempt to continue loading
-> table after error")
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D221241
-> Signed-off-by: Iurii Trukhin <yuri@trukhin.com>
+Hi,
 
-Please submit this change as a pull request to the upstream ACPICA
-project on GitHub.  The kernel will pick it up from there as per
-
-Documentation/driver-api/acpi/linuxized-acpica.rst
-
-> ---
->  drivers/acpi/acpica/psloop.c   | 5 +++--
->  drivers/acpi/acpica/psobject.c | 1 -
->  drivers/acpi/acpica/psparse.c  | 7 +++++--
->  3 files changed, 8 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/acpi/acpica/psloop.c b/drivers/acpi/acpica/psloop.c
-> index 24a57f971c96..0b672a531907 100644
-> --- a/drivers/acpi/acpica/psloop.c
-> +++ b/drivers/acpi/acpica/psloop.c
-> @@ -464,8 +464,9 @@ acpi_status acpi_ps_parse_loop(struct
-> acpi_walk_state *walk_state)
->                                                 walk_state->aml =3D
->                                                     parser_state->aml;
->                                         }
-> -                                       ACPI_FREE(acpi_ut_pop_generic_sta=
-te
-> -                                                 (&walk_state->control_s=
-tate));
-> +                                       acpi_ut_delete_generic_state
-> +                                           (acpi_ut_pop_generic_state
-> +                                            (&walk_state->control_state)=
-);
->                                 }
->                                 op =3D NULL;
->                                 continue;
-> diff --git a/drivers/acpi/acpica/psobject.c b/drivers/acpi/acpica/psobjec=
-t.c
-> index 629cafab1930..f1425b98087b 100644
-> --- a/drivers/acpi/acpica/psobject.c
-> +++ b/drivers/acpi/acpica/psobject.c
-> @@ -559,7 +559,6 @@ acpi_ps_complete_op(struct acpi_walk_state *walk_stat=
-e,
->                                                                 node);
->                                         acpi_ns_remove_node((*op)->common=
-.node);
->                                         (*op)->common.node =3D NULL;
-> -                                       acpi_ps_delete_parse_tree(*op);
->                                 }
->
->                                 status2 =3D
-> diff --git a/drivers/acpi/acpica/psparse.c b/drivers/acpi/acpica/psparse.=
-c
-> index 42ec8abef626..b5110d43ab7a 100644
-> --- a/drivers/acpi/acpica/psparse.c
-> +++ b/drivers/acpi/acpica/psparse.c
-> @@ -108,6 +108,7 @@ acpi_ps_complete_this_op(struct acpi_walk_state *walk=
-_state,
->  {
->         union acpi_parse_object *prev;
->         union acpi_parse_object *next;
-> +       const struct acpi_opcode_info *op_info;
->         const struct acpi_opcode_info *parent_info;
->         union acpi_parse_object *replacement_op =3D NULL;
->         acpi_status status =3D AE_OK;
-> @@ -124,9 +125,11 @@ acpi_ps_complete_this_op(struct acpi_walk_state
-> *walk_state,
->
->         /* Delete this op and the subtree below it if asked to */
->
-> +       op_info =3D acpi_ps_get_opcode_info(op->common.aml_opcode);
->         if (((walk_state->parse_flags & ACPI_PARSE_TREE_MASK) !=3D
-> -            ACPI_PARSE_DELETE_TREE)
-> -           || (walk_state->op_info->class =3D=3D AML_CLASS_ARGUMENT)) {
-> +            ACPI_PARSE_DELETE_TREE) ||
-> +           ((op_info->class =3D=3D AML_CLASS_ARGUMENT) &&
-> +            op->common.parent)) {
->                 return_ACPI_STATUS(AE_OK);
+On 15-Oct-26 15:48, Rong Zhang wrote:
+> Hi Hans,
+> 
+> On Thu, 2026-10-15 at 15:13 +0200, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 15-Oct-26 13:45, Rong Zhang wrote:
+>>> Hi Ali,
+>>>
+>>> Thanks for working on this!
+>>>
+>>> The series is generally in a good shape. I just have a few minor
+>>> comments.
+>>>
+>>> On Wed, 2026-10-14 at 16:26 +0300, Ali Ahmet Memiş wrote:
+>>>> As discussed in [1], add exclusive variants of acpi_evaluate_object()
+>>>> and acpi_evaluate_integer() and use them for the battery methods and
+>>>> INT3403 _TMP, which interleave badly on ThinkPad P1 Gen2 and P53.
+>>>>
+>>>> UCSI (bko221065) is not converted.  
+>>>>
+>>>
+>>> Please leave a link to the bko bug, so that readers don't need to
+>>> assemble the link themselves.
+>>>
+>>>> There the contention is on a
+>>>
+>>> After carefully auditing the ASL code again, I've just found the root
+>>> cause of the mutex acquisition timeout.
+>>>
+>>> It's hard to notice, but \_SB.PCI0.LPC0.EC0.RDER being declared as
+>>> "Serialized" causes an ABBA deadlock:
+>>>
+>>> Thread 1 (battery)                         Thread 2 (ideapad-laptop)
+>>> -----------------------------------------  ---------------------------------------
+>>> serialize \_SB.BAT0._BIX                   serialize \_SB.PCI0.LPC0.EC0.VPC0.GBMD
+>>> evaluate \_SB.BAT0._BIX                    evaluate \_SB.PCI0.LPC0.EC0.VPC0.GBMD
+>>>   acquire ECMT [A]
+>>>   serialize \_SB.PCI0.LPC0.EC0.RDIF          serialize \_SB.PCI0.LPC0.EC0.RDER [B]
+>>>   evaluate \_SB.PCI0.LPC0.EC0.RDIF           evaluate \_SB.PCI0.LPC0.EC0.RDER
+>>>     serialize \_SB.PCI0.LPC0.EC0.RDER [B]      acquire ECMT [A]
+>>>
+>>> That's why merging battery notifications significantly reduced the
+>>> frequency of mutex acquisition timeout.
+>>>
+>>>> firmware AML mutex that _Qxx EC queries also take, which a wrapper
+>>>> around acpi_evaluate_object() cannot cover, and Rong's notification
+>>>> merging in 7.3 already reduces it on the battery side.
+>>>
+>>> Lock contention is not the root cause, and EC queries and UCSI _DSM are
+>>> just innocent victims of the ABBA deadlock.
+>>
+>> Hmm, ok so since \_SB.BAT0._BIX takes ECMT itself instead of relying
+>> on \_SB.PCI0.LPC0.EC0.RDER taking it (1), 
+>>
+> 
+> I guess the intent of holding ECMT in _BIX was to prevent race conditions
+> in multi-threaded interpreters. IOW, the firmware authors probably took
+> multi-threaded interpreter into their consideration.
+> 
+>         If ((Acquire (^^PCI0.LPC0.EC0.ECMT, 0x2000) == 0x00))
+>         {
+>             If (((^^PCI0.LPC0.EC0.BTDV && ^^PCI0.LPC0.EC0.BTFC) && ^^PCI0.LPC0.EC0.BTDC))
+>             {
+>                 BPK1 [0x01] = 0x00
+>                 Local0 = ^^PCI0.LPC0.EC0.BTDC /* \_SB_.PCI0.LPC0.EC0_.BTDC */
+>                 Local0 *= 0x0A
+>                 BPK1 [0x02] = Local0
+>                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
+>                 Local0 *= 0x0A
+>                 BPK1 [0x03] = Local0
+>                 BPK1 [0x05] = ^^PCI0.LPC0.EC0.BTDV /* \_SB_.PCI0.LPC0.EC0_.BTDV */
+>                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
+>                 Local0 *= 0x0A
+>                 Local0 *= 0x0A
+>                 Divide (Local0, 0x64, Local1, Local2)
+>                 BPK1 [0x06] = Local2
+>                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
+>                 Local0 *= 0x0A
+>                 Local0 *= 0x02
+>                 Divide (Local0, 0x64, Local1, Local2)
+>                 BPK1 [0x07] = Local2
+>                 BPK1 [0x08] = ^^PCI0.LPC0.EC0.BTCC /* \_SB_.PCI0.LPC0.EC0_.BTCC */
+>                 BPK1 [0x09] = 0x251C
+>             }
+> 
+>             BPK1 [0x10] = ToString (^^PCI0.LPC0.EC0.RDIF (0x01), Ones)
+>             ToDecimalString (^^PCI0.LPC0.EC0.BTSN, Local0)
+>             BPK1 [0x11] = ToBuffer (Local0)
+>             BPK1 [0x12] = ToString (^^PCI0.LPC0.EC0.RDIF (0x02), Ones)
+>             BPK1 [0x13] = ToString (^^PCI0.LPC0.EC0.RDIF (0x03), Ones)
+>             Release (^^PCI0.LPC0.EC0.ECMT)
 >         }
->
-> --
-> 2.56.0
->
+> 
+>> this means that not just
+>> the ideapad-laptop GBMD method call but anything calling
+>> \_SB.PCI0.LPC0.EC0.RDER may cause this abba dead-lock, right?
+>> Are we sure nothing else is calling  \_SB.PCI0.LPC0.EC0.RDER ?
+> 
+> I checked all code paths with ECMT involved, and concluded a call graph
+> with all faulty methods:
+> 
+>                       ideapad-laptop
+>                             |
+>                             v
+>    battery                 GBMD
+>      |                      |
+>      v                      v
+>    _BIX -> ECMT -> RDIF -> RDER -> ECMT
+>                     ^       ^
+>                     |       |
+>     +---------------+-------+
+>     |
+>    GSBI -> ECMT -> SMTE/SMTF -> ECMT
+> 
+> GSBI: \_SB.PCI0.LPC0.EC0.VPC0.GSBI
+> SMTE: \_SB.PCI0.LPC0.EC0.VPC0.SMTE
+> SMTF: \_SB.PCI0.LPC0.EC0.VPC0.SMTF
+> 
+> All methods in the graph are never called by any method or driver that is
+> not in the graph.
+> 
+> So battery and ideapad-laptop are the only drivers that could potentially
+> trigger the ABBA deadlock.
+
+Great, thank you for checking this.
+
+Given the above I agree with Rafael to drop the EC query and UCSI
+patches for the time being.
+
+Regards,
+
+Hans
+
+
