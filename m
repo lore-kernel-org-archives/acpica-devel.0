@@ -1,221 +1,170 @@
-Received: from sender6-pp-e109.zoho.com (sender6-pp-e109.zoho.com [165.173.180.109])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B58264ED18A
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 13:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=165.173.180.109
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792072412; cv=pass; b=d1GXyfUKS6KCCGx19184Wyng8YnIE1LNdBjKK+KdecGN+HNEvc/62VziY6rreVMwAqnDR8nOXoKmEM3Pgd7LSXGC/aImwl/xDmvmp51EGzjQuUUr0j1lN139asVWLzNlXICE2ymVCo4KloQIgYArxKl3S8Be0D+GIN4q3V+k5zo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792072412; c=relaxed/simple;
-	bh=zE4YjEh8QdPFxQ8eU7lNWqwB+b6PsSS01RvbHBDYggE=;
-	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:MIME-Version; b=mPoUNpVDGDy7JLAkm1E/iBZZyusnFCpnXWJcipg2IYnE6s6q5J2GaTG5Mwi2GmImxoxYzJloqardqOX9Y+bxda7Vwek8AWm2RkiTbTbfklVrvu+1eNPCn9r4BkFDOgfvMCaMXvyYN8+d/lpBiKciynnNhQc65aKEs4zE5R8PCIQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (2048-bit key) header.d=rong.moe header.i=i@rong.moe header.b=iOzVcVmo; arc=pass smtp.client-ip=165.173.180.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rong.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A11A54CF69
+	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 15:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792079950; cv=none; b=rknk0gAgZbloPDLij4zQflX3FhOaqw4AQydCtGENbpIUxsH/aX40UsFaL6tdHXNQ7Z5jTvfraoK2g7xJRhgvf6Er4Cp0RJrmmewNOuYQIGdNdr6Ja0vdZ/tFrVMuNm3xBowL+xca0fbZiaQOd8fsDBKV7byVwArwJ/bXQ4a2+TM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792079950; c=relaxed/simple;
+	bh=45VSe3nRbT/NfoQSQGgs+uoKL+bfGe7PkGT2oRQpJ4Y=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=ANQjW+hXST6MZjoPw2Frk/mbNMnVSO9isbrD4HbxJHGzPTKd2t4OPSwsxbbtiM8wkT4Hnh2qf08wDA+xuYXO0CnptFalnpuRIcMQ7pV5U7bMvLUID0Lp8EOi0ODgLBgyBUzPHaIfK8qcweIum6424Fkl3asKG/4jSMGq+dzvAdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=tuxEiVzG; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rong.moe header.i=i@rong.moe header.b="iOzVcVmo"
-ARC-Seal: i=1; a=rsa-sha256; t=1792072407; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=L6MZoV8wPfRvlFCHOlpgbrtcOUa7C8NKrZBTXfaUfSlTFHCDAqCELv2ziHorUvL4V/uYgjyugM8Y/k8UZfQNfYaRE3K3MwlneOB0gz8ePO8MiBMnCA0t14FOmnweXgZUIetaZr/4XbuFJvAOKJojb/P9O32AchblXCrcvykaW2Y=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1792072407; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=c6Mv732sGbNbJsbq5B//QerhX6BlAafCTrC6wqDiTrk=; 
-	b=JlgZ8VCGFh51MVLWeq9aSRg/b9FNO9tSkwRYXM00xM8eyZg2Q1QZbG53YXG1nLnA1+XwYqzDZQ27Ho9O4zGYgz6pavN3lwf5yF0WEVB8urYISJK/pvHshW2B5DrA/qPpKaT8oFvP8at9vROUAjTgJiG4k7YQSe6dzXjmEK0XWCg=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=rong.moe;
-	spf=pass  smtp.mailfrom=i@rong.moe;
-	dmarc=pass header.from=<i@rong.moe>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1792072407;
-	s=zmail2048; d=rong.moe; i=i@rong.moe;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:In-Reply-To:Content-Type:Content-Transfer-Encoding:Date:Date:MIME-Version:Message-Id:Reply-To;
-	bh=c6Mv732sGbNbJsbq5B//QerhX6BlAafCTrC6wqDiTrk=;
-	b=iOzVcVmop1ZDRYHMs7zrhy9RboHR2oXvps/W/02Va8v1v5pEENsRGv66iLM8+B5v
-	TnnE5aN4SvI0jykHry+s7W1B448oyTV47MDPSVT3qmcQzf06GMvb3KAzoQZfazZ0Vxv
-	QiBkNg+hhbYg4U9zlb2O2vUPIuREMrAQcWCSfXmpkobdlNPrMpdxpWJQYbeQcnrPWUc
-	7227t6Hw+n2wFWAOpZqsv/sheICup5FGPQ7OJ3JUACA6YREYvqTqxw9yg8WMlaaX/K6
-	+rhNwRLA9yD23HjK21KM38qHJMIsMaLCxQ7giu9zejCV5NGDGOcAB8Ktt1e2uzBvfH2
-	WFIsurUEAA==
-Received: by smtp.zohomail.com with SMTPS id 1792072403278583.9180743363034;
-	Thu, 15 Oct 2026 06:53:23 -0700 (PDT)
-Message-ID: <db52af80e3d52f16a609071db79a29e012f4fcd9.camel@rong.moe>
-Subject: Re: [PATCH 0/3] ACPI: Serialize battery methods and INT3403 _TMP
-From: Rong Zhang <i@rong.moe>
-To: Hans de Goede <johannes.goede@oss.qualcomm.com>, Ali Ahmet
- =?gb2312?Q?Memi=810=946?=
-	 <aliamemis@disroot.org>, "Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>, Daniel Lezcano
- <daniel.lezcano@kernel.org>,  Zhang Rui <rui.zhang@intel.com>, Lukasz Luba
- <lukasz.luba@arm.com>, Armin Wolf <W_Armin@gmx.de>,  Charis Stratakis
- <c.stratakis@proton.me>, linux-acpi@vger.kernel.org,
- linux-pm@vger.kernel.org, 	acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org
-In-Reply-To: <7ecfd94c-7083-4d76-a5f7-490ba1e650d7@oss.qualcomm.com>
-References: <20261014132703.93355-1-aliamemis@disroot.org>
-	 <58586fa666f09c209f9d7fe8c692a8bdda6d4410.camel@rong.moe>
-	 <7ecfd94c-7083-4d76-a5f7-490ba1e650d7@oss.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 15 Oct 2026 21:48:13 +0800
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="tuxEiVzG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1792079894; x=1792684694; i=markus.elfring@web.de;
+	bh=45VSe3nRbT/NfoQSQGgs+uoKL+bfGe7PkGT2oRQpJ4Y=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=tuxEiVzGUvzjGxdlWWIAm0i7k49HBy1+vCgVa0rUcPWR3u+aArZcyH0skyz4oFhw
+	 7pWT806q4VnFWlbNmYevnAPOm2rmfYP5b2xZWWrVeUskvQwGM03qWuvM0wXN85LLk
+	 58O6vLYXio0z1i0MwI1g7XYNDDC7XKBwAL3lWn5oAdN3WtwEaWGk7CzmsuHGaIT4O
+	 W0hdewNqPDJUro+/euNzMJyZ8+KkDFztg7lVWEi1kIRQK2rT7keBGvLlKgVkbYQGl
+	 UQcvPfw/WkF74LDnesPMyahS9SZ14oRjoiZ8U9FofzKEczvCw3u8x1zPcOt/bDkyb
+	 W47bO6Z4OEp7UfpTwQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from client.hidden.invalid by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MD5jv-1xQQP10hIP-0097iu; Thu, 15
+ Oct 2026 17:58:14 +0200
+Message-ID: <ac7a622e-d8b8-4c89-a091-16bbf070344b@web.de>
+Date: Thu, 15 Oct 2026 17:58:02 +0200
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Evolution 3.56.2-10+b1 
-X-ZohoMailClient: External
+User-Agent: Mozilla Thunderbird
+To: Iurii Trukhin <yuri@trukhin.com>, acpica-devel@lists.linux.dev,
+ linux-acpi@vger.kernel.org, Len Brown <lenb@kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Erik Kaneda <erik.kaneda@intel.com>,
+ Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+ Pawel Chmielewski <pawel.chmielewski@intel.com>,
+ Robert Moore <robert.moore@intel.com>
+References: <CAOx7e9+Vv8Pdyks=AbE5XG0ZyDgtKToKyBLTnt+H5RPn6VymVg@mail.gmail.com>
+Subject: Re: [PATCH] ACPICA: Fix parse tree memory leak on AML execution error
+ unwind
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <CAOx7e9+Vv8Pdyks=AbE5XG0ZyDgtKToKyBLTnt+H5RPn6VymVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nTAi03Sa+tSdOGQipQ77LLueaId2JdnpSFHkCn8FuigQkLzuVqy
+ kk6iSmU1fFVrgj1RFmyjyxnpJdNwVGbHhrjwj0b3QaGp+j9iuGVyFfgK8KA/TxJ9DQtjeK0
+ pUuHkI1u2n9F+wUSk3rHkCcDNOCa4eYvTFx/py+rPMIqSfNzpzpv2JM6inGERa6SPpbWToV
+ 3Zzl1WL7gWQyKUyHeXRmg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Hjie2duiw0E=;MA0ZZn8Bz8Dtb7z98/DWQc4qkTu
+ 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
 
-Hi Hans,
+=E2=80=A6
+> Fixes: 5088814a6e93 ("ACPICA: AML parser: attempt to continue loading
+> table after error")
+=E2=80=A6
 
-On Thu, 2026-10-15 at 15:13 +0200, Hans de Goede wrote:
-> Hi,
->=20
-> On 15-Oct-26 13:45, Rong Zhang wrote:
-> > Hi Ali,
-> >=20
-> > Thanks for working on this!
-> >=20
-> > The series is generally in a good shape. I just have a few minor
-> > comments.
-> >=20
-> > On Wed, 2026-10-14 at 16:26 +0300, Ali Ahmet Memi=C5=9F wrote:
-> > > As discussed in [1], add exclusive variants of acpi_evaluate_object()
-> > > and acpi_evaluate_integer() and use them for the battery methods and
-> > > INT3403 _TMP, which interleave badly on ThinkPad P1 Gen2 and P53.
-> > >=20
-> > > UCSI (bko221065) is not converted. =C2=A0
-> > >=20
-> >=20
-> > Please leave a link to the bko bug, so that readers don't need to
-> > assemble the link themselves.
-> >=20
-> > > There the contention is on a
-> >=20
-> > After carefully auditing the ASL code again, I've just found the root
-> > cause of the mutex acquisition timeout.
-> >=20
-> > It's hard to notice, but \_SB.PCI0.LPC0.EC0.RDER being declared as
-> > "Serialized" causes an ABBA deadlock:
-> >=20
-> > Thread 1 (battery)                         Thread 2 (ideapad-laptop)
-> > -----------------------------------------  ----------------------------=
------------
-> > serialize \_SB.BAT0._BIX                   serialize \_SB.PCI0.LPC0.EC0=
-.VPC0.GBMD
-> > evaluate \_SB.BAT0._BIX                    evaluate \_SB.PCI0.LPC0.EC0.=
-VPC0.GBMD
-> >   acquire ECMT [A]
-> >   serialize \_SB.PCI0.LPC0.EC0.RDIF          serialize \_SB.PCI0.LPC0.E=
-C0.RDER [B]
-> >   evaluate \_SB.PCI0.LPC0.EC0.RDIF           evaluate \_SB.PCI0.LPC0.EC=
-0.RDER
-> >     serialize \_SB.PCI0.LPC0.EC0.RDER [B]      acquire ECMT [A]
-> >=20
-> > That's why merging battery notifications significantly reduced the
-> > frequency of mutex acquisition timeout.
-> >=20
-> > > firmware AML mutex that _Qxx EC queries also take, which a wrapper
-> > > around acpi_evaluate_object() cannot cover, and Rong's notification
-> > > merging in 7.3 already reduces it on the battery side.
-> >=20
-> > Lock contention is not the root cause, and EC queries and UCSI _DSM are
-> > just innocent victims of the ABBA deadlock.
->=20
-> Hmm, ok so since \_SB.BAT0._BIX takes ECMT itself instead of relying
-> on \_SB.PCI0.LPC0.EC0.RDER taking it (1),=C2=A0
->=20
+See also once more:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv7.3-rc7#n145
 
-I guess the intent of holding ECMT in _BIX was to prevent race conditions
-in multi-threaded interpreters. IOW, the firmware authors probably took
-multi-threaded interpreter into their consideration.
-
-        If ((Acquire (^^PCI0.LPC0.EC0.ECMT, 0x2000) =3D=3D 0x00))
-        {
-            If (((^^PCI0.LPC0.EC0.BTDV && ^^PCI0.LPC0.EC0.BTFC) && ^^PCI0.L=
-PC0.EC0.BTDC))
-            {
-                BPK1 [0x01] =3D 0x00
-                Local0 =3D ^^PCI0.LPC0.EC0.BTDC /* \_SB_.PCI0.LPC0.EC0_.BTD=
-C */
-                Local0 *=3D 0x0A
-                BPK1 [0x02] =3D Local0
-                Local0 =3D ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTF=
-C */
-                Local0 *=3D 0x0A
-                BPK1 [0x03] =3D Local0
-                BPK1 [0x05] =3D ^^PCI0.LPC0.EC0.BTDV /* \_SB_.PCI0.LPC0.EC0=
-_.BTDV */
-                Local0 =3D ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTF=
-C */
-                Local0 *=3D 0x0A
-                Local0 *=3D 0x0A
-                Divide (Local0, 0x64, Local1, Local2)
-                BPK1 [0x06] =3D Local2
-                Local0 =3D ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTF=
-C */
-                Local0 *=3D 0x0A
-                Local0 *=3D 0x02
-                Divide (Local0, 0x64, Local1, Local2)
-                BPK1 [0x07] =3D Local2
-                BPK1 [0x08] =3D ^^PCI0.LPC0.EC0.BTCC /* \_SB_.PCI0.LPC0.EC0=
-_.BTCC */
-                BPK1 [0x09] =3D 0x251C
-            }
-
-            BPK1 [0x10] =3D ToString (^^PCI0.LPC0.EC0.RDIF (0x01), Ones)
-            ToDecimalString (^^PCI0.LPC0.EC0.BTSN, Local0)
-            BPK1 [0x11] =3D ToBuffer (Local0)
-            BPK1 [0x12] =3D ToString (^^PCI0.LPC0.EC0.RDIF (0x02), Ones)
-            BPK1 [0x13] =3D ToString (^^PCI0.LPC0.EC0.RDIF (0x03), Ones)
-            Release (^^PCI0.LPC0.EC0.ECMT)
-        }
-
-> this means that not just
-> the ideapad-laptop GBMD method call but anything calling
-> \_SB.PCI0.LPC0.EC0.RDER may cause this abba dead-lock, right?
-> Are we sure nothing else is calling  \_SB.PCI0.LPC0.EC0.RDER ?
-
-I checked all code paths with ECMT involved, and concluded a call graph
-with all faulty methods:
-
-                      ideapad-laptop
-                            |
-                            v
-   battery                 GBMD
-     |                      |
-     v                      v
-   _BIX -> ECMT -> RDIF -> RDER -> ECMT
-                    ^       ^
-                    |       |
-    +---------------+-------+
-    |
-   GSBI -> ECMT -> SMTE/SMTF -> ECMT
-
-GSBI: \_SB.PCI0.LPC0.EC0.VPC0.GSBI
-SMTE: \_SB.PCI0.LPC0.EC0.VPC0.SMTE
-SMTF: \_SB.PCI0.LPC0.EC0.VPC0.SMTF
-
-All methods in the graph are never called by any method or driver that is
-not in the graph.
-
-So battery and ideapad-laptop are the only drivers that could potentially
-trigger the ABBA deadlock.
-
->=20
-> Regards,
->=20
-> Hans
->=20
->=20
-> 1) I guess ACPI mutexes may be taken nested from the same thread
-
-Right. ACPI mutexes are re-entrant. IMO it's a broken design by
-encouraging firmware authors to write broken ASL code.
-
-Thanks,
-Rong
-
->=20
->=20
+Regards,
+Markus
