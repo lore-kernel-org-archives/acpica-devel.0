@@ -1,275 +1,107 @@
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from layka.disroot.org (layka.disroot.org [178.21.23.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C735412BE4
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BF01F3B8A
+	for <acpica-devel@lists.linux.dev>; Sat, 17 Oct 2026 13:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.21.23.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792089338; cv=none; b=CCLcUMa7QIqD/D4bbv1Dq2dlD/Q2Laq84CP+ACIfEr49qdxZYiz3VLWAzCqbz4NIV2QigIHeqnQcprYDomcsFWvvFRHcFI9Ip7w06VRiuzJFOyuHt/61hTdirYtOtO3WeOfqinAlK5qnBFLzgSYD/HFH/vOFRJI1THDsRhMwJo0=
+	t=1792242438; cv=none; b=JPtMlIZVoiGvPa9gnFcLcZ5rhxv6sRBlfxi7/B+v1aCZoc6l1PLpNkYI65cWwMBznYZQytTzF9NBu/yrx2ArvgGJ9s8dHLTn79VJlVVNlmuht55ZWp/55pOY2/GEiygeVxF69pDxPhxQVJo6GSah+2+J7XeDU4khmxps13Jo/fI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792089338; c=relaxed/simple;
-	bh=KYDXplaztsx1U000X58CB6h3NVEyy6BQoRPvrsqVwwQ=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=g7rlPzLvKzmJBvHFqjzBDyYZSOJB8yZxfgeFF2cEeqRBCDHsv7H8bwb/auq/ts7zSsbfasCD1qM0aWMCbcz8s0aP0uhXmLzEHkyhLQX/cLCyY874lPGJROIkhxrUEj6vjbweC68MkXIM7H7Cvj2H0Yb04L/PvMVqKao33JvZji0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=etaI/YDC; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=ATiEGp/h; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	s=arc-20240116; t=1792242438; c=relaxed/simple;
+	bh=wHaKnXk5dvgTuwSxeYuX3VMmbmmXSlzEXrIjK9mY2zY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BGRLHxObpp3xHcxg6Z6+RTVLBgZNiuJ4IYFP+tlh8G4RH//ttqaZOz2RqtBYLn0QbTal/z18DxC+87KBvU0KoY0fwOeW9hA90gkTrQfPbtv1kdE/QcabUSurZ6qY9XWAm3BubLOq1tAT600kGN1vJVuhobbMRR2+MQI/sZUH4fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org; spf=pass smtp.mailfrom=disroot.org; dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b=A2DvF9JC; arc=none smtp.client-ip=178.21.23.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=disroot.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=disroot.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="etaI/YDC";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="ATiEGp/h"
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69FFFusa4077455
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=; b=etaI/YDCQmWknRCE
-	xBv21JQs5fAsFM8O93GxtSMa/geJJelFzvr2WbS/KCzhX4uqIpeQ+CVqWniuZVQ5
-	IYhvCPycG01kA85eRnTnebhtuDP2xU9SryvWZcBcjgdQ3DWQ5T3zrO7BYoIoeyrL
-	fx3oPkQrZwZ0yi1iwl758SKIkiqVB0z61HRLQ/9dXf95l4zxttBZ0+brbk2AtXAF
-	qV500+1sJI3MA8Ddy5tsOMPIXX+CmwQ6ASM+bNaW13TiMFiXmmubd5Qg16rZbBZf
-	PO3zKahw0ypF4SMHgRuGYCDfVKLUel0RQc2GcSgLZJaaZuBFcQHhm9dcgqTyTIUf
-	RFvEcg==
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com [209.85.222.197])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4havbc27ne-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 18:35:35 +0000 (GMT)
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-93caa0ce0cdso234834485a.2
-        for <acpica-devel@lists.linux.dev>; Thu, 15 Oct 2026 11:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1792089334; x=1792694134; darn=lists.linux.dev;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :references:cc:to:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=;
-        b=ATiEGp/hFtbRG0IWdi/Mes4TxzLx+ezcnkIPFHABL5isqby48ryjqy5RHP8gjt6CUU
-         lKyQDzLd9U3/IBNvevOy4Im4rHCQF/Y7vuir4B704nfbWNfmdUJdO+HmWndNVlorClTb
-         wXA9JEb+bjW9N91MeToX6T7VFKXu7KN877Qh6JEsA+WQ1snm12b0hE7jy2wihQm0yvjC
-         ZzKSeqKPDgJtfPRKJxM5grQHT6VmollF7J/KmWzEUSdjaHy3rQy/sWTfOs0uNCluPxh4
-         tOgVezgcpdQ7pFsgAvCkgk81xj881456T8VOwS8zTyFTFtd0bp0NO4rDVZrLnNYb/XZk
-         tW1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792089334; x=1792694134;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :references:cc:to:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=/fZkA7+9QpkZ7suFOufJZjC1MOSNUgoX1n+vDs+p77w=;
-        b=2aiOtl7hSUWP2ZbQDbYYP9VVHA2Wi8QTemhLe4k0UEJ+NAwaznRlRKlr7uIgSQiR4m
-         eJQbedSiv0FlceqzRWC3wCx02Z/sHXDNRrbndr+RhMGA2fLe9UTAo5YKBn5ecuMINJci
-         ewjAwbpin/ZDdNjBaQgIkLf4rjSYnUdJxTB76AhsPBADZloGhd8oUPC/UXnkJ6tjAn26
-         evhpnr1MZbVThDEOFKHTAz4Z+KaO2Z5E7UM69AjHIGpv/f/jGNr0zvzO+1t6ThQeOOfo
-         tQk/pT4DlzWKzLDa44bOmzirZhNlr5jKIO9wxSSPsWG25RLmg9UScCheZoKEwhl1W6XF
-         e2Tw==
-X-Forwarded-Encrypted: i=1; AKwUvBz9OStqYLmyVfECitdP+c+EKsMFAcJ+HRV+UdGi37kILP4vEwq+331S2fIZVEhQyHd20/POHlKpooez4yE=@lists.linux.dev
-X-Gm-Message-State: AFq9FYI+me+wi8YwOeXQHujTcVfIpzKf91C8N1HXkAGfs5AOQnY3fxmC
-	TfrIlEMIVB5rsYFKluyWpukmmwLhgEjRnE5F2W02ghaeNJ3sJJeCU16LeD/Me56DVutPTKu0jHq
-	r7ciW2SJLjsCF9X3OL56aXqmsB/fRruejT98TbSbvljvi/dtNZEFwNeseYlHEtDmWn+Y=
-X-Gm-Gg: AYBFou3e5te9U7z2zsoeZdCdQsuOZTC0KlAXFXn7Mwhp51y9ZXLe5EpbfmeDIsb/Tn7
-	49h05cnqemsexbkZOknA0s9M86eaH1jk2wHGj6sKQV8EJbTaM8GBAHcIOfzV4feIDEbGq7GOZxK
-	6hAuHBXwv7KcI0ywD1ITaws4E/WK2nWUSwCI0g/MXrVcnNab46S6MHZ8j8Ze/Iz6m0RDw5/6dc9
-	i+RFDP9G+VeHspZ4Bax4pmNgzeDa/SfivZ8tiHyndMOysIm3wUOaMb3TUstbL4Ve9Y/RpkpSJaJ
-	2sY39mOWpqdEzK0dZKFwdpSFGv3oDUZR7vA2cFQ7Pp0trLhx1uFl8YJVq0shQupmeM1rSlO//2X
-	Q8ipefK3eoK0XB/wvpwrrt6mpZ+kTkmPOVRxpZT3eCh64B1aYjSGErMUSr+TWTv7Jww==
-X-Received: by 2002:a05:620a:199a:b0:93c:746d:7c72 with SMTP id af79cd13be357-93ebd29a3b1mr3089709185a.64.1792089334018;
-        Thu, 15 Oct 2026 11:35:34 -0700 (PDT)
-X-Received: by 2002:a05:620a:199a:b0:93c:746d:7c72 with SMTP id af79cd13be357-93ebd29a3b1mr3089703385a.64.1792089333389;
-        Thu, 15 Oct 2026 11:35:33 -0700 (PDT)
-Received: from [192.168.1.35] (85-147-213-205.cable.dynamic.v4.ziggo.nl. [85.147.213.205])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3fd83464a7sm63267966b.76.2026.10.15.11.35.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2026 11:35:32 -0700 (PDT)
-Message-ID: <33a935e1-1417-455c-8776-59ccd04230cb@oss.qualcomm.com>
-Date: Thu, 15 Oct 2026 20:35:29 +0200
+	dkim=pass (2048-bit key) header.d=disroot.org header.i=@disroot.org header.b="A2DvF9JC"
+Received: from mail01.layka.lan (localhost [127.0.0.1])
+	by disroot.org (Postfix) with ESMTP id 40EEC82C23;
+	Sat, 17 Oct 2026 15:07:08 +0200 (CEST)
+X-Virus-Scanned: SPAM Filter at disroot.org
+Received: from layka.disroot.org ([127.0.0.1])
+ by localhost (disroot.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id DnvE_HUi_Gul; Sat, 17 Oct 2026 15:07:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=disroot.org; s=mail;
+	t=1792242427; bh=wHaKnXk5dvgTuwSxeYuX3VMmbmmXSlzEXrIjK9mY2zY=;
+	h=From:To:Cc:Subject:Date;
+	b=A2DvF9JCal/FBlUICLtwz77n9zvowQnZ11u+0QB79EIYLf17317AyTKXac3d6Nqbz
+	 lfFqtLplYNaRxpXTZaq6oFKNUvOpNAwU7e3FYzpjedKoUhx1m8kQ+hCUpqtHZlPDvH
+	 eUCph3XMim3Sb9HaV8W7dL9EYDbhMyqxkzckkWQe6HIY8uhazuJNouiIKgP0gOc+27
+	 nHXATJM/2Nd/uV+Mrz0heTdPhYVl3o/IW5MfDldHmVdtEbOoQuEfwlv5XI2rNt8nEh
+	 oxtqi1xY4D2U8OTxZw6MFhdTrcwSHJL1AVAT0seaS9E0mkziKOIpIH1B/a8n7CI2p6
+	 iqw51HdmA5u3g==
+From: =?UTF-8?q?Ali=20Ahmet=20Memi=C5=9F?= <aliamemis@disroot.org>
+To: "Rafael J . Wysocki" <rafael@kernel.org>
+Cc: Hans de Goede <johannes.goede@oss.qualcomm.com>,
+	Rong Zhang <i@rong.moe>,
+	Len Brown <lenb@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Ike Panhc <ikepanhc@gmail.com>,
+	"Derek J . Clark" <derekjohn.clark@gmail.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Armin Wolf <W_Armin@gmx.de>,
+	Charis Stratakis <c.stratakis@proton.me>,
+	Avraham Hollander <anhollander516@gmail.com>,
+	=?UTF-8?q?Jeffrey=20W=C3=A4lti?= <jeffrey@waelti.dev>,
+	Rick <rickk1166@gmail.com>,
+	linux-acpi@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] ACPI: Serialize battery, INT3403 _TMP and ideapad methods
+Date: Sat, 17 Oct 2026 16:06:33 +0300
+Message-ID: <20261017130652.318778-1-aliamemis@disroot.org>
 Precedence: bulk
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Subscribe: <mailto:acpica-devel+subscribe@lists.linux.dev>
 List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Hans de Goede <johannes.goede@oss.qualcomm.com>
-Subject: Re: [PATCH 0/3] ACPI: Serialize battery methods and INT3403 _TMP
-To: Rong Zhang <i@rong.moe>,
-        =?UTF-8?Q?Ali_Ahmet_Memi=C5=9F?=
- <aliamemis@disroot.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Cc: Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        Armin Wolf <W_Armin@gmx.de>, Charis Stratakis <c.stratakis@proton.me>,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20261014132703.93355-1-aliamemis@disroot.org>
- <58586fa666f09c209f9d7fe8c692a8bdda6d4410.camel@rong.moe>
- <7ecfd94c-7083-4d76-a5f7-490ba1e650d7@oss.qualcomm.com>
- <db52af80e3d52f16a609071db79a29e012f4fcd9.camel@rong.moe>
-Content-Language: en-US, nl
-In-Reply-To: <db52af80e3d52f16a609071db79a29e012f4fcd9.camel@rong.moe>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authority-Analysis: v=2.4 cv=QbvzLcbv c=1 sm=1 tr=0 ts=6ad11cf7 cx=c_pps
- a=50t2pK5VMbmlHzFWWp8p/g==:117 a=Y5s2KDXI4nyRj/ULHr3D4g==:17
- a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=eoimf2acIAo5FJnRuUoq:22
- a=Wruc98bIDj3zykDVo-cA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=IoWCM6iH3mJn3m4BftBB:22
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDE1MDA3NCBTYWx0ZWRfXzpXp8p/nV29w
- yOtIRNJusMzOsWzdmw29K/JvwOtly2fHfJw97mJDUdxK69PFAwUdp3YzliJWsgr2FQpgyUoLYeI
- 03EM8oplFBZnp/ykYjZR64LKIyCmO78=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDE1MDA3NCBTYWx0ZWRfXykqYKdqTjfTK
- 7a3ARuXb4o/B5aT1Xxm272AXHe+LBVo5LctHUInC/i2jz1oeukMUaL395Qe2qye6nRpq7KJncGr
- qlCob7AfbIKPSsnKQd5AjWb86zp4qWZgrsBTwSIrCW1gprNuoZawDTgriwJRXByJIE4YOlavNd3
- dHYEzvz2JZfKr/TC5eidPedj4/bWqq+yoSLVbY+DubO2o3yiG41XPzSkx08OUsSna4JyTz3oQ98
- 1AzxC6eeEg2hP324WCywO8HV30bX9dlFQ+H+aVJS7DvsNvfi8wS+6gk2sQUIGq+pTo6TVjwFwV4
- 0tMN3Mq8JUXcRA4v4/4VBLdoz71C876rp/7qq28WfCtPg1DETRGN0GphndnCqUrgS2oCmcV5X91
- M+pu/lzawMdmFvENOHiOZMvz89hUXyYkboACMKEqIXbhwpsfC259TgraYaSiHfGMQXQIcVWOD7M
- /BRcgEOt/Zsv9UfXtyQ==
-X-Proofpoint-ORIG-GUID: 1W0VM02-EVUthJRD7BtUFuZqhyEYAWsa
-X-Proofpoint-GUID: 1W0VM02-EVUthJRD7BtUFuZqhyEYAWsa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-10-14_01,2026-10-14_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 phishscore=0 suspectscore=0
- adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610080000
- definitions=main-2610150074
 
-Hi,
+On ThinkPad P1 Gen2 and P53, INT3403 _TMP switches the EC page selector
+without taking the mutex the battery methods use.  On some Lenovo
+IdeaPad and Yoga models, the battery _BIX and the ideapad GBMD take the
+EC mutex and a serialized method in opposite order and deadlock until
+an AML mutex times out.
 
-On 15-Oct-26 15:48, Rong Zhang wrote:
-> Hi Hans,
-> 
-> On Thu, 2026-10-15 at 15:13 +0200, Hans de Goede wrote:
->> Hi,
->>
->> On 15-Oct-26 13:45, Rong Zhang wrote:
->>> Hi Ali,
->>>
->>> Thanks for working on this!
->>>
->>> The series is generally in a good shape. I just have a few minor
->>> comments.
->>>
->>> On Wed, 2026-10-14 at 16:26 +0300, Ali Ahmet Memiş wrote:
->>>> As discussed in [1], add exclusive variants of acpi_evaluate_object()
->>>> and acpi_evaluate_integer() and use them for the battery methods and
->>>> INT3403 _TMP, which interleave badly on ThinkPad P1 Gen2 and P53.
->>>>
->>>> UCSI (bko221065) is not converted.  
->>>>
->>>
->>> Please leave a link to the bko bug, so that readers don't need to
->>> assemble the link themselves.
->>>
->>>> There the contention is on a
->>>
->>> After carefully auditing the ASL code again, I've just found the root
->>> cause of the mutex acquisition timeout.
->>>
->>> It's hard to notice, but \_SB.PCI0.LPC0.EC0.RDER being declared as
->>> "Serialized" causes an ABBA deadlock:
->>>
->>> Thread 1 (battery)                         Thread 2 (ideapad-laptop)
->>> -----------------------------------------  ---------------------------------------
->>> serialize \_SB.BAT0._BIX                   serialize \_SB.PCI0.LPC0.EC0.VPC0.GBMD
->>> evaluate \_SB.BAT0._BIX                    evaluate \_SB.PCI0.LPC0.EC0.VPC0.GBMD
->>>   acquire ECMT [A]
->>>   serialize \_SB.PCI0.LPC0.EC0.RDIF          serialize \_SB.PCI0.LPC0.EC0.RDER [B]
->>>   evaluate \_SB.PCI0.LPC0.EC0.RDIF           evaluate \_SB.PCI0.LPC0.EC0.RDER
->>>     serialize \_SB.PCI0.LPC0.EC0.RDER [B]      acquire ECMT [A]
->>>
->>> That's why merging battery notifications significantly reduced the
->>> frequency of mutex acquisition timeout.
->>>
->>>> firmware AML mutex that _Qxx EC queries also take, which a wrapper
->>>> around acpi_evaluate_object() cannot cover, and Rong's notification
->>>> merging in 7.3 already reduces it on the battery side.
->>>
->>> Lock contention is not the root cause, and EC queries and UCSI _DSM are
->>> just innocent victims of the ABBA deadlock.
->>
->> Hmm, ok so since \_SB.BAT0._BIX takes ECMT itself instead of relying
->> on \_SB.PCI0.LPC0.EC0.RDER taking it (1), 
->>
-> 
-> I guess the intent of holding ECMT in _BIX was to prevent race conditions
-> in multi-threaded interpreters. IOW, the firmware authors probably took
-> multi-threaded interpreter into their consideration.
-> 
->         If ((Acquire (^^PCI0.LPC0.EC0.ECMT, 0x2000) == 0x00))
->         {
->             If (((^^PCI0.LPC0.EC0.BTDV && ^^PCI0.LPC0.EC0.BTFC) && ^^PCI0.LPC0.EC0.BTDC))
->             {
->                 BPK1 [0x01] = 0x00
->                 Local0 = ^^PCI0.LPC0.EC0.BTDC /* \_SB_.PCI0.LPC0.EC0_.BTDC */
->                 Local0 *= 0x0A
->                 BPK1 [0x02] = Local0
->                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
->                 Local0 *= 0x0A
->                 BPK1 [0x03] = Local0
->                 BPK1 [0x05] = ^^PCI0.LPC0.EC0.BTDV /* \_SB_.PCI0.LPC0.EC0_.BTDV */
->                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
->                 Local0 *= 0x0A
->                 Local0 *= 0x0A
->                 Divide (Local0, 0x64, Local1, Local2)
->                 BPK1 [0x06] = Local2
->                 Local0 = ^^PCI0.LPC0.EC0.BTFC /* \_SB_.PCI0.LPC0.EC0_.BTFC */
->                 Local0 *= 0x0A
->                 Local0 *= 0x02
->                 Divide (Local0, 0x64, Local1, Local2)
->                 BPK1 [0x07] = Local2
->                 BPK1 [0x08] = ^^PCI0.LPC0.EC0.BTCC /* \_SB_.PCI0.LPC0.EC0_.BTCC */
->                 BPK1 [0x09] = 0x251C
->             }
-> 
->             BPK1 [0x10] = ToString (^^PCI0.LPC0.EC0.RDIF (0x01), Ones)
->             ToDecimalString (^^PCI0.LPC0.EC0.BTSN, Local0)
->             BPK1 [0x11] = ToBuffer (Local0)
->             BPK1 [0x12] = ToString (^^PCI0.LPC0.EC0.RDIF (0x02), Ones)
->             BPK1 [0x13] = ToString (^^PCI0.LPC0.EC0.RDIF (0x03), Ones)
->             Release (^^PCI0.LPC0.EC0.ECMT)
->         }
-> 
->> this means that not just
->> the ideapad-laptop GBMD method call but anything calling
->> \_SB.PCI0.LPC0.EC0.RDER may cause this abba dead-lock, right?
->> Are we sure nothing else is calling  \_SB.PCI0.LPC0.EC0.RDER ?
-> 
-> I checked all code paths with ECMT involved, and concluded a call graph
-> with all faulty methods:
-> 
->                       ideapad-laptop
->                             |
->                             v
->    battery                 GBMD
->      |                      |
->      v                      v
->    _BIX -> ECMT -> RDIF -> RDER -> ECMT
->                     ^       ^
->                     |       |
->     +---------------+-------+
->     |
->    GSBI -> ECMT -> SMTE/SMTF -> ECMT
-> 
-> GSBI: \_SB.PCI0.LPC0.EC0.VPC0.GSBI
-> SMTE: \_SB.PCI0.LPC0.EC0.VPC0.SMTE
-> SMTF: \_SB.PCI0.LPC0.EC0.VPC0.SMTF
-> 
-> All methods in the graph are never called by any method or driver that is
-> not in the graph.
-> 
-> So battery and ideapad-laptop are the only drivers that could potentially
-> trigger the ABBA deadlock.
+As discussed in [1], add exclusive variants of the AML evaluation
+helpers and use them for the battery, INT3403 _TMP and ideapad methods.
+Patches 2-4 depend on patch 1.
 
-Great, thank you for checking this.
+Changes in v2:
+- Merge the follow-up series [2] and drop its EC query and UCSI patches
+  until they are shown to help
+- Add acpi_execute_simple_method_exclusive() for _BTP and ideapad
+- Make the helpers wrappers that take the lock around the existing ones
+- Join lines up to 100 columns, add a Link: for Suggested-by:
 
-Given the above I agree with Rafael to drop the EC query and UCSI
-patches for the time being.
+Link: https://lore.kernel.org/all/CAJZ5v0gS4agVUkCO6M=VW4Wi2y1-s+k23bpzmX9aAZ0Rsv4z9Q@mail.gmail.com/ [1]
+Link: https://lore.kernel.org/all/20261014190544.150093-1-aliamemis@disroot.org/ [2]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=221065
+v1: https://lore.kernel.org/all/20261014132703.93355-1-aliamemis@disroot.org/
 
-Regards,
+Ali Ahmet Memiş (4):
+  ACPI: utils: Add exclusive AML evaluation helpers
+  ACPI: battery: Evaluate battery methods exclusively
+  thermal: intel: int340x: Evaluate _TMP exclusively
+  platform/x86: ideapad-laptop: Evaluate ACPI methods exclusively
 
-Hans
+ drivers/acpi/battery.c                        | 12 +++---
+ drivers/acpi/utils.c                          | 41 +++++++++++++++++++
+ drivers/platform/x86/lenovo/ideapad-laptop.c  | 12 ++++--
+ .../int340x_thermal/int340x_thermal_zone.c    |  6 ++-
+ include/acpi/acpi_bus.h                       |  7 ++++
+ 5 files changed, 66 insertions(+), 12 deletions(-)
 
+
+base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+-- 
+2.55.0
 
