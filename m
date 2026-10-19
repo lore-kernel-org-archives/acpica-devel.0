@@ -1,75 +1,89 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792421682;
-	b=aOgMZ2nDRA6Vfm9oqeD4MJTwV0Y3PKIGenTfbWUI9rkUyc/Pyin/DPbZt0dXaxvlOx6c
-	 XqSYMu3Lhn6PsUJXnL/nPRCyuJRZFSOt1HN5w+TKAI+5Get+VdcbEPxGreGksSAL4GUMB
-	 ipNI0ru3d+ncjzfKsjsLdyuanp7YvLja/MO4PdKU09i4gXNA2UYh2MQjziY8uBCCPnhPA
-	 wNT97KM66xWd5dItV6jwUP5vijVF73klZxwbv6ci2mX3pAJISlEYC8+fDXqfNWaqt/zM9
-	 Rj6A2lOOdKSlTuugA6wC24eUCIYKiXvSvPe/G+pUjKSx3oCabMQXRHvQvya6IMNF9Wg==
+	t=1792421830;
+	b=Bc39J+rkTQG3rzJa1MhgXqh2Plkkmt7zV3hKKPWCVCNhuiE/S1bI4NsDWqTk8UTPised
+	 laP8wFfI06zpjsDHXXan2A/6TV1RRiH2Nn4pDBIpQXS0lH1jG2Ixgq3Tl8VwLpA6hjRuC
+	 E0QSjDs2TR+1wQuwS3oRMvZqAipan3efRsCPYnRt7dh8d0ncv5rTU0IHLRkQKtlm7oDKo
+	 jzcQ66FwP7SNRm6F8sl6ruiQjTvtXBa5UaJBo0U1xXW6G4k3IH/WeTDsOZ0w/Z33mvOSP
+	 XKtzEeswAaNO31RjFG0rlPgM3x750vMURZIXEl7rEIGbjiv6xMClz/RXSlOuv30fLjA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792421682;
-	h=Received:Received:Received:Received:From:To:Cc:Subject:Date:
+	a=rsa-sha256; c=relaxed/relaxed; t=1792421830;
+	h=Received:Received:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-Rspamd-Bar:X-Rspamd-Report:X-Rspamd-Score:
-	 DKIM-Signature;
-	bh=rwhf8EAuiOMaypHO3detYAeDV9E3dgFxaDUeqSzQJsM=;
-	b=nIzaCIpLeoBOO5Nlz4czIamJXzHAN31dW1fmFI5AuooTTKmnSaeUTxmNyM0XDSlusA2/
-	 /a2SU0rYtisZFUQPTnLSyO+12oyk4Nz3/vwmjT29Ic/hCSaNOdkuVgQKx3ib2Gixt3Okw
-	 4t3tLGumKZqS2r4RQRr2iUncmJEf8XxfLQBLV42FN9ARuSnJw40rqTrsETHcm/8+r/2dd
-	 /zVyEmIL28/627aeSXpdWtt4V256jZ6LhA7den98WbCRIJyQrmRX/Eplp21lx0d0qeuUu
-	 tRBFb6rgVZwpJhgvIrrfEbXPq/KtaetC3NezKUYzU2+S63x8PshMp5BWupJV6/+kE+w==
+	 Content-Transfer-Encoding;
+	bh=VCgwC73CEIkR5p1wAPzHafgllwFVQaoLyQhXqaXGVnk=;
+	b=fhIa/AJtYv+o/INFnlFEXMZKoAGuoRxb8DiWV5TatTC3wgYdAXw8ua73zqWq12jlvj/+
+	 CnGyAJ4AiYc/LQSxCbBlTmxfjAaQlECHtSAmazysY31iMDS/H4ew/O+4F+ph0NtXwX1w9
+	 JWHm7cjx6arbolVfEJFvRONh5YmA0GY720zCN1x3g4NaJ1Kk8PW8qNmnGU3f2hqfv61Fp
+	 97zFlDdG+t+qJmfB02NCpUL4RBPPB+V1ajD9ImeGaHe/Gpn8h5XvmPSuZA+a9IbP2vYRw
+	 s/BkpnLhzyod37uzMZiy2hvC/mCpGXm4N10DpqqBRacgX96PgKFhh5YY0MOr+fnT/rw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=Evzt9PyL;
-	dmarc=pass header.from=lausen.nl;
-	spf=pass smtp.mailfrom=lausen.nl;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=kmO6KxO0;
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 Received: from aws-us-west-2-korg-listserv-1.web.codeaurora.org (ip-10-30-226-211.us-west-2.compute.internal [10.30.226.211])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA22D606EFC0
-	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4CC6074096
+	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=Evzt9PyL
-Received: from mailgate01.uberspace.is (mailgate01.uberspace.is [95.143.172.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643573451CE
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.172.20
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=kmO6KxO0
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AF0533D6
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792421681; cv=none; b=kl2nLrO5odmEVbApovv5tRRwQyW8Pixs8PGb9+ZvYkBppQTfn26TBAhlxdxg8+Zl9N9llmx0CCKK+0gvBta44ipHXokU+7+lIYjW4s0K42bhjQQZycxG8D1D8qriYwxb2vEa5uvzW0melt96U86KtnmjTuenVJpc4aIC0d6jnWs=
+	t=1792421829; cv=none; b=fdS1wquQYSdBMqJm4rspcZC1A5mpxtYDrwC8cO/MtR4gnMQGW23/1mB1+2vczzFKRwNQSrRCM8AR5TkNJYd/Bg7C2Jbs4Tmitf+iS7LcdfWoQz/dbaMKquQiQdF8g+Wacxu2T/l/gzKAXB+I5AAKoJXke6mZ9Ic2zsDoHWNqqqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792421681; c=relaxed/simple;
-	bh=oRhTvAdmIe1fqBlfvU3hzri5hH3R1/FUZpcl7jrPQMA=;
+	s=arc-20240116; t=1792421829; c=relaxed/simple;
+	bh=YlaWlYaZIkAnlD2LKt78HyIT9RVMdmLuS6Ccg2ZGCLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gX+QtBQzE8xU3uCA//NHE7FzJ/E9sde8qr5LAVuNtTZO9krYuRl8cKJ5mdtdn2c+tWZzZuuEiLsPuSsr1o0HzMqr3pJ/ubhgHTS2Uax2AYCFfjnZZ1xdKaygNMf+danG+DUIEzDEN+dagVKQUBg97JtbBRsvW3mfl42iwaweUfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=pass (4096-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=Evzt9PyL; arc=none smtp.client-ip=95.143.172.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
-Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
-	by mailgate01.uberspace.is (Postfix) with ESMTPS id C85526112A
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 16:54:38 +0200 (CEST)
-Received: (qmail 28483 invoked by uid 990); 19 Oct 2026 14:54:38 -0000
-Authentication-Results: devico.uberspace.de;
-	auth=pass (plain)
-Received: from unknown (HELO unknown) (::1)
-	by devico.uberspace.de (Haraka/3.1.1) with ESMTPSA; Mon, 19 Oct 2026 16:54:38 +0200
-From: Leonard Lausen <leonard@lausen.nl>
-To: linux-acpi@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Cc: leonard@lausen.nl,
+	 MIME-Version; b=jtf8ti1aauayl3xP1b0silwqDJCiE7sepjGYUHawEqQvW6Qqwg6H/pmSdRxTUHERKFmEA1vK77GnNDAWnoEWy/FOQyJZOSp+9av45LtHVID9g51yXTygk0JG6b7q/nZlF4Qp4pdExvpni/QDd0W4jcbTNjrVHDXZId/U3YsI1vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=kmO6KxO0; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E16E1D34;
+	Mon, 19 Oct 2026 07:57:04 -0700 (PDT)
+Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.131])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 99A763F673;
+	Mon, 19 Oct 2026 07:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1792421827; bh=YlaWlYaZIkAnlD2LKt78HyIT9RVMdmLuS6Ccg2ZGCLU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kmO6KxO0EaT2UX7XQwEqVTYJDoqisGCaBNf49e9mWIIU090eRvJ4LbuYMZ+lkWJ52
+	 jh8Sd9Z7Tj4QgtvLHKai+ACKt9MPl+sdTOou5BpHyBQ+/Ipgfl2HZRRdL+EU5KHJjH
+	 /iM9CYyMaNTNhJwd0oCJ7A1AYKHeB2nalvjwIcsQ=
+From: Pierre Gondois <pierre.gondois@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: James Morse <james.morse@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	acpica-devel@lists.linux.dev,
-	Len Brown <lenb@kernel.org>,
-	Armin Wolf <W_Armin@gmx.de>,
-	Ivan Hu <ivan.hu@canonical.com>,
-	Joshua Grisham <josh@joshuagrisham.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ACPI: x86: Repair broken PEG0._STA on Samsung Galaxy Book 930XDB
-Date: Mon, 19 Oct 2026 16:54:19 +0200
-Message-ID: <20261019145421.47181-4-leonard@lausen.nl>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261019145421.47181-1-leonard@lausen.nl>
-References: <20261019145421.47181-1-leonard@lausen.nl>
+	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Dan Williams <djbw@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Morduan Zang <zhangdandan@uniontech.com>,
+	linux-acpi@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH 1/6] ACPI: extlog: fix extlog_mem_event build issue
+Date: Mon, 19 Oct 2026 16:56:08 +0200
+Message-ID: <20261019145643.1877246-2-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261019145643.1877246-1-pierre.gondois@arm.com>
+References: <20261019145643.1877246-1-pierre.gondois@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -80,144 +94,50 @@ List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Bar: -----
-X-Rspamd-Report: REPLY(-4) BAYES_HAM(-2.999999) MID_CONTAINS_FROM(1) MIME_GOOD(-0.1) R_MISSING_CHARSET(0.5)
-X-Rspamd-Score: -5.599999
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=lausen.nl; s=uberspace;
-	h=from:to:cc:subject:date;
-	bh=oRhTvAdmIe1fqBlfvU3hzri5hH3R1/FUZpcl7jrPQMA=;
-	b=Evzt9PyLxiU16qEy0E+1gYVsbgBsgzFJ9Ppf0eqTOpnvmlqRwOAhtX1MU7KrHxeF0maXbb+uyl
-	EfH7p801/7WGvMoRc1NEhZ/k+BSLn3hOIhARLvRi5xJ3EOC8Lpuga1NqfFei0Eli27ge2qNLI+n9
-	Nrol1351+teKkBYstcQAxGyiuKNPT64ZuBZ5UcoZ9+/7cCQeXnmV4XFE27RwUbBsLnwRqTovWQST
-	Gx47O1s/0Go5ak2kAwI9O9meBL0fhW+wzFLniJqwl8NLY3vUQ2kMrVFYwZDfJiIBEqSHcrNVHyiU
-	QIWGhFtJ82H5R2JNoPw+CfngicHgIEGTpT8WJfhtMw8ZkC/gnvkdRPkwfdo5bGIfvSuXs9qYBUKL
-	BXWbYVU6HQLX2d5tXkg7lGpHM4f7y2yzHfalCX9vxdwV9TUlGpFbWkl4Ohqvg1SGfnQ8qm1whGVA
-	WpmHXtQOop6M91AGhb3oaCJQIuUYPM/DMS4U06ENJuw6/WS84cUUoZ9rtfSAeyUdySKd+2luK1yc
-	Fj5NIUcSAtO+IB+HZBCHccDFh0Le7Jy4LKwM0/XJTWVvDC2Miy3noG+3gjXzG+XMzgAyjLrT+qe0
-	eQChxqs7qQC2g/Dlaj6edcZF/Kx1+lt1Mlj2IwcsjMzRP4TKekOOF9pBYp/M5LzOCWrdriywPu5o
-	0=
 
-The SaSsdt table on the Samsung Galaxy Book 930XDB with BIOS
-P11RFX.067.230331.SP declares PG0E as an external object at the namespace
-root. PEG0._STA nevertheless encodes PG0E as an unqualified NameSeg.
+With CONFIG_ACPI_EXTLOG=n and with the following command:
+make -j4 drivers/acpi/acpi_extlog.o drivers/acpi/
 
-Namespace lookup from PEG0 finds the unrelated empty Package at
-\_SB.PC00.PG0E before the intended integer field at \PG0E. Comparing
-that Package with One aborts _STA with AE_AML_OPERAND_TYPE.
+trace_extlog_mem_event() is not defined. Add a extlog_mem_err_event()
+wrapper to fix the build issue.
 
-A regular acpi_device status override is too late to prevent this.
-ACPICA evaluates _STA while initializing namespace objects, before
-struct acpi_device exists, and acpi_get_devices() evaluates it again
-without going through acpi_bus_get_status().
-
-Replace only PEG0._STA after the tables have been loaded and before ACPI
-objects are initialized. The replacement retains the firmware logic but
-uses an absolute path for \PG0E, so every _STA evaluation follows the
-intended namespace object. Match the vendor and full DMI product string,
-930XDB/931XDB/930XDY.
-
-Signed-off-by: Leonard Lausen <leonard@lausen.nl>
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/acpi/bus.c       |  2 ++
- drivers/acpi/x86/utils.c | 53 ++++++++++++++++++++++++++++++++++++++++
- include/acpi/acpi_bus.h  |  2 ++
- 3 files changed, 57 insertions(+)
+ drivers/acpi/acpi_extlog.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
-index 808c6746be14..555270fb49dd 100644
---- a/drivers/acpi/bus.c
-+++ b/drivers/acpi/bus.c
-@@ -1376,6 +1376,8 @@ static int __init acpi_bus_init(void)
- 		goto error1;
- 	}
+diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+index 7ad3b36013cc..e764d61f71ca 100644
+--- a/drivers/acpi/acpi_extlog.c
++++ b/drivers/acpi/acpi_extlog.c
+@@ -180,6 +180,15 @@ extlog_cxl_cper_handle_prot_err(struct cxl_cper_sec_prot_err *prot_err,
+ #endif
+ }
  
-+	acpi_quirk_override_broken_methods();
-+
- 	/*
- 	 * ACPI 2.0 requires the EC driver to be loaded and work before the EC
- 	 * device is found in the namespace.
-diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
-index 418951639f51..661267a5f8ba 100644
---- a/drivers/acpi/x86/utils.c
-+++ b/drivers/acpi/x86/utils.c
-@@ -67,6 +67,59 @@ struct override_status_id {
- #define NOT_PRESENT_ENTRY_PATH(path, cpu_vfm, dmi...) \
- 	ENTRY(0, "", NULL, path, cpu_vfm, dmi)
- 
-+/*
-+ * The firmware method is equivalent to this ASL, except that it references
-+ * PG0E without the root prefix and resolves to an unrelated Package object:
-+ *
-+ * Method (\_SB.PC00.PEG0._STA, 0, NotSerialized)
-+ * {
-+ *     If ((\PG0E == One))
-+ *         Return (0x0F)
-+ *
-+ *     Return (Zero)
-+ * }
-+ *
-+ * acpi_install_method() requires a complete table containing one method.  The
-+ * AML below was generated from the ASL above with iasl 20250404.
-+ */
-+static u8 samsung_930xdb_peg0_sta[] __initdata = {
-+	0x53, 0x53, 0x44, 0x54, 0x48, 0x00, 0x00, 0x00,
-+	0x02, 0xc8, 0x4c, 0x49, 0x4e, 0x55, 0x58, 0x20,
-+	0x50, 0x45, 0x47, 0x30, 0x53, 0x54, 0x41, 0x20,
-+	0x01, 0x00, 0x00, 0x00, 0x49, 0x4e, 0x54, 0x4c,
-+	0x04, 0x04, 0x25, 0x20, 0x14, 0x23, 0x5c, 0x2f,
-+	0x04, 0x5f, 0x53, 0x42, 0x5f, 0x50, 0x43, 0x30,
-+	0x30, 0x50, 0x45, 0x47, 0x30, 0x5f, 0x53, 0x54,
-+	0x41, 0x00, 0xa0, 0x0b, 0x93, 0x5c, 0x50, 0x47,
-+	0x30, 0x45, 0x01, 0xa4, 0x0a, 0x0f, 0xa4, 0x00,
-+};
-+
-+static const struct dmi_system_id acpi_method_override_dmi_ids[] __initconst = {
-+	{
-+		.ident = "Samsung Galaxy Book 930XDB/931XDB/930XDY",
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "930XDB/931XDB/930XDY"),
-+		},
-+	},
-+	{}
-+};
-+
-+void __init acpi_quirk_override_broken_methods(void)
++static void
++extlog_mem_err_event(struct cper_sec_mem_err *mem, u32 err_seq,
++		     const guid_t *fru_id, const char *fru_text, u8 sev)
 +{
-+	acpi_status status;
-+
-+	if (!dmi_check_system(acpi_method_override_dmi_ids))
-+		return;
-+
-+	status = acpi_install_method(samsung_930xdb_peg0_sta);
-+	if (ACPI_FAILURE(status))
-+		pr_warn(FW_BUG "Failed to replace broken PEG0._STA: %s\n",
-+			acpi_format_exception(status));
-+	else
-+		pr_info(FW_BUG "Replaced broken PEG0._STA method\n");
++#if defined(CONFIG_ACPI_EXTLOG) || defined(CONFIG_ACPI_EXTLOG_MODULE)
++	trace_extlog_mem_event(mem, err_seq, fru_id, fru_text, sev);
++#endif
 +}
 +
- static const struct override_status_id override_status_ids[] = {
- 	/*
- 	 * Bay / Cherry Trail PWM directly poked by GPU driver in win10,
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index a10a591c18b2..ebdd197dbbc4 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -713,10 +713,12 @@ int acpi_enable_wakeup_device_power(struct acpi_device *dev, int state);
- int acpi_disable_wakeup_device_power(struct acpi_device *dev);
- 
- #ifdef CONFIG_X86
-+void acpi_quirk_override_broken_methods(void);
- bool acpi_device_override_status(struct acpi_device *adev, unsigned long long *status);
- bool acpi_quirk_skip_acpi_ac_and_battery(void);
- int acpi_quirk_skip_serdev_enumeration(struct device *controller_parent, bool *skip);
- #else
-+static inline void acpi_quirk_override_broken_methods(void) { }
- static inline bool acpi_device_override_status(struct acpi_device *adev,
- 					       unsigned long long *status)
+ static int extlog_print(struct notifier_block *nb, unsigned long val,
+ 			void *data)
  {
+@@ -229,8 +238,9 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
+ 			struct cper_sec_mem_err *mem = acpi_hest_get_payload(gdata);
+ 
+ 			if (gdata->error_data_length >= sizeof(*mem))
+-				trace_extlog_mem_event(mem, err_seq, fru_id, fru_text,
+-						       (u8)gdata->error_severity);
++				extlog_mem_err_event(mem, err_seq, fru_id,
++						     fru_text,
++						     (u8)gdata->error_severity);
+ 		} else if (guid_equal(sec_type, &CPER_SEC_CXL_PROT_ERR)) {
+ 			struct cxl_cper_sec_prot_err *prot_err =
+ 				acpi_hest_get_payload(gdata);
 -- 
-2.55.0
+2.43.0
 
