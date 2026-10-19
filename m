@@ -1,75 +1,85 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792421678;
-	b=XTBN/uXJSH/GEF1sqgJo+fk6hF2IKHrDuYuriZcAcOmcxR2zOCsWOniKZcewb93JTfTn
-	 t98El76gvaoaHyxMibfx7FRphLxmrNh3w9n7wEw2CDUrGAfotLvj2REhy8+4UxdSvY0OI
-	 8q0IncLBqIs1Uxfl2hk5NF1oVDM0cCp0+8TQ+bN3uHjbYGMfVr3pwzymF2jon4KT2+ZqN
-	 Xiauv7NZlwPm+jusoyo95hPj/AOFJjP9QkVB7n85/Od/lUEc+DPlKsGPYrZfLBsl3ebyP
-	 VibZsAOHwZ6dNVtgTEfD0rC6U+jHxcPG5m6kpWV+7kZfUiefPNAhwxOvEX/aek4IYRA==
+	t=1792421822;
+	b=udaSbNDrRCLV9aSaac8ut8Q2xwWOsrlImQu+lhLpDpvwmT7BxjsyegKZMokU3PAD1txb
+	 gaGXUL4l4DPkFAxy7F+O4IstVAdoVeB29QhWU6WdVpKF8iqVq34biTpJ19w9uqQweWa79
+	 VmCpTTc6/3PGlDTFtpq5zU+RCtqdh+eOEChv7Y3M04HiUTkTrG/ntn+t+T/Psf3+vqkhl
+	 7kaO6uMZ9MaacXbxUPJjUeR3go+IKz6eEBGtSsQCoQc0vARmhPzeQRnFR6PqQLkBq+vWh
+	 uBnbcpyUgCeEJzMqSOeNL4iny3UeD+2vtB+DpdpCnp7/JsXmYQSkX+0nlMiGcCU0i0w==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792421678;
-	h=Received:Received:Received:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-Rspamd-Bar:X-Rspamd-Report:X-Rspamd-Score:
-	 DKIM-Signature;
-	bh=xOumFf8QovRxhD1eGGAGpu54ZcAWxs2MC729deNVVtU=;
-	b=TU/kQDi3RPI28wZ+6nvfZrG2oIVNJGwLroWv7KUtQRdhVO6bEcKlYkTltGEBQnRuj2E8
-	 +WiEbngtTTBYkwma4PZifOKrbuUuq4MkWlEUigb6VoXHijDzseMcNSNGQR/9ZuqIdG8i8
-	 1FvmUYC8WAajW9WloBG1YyTY+hqK9GTaDpwXXDVJw0T9f0VljtQqT/4F5hNzSkd0qe0dt
-	 tn/F9D1lf6CFkFJBVB4LF4jdQUnong/RaWDsicUTGai38TjG2DVPxbOPGDAKO7ildIYk8
-	 hqOk1SvwvJHIy35EEUon9vlwjDUhtYDcomTjBYo9tmF87ggwMEayqPThuQguaKaA4Ig==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792421822;
+	h=Received:Received:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=XFFhmkzN3gCpAVV9wNJFrGK2My1XuAXj1fxImpVBK8k=;
+	b=iG7jbmBNWSMnn/leWJov0BGQ6O0XQqtv1qWDPXnWGqKloW61CAuIi8KPALccjTk9pQWy
+	 EUzs7USKpRguUy/G2M0qYvYUJnAH3Hwn1u6VON48KhR86deRUNz+pbiMd6vaGZY4N6OGV
+	 0NPlouOOHT45OQ65e7eiaVvY3Fim5G2L4HGnm2O+iv6vLTE2LPNTS6ioCUU77zE1aFbso
+	 yvIj3dpq35Fhy7mjxa44b4fO8y0mDrWZQkqXZUmj0UN8UsDxuoDJa/qHMhZDGVYgMCK+v
+	 gqBWX85B/SMy8gO1xipltiyp/2aUz9VarETis2KUEO5uuueyjTSsCmdEYI6jZ2iOAdA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=G34Zwobk;
-	dmarc=pass header.from=lausen.nl;
-	spf=pass smtp.mailfrom=lausen.nl;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=PV9btGXP;
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 Received: from aws-us-west-2-korg-listserv-1.web.codeaurora.org (ip-10-30-226-211.us-west-2.compute.internal [10.30.226.211])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802BC606DA75
-	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BD3607408F
+	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=G34Zwobk
-Received: from mailgate01.uberspace.is (mailgate01.uberspace.is [95.143.172.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D152F4C4604
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.172.20
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=PV9btGXP
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A06353A72
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792421678; cv=none; b=lgikfT6EbBVKOUslH+dlp+gnpuNcZWUQlvMdqYCsDRV+0o/FW+wFpRZ7EfurpuTzR7Zg5DXtYSknGSP+HQY8l1zjsI7aUGCDmjkJCpJkjIPGLj7SW9nQnn89HIVhXjB45+QsPOT4gTEEBGY0By+DptNmE75YAipoQXj1bazH9FA=
+	t=1792421822; cv=none; b=tLJI0XFjgrbHSfVKqAiiYrsl1UcoDkeIkhMCg8grs7QA33twm/P6Hn6S/6j3rISmwPauAuctmFqFxCb/iUFZXqLArvnVSiX7yG9olhHuGWaPA/7HVI4aMi5lnHTeeEvnigkl5isymNvtg364Np0mibO97O0zd53ZgY3J5+Sg5Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792421678; c=relaxed/simple;
-	bh=Hipy/KE3TsEelU94kP3nCg+Z58+mCcvF4l6Qeuvkmms=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EO09gdI20sJDNtCctVxH1mNhisFEfbMIiM+2Z2vOGNSsL957hM7Vhd+jaZ6JOegCt8dTEs/SYnikEzDaBHf5E6MnUPLAuqjwJqjVT/wTtUeNVfy0oAwiqRPORALAxQUTkC9YQ61dWO7p5VhJrxCyXvqV9hsdOfG4rcpe3diY4vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=pass (4096-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=G34Zwobk; arc=none smtp.client-ip=95.143.172.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
-Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
-	by mailgate01.uberspace.is (Postfix) with ESMTPS id 3B8856112A
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 16:54:35 +0200 (CEST)
-Received: (qmail 28350 invoked by uid 990); 19 Oct 2026 14:54:35 -0000
-Authentication-Results: devico.uberspace.de;
-	auth=pass (plain)
-Received: from unknown (HELO unknown) (::1)
-	by devico.uberspace.de (Haraka/3.1.1) with ESMTPSA; Mon, 19 Oct 2026 16:54:34 +0200
-From: Leonard Lausen <leonard@lausen.nl>
-To: linux-acpi@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Cc: leonard@lausen.nl,
+	s=arc-20240116; t=1792421822; c=relaxed/simple;
+	bh=wstiMUuPit29XB21u72+Sm9cipTaJpB6vDxcGcOze1Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P371awcMjGWSiA2es/VRMNTvVHWcJIX51AaZW+sOQ7+IfhavU1M6riri+M5YAS1hg22vqfApo7T9r0opy36IeLzwpwnmClnfvAuz6VGIssg+zrvVaFnvUqBZxflM6P3t61jiDZzaRkJWQVwynSzkA0m/o+pchkPjiJ5UX+rGHMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=PV9btGXP; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CEB31682;
+	Mon, 19 Oct 2026 07:56:56 -0700 (PDT)
+Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.131])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7C98F3F673;
+	Mon, 19 Oct 2026 07:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1792421819; bh=wstiMUuPit29XB21u72+Sm9cipTaJpB6vDxcGcOze1Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PV9btGXPW0TQosrp57rBn61aSnEngvPMA1lmEZ+6U2btLHX4uWQIxUZu+zPNw+d0L
+	 BiMzgeElPDm7ulf/S1KMvYNrhX1bzSLNQ/4bJtdB7oKylU2tpBI2R1BmPbiEECRQAj
+	 2Yj3fv/A9UJz4KDiQCT9PrO8wcl4O29jAZGa+yEM=
+From: Pierre Gondois <pierre.gondois@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: James Morse <james.morse@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	acpica-devel@lists.linux.dev,
-	Len Brown <lenb@kernel.org>,
-	Armin Wolf <W_Armin@gmx.de>,
-	Ivan Hu <ivan.hu@canonical.com>,
-	Joshua Grisham <josh@joshuagrisham.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ACPICA: Initialize ParserState.AmlEnd in AcpiInstallMethod
-Date: Mon, 19 Oct 2026 16:54:17 +0200
-Message-ID: <20261019145421.47181-2-leonard@lausen.nl>
-X-Mailer: git-send-email 2.55.0
-In-Reply-To: <20261019145421.47181-1-leonard@lausen.nl>
-References: <20261019145421.47181-1-leonard@lausen.nl>
+	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	Dan Williams <djbw@kernel.org>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Morduan Zang <zhangdandan@uniontech.com>,
+	linux-acpi@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH 0/6] CPER: Add Memory Error Section 2 support
+Date: Mon, 19 Oct 2026 16:56:07 +0200
+Message-ID: <20261019145643.1877246-1-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -80,71 +90,48 @@ List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Bar: -----
-X-Rspamd-Report: REPLY(-4) BAYES_HAM(-2.97699) MID_CONTAINS_FROM(1) MIME_GOOD(-0.1) R_MISSING_CHARSET(0.5)
-X-Rspamd-Score: -5.57699
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=lausen.nl; s=uberspace;
-	h=from:to:cc:subject:date;
-	bh=Hipy/KE3TsEelU94kP3nCg+Z58+mCcvF4l6Qeuvkmms=;
-	b=G34Zwobk7+jTQBscFXiVl0wGO6Tg694XtvV7EdCgNByMswpXAAHkC/NWoS2OHCCmmc4Wx9aC08
-	f9GuU5l6gfqtWFwQ/elECYEZhu1HPdedLFG/2IeOv0gmoTaz/n76FjaNvQbblViulMw+UOVgzcRz
-	20ndPfGyGVhYSuYRc/QmLtVRwr3ZZZnSYHsjedOTyC6LnyUu5eEtkWtSEND+7ZOe+omi6z7KIooQ
-	wroZrKtbzgISr/hCm7jRhUhIV1R9KfsO16VzW69N48yJlIkCWuM/61tte2qrzzEdkVtoxDwurYok
-	w1alnWRJN1rAqFA3JJGyzK5G5CgpoTMugQnarBVGA+uIdYlKL1K6Uz2LqiFxAZtgw0IcruSiW669
-	4An0xXHOJb8/W9hTbNYzlNCNLuLfdaKUstzBI03uSKQJ3Y+XSMw1Hd/2/vPnjLmbOQQNZpGfTrrh
-	s+qkcFWI9mIqZmk9Smxjc578MaAHK2c5ikFCUhmEuQa1YXVZsX52pNCHvz8SMwGX47oWWhXmJl6F
-	uf3WoBUzgjhXqt1pdehm0q0TyAZVuZaexC/4VZq/idZ7tcvgH1TLaIH/HsfyYoR0495PxzyyvTrE
-	9oep4yW+QlozYICzBmA84E4GO20dkv9dJQSw2kE+56GZ3Ra8XLmUnHkcch3gSOxSi/Guu6+KbAAm
-	8=
 
-From: Ivan Hu <ivan.hu@canonical.com>
+The support is mostly duplicated from Memory Error Section handling.
+Other than differences coming from the content of  Memory Error
+Section 1 and 2, differences in the support are:
 
-In AcpiInstallMethod(), the local ParserState is stack-allocated and
-only ParserState.Aml was initialized. Parser helpers called by this path
-read ParserState.AmlEnd for bounds checking: AcpiPsPeekOpcode() reads it
-before validating the first AML opcode, and AcpiPsGetNextPackageEnd()
-reads it indirectly via AcpiPsGetNextPackageLength(). The subsequent
-package-limit check also compares against ParserState.AmlEnd. Because
-AmlEnd was never set, these checks operated on an uninitialized value,
-which Coverity flagged as an uninitialized read (CID 1684785) and which
-could lead to incorrect parser bounds decisions.
+- v2 do not rely on a compact "struct cper_mem_err_compact" struct.
+This structure was used to support older versions of the Memory
+Error Section (1). This is not needed for the new structure.
 
-Coverity report:
+- The compact version is also used by the tracing framework.
+To avoid relying and propagating a non-standard record format,
+through trace event (cf. extlog_mem event) the new trace event
+prints each field individually.
 
-*** CID 1684785:         Memory - illegal accesses  (UNINIT)
-/src/acpica/source/components/namespace/nsxfname.c: 712             in AcpiInstallMethod()
-        ParserState.Aml += AcpiPsGetOpcodeSize (Opcode);
->>>     CID 1684785:         Memory - illegal accesses  (UNINIT)
->>>     Using uninitialized value "ParserState.AmlEnd" when calling
-        "AcpiPsGetNextPackageEnd".
-        ParserState.PkgEnd = AcpiPsGetNextPackageEnd (&ParserState);
+The last patch of the serie was only build-tested due to the
+absence of relevant hardware. apei_mce_report_mem_error() and
+arch_apei_report_mem_error() implementations were also removed since
+last version.
 
-Initialize ParserState.AmlEnd to the end of the table
-(Buffer + Table->Length) so the parser bounds checks operate on a valid
-limit.
+It will also require a proper handling from the rasdaemon. Applying
+this last patch without rasdaemon support will silent the reports of
+Memory Error Section 2 error, cf. ras_userspace_consumers() check.
 
-Link: https://github.com/open-acpica/acpica/commit/19429ef91ebfb2144c918038dce13e297b4ef051
-Fixes: bdc357540129 ("ACPICA: add boundary checks in two places")
-Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Signed-off-by: Leonard Lausen <leonard@lausen.nl>
----
- drivers/acpi/acpica/nsxfname.c | 1 +
- 1 file changed, 1 insertion(+)
+RFC: https://lore.kernel.org/all/20260929074659.2587216-1-pierre.gondois@arm.com/#t
 
-diff --git a/drivers/acpi/acpica/nsxfname.c b/drivers/acpi/acpica/nsxfname.c
-index b6534187cd43..fcd94947fedb 100644
---- a/drivers/acpi/acpica/nsxfname.c
-+++ b/drivers/acpi/acpica/nsxfname.c
-@@ -503,6 +503,7 @@ acpi_status acpi_install_method(u8 *buffer)
- 	/* First AML opcode in the table must be a control method */
- 
- 	parser_state.aml = buffer + sizeof(struct acpi_table_header);
-+	parser_state.aml_end = buffer + table->length;
- 	opcode = acpi_ps_peek_opcode(&parser_state);
- 	if (opcode != AML_METHOD_OP) {
- 		return (AE_BAD_PARAMETER);
--- 
-2.55.0
+Pierre Gondois (6):
+  ACPI: extlog: fix extlog_mem_event build issue
+  cper: add Memory Error Section 2 structures
+  cper: use BIT_ULL() for processor and memory validation bits
+  cper: add helpers to handle Memory Error Section 2
+  ACPI: APEI: add separate Memory Error Section 2 handlers
+  ACPI: extlog: add Memory Error Section 2 trace event
 
+ drivers/acpi/acpi_extlog.c  |  30 +++++++-
+ drivers/acpi/apei/ghes.c    |  49 +++++++++++-
+ drivers/edac/ghes_edac.c    | 150 ++++++++++++++++++++++++++++++++++++
+ drivers/firmware/efi/cper.c | 108 ++++++++++++++++++++++++++
+ drivers/ras/ras.c           |   1 +
+ include/acpi/ghes.h         |   2 +
+ include/linux/cper.h        | 129 ++++++++++++++++++++++---------
+ include/ras/ras_event.h     | 102 ++++++++++++++++++++++++
+ 8 files changed, 532 insertions(+), 39 deletions(-)
+
+--
+2.43.0
