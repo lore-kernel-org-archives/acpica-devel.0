@@ -1,71 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792421677;
-	b=r91c/10mWPswih8jms6afrUqQIcGnRt6V7KiqAn6CmO7A/mvW9Iu7ocFJvGkfwZmCBKz
-	 ATX9LfbGJ+W/x1B2Kb/9SY1jduqurGub950HX4ik0F1gkWVykhiBfejZCTcWzKhgiNImg
-	 VwmEO8UdUjzMOYi/PBlOIT9qzmuSSBlzUdvw4VeM2CjvrukxnLv8tgGXL3HyB3DQuXyxz
-	 YlKsIY1ydb8TkrzX5RTwV7PWk4OGfGpjUC/3U+Hc2XrCgbGemPII2SdLwOsYeQPzqMNIB
-	 ADtQl/JqxFWIJsw/8mKaP0snBhDEIkhY8yH6hv2a85AX1m01YNALUF0u8HY7u8q4F+w==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792421677;
-	h=Received:Received:Received:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-Rspamd-Bar:X-Rspamd-Report:X-Rspamd-Score:DKIM-Signature;
-	bh=WkQB7qDFPVZGub3RTV6RHc3gNA986fIdMZHw4FaBpKE=;
-	b=MYirwXLik1wfHjcbgrqPZanrdCA/j14YbCkw9fLYTHiPqSXZJrFBy8L+8Z+rHXC3/3WH
-	 fQSxs7KSpcGbIgTS2ijUgFL8cWBV/+hYVLoMm6Z/FA8ypBQJSMrvrkve6dq0ZTlyrsvhq
-	 hRF30pZ+LjQvpQ7WztyF5Psj8IK4WWeU32CqTQvGW9G5rQbg4O44cARC5W4haBSlZw1/P
-	 Qhk28qYCT5nGRyoEQ/vw/AzQz/7Mq3Kxx7Njb9jqSe6qvSjXmNUx9aR7Gz2dsliZmHmJQ
-	 HY8B2FdUo77yoqaEoJKEpKFJR58yNZwENmatfZtd6wuMh12SPKghXe7bCwiVncYcalg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=Q1FxhUA2;
-	dmarc=pass header.from=lausen.nl;
-	spf=pass smtp.mailfrom=lausen.nl;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
-Received: from aws-us-west-2-korg-listserv-1.web.codeaurora.org (ip-10-30-226-211.us-west-2.compute.internal [10.30.226.211])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D387B606DA70
-	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792421861;
+	b=Fu75DGAERLYYKZ1k1zvE8rT6P+abu0RS4gV5aVNP2ofuK/BuGP+GF8hg0iJFGBXS67ze
+	 bdoFF+EzrZZG1+Y6W7kUXOoLW0JWXrzX/rIsPq/VLb6l8EqsAawVQjueIqWYKoVXN6bTQ
+	 s8jt8L3R2zwQfc2CtKYTho2s0ObZqfeIDJfS1VoxUUoIe2oPfpBG5v++EUqpyhdEmdQPK
+	 xpxV8nIfhUE2CsJ9WVloM2RfB8cdMAgDBnx0OYXE/iYoib4U6d87U1GH1dmnYfR2rZPs3
+	 DVVxFUXaRCwHMCrj6fhHGmKjH7bpY8uThiICMDLDur16sDSMCSuIx6zpjpnkv4CRjxQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792421861;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=jb1csYS041OQkRUmll6dd69CLnrWmFEl4dVYrmHtRAU=;
+	b=dBclGVRIslT7sFnu6sbIgu2gFcU6WPO2RCmfS9RopeJRD4x44UIEpXrXRIA7sfQejMZw
+	 Z+A/2IM85OWntFF3XCoKsISsDyefyseNJknIxalM8R1oDCEA0A2iF7SMBrMHFUV7QoaWe
+	 WuzlTU7oc/iC6XXZjU+tJTaK8hCu6tGkVM0SHI1devfALcW7su3fFkpib50NM/XaCphTF
+	 72c1k3VLGhPWr5F2uD4iDHB5ifj3qQDDXYcB21SUiqVjGdeElfptYJ8XH7C45tvYiuQrp
+	 zXddRN5th6p8Ky0b/lbvkNK6Apj477wJMniHTYeJ3WdcxGNSgYZB6qxodA5omIvHdKQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gKgqD6z5;
+	arc=none smtp.remote-ip=217.140.110.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA9B60740BB
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EDA9B60740BB
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key, unprotected) header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=Q1FxhUA2
-Received: from mailgate01.uberspace.is (mailgate01.uberspace.is [95.143.172.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481F03F8891
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.172.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792421676; cv=none; b=D+Gceat42qACmYLZvB8HDBBAiz6jPyUthD9OxeZYxsOnlc9WSUUiNn6/imS6Dko4UyvKq0vMIG7x8Fg/5d5hLvBDW++H9nDyyoR0PeNFR9SynYQ+TfSbhrPFQKxJ0Klh6KwVMYzIqpmd9n7mnt74zuEgMDOhvBS+PcoOHYyL8/0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792421676; c=relaxed/simple;
-	bh=7XMXx1Y7exmnq8CDw6ZcXKJ1xd2nrPwkUnm6kz2V26M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KfXPQdhf5fzHq/XCDeIhuOds7id8IPZK7DaLCpt4zofGa5qCwAxQZgM5TQzLq7XCQgv/zASNNFUZa2cicwDnb7b1DUrXbSADGkRhorI8ce+Irl7FZ/+Ngz3Hqj8y7GocrxXsPgUpzzAImlk7yYJ7oieB4447I3vQ6DTWE1VcQMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=pass (4096-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=Q1FxhUA2; arc=none smtp.client-ip=95.143.172.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
-Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
-	by mailgate01.uberspace.is (Postfix) with ESMTPS id 8AC576113F
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 16:54:32 +0200 (CEST)
-Received: (qmail 28266 invoked by uid 990); 19 Oct 2026 14:54:32 -0000
-Authentication-Results: devico.uberspace.de;
-	auth=pass (plain)
-Received: from unknown (HELO unknown) (::1)
-	by devico.uberspace.de (Haraka/3.1.1) with ESMTPSA; Mon, 19 Oct 2026 16:54:32 +0200
-From: Leonard Lausen <leonard@lausen.nl>
-To: linux-acpi@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Cc: leonard@lausen.nl,
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gKgqD6z5
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D434E1EA6;
+	Mon, 19 Oct 2026 07:57:29 -0700 (PDT)
+Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.131])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 239C93F673;
+	Mon, 19 Oct 2026 07:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1792421853; bh=rFQ3QLuKff7vtlNW+Ur6AcpokK+E1Tl4p+PypJsyh/k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=gKgqD6z5TyPQLzUtRIFI01FrJpTwkRcyF+muszFRAoPszG94P+njdbUoMt9YNeckJ
+	 OFKy6SWNcoYvVHsuuyWT3yoqSutdQqsTJ1HEjbqr3kjyx6ELSG1AnQpHPTBZGRoAVg
+	 PnDsG4BkJan0/3EQZ20xOSQyBiOun5+QFpm+ZclU=
+From: Pierre Gondois <pierre.gondois@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: James Morse <james.morse@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	acpica-devel@lists.linux.dev,
-	Len Brown <lenb@kernel.org>,
-	Armin Wolf <W_Armin@gmx.de>,
-	Ivan Hu <ivan.hu@canonical.com>,
-	Joshua Grisham <josh@joshuagrisham.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] ACPI: Work around Samsung Galaxy Book 930XDB firmware errors
-Date: Mon, 19 Oct 2026 16:54:16 +0200
-Message-ID: <20261019145421.47181-1-leonard@lausen.nl>
-X-Mailer: git-send-email 2.55.0
+	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	Dan Williams <djbw@kernel.org>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Morduan Zang <zhangdandan@uniontech.com>,
+	linux-acpi@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: [PATCH 4/6] cper: add helpers to handle Memory Error Section 2
+Date: Mon, 19 Oct 2026 16:56:11 +0200
+Message-ID: <20261019145643.1877246-5-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261019145643.1877246-1-pierre.gondois@arm.com>
+References: <20261019145643.1877246-1-pierre.gondois@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -76,74 +83,164 @@ List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Bar: -
-X-Rspamd-Report: MID_CONTAINS_FROM(1) BAYES_HAM(-2.999969) MIME_GOOD(-0.1) R_MISSING_CHARSET(0.5)
-X-Rspamd-Score: -1.599969
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=lausen.nl; s=uberspace;
-	h=from:to:cc:subject:date;
-	bh=7XMXx1Y7exmnq8CDw6ZcXKJ1xd2nrPwkUnm6kz2V26M=;
-	b=Q1FxhUA2qSv9UrISvCXPVWNroaQCDNyfK9oPlpMB/PtstW3V4rLHIes4mUnbwdz03uUd+/seiV
-	TbF4zY1mxPLpUwLNgZ+iphBvVDOvGPEz1/9RYzb+njjOrKiGW+6Sww/rJfCvNck8EfNxC4KrY7zK
-	doSk1dRfuiBjaRj+sjzE7OvUictr6gpuKP3YZ+wIznMOlVFq5HN6zPlhK9+Iz8MpbLp7CJ/D/jsS
-	mFeuNl/TbvSWrWTKqccjMh+44dIi5OAqwxZFJ5wE+z4Wa7E65ESywbo6s0wDc36xuWvuTbtkHw+H
-	BFU280bjc3h225cBZ98xN0Y243n/r7NkcU/VJbetcFiasPcbr9m3Lg8YkMfYwClIUmCW9wRxRcXw
-	L0O6Tawqo8QraIPxkKS9LCmwN1+oLRmsF0PRIICCi3xC0B8GpVVseUqnw9nhfJZJbqVnXLOlHV6/
-	V5DMGXverJFdSfaxz52E8R7Dr62M1eGmWgCqFyouLD3AP8swjhCr4zKzSvelX2yNuJ7qa9wm2JN/
-	etJ73HrcN7/AnPSN9EJVZcsLWVucDfX6W42B8O3FCjyrKBcsxlc7Jnhvu+RbX++OCrIgd7nDX7+3
-	tFb8IdRzI41Oqng6Gm729DZdOPeTLQmH+xyaVizZMgmCFqotGfoqSiqxSCs6r4BE/+FrXe7GaQxp
-	4=
 
-This series addresses two firmware errors on my Samsung Galaxy Book
-930XDB (NP930XDB-KF2US): repeated FAN0._FST errors when the fan is running,
-and a wrong namespace lookup in PEG0._STA.
+Add separate location and printing helpers for Memory Error
+Section 2:
+- cper_mem_err2_location()
+- cper_dimm_err2_location()
+- cper_print_mem2()
 
-The tested system identifies itself as:
-  System vendor: SAMSUNG ELECTRONICS CO., LTD.
-  Product name: 930XDB/931XDB/930XDY
-  BIOS version: P11RFX.067.230331.SP (03/31/2023)
+Similar functions/logic exists for Memory Error Section (1),
+but require a compact version of the record. To avoid relying
+and propagating a non-standard record format, the new functions
+diretly rely on struct cper_sec_mem_err2.
 
-Patch 1 ports Ivan Hu's already accepted ACPICA parser fix [1]. This is a
-prerequisite for patch 3, which uses acpi_install_method() to replace
-PEG0._STA before namespace initialization evaluates it. Patch 2 skips the
-broken fan status method and its notification handling while preserving
-legacy fan control. Both firmware quirks match the vendor and full DMI
-product string.
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+---
+ drivers/firmware/efi/cper.c | 108 ++++++++++++++++++++++++++++++++++++
+ include/linux/cper.h        |   3 +
+ 2 files changed, 111 insertions(+)
 
-Testing on this machine includes a successful Linux 7.3 (7.3.0+) boot
-with both quirks enabled. I have also been running the original versions
-of these fixes during general laptop use, including suspend/resume, and
-fan behavior has been fine.
-
-Additional validation during preparation:
-  - All five changed C files build on x86_64 with W=1.
-  - All patches pass scripts/checkpatch.pl --strict.
-  - acpiexec fixtures reproduce the original PEG0 lookup error and verify
-    that the replacement returns 0 or 0x0f according to the root PG0E field.
-  - A fixture of FAN0._FST reproduces the reference/Add error at nonzero
-    speed and confirms that the zero-speed path can succeed.
-
-A separate platform/x86 patch accepts notification 0x71 in the Samsung
-Galaxy Book driver. It has no dependency on this ACPI series.
-
-[1] https://github.com/open-acpica/acpica/commit/19429ef91ebfb2144c918038dce13e297b4ef051
-
-Ivan Hu (1):
-  ACPICA: Initialize ParserState.AmlEnd in AcpiInstallMethod
-
-Leonard Lausen (2):
-  ACPI: fan: Ignore broken _FST on Samsung Galaxy Book 930XDB
-  ACPI: x86: Repair broken PEG0._STA on Samsung Galaxy Book 930XDB
-
- drivers/acpi/acpica/nsxfname.c |  1 +
- drivers/acpi/bus.c             |  2 ++
- drivers/acpi/fan_core.c        | 31 +++++++++++++++++---
- drivers/acpi/x86/utils.c       | 53 ++++++++++++++++++++++++++++++++++
- include/acpi/acpi_bus.h        |  2 ++
- 5 files changed, 85 insertions(+), 4 deletions(-)
-
-
-base-commit: c03c1a14507dfaf8b856c2608f9ac216021fc222
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index 06b4fdb59917..5c9b832b67a1 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -445,6 +445,106 @@ static void cper_print_mem(const char *pfx, const struct cper_sec_mem_err *mem,
+ 		printk("%s%s\n", pfx, rcd_decode_str);
+ }
+ 
++int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
++{
++	u32 len, n;
++
++	if (!msg)
++		return 0;
++
++	n = 0;
++	len = CPER_REC_LEN;
++	if (mem->validation_bits & CPER_MEM2_VALID_NODE)
++		n += scnprintf(msg + n, len - n, "node:%d ", mem->node);
++	if (mem->validation_bits & CPER_MEM2_VALID_CARD)
++		n += scnprintf(msg + n, len - n, "card:%d ", mem->card);
++	if (mem->validation_bits & CPER_MEM2_VALID_MODULE)
++		n += scnprintf(msg + n, len - n, "module:%d ", mem->module);
++	if (mem->validation_bits & CPER_MEM2_VALID_RANK_NUMBER)
++		n += scnprintf(msg + n, len - n, "rank:%u ", mem->rank);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK)
++		n += scnprintf(msg + n, len - n, "bank:%d ", mem->bank);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK_GROUP)
++		n += scnprintf(msg + n, len - n, "bank_group:%d ",
++			       mem->bank >> CPER_MEM_BANK_GROUP_SHIFT);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK_ADDRESS)
++		n += scnprintf(msg + n, len - n, "bank_address:%d ",
++			       mem->bank & CPER_MEM_BANK_ADDRESS_MASK);
++	if (mem->validation_bits & CPER_MEM2_VALID_DEVICE)
++		n += scnprintf(msg + n, len - n, "device:%u ", mem->device);
++	if (mem->validation_bits & CPER_MEM2_VALID_ROW)
++		n += scnprintf(msg + n, len - n, "row:%u ", mem->row);
++	if (mem->validation_bits & CPER_MEM2_VALID_COLUMN)
++		n += scnprintf(msg + n, len - n, "column:%u ", mem->column);
++	if (mem->validation_bits & CPER_MEM2_VALID_BIT_POSITION)
++		n += scnprintf(msg + n, len - n, "bit_position:%u ",
++			       mem->bit_pos);
++	if (mem->validation_bits & CPER_MEM2_VALID_REQUESTOR_ID)
++		n += scnprintf(msg + n, len - n, "requestor_id:0x%016llx ",
++			       mem->requestor_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_RESPONDER_ID)
++		n += scnprintf(msg + n, len - n, "responder_id:0x%016llx ",
++			       mem->responder_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_TARGET_ID)
++		n += scnprintf(msg + n, len - n, "target_id:0x%016llx ",
++			       mem->target_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_CHIP_ID)
++		n += scnprintf(msg + n, len - n, "chip_id:%d ",
++			       mem->chip_id);
++
++	return n;
++}
++EXPORT_SYMBOL_GPL(cper_mem_err2_location);
++
++int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
++{
++	u32 len, n;
++	const char *bank = NULL, *device = NULL;
++
++	if (!msg || !(mem->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE))
++		return 0;
++
++	len = CPER_REC_LEN;
++	/* SMBIOS handles are 16 bits; never truncate a Section 2 handle. */
++	if (mem->mem_dev_handle <= U16_MAX)
++		dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
++	else
++		pr_warn(FW_WARN "Memory Error Section 2 module handle 0x%x exceeds SMBIOS range\n",
++			mem->mem_dev_handle);
++	if (bank && device)
++		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
++	else
++		n = snprintf(msg, len,
++			     "DIMM location: not present. DMI handle: 0x%.8x ",
++			     mem->mem_dev_handle);
++
++	return n;
++}
++EXPORT_SYMBOL_GPL(cper_dimm_err2_location);
++
++static void cper_print_mem2(const char *pfx, const struct cper_sec_mem_err2 *mem)
++{
++	char rcd_decode_str[CPER_REC_LEN];
++
++	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_STATUS)
++		printk("%serror_status: %s (0x%016llx)\n", pfx,
++		       cper_mem_err_status_str(mem->error_status), mem->error_status);
++	if (mem->validation_bits & CPER_MEM2_VALID_PA)
++		printk("%sphysical_address: 0x%016llx\n", pfx, mem->physical_addr);
++	if (mem->validation_bits & CPER_MEM2_VALID_PA_MASK)
++		printk("%sphysical_address_mask: 0x%016llx\n", pfx,
++		       mem->physical_addr_mask);
++	if (cper_mem_err2_location(mem, rcd_decode_str))
++		printk("%s%s\n", pfx, rcd_decode_str);
++	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_TYPE)
++		printk("%serror_type: %u, %s\n", pfx, mem->error_type,
++		       cper_mem_err_type_str(mem->error_type));
++	if (mem->validation_bits & CPER_MEM2_VALID_STATUS)
++		printk("%sstatus: 0x%02x\n", pfx, mem->status);
++	if (cper_dimm_err2_location(mem, rcd_decode_str))
++		printk("%s%s\n", pfx, rcd_decode_str);
++}
++
+ static const char * const pcie_port_type_strs[] = {
+ 	"PCIe end point",
+ 	"legacy PCI end point",
+@@ -650,6 +750,14 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
+ 				       gdata->error_data_length);
+ 		else
+ 			goto err_section_too_small;
++	} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
++		struct cper_sec_mem_err2 *mem_err = acpi_hest_get_payload(gdata);
++
++		printk("%ssection_type: memory error 2\n", newpfx);
++		if (gdata->error_data_length >= sizeof(*mem_err))
++			cper_print_mem2(newpfx, mem_err);
++		else
++			goto err_section_too_small;
+ 	} else if (guid_equal(sec_type, &CPER_SEC_PCIE)) {
+ 		struct cper_sec_pcie *pcie = acpi_hest_get_payload(gdata);
+ 
+diff --git a/include/linux/cper.h b/include/linux/cper.h
+index ed355b240685..a466cba4fd61 100644
+--- a/include/linux/cper.h
++++ b/include/linux/cper.h
+@@ -656,6 +656,9 @@ void cper_print_proc_ia(const char *pfx,
+ int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg);
+ int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg);
+ 
++int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg);
++int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg);
++
+ struct acpi_hest_generic_status;
+ void cper_estatus_print(const char *pfx,
+ 			const struct acpi_hest_generic_status *estatus);
 -- 
-2.55.0
+2.43.0
 
