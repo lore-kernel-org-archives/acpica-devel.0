@@ -1,85 +1,75 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792421822;
-	b=udaSbNDrRCLV9aSaac8ut8Q2xwWOsrlImQu+lhLpDpvwmT7BxjsyegKZMokU3PAD1txb
-	 gaGXUL4l4DPkFAxy7F+O4IstVAdoVeB29QhWU6WdVpKF8iqVq34biTpJ19w9uqQweWa79
-	 VmCpTTc6/3PGlDTFtpq5zU+RCtqdh+eOEChv7Y3M04HiUTkTrG/ntn+t+T/Psf3+vqkhl
-	 7kaO6uMZ9MaacXbxUPJjUeR3go+IKz6eEBGtSsQCoQc0vARmhPzeQRnFR6PqQLkBq+vWh
-	 uBnbcpyUgCeEJzMqSOeNL4iny3UeD+2vtB+DpdpCnp7/JsXmYQSkX+0nlMiGcCU0i0w==
+	t=1792421680;
+	b=SfXAgU5vC4i285tpxCL5r7va7sIAZampPsEnNVaKHYn+WgQDs5xwCUXMMdLlcSEFI+Tt
+	 YkGYgiU1sjoxFn8Qs10hGq0JYbAI5NVr/qvnVbjqTfyJ0Ze7FGKWAbKTJVjo9PKXWhUto
+	 325GjXhftfHbE4+TDF4/6NGF+DRhazCiRTtCR9r1gaDyBTuD0sGUECgF9Ch9s38l091kz
+	 lImWG1aa3QyL+pHpG8y+N8Tw/+s6Lg3FcRJ0XXarcphFTCTNVBZcLK2Rem1GeoXdQVJ0z
+	 m65R6fF8u9wjABCyVrFkk9ek/4d5/0wsVPhmKMcM2MSppZGgpHJgvOhmIEVg6Y2Aq/w==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792421822;
-	h=Received:Received:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=XFFhmkzN3gCpAVV9wNJFrGK2My1XuAXj1fxImpVBK8k=;
-	b=iG7jbmBNWSMnn/leWJov0BGQ6O0XQqtv1qWDPXnWGqKloW61CAuIi8KPALccjTk9pQWy
-	 EUzs7USKpRguUy/G2M0qYvYUJnAH3Hwn1u6VON48KhR86deRUNz+pbiMd6vaGZY4N6OGV
-	 0NPlouOOHT45OQ65e7eiaVvY3Fim5G2L4HGnm2O+iv6vLTE2LPNTS6ioCUU77zE1aFbso
-	 yvIj3dpq35Fhy7mjxa44b4fO8y0mDrWZQkqXZUmj0UN8UsDxuoDJa/qHMhZDGVYgMCK+v
-	 gqBWX85B/SMy8gO1xipltiyp/2aUz9VarETis2KUEO5uuueyjTSsCmdEYI6jZ2iOAdA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792421680;
+	h=Received:Received:Received:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-Rspamd-Bar:X-Rspamd-Report:X-Rspamd-Score:
+	 DKIM-Signature;
+	bh=yI83/ArYiBednuYDhDDK5tkbGnV2CTH9oPaivzd6scQ=;
+	b=BciUuS8Qn9Hzieg1S2b4pJLTbRVbVTVi5MOvxmtakJJmdxROaPW9ML9H8WpUaKa50EqA
+	 M0QemOgipdvGfhb2e3QZgpycn/4w+Sm04YVSvQxcs+QzZbNhgYUnOKZRp29e0yvIDCIcx
+	 hV8J00JZu8YHI9yo48+YvOguXkogKKSLpF5Y68APyXC95iY3YsWW3vAfqtmJqpD0pif5u
+	 lwUZ6OvcmJZko/d7E2xmaVTMzs+EFva8fTR24P5BesS1/DLurgeO0QQOUcCOUUiVzjoI9
+	 e8THmqFIsEIXUxoMUj43Mj6tHrl/7PJopZPCMNPly3JBunwSCYj/8jfBfKJHVd6ai/A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=PV9btGXP;
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=OebpuDV2;
+	dmarc=pass header.from=lausen.nl;
+	spf=pass smtp.mailfrom=lausen.nl;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
 Received: from aws-us-west-2-korg-listserv-1.web.codeaurora.org (ip-10-30-226-211.us-west-2.compute.internal [10.30.226.211])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BD3607408F
-	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102C4606DA7C
+	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=PV9btGXP
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A06353A72
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	dkim=pass (4096-bit key, unprotected) header.d=lausen.nl header.i=@lausen.nl header.a=rsa-sha256 header.s=uberspace header.b=OebpuDV2
+Received: from mailgate01.uberspace.is (mailgate01.uberspace.is [95.143.172.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB9C3E1D11
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.172.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792421822; cv=none; b=tLJI0XFjgrbHSfVKqAiiYrsl1UcoDkeIkhMCg8grs7QA33twm/P6Hn6S/6j3rISmwPauAuctmFqFxCb/iUFZXqLArvnVSiX7yG9olhHuGWaPA/7HVI4aMi5lnHTeeEvnigkl5isymNvtg364Np0mibO97O0zd53ZgY3J5+Sg5Io=
+	t=1792421680; cv=none; b=dMqdlk1A7S0GLT9o9Y+njeBICSPEh/FpfOgnI5YzupInxgfBbLZJcY80v5ugUCErE/vnrHqG893NeNmN1hlaN70RvSyEVcZOVCp18kC9XQ0G0DdWDc/7QAvbnSk59HpwelNNdf/dnCR5OobW2RURH/YletFGEPCpVwzz/uOaZ1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792421822; c=relaxed/simple;
-	bh=wstiMUuPit29XB21u72+Sm9cipTaJpB6vDxcGcOze1Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P371awcMjGWSiA2es/VRMNTvVHWcJIX51AaZW+sOQ7+IfhavU1M6riri+M5YAS1hg22vqfApo7T9r0opy36IeLzwpwnmClnfvAuz6VGIssg+zrvVaFnvUqBZxflM6P3t61jiDZzaRkJWQVwynSzkA0m/o+pchkPjiJ5UX+rGHMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=PV9btGXP; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CEB31682;
-	Mon, 19 Oct 2026 07:56:56 -0700 (PDT)
-Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.131])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7C98F3F673;
-	Mon, 19 Oct 2026 07:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1792421819; bh=wstiMUuPit29XB21u72+Sm9cipTaJpB6vDxcGcOze1Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PV9btGXPW0TQosrp57rBn61aSnEngvPMA1lmEZ+6U2btLHX4uWQIxUZu+zPNw+d0L
-	 BiMzgeElPDm7ulf/S1KMvYNrhX1bzSLNQ/4bJtdB7oKylU2tpBI2R1BmPbiEECRQAj
-	 2Yj3fv/A9UJz4KDiQCT9PrO8wcl4O29jAZGa+yEM=
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: James Morse <james.morse@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
+	s=arc-20240116; t=1792421680; c=relaxed/simple;
+	bh=uxYa3boZYgV/MiLGouZGnYcxV5GzjIBtjWV3FVili4k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=syWPFP7LC/tSe4e/IO6ELktng2nB6CKEIRJaHUtbn7oTsHnRi0wES3I483+9gwglhpONDDggYeVe/1Nmz+9Q3I0JjNtIYMyEyZYXwTCIeMbLD5WPSoGr0qOXNOIHquYspFG1pbo9AH53oyhAuum+F0uFH70Y1EvgmXAQrZLi5j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl; spf=pass smtp.mailfrom=lausen.nl; dkim=pass (4096-bit key) header.d=lausen.nl header.i=@lausen.nl header.b=OebpuDV2; arc=none smtp.client-ip=95.143.172.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lausen.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lausen.nl
+Received: from devico.uberspace.de (devico.uberspace.de [185.26.156.185])
+	by mailgate01.uberspace.is (Postfix) with ESMTPS id 80AF361135
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 16:54:36 +0200 (CEST)
+Received: (qmail 28400 invoked by uid 990); 19 Oct 2026 14:54:36 -0000
+Authentication-Results: devico.uberspace.de;
+	auth=pass (plain)
+Received: from unknown (HELO unknown) (::1)
+	by devico.uberspace.de (Haraka/3.1.1) with ESMTPSA; Mon, 19 Oct 2026 16:54:36 +0200
+From: Leonard Lausen <leonard@lausen.nl>
+To: linux-acpi@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Cc: leonard@lausen.nl,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Dan Williams <djbw@kernel.org>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Morduan Zang <zhangdandan@uniontech.com>,
-	linux-acpi@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH 0/6] CPER: Add Memory Error Section 2 support
-Date: Mon, 19 Oct 2026 16:56:07 +0200
-Message-ID: <20261019145643.1877246-1-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.43.0
+	acpica-devel@lists.linux.dev,
+	Len Brown <lenb@kernel.org>,
+	Armin Wolf <W_Armin@gmx.de>,
+	Ivan Hu <ivan.hu@canonical.com>,
+	Joshua Grisham <josh@joshuagrisham.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] ACPI: fan: Ignore broken _FST on Samsung Galaxy Book 930XDB
+Date: Mon, 19 Oct 2026 16:54:18 +0200
+Message-ID: <20261019145421.47181-3-leonard@lausen.nl>
+X-Mailer: git-send-email 2.55.0
+In-Reply-To: <20261019145421.47181-1-leonard@lausen.nl>
+References: <20261019145421.47181-1-leonard@lausen.nl>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -90,48 +80,103 @@ List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Bar: -----
+X-Rspamd-Report: REPLY(-4) BAYES_HAM(-2.999886) MID_CONTAINS_FROM(1) MIME_GOOD(-0.1) R_MISSING_CHARSET(0.5)
+X-Rspamd-Score: -5.599886
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=lausen.nl; s=uberspace;
+	h=from:to:cc:subject:date;
+	bh=uxYa3boZYgV/MiLGouZGnYcxV5GzjIBtjWV3FVili4k=;
+	b=OebpuDV2Yxs5swOAgqMZ/OUUTGcYAjoeY7gnRlL1rRftFRTLQS75JLw7xHSt6jGxyVBC0Bui1l
+	hmNRLMAAZQXKJdhqx8qRi/9r89rEDYi9ITF1JN2GLqss2FJuTm511e7jy4KqZEoXUHw45V+BP/YM
+	/db7Mhe+jIn2aM8J9ZOOIkVqhXxHMGHak4zwTJqsT7tEhGYirda9Mur4xFUEXWmczOJ5JJiQDAby
+	sp3OQkugwhM5NQ/mgiprcHw8LIIxZJUoLnnKUu1dugEvZGUvw3uPWOYklwiLhcB1uTu9WVVLH3Dr
+	3f1T5kgNgbQSJAtljJiL6I1Ez0NfpnnROSzJDlGc2oF+so7ktSKuJiRhDlgAg9HRXDxYke8roX3x
+	KGEFgE76QT3cyhOUk+dtJalgY2zjgoIzdRAV9NEu3fbNKpgdJha5oh/RVzFX/QcwtUZKBvU28Gxa
+	6DLT6Aejl0QT7QtOB3TK24G+ExMEUKqn1jKa+GUcC1+QLr45NG+xG3bAIRsMkPAxt05SD6PvMHYb
+	r8u80juldnteiUeWw+t0W7q0EI2Fu0sAH65J5lVKRdhvUMVtDgOdy+ILiqAcOJXL/U6s5MEuzBNs
+	l+W2vt4BZ8ZvWj5fIEXqIH3yILScnUzCYJDP7xw81BbUmK7kD5U53pF++6SgkxwuMwxVhTHLJEw/
+	4=
 
-The support is mostly duplicated from Memory Error Section handling.
-Other than differences coming from the content of  Memory Error
-Section 1 and 2, differences in the support are:
+FAN0._FST on the Samsung Galaxy Book 930XDB stores the reference
+returned by Index() in a local variable and passes that reference to
+Add(). ACPICA rejects the operand with AE_AML_OPERAND_TYPE when the fan
+is running. The zero-speed path does not execute the faulty Add() and
+can succeed.
 
-- v2 do not rely on a compact "struct cper_mem_err_compact" struct.
-This structure was used to support older versions of the Memory
-Error Section (1). This is not needed for the new structure.
+The Microsoft fan extensions added a notification handler that evaluates
+_FST on each fan status change. On this machine, fan notifications now
+produce repeated ACPI errors, particularly around s2idle suspend/resume.
+Speed telemetry also fails whenever the faulty path is taken.
 
-- The compact version is also used by the tracing framework.
-To avoid relying and propagating a non-standard record format,
-through trace event (cf. extlog_mem event) the new trace event
-prints each field individually.
+Ignore _FST on this model. This skips the unusable speed telemetry and
+Microsoft notification handling while preserving the legacy firmware fan
+control. Match the vendor and full DMI product string,
+930XDB/931XDB/930XDY. The firmware was inspected on BIOS
+P11RFX.067.230331.SP.
 
-The last patch of the serie was only build-tested due to the
-absence of relevant hardware. apei_mce_report_mem_error() and
-arch_apei_report_mem_error() implementations were also removed since
-last version.
+Fixes: a5c2fcd82e04 ("ACPI: fan: Add support for Microsoft fan extensions")
+Signed-off-by: Leonard Lausen <leonard@lausen.nl>
+---
+ drivers/acpi/fan_core.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-It will also require a proper handling from the rasdaemon. Applying
-this last patch without rasdaemon support will silent the reports of
-Memory Error Section 2 error, cf. ras_userspace_consumers() check.
+diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
+index 624d0736b581..48a6818e6282 100644
+--- a/drivers/acpi/fan_core.c
++++ b/drivers/acpi/fan_core.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/bits.h>
++#include <linux/dmi.h>
+ #include <linux/kernel.h>
+ #include <linux/limits.h>
+ #include <linux/math.h>
+@@ -50,6 +51,24 @@ static const struct acpi_device_id fan_device_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(acpi, fan_device_ids);
+ 
++/*
++ * The _FST method on these machines stores an Index() reference in a local
++ * variable and then uses that reference as an Add() operand when the fan is
++ * running.  This aborts the method with AE_AML_OPERAND_TYPE.  The Microsoft
++ * fan extensions install a notification handler that evaluates this broken
++ * method on each fan status change, producing repeated ACPI errors.
++ */
++static const struct dmi_system_id acpi_fan_broken_fst_dmi_table[] = {
++	{
++		.ident = "Samsung Galaxy Book 930XDB/931XDB/930XDY",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "930XDB/931XDB/930XDY"),
++		},
++	},
++	{}
++};
++
+ /* thermal cooling device callbacks */
+ static int fan_get_max_state(struct thermal_cooling_device *cdev, unsigned long
+ 			     *state)
+@@ -511,10 +530,14 @@ static int acpi_fan_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, fan);
+ 
+ 	if (acpi_has_method(device->handle, "_FST")) {
+-		fan->has_fst = true;
+-		fan->acpi4 = acpi_has_method(device->handle, "_FIF") &&
+-				acpi_has_method(device->handle, "_FPS") &&
+-				acpi_has_method(device->handle, "_FSL");
++		if (dmi_check_system(acpi_fan_broken_fst_dmi_table)) {
++			dev_warn(&pdev->dev, FW_BUG "Ignoring broken _FST method\n");
++		} else {
++			fan->has_fst = true;
++			fan->acpi4 = acpi_has_method(device->handle, "_FIF") &&
++					acpi_has_method(device->handle, "_FPS") &&
++					acpi_has_method(device->handle, "_FSL");
++		}
+ 	}
+ 
+ 	if (fan->acpi4) {
+-- 
+2.55.0
 
-RFC: https://lore.kernel.org/all/20260929074659.2587216-1-pierre.gondois@arm.com/#t
-
-Pierre Gondois (6):
-  ACPI: extlog: fix extlog_mem_event build issue
-  cper: add Memory Error Section 2 structures
-  cper: use BIT_ULL() for processor and memory validation bits
-  cper: add helpers to handle Memory Error Section 2
-  ACPI: APEI: add separate Memory Error Section 2 handlers
-  ACPI: extlog: add Memory Error Section 2 trace event
-
- drivers/acpi/acpi_extlog.c  |  30 +++++++-
- drivers/acpi/apei/ghes.c    |  49 +++++++++++-
- drivers/edac/ghes_edac.c    | 150 ++++++++++++++++++++++++++++++++++++
- drivers/firmware/efi/cper.c | 108 ++++++++++++++++++++++++++
- drivers/ras/ras.c           |   1 +
- include/acpi/ghes.h         |   2 +
- include/linux/cper.h        | 129 ++++++++++++++++++++++---------
- include/ras/ras_event.h     | 102 ++++++++++++++++++++++++
- 8 files changed, 532 insertions(+), 39 deletions(-)
-
---
-2.43.0
