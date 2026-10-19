@@ -1,47 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792421871;
-	b=p0WgEZ4MvUQ1PuXTbF+P+huDy47UP42YeGcSkR2hqcHPOZIgAfHobqM6ET5iOtnXr7oE
-	 72t1CmlnxrhD+qRKUrUyqgEQ64+0SzgI17SMyXAplTe8o2ZW1ej5NUzaVjrSMF+s+lPrg
-	 zm09BoWZV5/TqLnBdH6NYUyPWzRDsHu6LRA9Xsc75MkCsdYkXkcJiZRN/hXcO4K85Cgi3
-	 2DVwyzaHkkKNVq8WGtpKJG4LU2rBUVegAroxCB8DTiifPddPk6lbsUfHlqwJ9WQFNg3cK
-	 6CIt4hJNfB00ujQ6les4bWV2ttNyym4wzosj69k4CasuzFUNEW0PelPFz24DMFrBjEw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792421871;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792421838;
+	b=U7xPmMfWKnN9fc94QRTxRGhxkRAgLcYXkmN1rl77CCd248N/9uCLEb8oaPK/U+2iJDC3
+	 ixHmmGxkKhx0zlZwYNl9SMqDTNRG1MOQZsNH3qFZXate+rSQaRr5nr9xzj21jWCEX3Ie2
+	 BOzh1HTgJzRW96q53Fe59bvj2no7FGkXUQ5IDqSDSw2RNyYoMXviHnO9ZPK7fUvPgtJpI
+	 sK1gcL4OAEkEIHyKT4Z+81wIbqdikpTYf/Nv3U/19frXdYn/5EQGvX/Z9aVsivGI2C2nn
+	 BAflQr9G5inhjThRTkYBCZJaKfzx/8zZmARGsXa4nehvdN1xSkqBM1atyCwFv4FkAPw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792421838;
+	h=Received:Received:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=YFVb1IU6fNY26GBJUlgfJlwY6pme2d3B7ur137a3WTk=;
-	b=LAW2I3EJ+jwiSW6tACrWhMqh5Hnj83KdEKwMVEP+QA/bak8TDyjKLoMHtX+IDaM41b2j
-	 pbDBilGRJeaE84L9bVrheqU9VW99SvnFF19+uhEN/XezB90jRmNtCPTwa9l+tSNeV/4X0
-	 3WTxeXjK8EZsc+Q+XKXYgWoWHj4qMlXGaWbOV8H5i6iqIhjS032cptY+Jx2y3shCpqiVQ
-	 TavCRcpqagYxgX1fpAge28s5mHyKGaFBmui0MT/ghGqCjVn5841gfp8lJFRip4WCr8Glf
-	 qDM+sSZgEjWVRGXaBmFw9ciFcRWmjs7Enjg6Rgh0AUytgOJNcWPFF6DsKHQdp2uhftw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	bh=6DDtc8wxeAEpu3Wak1LH1tQfaUG3U8hnHc+H8USyYXI=;
+	b=JeBVgYUnBFFO7pGwLK+Kro4Wly076rvDv0rDxVEUT+WSy6sWhRXByGX3qPRTugfh9Tay
+	 BcfVs3OrLFFr0kXhlvgANt5qC2uU/aPa483AJDVBeUyGhxiBMXfVlgqmkbdaTACnNeIoR
+	 clZH4W/YPS8HOpE6PeN6xh0P/NogHt26XKrQSIXQmZWPU4yLKCdaHnz2Pe9cU3TSX/nmP
+	 Xr1vJ5zR0focqSd/hY67Sp2sHDxkvtTYSpk13hEILNeE0nDVKLa4HnIiPuPNlWRTtbvv8
+	 /Lrg+kpaGmYZ2pSoyC/vVp/mQIwJAaCjsObCpGDI3Mv2FumfL1pfm81kWrKicw+bM1g==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=W9ykK07A;
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=OWI00Tk0;
-	arc=none smtp.remote-ip=217.140.110.172
+	arc=pass header.oldest-pass=0 smtp.remote-ip=10.30.226.211
+Received: from aws-us-west-2-korg-listserv-1.web.codeaurora.org (ip-10-30-226-211.us-west-2.compute.internal [10.30.226.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BCE607409E
+	for <acpica-devel.lists.linux.dev@localhost.mlmmj>; Mon, 19 Oct 2026 14:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=W9ykK07A
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FF36075504
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 05FF36075504
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD06332907
+	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 14:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792421838; cv=none; b=NzVGfuCwa1ZE/sC2Owk5C4wkoJxUMa5GC/djrutpBnt5DMLRaPxIxeoZyP9crLBQFQT1kpmGDadcmxqS3tzP71U+5U8fyCqKrNAcKyKGcrgHR4xK+d/79NzlYikM5fhqIY5Nl8EnBRM0kcKanrT0Cj/bp6A0pfRgcCxsV7mud28=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792421838; c=relaxed/simple;
+	bh=Y7YY6ziWSYZSPQgVFJy9NrWn7wr6WuIgSOPuIixICKk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=g7+bMpKVSJROY1bW8o4MXDQWupblD7BSFFkz0bB7i05qKIoXpmm4DAl8boXf+51MfDRhEpx9WgSLL1CBD5R1+U04L39SSNIutLMFEsqHT4GYxN+K/p1OhFM2feXKfRrYt3TlSVq21l0zn0DkmjF5N0OQ+lfub+od9NRmHiKuy7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=W9ykK07A; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=OWI00Tk0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 158C1201B;
-	Mon, 19 Oct 2026 07:57:47 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 026C71682;
+	Mon, 19 Oct 2026 07:57:13 -0700 (PDT)
 Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.131])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E88E03F673;
-	Mon, 19 Oct 2026 07:57:45 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 052303F673;
+	Mon, 19 Oct 2026 07:57:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1792421870; bh=1BM1lboV7WgRvMcC89XSrL4xPh2HeNzkYXEyfTqVKt8=;
+	t=1792421836; bh=Y7YY6ziWSYZSPQgVFJy9NrWn7wr6WuIgSOPuIixICKk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OWI00Tk0tOaaNSb2m3NQMwuCRAhuAEHxLGISKYAeeF9YaKDgRluiFFlk13kpGmBc/
-	 rQzio6mevUHtiMUPp3/ph10lFhT6SQTbpZ/Q6pSfoq6H7HrzhsEZkzt8M5xklPdoLL
-	 OksvXmydfm9aTl8vkjzwrK5AjjGDT0MFbNIka1EE=
+	b=W9ykK07AXvBgqmSa7qlWvIGFSXodw5eoPAdWVuDzlq1eL/lmqD1wfesX0i6A5tx7p
+	 Xsi+aevSFqOKeqI9qBBpsUW1oPyvlWHR5LKRpoab6eqhoc099jHENKIt8sZlUjGC7A
+	 ZlOiUgPPoxoaDQIuJJ5yeleka988sU0niOUw/ZJA=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: James Morse <james.morse@arm.com>,
@@ -67,9 +78,9 @@ Cc: James Morse <james.morse@arm.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [RFC PATCH 6/6] ACPI: extlog: add Memory Error Section 2 trace event
-Date: Mon, 19 Oct 2026 16:56:13 +0200
-Message-ID: <20261019145643.1877246-7-pierre.gondois@arm.com>
+Subject: [PATCH 2/6] cper: add Memory Error Section 2 structures
+Date: Mon, 19 Oct 2026 16:56:09 +0200
+Message-ID: <20261019145643.1877246-3-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261019145643.1877246-1-pierre.gondois@arm.com>
 References: <20261019145643.1877246-1-pierre.gondois@arm.com>
@@ -84,177 +95,92 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a separte handling for Memory Error Section 2 trace events with:
-- extlog_mem2_event()
-- extlog_mem2 trace event
-The fields of the record are individually printed so userspace
-can discover the layout more dynamically if a new field is added.
+Add CPER Memory Error Section 2 definitions to the CPER headers.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/acpi/acpi_extlog.c |  16 ++++++
- drivers/ras/ras.c          |   1 +
- include/ras/ras_event.h    | 102 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 119 insertions(+)
+ include/linux/cper.h | 54 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-index e764d61f71ca..9c0b932e22bc 100644
---- a/drivers/acpi/acpi_extlog.c
-+++ b/drivers/acpi/acpi_extlog.c
-@@ -189,6 +189,15 @@ extlog_mem_err_event(struct cper_sec_mem_err *mem, u32 err_seq,
- #endif
- }
-
-+static void
-+extlog_mem_err2_event(struct cper_sec_mem_err2 *mem, u32 err_seq,
-+		      const guid_t *fru_id, const char *fru_text, u8 sev)
-+{
-+#if defined(CONFIG_ACPI_EXTLOG) || defined(CONFIG_ACPI_EXTLOG_MODULE)
-+	trace_extlog_mem2_event(mem, err_seq, fru_id, fru_text, sev);
-+#endif
-+}
+diff --git a/include/linux/cper.h b/include/linux/cper.h
+index 440b35e459e5..76e82a8d29a2 100644
+--- a/include/linux/cper.h
++++ b/include/linux/cper.h
+@@ -198,6 +198,10 @@ enum {
+ #define CPER_SEC_PLATFORM_MEM						\
+ 	GUID_INIT(0xA5BC1114, 0x6F64, 0x4EDE, 0xB8, 0x63, 0x3E, 0x83,	\
+ 		  0xED, 0x7C, 0x83, 0xB1)
++/* Platform Memory 2 */
++#define CPER_SEC_PLATFORM_MEM2						\
++	GUID_INIT(0x61EC04FC, 0x48E6, 0xD813, 0x25, 0xC9, 0x8D, 0xAA,	\
++		  0x44, 0x75, 0x0B, 0x12)
+ #define CPER_SEC_PCIE							\
+ 	GUID_INIT(0xD995E954, 0xBBC1, 0x430F, 0xAD, 0x91, 0xB4, 0x4D,	\
+ 		  0xCB, 0x3C, 0x6F, 0x35)
+@@ -262,6 +266,30 @@ enum {
+ #define CPER_MEM_VALID_BANK_ADDRESS		0x100000
+ #define CPER_MEM_VALID_CHIP_ID			0x200000
+ 
++/* Memory Error Section 2 validation bits, UEFI v2.11 sec N.2.6. */
++#define CPER_MEM2_VALID_ERROR_STATUS		BIT_ULL(0)
++#define CPER_MEM2_VALID_PA			BIT_ULL(1)
++#define CPER_MEM2_VALID_PA_MASK			BIT_ULL(2)
++#define CPER_MEM2_VALID_NODE			BIT_ULL(3)
++#define CPER_MEM2_VALID_CARD			BIT_ULL(4)
++#define CPER_MEM2_VALID_MODULE			BIT_ULL(5)
++#define CPER_MEM2_VALID_BANK			BIT_ULL(6)
++#define CPER_MEM2_VALID_DEVICE			BIT_ULL(7)
++#define CPER_MEM2_VALID_ROW			BIT_ULL(8)
++#define CPER_MEM2_VALID_COLUMN			BIT_ULL(9)
++#define CPER_MEM2_VALID_RANK_NUMBER		BIT_ULL(10)
++#define CPER_MEM2_VALID_BIT_POSITION		BIT_ULL(11)
++#define CPER_MEM2_VALID_CHIP_ID			BIT_ULL(12)
++#define CPER_MEM2_VALID_ERROR_TYPE		BIT_ULL(13)
++#define CPER_MEM2_VALID_STATUS			BIT_ULL(14)
++#define CPER_MEM2_VALID_REQUESTOR_ID		BIT_ULL(15)
++#define CPER_MEM2_VALID_RESPONDER_ID		BIT_ULL(16)
++#define CPER_MEM2_VALID_TARGET_ID		BIT_ULL(17)
++#define CPER_MEM2_VALID_CARD_HANDLE		BIT_ULL(18)
++#define CPER_MEM2_VALID_MODULE_HANDLE		BIT_ULL(19)
++#define CPER_MEM2_VALID_BANK_GROUP		BIT_ULL(20)
++#define CPER_MEM2_VALID_BANK_ADDRESS		BIT_ULL(21)
 +
- static int extlog_print(struct notifier_block *nb, unsigned long val,
- 			void *data)
- {
-@@ -241,6 +250,13 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
- 				extlog_mem_err_event(mem, err_seq, fru_id,
- 						     fru_text,
- 						     (u8)gdata->error_severity);
-+		} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
-+			struct cper_sec_mem_err2 *mem = acpi_hest_get_payload(gdata);
+ #define CPER_MEM_EXT_ROW_MASK			0x3
+ #define CPER_MEM_EXT_ROW_SHIFT			16
+ 
+@@ -506,6 +534,32 @@ struct cper_sec_mem_err {
+ 	u16	mem_dev_handle;		/* "module handle" in UEFI 2.4 */
+ };
+ 
++/* Memory Error Section 2, UEFI v2.11 sec N.2.6 */
++struct cper_sec_mem_err2 {
++	u64	validation_bits;
++	u64	error_status;
++	u64	physical_addr;
++	u64	physical_addr_mask;
++	u16	node;
++	u16	card;
++	u16	module;
++	u16	bank;
++	u32	device;
++	u32	row;
++	u32	column;
++	u32	rank;
++	u32	bit_pos;
++	u8	chip_id;
++	u8	error_type;
++	u8	status;
++	u8	reserved;
++	u64	requestor_id;
++	u64	responder_id;
++	u64	target_id;
++	u32	mem_array_handle;	/* "card handle" */
++	u32	mem_dev_handle;		/* "module handle" */
++};
 +
-+			if (gdata->error_data_length >= sizeof(*mem))
-+				extlog_mem_err2_event(mem, err_seq, fru_id,
-+						      fru_text,
-+						      (u8)gdata->error_severity);
- 		} else if (guid_equal(sec_type, &CPER_SEC_CXL_PROT_ERR)) {
- 			struct cxl_cper_sec_prot_err *prot_err =
- 				acpi_hest_get_payload(gdata);
-diff --git a/drivers/ras/ras.c b/drivers/ras/ras.c
-index 03df3db62334..c6b14202a5e9 100644
---- a/drivers/ras/ras.c
-+++ b/drivers/ras/ras.c
-@@ -111,6 +111,7 @@ subsys_initcall(ras_init);
-
- #if defined(CONFIG_ACPI_EXTLOG) || defined(CONFIG_ACPI_EXTLOG_MODULE)
- EXPORT_TRACEPOINT_SYMBOL_GPL(extlog_mem_event);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(extlog_mem2_event);
- #endif
- EXPORT_TRACEPOINT_SYMBOL_GPL(mc_event);
- EXPORT_TRACEPOINT_SYMBOL_GPL(non_standard_event);
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index fdb785fa4613..0c0dbe068dc8 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -74,6 +74,108 @@ TRACE_EVENT(extlog_mem_event,
- 		  &__entry->fru_id,
- 		  __get_str(fru_text))
- );
-+
-+/*
-+ * Memory Error Section 2 exposes each field separately so userspace can
-+ * discover its layout. Validation bits use the UEFI Section 2 assignments.
-+ */
-+TRACE_EVENT(extlog_mem2_event,
-+	TP_PROTO(const struct cper_sec_mem_err2 *mem,
-+		 u32 err_seq,
-+		 const guid_t *fru_id,
-+		 const char *fru_text,
-+		 u8 sev),
-+
-+	TP_ARGS(mem, err_seq, fru_id, fru_text, sev),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, err_seq)
-+		__field(u8, sev)
-+		__field_struct(guid_t, fru_id)
-+		__string(fru_text, fru_text)
-+		__field(u64, validation_bits)
-+		__field(u64, error_status)
-+		__field(u64, physical_addr)
-+		__field(u64, physical_addr_mask)
-+		__field(u16, node)
-+		__field(u16, card)
-+		__field(u16, module)
-+		__field(u16, bank)
-+		__field(u32, device)
-+		__field(u32, row)
-+		__field(u32, column)
-+		__field(u32, rank)
-+		__field(u32, bit_pos)
-+		__field(u8, chip_id)
-+		__field(u8, error_type)
-+		__field(u8, status)
-+		__field(u64, requestor_id)
-+		__field(u64, responder_id)
-+		__field(u64, target_id)
-+		__field(u32, mem_array_handle)
-+		__field(u32, mem_dev_handle)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->err_seq = err_seq;
-+		__entry->sev = sev;
-+		__entry->fru_id = *fru_id;
-+		__assign_str(fru_text);
-+		__entry->validation_bits = mem->validation_bits;
-+		__entry->error_status = mem->error_status;
-+		__entry->physical_addr = mem->physical_addr;
-+		__entry->physical_addr_mask = mem->physical_addr_mask;
-+		__entry->node = mem->node;
-+		__entry->card = mem->card;
-+		__entry->module = mem->module;
-+		__entry->bank = mem->bank;
-+		__entry->device = mem->device;
-+		__entry->row = mem->row;
-+		__entry->column = mem->column;
-+		__entry->rank = mem->rank;
-+		__entry->bit_pos = mem->bit_pos;
-+		__entry->chip_id = mem->chip_id;
-+		__entry->error_type = mem->error_type;
-+		__entry->status = mem->status;
-+		__entry->requestor_id = mem->requestor_id;
-+		__entry->responder_id = mem->responder_id;
-+		__entry->target_id = mem->target_id;
-+		__entry->mem_array_handle = mem->mem_array_handle;
-+		__entry->mem_dev_handle = mem->mem_dev_handle;
-+	),
-+
-+	TP_printk("{%u} %s error: validation_bits: 0x%llx "
-+		  "error_status: 0x%llx physical_addr: 0x%llx "
-+		  "physical_addr_mask: 0x%llx node: %u card: %u "
-+		  "module: %u bank: %u device: %u row: %u column: %u "
-+		  "rank: %u bit_pos: %u chip_id: %u error_type: %u "
-+		  "status: 0x%x requestor_id: 0x%llx responder_id: 0x%llx "
-+		  "target_id: 0x%llx mem_array_handle: 0x%x "
-+		  "mem_dev_handle: 0x%x FRU: %pUl %.20s",
-+		  __entry->err_seq, cper_severity_str(__entry->sev),
-+		  __entry->validation_bits,
-+		  __entry->error_status,
-+		  __entry->physical_addr,
-+		  __entry->physical_addr_mask,
-+		  __entry->node,
-+		  __entry->card,
-+		  __entry->module,
-+		  __entry->bank,
-+		  __entry->device,
-+		  __entry->row,
-+		  __entry->column,
-+		  __entry->rank,
-+		  __entry->bit_pos,
-+		  __entry->chip_id,
-+		  __entry->error_type,
-+		  __entry->status,
-+		  __entry->requestor_id,
-+		  __entry->responder_id,
-+		  __entry->target_id,
-+		  __entry->mem_array_handle,
-+		  __entry->mem_dev_handle,
-+		  &__entry->fru_id, __get_str(fru_text))
-+);
- #endif
-
- /*
---
+ struct cper_mem_err_compact {
+ 	u64	validation_bits;
+ 	u16	node;
+-- 
 2.43.0
+
