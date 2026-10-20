@@ -1,108 +1,108 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=205.220.180.131
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792516258;
-	b=y93iSctR4T1+PxuFLiZEfLzpNo4P/xD6uTmBsRjQXNoxkF1VC37R6jTG9Tq5W/D/YC9u
-	 k3jCS1ePIhEMc4DLM4x0DnrhmwQE6EI4iJejfhkK9OMDQnC5z+9zPuLWnQk4TA70RLC/9
-	 k+IDOHBrpYuY9UNKsF9eDRe/Swh+84SAydhlCKWehWf43gQ477f7jxoonFnx80GiJK3Ga
-	 A9r5o+WIEeelizxKo5qlpoH+hAI/87eP97mhQvsr/CToYS4F2KmtuMKqyjLf9F+kxQ6vh
-	 jJ9kTGB/6XY4hJKc7sE0ZpegABqJYzoIJb/AFf3vlE97946qG/KAjrc1d5YwzcUrHHQ==
+	t=1792516661;
+	b=iuBBpgouK+Q7+vykVx2ISRFBeJWfyxgJVVQKin5Fmnd+eV8es6tc58he2ZAwyiiGYBz3
+	 kT4Wo1ZACbPrX/jEiT28FZkWbTnNNvOwRa9zATOM8HFJ9cad9W3r26nzveQwstflICm4I
+	 6c5cqlf1DTeFVDg7Uzb+hcBz1ZBuYO+T8ZmnRsizSaUXHAfizptCFzEVUWbIVKG0lKq6o
+	 pnOeN+pvwFXsK9LkyqgPamhNSh4fgiP6cB1ENW69mRMIigARmBkfF8qVJChrzTlNh5J6A
+	 tQE6PXIlXOFdpi3+eUuf5Z4wq1DElKlgezh41x86S5x9cQ1Ny2l8YN24FmylsUqSizg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792516258;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792516661;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:
 	 DKIM-Signature:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:X-Received:Received:Date:From:
 	 To:Cc:Subject:Message-ID:In-Reply-To:References:Organization:X-Mailer:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 X-Proofpoint-ORIG-GUID:X-Proofpoint-Spam-Details-Enc:
-	 X-Proofpoint-Spam-Info:X-Authority-Analysis:X-Proofpoint-GUID:
+	 X-Proofpoint-Spam-Info:X-Proofpoint-GUID:X-Proofpoint-ORIG-GUID:
+	 X-Proofpoint-Spam-Details-Enc:X-Authority-Analysis:
 	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
-	bh=XuGp63Zu8Xhb/maxQXifefMXC5yHBwIeZ7UZd8sAo6g=;
-	b=YzGt+wBCY50MoeVO0/8qBWc8NQ8FTgSntND+LK+8Ftw+5lkRaWTv0cN+WbWmNavV4frS
-	 lNTHTEunMtSSm428Rf14Uk5mqqQVzFWxkqcR8ds0I2YKFdPCLdZAxqYNghOC75Ba093D6
-	 VrnlUOUD5OUM0JCkElcxilZV0Hz4mrHIsdYoO9gLxpDaeXVKTwQkW39cp8tIOamoPW4Xm
-	 HUPmHUQrE4aNIq1fKdyAOTIuKq1RE7Q3/DM6okfwmAZXk7JZmwZB/JXs8iYVp/n+qVrTH
-	 RbrUoyzoT6NNtsoIlcS9vD3SYMJJzb3DuzK210w42s18/euBxEtMIWwwctNeI3xF7VQ==
+	bh=8QpGW0NKviFKo87+h3Yw2MqyJCFWY8ItSyPAh+yd9CU=;
+	b=2NMHgOv+/CkmKzGSzqX5WAG131jbV/AWNqcvL/6z3hyAdd3DzordREBSpNac+LcNoXLq
+	 e6HlBKFVr77nL2jEwJ5PJugkQ7zo2LrrciUAXq8J/icTPsWDgkK2JF2SNnAvJVXvSZL64
+	 UUE1a+4osnoFpE8rWZrpW8/iQEe96x4EugSvur6sveATQ6kQGuJ7ZmLYP4gHMCjjrrnG6
+	 f1o5Cit9qUJkm21eOZEW4dZToWfZIwlVEsdrFAfAiRj4nXhTB8XlaFdUTHR3zkCSSvQbj
+	 v4GH2TAYDHPaFC6JQOeku5n51x07rjqqrvYSRaJdMO8q+9uYcaLWDH8JpLfWvXLdgPw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=oss.qualcomm.com;
 	spf=pass smtp.mailfrom=oss.qualcomm.com;
-	dkim=pass header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=cr8UEhZt;
-	dkim=pass header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=cTSWS7Nf;
+	dkim=pass header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=o38bSjL8;
+	dkim=pass header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=kH58JmaK;
 	arc=none smtp.remote-ip=205.220.180.131
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B04606A33A
-	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:10:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06B04606A33A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C34B606A31D
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:17:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C34B606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=cr8UEhZt;
-	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=cTSWS7Nf
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69KGu4X01926022
-	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:10:56 GMT
+	dkim=pass (2048-bit key, unprotected) header.d=qualcomm.com header.i=@qualcomm.com header.a=rsa-sha256 header.s=qcppdkim1 header.b=o38bSjL8;
+	dkim=pass (2048-bit key, unprotected) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.a=rsa-sha256 header.s=google header.b=kH58JmaK
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69KGtvtU2712200
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:17:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
 	cc:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	XuGp63Zu8Xhb/maxQXifefMXC5yHBwIeZ7UZd8sAo6g=; b=cr8UEhZtHzcb3IqX
-	cktx1/Tjz8ZOrSW7yg+EZjyDKalpeLFfVXvVcxfZ4GpdXdFGuKFaPVtumG8TBpri
-	Xs+CjKAOSb+4yXKrNTEvUFfYF9t5qD5MbmfqqNGbF7psV0brw9s0rYH66Tr2Ii+I
-	oAzpuwaR2C9LAdKXF4WIU8Xj45vbbt4KJOw0YjDlnlyKCU+hEHkOS05mR8edq5LH
-	1T4Uqdy/B2K+cc3aeodyeQl+RvcjSR6jknYOZp+7eUQ0ijDlFgZ5CAj7yzfnZf4n
-	I9vkWmzYQ2gVYynfg6gUE3FuU1mfMOkP9J62yHxw9T8pfBJTDHF5e+jrzE/VHrkV
-	meRLog==
-Received: from mail-dl1-f69.google.com (mail-dl1-f69.google.com [74.125.82.69])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hdw5qbjpm-1
+	8QpGW0NKviFKo87+h3Yw2MqyJCFWY8ItSyPAh+yd9CU=; b=o38bSjL8gGuVcSTR
+	84CM4Pq1EbcbZXg06gl55UxMOt3BBBFXAaXlhz0Nc/GShV6IEjkXFGHydvYGngD2
+	VWDoa1cxKjLCUINW6x8og6Dtz14ENY1wHuXJZjFmXtCs7UHDtkyuYfUOZctxHUMG
+	RU7zRXlVTOEjoJXk1XJZTpa7bD+Dxx/ObdjSI1IHfj6nZO/ALnZPQKUz/AB84XqC
+	6+lm/dnxdyJClEsJ0v6Kj75y8szAaCKkgPjuu3eS1oHzKvAuYzHxbkueXhY9l8DV
+	LWibtU0pGo0GN0B+p5+rf0WBZMCTpZeHcXMQCFoftLI47o+VrrEDr64el1XjtOu+
+	1D4cOQ==
+Received: from mail-dy1-f197.google.com (mail-dy1-f197.google.com [74.125.82.197])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4hdw5nujx3-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:10:56 +0000 (GMT)
-Received: by mail-dl1-f69.google.com with SMTP id a92af1059eb24-1665200f4c2so4706965c88.0
-        for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 10:10:56 -0700 (PDT)
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 17:17:39 +0000 (GMT)
+Received: by mail-dy1-f197.google.com with SMTP id 5a478bee46e88-3580c07911eso9602132eec.0
+        for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 10:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1792516256; x=1793121056; darn=lists.linux.dev;
+        d=oss.qualcomm.com; s=google; t=1792516658; x=1793121458; darn=lists.linux.dev;
         h=content-transfer-encoding:content-type:mime-version:organization
          :references:in-reply-to:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to:content-type;
-        bh=XuGp63Zu8Xhb/maxQXifefMXC5yHBwIeZ7UZd8sAo6g=;
-        b=cTSWS7NfrRjEAMdqftuAbsXinQAnEWTh4rtXSEmSvr6WI2aufVEwg68gZ/MzrwndOR
-         ivehWX3mSYGHf4Vb28OGtMUbkyiiRXCJnBAkDaspsgaGGy/dCt3/jUXFcI9PXDC5qctk
-         U+t1NT4v4iUUcMOG3I3mTFfDlRoCYhb44shND/1R9S79ju5wQB1zotRvUpTAk5Hvp2OV
-         4jIGYAXFQgAXpGNZfSTpBO+oVjqOxdC5UgLzjuIT3JZzgSrYCEy8PemmuuI1/Wedi5oE
-         jw7yQPzaW9NlPpYnIUoU9E2DUv3Fnza8dkqH2JvR2wgdTTq9GYXVpfMMv2OgYJMbubre
-         Dy9g==
+        bh=8QpGW0NKviFKo87+h3Yw2MqyJCFWY8ItSyPAh+yd9CU=;
+        b=kH58JmaKcCPDBZcIhiM864whT54n8GVY9LdR5VMz3sstz/rAJOrKxfQlT9yhxjg0Qx
+         Detb7oHoVZeKJumNQkU3ZwjhjGcxfyvReqJMgnhjfAafPuvvZInPqh1+9doy5eFM6Yvg
+         2PhijpNC30o9YlKnbo9/Flr6GuPvc68nBLMck7PXVBG0ry4gPle1FNVPpwToSmIZybuf
+         HTLsd84iMk4lsTFb3XFookaeqGO9ZCc7zKDXD+SgW16XTN89HNoBK06EHqevBJ49cTQI
+         qbSrYb7rdvNQBtP6XKqHNu+pvNWfZ4MrBmqogzMrqVrsnuygkR97pBZA+2wJDvRdS7f6
+         fDyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792516256; x=1793121056;
+        d=1e100.net; s=20260707; t=1792516658; x=1793121458;
         h=content-transfer-encoding:content-type:mime-version:organization
          :references:in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=XuGp63Zu8Xhb/maxQXifefMXC5yHBwIeZ7UZd8sAo6g=;
-        b=hMNHXAWJi/CUqWfA6hOdl/IjiwiEkGSEAm5l3ZZ3uCg7HO93pf1BXzO7IviJGTzhnb
-         AePl5UvWAp1dhLCeuJGMlt4BVdPM6HvUl52MlAfdImgGb9ATinYOEm1piPIhsDBAtl0D
-         Er2tixYKFCO6Y0ymoDJRVz6tvqxaLH52WBJZQMYz4BZQps1CbMOmkp/BIpIcIp8g0I1y
-         qthu20ATmRPXvcjnCaJJfa9cFKatgLjNdoJfTB7ZaIRwEkNMfE/SB1IUlYrr5V8GZz5W
-         NPocmcGPdg2lWB82quvhwpvbgRbPYsQ8aruXM9Fo+mn10fL7YZ04czFyw4v+e3emM1ze
-         0Wtw==
-X-Forwarded-Encrypted: i=1; AKwUvByKnVzMi2A+SmNsI8IUX3HShpFZSfGGMTw6jXVjCajCVI3IFPZJkvRmacajoM/LbhO0mShwPWwdcthbruI=@lists.linux.dev
-X-Gm-Message-State: AFq9FYIdP0S4UGcDxnb12gGdjgfpqUYK/5JDN2DV8SwZCcOubWYKNMa1
-	2KiZztKIY5zJnc7ZTeB+dKpvdylintaNU6VLBWxYrPvaQLXG0+Xl7edB76CV8T8fFUrqIPjEsPr
-	jAiLia1EhLoLr/7in7vd3Ht8lXAa06OsMZPLCa6vFZAHD0gTGltpK0F9mtYXKMOtXzY4=
-X-Gm-Gg: AYBFou3UsGUwsjrqnAp8DYCxp9mO6hlJRW1li9y4I5k4XbcVfaoXDZpqOLaoI67flWB
-	9j/W5VoGx2bATlVPAOS+8y/+DCIrTzW8uod6ePbtIqyGqgbjQOzHjFgnF/EwxvMRr9Zb4qq3OIP
-	sNubNkjO3Pn6t2o9dkNGjKXBHaXk/pI7J+LLuKusp762AphzygzkeFL36lKk7bEjv0vFNzfD/yW
-	BMk3c/YZfMfU93Ua5m1PBmkdkXuBGgCjh+CSEzctNuiEWWL124bFLOktuYNbR7iy3ceQnf7YE4U
-	LJekL5vQ6F/Ekb8UVH/3a8890vp+aDa9Zd6UWq2Q6b1yP3gkwwS6Jix3PuvwT6zHRd3QhP0zyXa
-	JhcttJ3oWU+a8FlihKw0gOpMUYol7ye/0+RI32P6ikQY=
-X-Received: by 2002:a05:701b:4587:b0:17d:961d:7db0 with SMTP id a92af1059eb24-18512e254fbmr15146319c88.28.1792516255330;
-        Tue, 20 Oct 2026 10:10:55 -0700 (PDT)
-X-Received: by 2002:a05:701b:4587:b0:17d:961d:7db0 with SMTP id a92af1059eb24-18512e254fbmr15146268c88.28.1792516254593;
-        Tue, 20 Oct 2026 10:10:54 -0700 (PDT)
+        bh=8QpGW0NKviFKo87+h3Yw2MqyJCFWY8ItSyPAh+yd9CU=;
+        b=TV53mWEuiNhdGHqPftdnjPX1yC700q6bGSFMGi0YcypHbZpef3Au3WTdVsSLaXWs+f
+         AoybBjRA1aK+OIXIPiJWnSWL0N6s0myX4nBlCxsMFu8isC5hXS9abb7Xs7LuZkbtxQNy
+         7qgoGcmW9piILx9PI8Nt0N5Jh9uNrRMK5vZZagnqAwc38X9352nay33ctM5v8fnc7sGv
+         /6mbriA7eEB50lGfzUAPhP/jsQXBlSbivdpV6WGVI+SFjv244dGXMr42ke0wZ5nJCa52
+         5msoCiis9R/6nJBwKMC6noEUXhMwAhzfNx8rg0CsIoHlW9ARgq1tmPrRFnBmkYVTCgm+
+         AiIQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwo9OqziMp7l1vUp8v4cluLP72rbrskQL8gsrGt6jtis8iVJnm84k/vskVMVNR8uJaHmci2+PUwWKydYck=@lists.linux.dev
+X-Gm-Message-State: AFq9FYLonzz8/yGTWocAjDlPUfZnIrpgfg5NmtXHoGrtcb/PbBfS9d3g
+	wTOaW3A1OG5wmwz7CLpnmgZOJyGDCKWYgKqJl3Iwl0GufianHecZapXrqmDSOAVVmXHY4aFL0aa
+	uX88aJlEhQL6CnOHZeiGgynN9ym8xpbmCU5swGCdIdifzcKYdLNSeSUGhjFgG62W7UJw=
+X-Gm-Gg: AYBFou0JQB0yldfioKksZl2ltcpGPpo7Jcs1y2JHrp0AE2CL4yhXljDdo6FcnAmZi03
+	3wEkKijUz3Wg9/7ZbBD4KPMIi9C+5NPOwP3n4LuWM6ysWgiLGtcbEb2OlydgIb4aCbVmcLfz6XC
+	SNCYrZGKI0IcQay5Jzo8CwxYb0c/9WdwggGM4bL5wgFLiPf+IXm+8I8QoNtFNTFkJRtcKdu07+A
+	AGnr+GWAIt8z0BPO8WNqvPgNoiL5POpEoBHyX4jZn1rftFjOeSnczVs0jtO+APQI9g65wKF9A3s
+	2ZGAjxbi2OHsAHnOKua6Zbvyw0OX04mx9AC+7viiESJcebQk3fgoyk5OLhiQm/R1RdssA3d+6og
+	zniowElqh31fzSWB44jksZXEzviF59Uq7LVd0NgpaYg==
+X-Received: by 2002:a05:7023:a47:10b0:15a:9834:73c9 with SMTP id a92af1059eb24-1851453f752mr15327649c88.40.1792516658259;
+        Tue, 20 Oct 2026 10:17:38 -0700 (PDT)
+X-Received: by 2002:a05:7023:a47:10b0:15a:9834:73c9 with SMTP id a92af1059eb24-1851453f752mr15327601c88.40.1792516657378;
+        Tue, 20 Oct 2026 10:17:37 -0700 (PDT)
 Received: from localhost (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-19035c0c9a6sm44388c88.3.2026.10.20.10.10.51
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1903bb7f098sm5472c88.12.2026.10.20.10.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 10:10:53 -0700 (PDT)
-Date: Tue, 20 Oct 2026 10:10:48 -0700
+        Tue, 20 Oct 2026 10:17:36 -0700 (PDT)
+Date: Tue, 20 Oct 2026 10:17:20 -0700
 From: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
 To: Pierre Gondois <pierre.gondois@arm.com>
 Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
@@ -124,16 +124,18 @@ Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
         "Fabio M.
  De Francesco" <fabio.m.de.francesco@linux.intel.com>,
         Breno Leitao
- <leitao@debian.org>, Dan Williams <djbw@kernel.org>,
-        Terry Bowman
- <terry.bowman@amd.com>, Ard Biesheuvel <ardb@kernel.org>,
+ <leitao@debian.org>, Terry Bowman <terry.bowman@amd.com>,
+        Dan Williams
+ <djbw@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
         Morduan Zang
  <zhangdandan@uniontech.com>, linux-acpi@vger.kernel.org,
         linux-edac@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v2 0/6] CPER: Add Memory Error Section 2 support
-Message-ID: <20261020101048.00000186@oss.qualcomm.com>
-In-Reply-To: <20261019203915.2019037-1-pierre.gondois@arm.com>
+Subject: Re: [PATCH v2 5/6] ACPI: APEI: add separate Memory Error Section 2
+ handlers
+Message-ID: <20261020101720.00002545@oss.qualcomm.com>
+In-Reply-To: <20261019203915.2019037-6-pierre.gondois@arm.com>
 References: <20261019203915.2019037-1-pierre.gondois@arm.com>
+	<20261019203915.2019037-6-pierre.gondois@arm.com>
 Organization: Qualcomm
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.51; x86_64-w64-mingw32)
 X-Mailing-List: acpica-devel@lists.linux.dev
@@ -147,64 +149,257 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 9-byG--vTwq4svqGgXF489R4LkmzACdm
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDIwMDA2OCBTYWx0ZWRfX0J/k7BKAGvPe
- a1r46MCwQnvNZTX3VDRkr9IGvX8AkLLBrh4qL/V3eRCwPRzXykYNyhWI2GQTt72TVT7IvnmaBgo
- g3fY1YQdtYzJCA7rWNd5F3gaRA5Eu0Nj3UNfAMRoTLSL1XiZwr5wk17n1tdi+tKZ5U+kN9/tqpr
- 4Yi68ZvLN/qYf6HBboXkfgCS+HQvw7vie+cN9uvz5lyBfveubhMFHSQUPE3pbS+OHeoomY0XQKD
- G5OoPEC0HsI9ofqsjHWUypBT/mcLZhAGrGsPbFUYcmhvAd/dYUWIw8u0F8W4CxFDxTzR1bZ0vZ4
- 1FpUQahujKokrSlEt96xrUMjYXk8xJuJaoF0n8Y4dXOnqP2CQM5JohEm7qRurYjd56mCDnr+KZF
- oMiuyleeKo3ACCh7seNCE3MGUIpJCeT1LwkyvqE2Za3o0Fyg3LDDIxjIdoEMtyB1vT84oVkZMJ+
- QD7UVZFJjVI/O0BvFxQ==
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDIwMDA2OCBTYWx0ZWRfX5S7lgpggEmQZ
- NJg+VBJHB33HGLH3T91sDo9gfloD0gkGe6TROAFMXoFs1EiCRts+w47H9tbrAIZ84UY3+kpki8O
- fcwSxXVz0TpYIWwhoY8so5hDy+l/CMw=
-X-Authority-Analysis: v=2.4 cv=LpcHWXdc c=1 sm=1 tr=0 ts=6ad7a0a0 cx=c_pps
- a=kVLUcbK0zfr7ocalXnG1qA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDIwMDA2OCBTYWx0ZWRfX33zu8jJjjY4r
+ LSN8dg/eWjuQSCgBPJeq+bpbqWSY7x40Zoxm+axqD/wythLD3+Kh/IGHF9EH5k2HQgw+g9hWg5E
+ nuhL9uRzbpmOur0P3/7jJOjfiDGQshc=
+X-Proofpoint-GUID: PHw1fIe9N6kqi3T2gtalwmvOJrv0C02D
+X-Proofpoint-ORIG-GUID: PHw1fIe9N6kqi3T2gtalwmvOJrv0C02D
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDIwMDA2OCBTYWx0ZWRfXy+DtDp7c6pLz
+ p/JDsi/IWseh6wTVHmL4C8q+TP8ty1piAXel/gr4QFSdYn8qD/iZydgL1MrRbSsHqavhAbabRy1
+ 5HuoCLumEybLSU8LIS0R7CbdY11ph3pcXKpS40hqvoZrP0G46H2aKZTxTG6JXUpKrFozxUbaWBm
+ l7GBSxXM5vqzCWKBp1w40equolKeMU8WnG6q/x8FUlawPd1qWicl0Iqw7xlsrvDvZfN/WRChhAY
+ Knelkw10TQDAuOh5CS+uHUh7kjN3o3YR4ISDqzNsKVc4CayyJrwIMPCvm5ZNKhiul3QrioyGk4x
+ 4TTWZljOjuhSeZPVKQjJQpyotI5ZggWwaW6jjEjYf6qvLu9uVdiWScBK7I5nUgbyZrF/AdcVX1O
+ 5EPvSKnDGHpWx9c09fu9bxfz3VJpNRYELfPnJFq1eE1/PJeiohCfRiG0s0op7MlBpr0ek5dMfLy
+ LCleemK6mXr626liukg==
+X-Authority-Analysis: v=2.4 cv=TcsDJhQh c=1 sm=1 tr=0 ts=6ad7a233 cx=c_pps
+ a=Uww141gWH0fZj/3QKPojxA==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
  a=kj9zAlcOel0A:10 a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22
- a=7CQSdrXTAAAA:8 a=5VxSIjaA6f0WmzOPONwA:9 a=CjuIK1q_8ugA:10
- a=vr4QvYf-bLy2KjpDp97w:22 a=a-qgeE7W1pNrGK8U0ZQC:22
-X-Proofpoint-GUID: 9-byG--vTwq4svqGgXF489R4LkmzACdm
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=_glEPmIy2e8OvE2BGh3C:22
+ a=7CQSdrXTAAAA:8 a=EUspDBNiAAAA:8 a=Rvnai5sDmRKbKYGs1KsA:9 a=CjuIK1q_8ugA:10
+ a=PxkB5W3o20Ba91AHUih5:22 a=a-qgeE7W1pNrGK8U0ZQC:22
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
  definitions=2026-10-20_03,2026-10-19_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0 phishscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2610190000
- definitions=main-2610200068
+ malwarescore=0 adultscore=0 impostorscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610190000 definitions=main-2610200068
 
-On Mon, 19 Oct 2026 22:38:39 +0200
+On Mon, 19 Oct 2026 22:38:44 +0200
 Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-> The support is mostly duplicated from Memory Error Section handling.
-> Other than differences coming from the content of  Memory Error
-> Section 1 and 2, differences in the support are:
+> Add dedicated GHES and EDAC callbacks for Memory Error Section 2
+> records. Use a separate GHES notifier chain so existing consumers
+> continue to receive legacy memory error sections.
 > 
-> - v2 do not rely on a compact "struct cper_mem_err_compact" struct.
-> This structure was used to support older versions of the Memory
-> Error Section (1). This is not needed for the new structure.
-> 
-> - The compact version is also used by the tracing framework.
-> To avoid relying and propagating a non-standard record format,
-> through trace event (cf. extlog_mem event) the new trace event
-> prints each field individually.
-> 
-> The last patch of the serie was only build-tested due to the
-> absence of relevant hardware. apei_mce_report_mem_error() and
-> arch_apei_report_mem_error() implementations were also removed since
-> last version.
-> 
-> It will also require a proper handling from the rasdaemon. Applying
-> this last patch without rasdaemon support will silent the reports of
-> Memory Error Section 2 error, cf. ras_userspace_consumers() check.
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+I think this is is ok. I don't love the dual notifier chains but
+right now I also don't have a better idea.
 
-Hi Pierre,
-
-I'd slow down a bit.  We are mid merge window and convention is normally
-one version a week or so anyway.  Better to gather up feedback from
-a number of folk and spin only one revision to cover it all.
+So a somewhat tentative
+Reviewed-by: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
 
 Jonathan
+
+> ---
+>  drivers/acpi/apei/ghes.c |  49 +++++++++++++++-
+>  drivers/edac/ghes_edac.c | 118 +++++++++++++++++++++++++++++++++++++++
+>  include/acpi/ghes.h      |   2 +
+>  3 files changed, 168 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+> index fe10ab0e02f6..c7fb15543b56 100644
+> --- a/drivers/acpi/apei/ghes.c
+> +++ b/drivers/acpi/apei/ghes.c
+> @@ -101,6 +101,7 @@
+>  #endif
+>  
+>  static ATOMIC_NOTIFIER_HEAD(ghes_report_chain);
+> +static ATOMIC_NOTIFIER_HEAD(ghes_report_mem2_chain);
+>  
+>  static inline bool is_hest_type_generic_v2(struct ghes *ghes)
+>  {
+> @@ -551,6 +552,29 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>  	return false;
+>  }
+>  
+> +static bool ghes_handle_memory_failure2(struct acpi_hest_generic_data *gdata,
+> +					int sev, bool sync)
+> +{
+> +	int flags = -1;
+> +	int sec_sev = ghes_severity(gdata->error_severity);
+> +	struct cper_sec_mem_err2 *mem_err = acpi_hest_get_payload(gdata);
+> +
+> +	if (!(mem_err->validation_bits & CPER_MEM2_VALID_PA))
+> +		return false;
+> +
+> +	/* iff following two events can be handled properly by now */
+> +	if (sec_sev == GHES_SEV_CORRECTED &&
+> +	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+> +		flags = MF_SOFT_OFFLINE;
+> +	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+> +		flags = sync ? MF_ACTION_REQUIRED : 0;
+> +
+> +	if (flags != -1)
+> +		return ghes_do_memory_failure(mem_err->physical_addr, flags);
+> +
+> +	return false;
+> +}
+> +
+>  static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata,
+>  				     int sev, bool sync)
+>  {
+> @@ -915,7 +939,8 @@ static void ghes_log_hwerr(int sev, guid_t *sec_type)
+>  		return;
+>  	}
+>  
+> -	if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM)) {
+> +	if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM) ||
+> +	    guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
+>  		hwerr_log_error_type(HWERR_RECOV_MEMORY);
+>  		return;
+>  	}
+> @@ -952,6 +977,16 @@ static void ghes_do_proc(struct ghes *ghes,
+>  
+>  			arch_apei_report_mem_error(sev, mem_err);
+>  			queued = ghes_handle_memory_failure(gdata, sev, sync);
+> +		} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
+> +			struct cper_sec_mem_err2 *mem_err = acpi_hest_get_payload(gdata);
+> +
+> +			if (gdata->error_data_length < sizeof(*mem_err)) {
+> +				pr_warn(FW_WARN "Memory Error Section 2 length is too small\n");
+> +				continue;
+> +			}
+> +
+> +			atomic_notifier_call_chain(&ghes_report_mem2_chain, sev, mem_err);
+> +			queued = ghes_handle_memory_failure2(gdata, sev, sync);
+>  		} else if (guid_equal(sec_type, &CPER_SEC_PCIE)) {
+>  			ghes_handle_aer(gdata);
+>  		} else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+> @@ -1973,3 +2008,15 @@ void ghes_unregister_report_chain(struct notifier_block *nb)
+>  	atomic_notifier_chain_unregister(&ghes_report_chain, nb);
+>  }
+>  EXPORT_SYMBOL_GPL(ghes_unregister_report_chain);
+> +
+> +void ghes_register_report_mem2_chain(struct notifier_block *nb)
+> +{
+> +	atomic_notifier_chain_register(&ghes_report_mem2_chain, nb);
+> +}
+> +EXPORT_SYMBOL_GPL(ghes_register_report_mem2_chain);
+> +
+> +void ghes_unregister_report_mem2_chain(struct notifier_block *nb)
+> +{
+> +	atomic_notifier_chain_unregister(&ghes_report_mem2_chain, nb);
+> +}
+> +EXPORT_SYMBOL_GPL(ghes_unregister_report_mem2_chain);
+> diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+> index b90150c67f4b..01defc4e3bf1 100644
+> --- a/drivers/edac/ghes_edac.c
+> +++ b/drivers/edac/ghes_edac.c
+> @@ -390,6 +390,122 @@ static struct notifier_block ghes_edac_mem_err_nb = {
+>  	.priority	= 0,
+>  };
+>  
+> +static int print_mem_error2_other_detail(const struct cper_sec_mem_err2 *mem, char *msg,
+> +					 const char *location, unsigned int len)
+> +{
+> +	u32 n;
+> +
+> +	if (!msg)
+> +		return 0;
+> +
+> +	n = 0;
+> +	len -= 1;
+> +
+> +	n += scnprintf(msg + n, len - n, "APEI location: %s ", location);
+> +
+> +	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_STATUS) {
+> +		n += scnprintf(msg + n, len - n, "status(0x%016llx): ", mem->error_status);
+> +		n += scnprintf(msg + n, len - n, "%s ",
+> +			       cper_mem_err_status_str(mem->error_status));
+> +	}
+> +	if (mem->validation_bits & CPER_MEM2_VALID_STATUS)
+> +		n += scnprintf(msg + n, len - n, "section_status:0x%02x ",
+> +			       mem->status);
+> +
+> +	msg[n] = '\0';
+> +
+> +	return n;
+> +}
+> +
+> +static int ghes_edac_report_mem_error2(struct notifier_block *nb,
+> +				       unsigned long val, void *data)
+> +{
+> +	struct cper_sec_mem_err2 *mem_err = data;
+> +	struct edac_raw_error_desc *e;
+> +	struct mem_ctl_info *mci;
+> +	struct ghes_pvt *pvt;
+> +	char *p;
+> +
+> +	/*
+> +	 * We can do the locking below because GHES defers error processing
+> +	 * from NMI to IRQ context. Whenever that changes, we'd at least
+> +	 * know.
+> +	 */
+> +	if (WARN_ON_ONCE(in_nmi()))
+> +		return NOTIFY_OK;
+> +
+> +	guard(spinlock_irqsave)(&ghes_lock);
+> +
+> +	pvt = ghes_pvt;
+> +	if (!pvt)
+> +		return NOTIFY_OK;
+> +
+> +	mci = pvt->mci;
+> +	e = ghes_edac_init_error(pvt, val);
+> +
+> +	edac_dbg(1, "error validation_bits: 0x%08llx\n",
+> +		 (long long)mem_err->validation_bits);
+> +
+> +	/* Error type, mapped on e->msg */
+> +	if (mem_err->validation_bits & CPER_MEM2_VALID_ERROR_TYPE) {
+> +		u8 etype = mem_err->error_type;
+> +
+> +		p = pvt->msg;
+> +		p += snprintf(p, sizeof(pvt->msg), "%s", cper_mem_err_type_str(etype));
+> +	} else {
+> +		strscpy(pvt->msg, "unknown error");
+> +	}
+> +
+> +	/* Error address */
+> +	if (mem_err->validation_bits & CPER_MEM2_VALID_PA) {
+> +		e->page_frame_number = PHYS_PFN(mem_err->physical_addr);
+> +		e->offset_in_page = offset_in_page(mem_err->physical_addr);
+> +	}
+> +
+> +	/* Error grain */
+> +	if (mem_err->validation_bits & CPER_MEM2_VALID_PA_MASK)
+> +		e->grain = ~mem_err->physical_addr_mask + 1;
+> +
+> +	/* Memory error location, mapped on e->location */
+> +	p = e->location;
+> +	p += cper_mem_err2_location(mem_err, p);
+> +
+> +	if (mem_err->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE) {
+> +		struct dimm_info *dimm = NULL;
+> +
+> +		p += cper_dimm_err2_location(mem_err, p);
+> +		if (mem_err->mem_dev_handle <= U16_MAX)
+> +			dimm = find_dimm_by_handle(mci, mem_err->mem_dev_handle);
+> +		else
+> +			pr_warn(FW_WARN "Memory Error Section 2 module handle 0x%x exceeds SMBIOS range\n",
+> +				mem_err->mem_dev_handle);
+> +		if (dimm) {
+> +			e->top_layer = dimm->idx;
+> +			strscpy(e->label, dimm->label);
+> +		}
+> +	}
+> +	if (p > e->location)
+> +		*(p - 1) = '\0';
+> +
+> +	if (!*e->label)
+> +		strscpy(e->label, "unknown memory");
+> +
+> +	/* All other fields are mapped on e->other_detail */
+> +	p = pvt->other_detail;
+> +	p += print_mem_error2_other_detail(mem_err, p, e->location, OTHER_DETAIL_LEN);
+> +	if (p > pvt->other_detail)
+> +		*(p - 1) = '\0';
+> +
+> +	edac_raw_mc_handle_error(e);
+> +
+> +	return NOTIFY_OK;
+> +}
+
