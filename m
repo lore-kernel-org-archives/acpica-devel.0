@@ -1,78 +1,53 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.167.200
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792442423;
-	b=AO5c08vf/pJtqjWQAf2P91emLEqosNCcg3cmXZ1nvc1wVCPd5UiQiOfQUq0IGVjLR39g
-	 1Y55BpDPKEoCZ6ZIUoDKVbhLbXApJiiaVtvdXmNCo5Auc1qjKX9K8Eq2rlSR1aHpD2u3e
-	 P5007oFxznlJZqZA8YQkAvJqwIvnSDGltLMuVafvtw7NaeKkG98USYV3R74urbK0qmKHx
-	 FtI2TmRZZTgpIhxz2toW4skEU7M/nrmp0bi3ZEFn9fBxEokvLGesyqWJ3gS0YFFyHCm9s
-	 flqVyfvGJB3bNN1CWnKh3Xunw9+PwKhGeBKYGaByzAiBKKcrOTNPQpC5zbFgMpq7vgg==
+	t=1792455401;
+	b=u7vL4+ibtA6rBpyteR7C8pkbG5UQLItgv2REaIRxavLfMWajCsfQ8L9wIOELawUH1O3A
+	 Uwgk5fYLZ/3SOTlDYzsEtwwiyxvYJFVLaMwRgl5aOGa6M8wmWczWELmsI2l+rT9ejMefZ
+	 xyLYwiJavLjPWDy5GgGZnEkGtwd5348ghvIgJpRCzrs4+icffgRVU0m2qQr7Mzytci6UA
+	 KVDdl9FNDmwvlySsdu51pJNU7cLJdtOkE1ldtVoFT7swu9tK8STNAPBA20V0iGhBS/f54
+	 CELQ1qY47tDV8h6MPbzIOyWff1OY3ByHYTzilyGUYd9/b1aEPO00dWo76C1WsZ9ehiA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792442423;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=2/7A38RNtD7RQ/YyFo6ODsiOAHnMtbezT9OG2lOi13g=;
-	b=RzOZrTkXLpKlLMUPi05uiYoYdal2K4B9FzYHsHotJpwa0ukLWXtHg7Vrk6r2uF1lkh/z
-	 V/kRFKrVL0ucxjR89JQ5jVV1js19iqgkM/1H/j3d0ORLYwpIl8EMRf3m4Q3gL954mLxmm
-	 JI0CbDEEYLanuKufU05gDeRtNIJq53w3RlVR4cU2yW8ZG3/pLmGp6qHJENvavVB4A8up9
-	 aPcuu/s6xFtfJosee7EOEYxzuhqYXiMJ9G1VinSp5lcW5ToZkmxW+z08JqpoUvGQ1mwrf
-	 ls0N5Likpit7DUxHm71R0Cav67HuL1WDgsOv3xSGUXHmYw0fRqC2lT+0emQdfcmKqeA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792455401;
+	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Gm-Message-State:
+	 MIME-Version:X-Received:Date:X-Google-Appengine-App-Id:
+	 X-Google-Appengine-App-Id-Alias:Message-ID:Subject:From:To:
+	 Content-Type;
+	bh=HOD+pvsCAakPIqAhHkyWdm2kYq6q1N6qhotia7J/S1c=;
+	b=wmVRInrcMCObiXsxmb8iuZ2h1hrGVZxkFxI/iXTaKbAlb38IxbmvZUsaCqWrZLKFuoOW
+	 cu+wZnVNv5ehuqAhJ/vLWromqQKNPNNfWvN7rwK30vSeSs+D+8g0IY25aS46fPqSr3Emr
+	 mAKqycVwt9DTSA9p1l4NyaznV7uAhpsxiUDKvKuX7p/blMBCRuoCOUBRUx6cNn5sD1gdt
+	 7AqzTViVEFkQNMARmiY72khYanUve8UueIJQrsv061keo26A8XRv7uLpl/HBpagOdJGJg
+	 gvsiOapFJjCIGReu44cmTZy1mWNNR5H5F59U225fBpCacLLxNu8PM4hmyiCo4E1fZPw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=R9RL4vxr;
-	arc=none smtp.remote-ip=217.140.110.172
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F89C606A324
-	for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 20:40:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4F89C606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=R9RL4vxr
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97C1720E3;
-	Mon, 19 Oct 2026 13:40:18 -0700 (PDT)
-Received: from e135073.arm.com (unknown [10.57.53.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 244DE3F673;
-	Mon, 19 Oct 2026 13:40:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1792442421; bh=mZdsZZ0eMnFYwFad0DranBP838NOpNxdeiDGOK0U3Nw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R9RL4vxrXA/kXCqTFAOPXOCh/FTqLTtZp8lxKbhtF6PiMlu3pfNy3OM6DNSfq4Nd1
-	 aGjqqL1irL5mcb6WJZeC4U8CXreAj8ylH2tnF/l24uUBmyvQu8IzdCQDfHY/yYjixW
-	 33OT3QU241AQhslqOlqYFUEmPmH8imvqQb/2pj1g=
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: James Morse <james.morse@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Dan Williams <djbw@kernel.org>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Morduan Zang <zhangdandan@uniontech.com>,
-	linux-acpi@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v2 6/6] ACPI: extlog: add Memory Error Section 2 trace event
-Date: Mon, 19 Oct 2026 22:38:45 +0200
-Message-ID: <20261019203915.2019037-7-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261019203915.2019037-1-pierre.gondois@arm.com>
-References: <20261019203915.2019037-1-pierre.gondois@arm.com>
+	dmarc=fail header.from=syzkaller.appspotmail.com;
+	spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com;
+	arc=none smtp.remote-ip=209.85.167.200
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB7F606A32D
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 00:16:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FB7F606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-4a7de733fa9so4365772b6e.3
+        for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 17:16:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792455400; x=1793060200;
+        h=content-type:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=HOD+pvsCAakPIqAhHkyWdm2kYq6q1N6qhotia7J/S1c=;
+        b=nqufA85Y8hH2rruRbJck/9/tzSt3urNuitwlJbIv+dW5jJLx8zx9GRTP7KIhcqkt6e
+         lRLN3RKI452CmrvFXX0D+VDwOOmh3F5urXGnFwS9kZNlfDT8jFJBvM5bc35zHV1mTcLN
+         WgzaLNt+yOkg8Aa+nzAxUZ3o065yJ73GZlZW7QNGw47wNF+dh3NjjleaGwSXsDeOHD7G
+         qUDcL5GQBQvF/6rsOsyC5pvidc9rpqWimuDmsNAtYREYCTRj8kvQFXhPIKp9DrKlaXYe
+         qL+6mtMNmdgXV+4d5QVWxn+rIf/o02NI8oXHKeZ0r8h7TSfuShHOo97ZP+F03IMO8Xs+
+         vfPA==
+X-Gm-Message-State: AFq9FYLZ0Dh0pbJaAbypUk3+f35j3Yx8hFQwT4pMlKjUG6lJ0EGdr2kU
+	+C7sjfR5AJ9o2MfStnJtLhmAhZqQLO3kBqk+GEDAfMDWi49MWsKJkH2gb1FpOZoHz4hhJESdp34
+	sCRn2iyLkuRZYz3zpk+qrdW8Ot8S1C+BOypl6xabnQaM2CQnuhlHsaaZh8lU=
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -82,162 +57,296 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6808:4f53:b0:4f6:1336:cdf9 with SMTP id
+ 5614622812f47-53cd42a766amr8944900b6e.35.1792455400424; Mon, 19 Oct 2026
+ 17:16:40 -0700 (PDT)
+Date: Mon, 19 Oct 2026 17:16:40 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6ad6b2e8.b5bd089a.6b57.0083.GAE@google.com>
+Subject: [syzbot] [acpica?] KASAN: slab-use-after-free Read in acpi_ns_check_package
+From: syzbot <syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com>
+To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, maciej.wieczor-retman@intel.com, 
+	pawel.chmielewski@intel.com, rafael@kernel.org, robert.moore@intel.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add a separate handling for Memory Error Section 2 trace events.
-The fields of the record are individually printed so userspace
-can discover the layout more dynamically if a new field is added.
+Hello,
 
-Reviewed-by: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+syzbot found the following issue on:
+
+HEAD commit:    0fcb05b72344 Merge tag 'libcrypto-fixes-for-linus' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10dab29c580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4ccb65e03706547e
+dashboard link: https://syzkaller.appspot.com/bug?extid=e1268acad3c273b12120
+compiler:       Debian clang version 22.1.8 (1~deb13u4), Debian LLD 22.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-0fcb05b7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d63a4093e9d7/vmlinux-0fcb05b7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/238bf14f8b3f/bzImage-0fcb05b7.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com
+
+ACPI Error: AE_NO_MEMORY, Could not update object reference count (20260408/utdelete-651)
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 0
+CPU: 0 UID: 0 PID: 5326 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ fail_dump lib/fault-inject.c:73 [inline]
+ should_fail_ex+0x410/0x560 lib/fault-inject.c:174
+ should_failslab+0xa8/0x100 mm/failslab.c:46
+ slab_pre_alloc_hook mm/slub.c:4638 [inline]
+ slab_alloc_node mm/slub.c:4974 [inline]
+ kmem_cache_alloc_noprof+0xa1/0x600 mm/slub.c:5010
+ acpi_ut_create_generic_state drivers/acpi/acpica/utstate.c:90 [inline]
+ acpi_ut_create_update_state+0x76/0x110 drivers/acpi/acpica/utstate.c:165
+ acpi_ut_create_update_state_and_push+0x2a/0x70 drivers/acpi/acpica/utmisc.c:172
+ acpi_ut_update_object_reference+0x2c0/0x870 drivers/acpi/acpica/utdelete.c:563
+ acpi_ds_do_implicit_return+0x2ba/0x3c0 drivers/acpi/acpica/dsutils.c:113
+ acpi_ds_is_result_used+0x7a/0x8c0 drivers/acpi/acpica/dsutils.c:156
+ acpi_ds_delete_result_if_not_used+0xb1/0x190 drivers/acpi/acpica/dsutils.c:320
+ acpi_ds_exec_end_op+0x1015/0x1b00 drivers/acpi/acpica/dswexec.c:740
+ acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_method+0x89d/0xa70 drivers/acpi/acpica/psxface.c:190
+ acpi_ns_evaluate+0xd05/0x1320 drivers/acpi/acpica/nseval.c:205
+ acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
+ acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
+ acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
+ acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
+ acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
+ acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
+ do_pci_disable_device drivers/pci/pci.c:2203 [inline]
+ pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
+ pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
+ device_remove drivers/base/dd.c:616 [inline]
+ __device_release_driver drivers/base/dd.c:1349 [inline]
+ device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
+ pci_stop_dev drivers/pci/remove.c:27 [inline]
+ pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
+ pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
+ pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
+ remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
+ kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x612/0xba0 fs/read_write.c:687
+ ksys_write+0x150/0x270 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f32c179e559
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f32c2588fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f32c1a25fa0 RCX: 00007f32c179e559
+RDX: 0000000000000001 RSI: 0000200000000580 RDI: 0000000000000009
+RBP: 00007f32c18358b0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f32c1a26038 R14: 00007f32c1a25fa0 R15: 00007fff5dc47ed8
+ </TASK>
+ACPI Error: AE_NO_MEMORY, Could not update object reference count (20260408/utdelete-651)
+==================================================================
+BUG: KASAN: slab-use-after-free in acpi_ns_check_package+0x163c/0x1950 drivers/acpi/acpica/nsprepkg.c:274
+Read of size 1 at addr ffff888000d624e9 by task syz.0.0/5326
+
+CPU: 0 UID: 0 PID: 5326 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ print_address_description+0x55/0x1e0 mm/kasan/report.c:378
+ print_report+0x58/0x70 mm/kasan/report.c:482
+ kasan_report+0x117/0x150 mm/kasan/report.c:595
+ acpi_ns_check_package+0x163c/0x1950 drivers/acpi/acpica/nsprepkg.c:274
+ acpi_ns_check_return_value+0x22f/0x3a0 drivers/acpi/acpica/nspredef.c:136
+ acpi_ns_evaluate+0xd5f/0x1320 drivers/acpi/acpica/nseval.c:261
+ acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
+ acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
+ acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
+ acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
+ acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
+ acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
+ do_pci_disable_device drivers/pci/pci.c:2203 [inline]
+ pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
+ pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
+ device_remove drivers/base/dd.c:616 [inline]
+ __device_release_driver drivers/base/dd.c:1349 [inline]
+ device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
+ pci_stop_dev drivers/pci/remove.c:27 [inline]
+ pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
+ pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
+ pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
+ remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
+ kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x612/0xba0 fs/read_write.c:687
+ ksys_write+0x150/0x270 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f32c179e559
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f32c2588fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f32c1a25fa0 RCX: 00007f32c179e559
+RDX: 0000000000000001 RSI: 0000200000000580 RDI: 0000000000000009
+RBP: 00007f32c18358b0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f32c1a26038 R14: 00007f32c1a25fa0 R15: 00007fff5dc47ed8
+ </TASK>
+
+Allocated by task 1:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ unpoison_slab_object mm/kasan/common.c:351 [inline]
+ __kasan_slab_alloc+0x6c/0x80 mm/kasan/common.c:377
+ kasan_slab_alloc include/linux/kasan.h:253 [inline]
+ slab_post_alloc_hook mm/slub.c:4683 [inline]
+ slab_alloc_node mm/slub.c:4996 [inline]
+ kmem_cache_alloc_noprof+0x2b9/0x600 mm/slub.c:5010
+ acpi_ut_allocate_object_desc_dbg+0x8c/0x230 drivers/acpi/acpica/utobject.c:359
+ acpi_ut_create_internal_object_dbg+0x4d/0x310 drivers/acpi/acpica/utobject.c:69
+ acpi_ds_build_internal_package_obj+0x126/0xbe0 drivers/acpi/acpica/dspkginit.c:92
+ acpi_ds_eval_data_object_operands+0x337/0x5c0 drivers/acpi/acpica/dsopcode.c:638
+ acpi_ds_exec_end_op+0x1307/0x1b00 drivers/acpi/acpica/dswexec.c:-1
+ acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_table+0x352/0x440 drivers/acpi/acpica/psxface.c:295
+ acpi_ns_execute_table+0x5d0/0x890 drivers/acpi/acpica/nsparse.c:116
+ acpi_ns_parse_table+0xef/0x170 drivers/acpi/acpica/nsparse.c:268
+ acpi_ns_load_table+0x131/0x430 drivers/acpi/acpica/nsload.c:71
+ acpi_tb_load_namespace+0x2ca/0x880 drivers/acpi/acpica/tbxfload.c:158
+ acpi_load_tables+0x53/0xf0 drivers/acpi/acpica/tbxfload.c:59
+ acpi_bus_init+0x82/0x360 drivers/acpi/bus.c:1373
+ acpi_init+0xa1/0x1f0 drivers/acpi/bus.c:1486
+ do_one_initcall+0x250/0x870 init/main.c:1362
+ do_initcall_level+0x10a/0x1a0 init/main.c:1424
+ do_initcalls+0x59/0xa0 init/main.c:1440
+ kernel_init_freeable+0x29d/0x3e0 init/main.c:1675
+ kernel_init+0x22/0x1d0 init/main.c:1565
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+Freed by task 5326:
+ kasan_save_stack mm/kasan/common.c:57 [inline]
+ kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:584
+ poison_slab_object mm/kasan/common.c:264 [inline]
+ __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:296
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:2748 [inline]
+ slab_free mm/slub.c:6509 [inline]
+ kmem_cache_free+0x182/0x650 mm/slub.c:6636
+ acpi_os_release_object+0x1d/0x30 drivers/acpi/osl.c:1661
+ acpi_ut_delete_object_desc+0x9b/0x110 drivers/acpi/acpica/utobject.c:402
+ acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
+ acpi_ut_update_ref_count+0x174c/0x1d10 drivers/acpi/acpica/utdelete.c:436
+ acpi_ut_update_object_reference+0x4a8/0x870 drivers/acpi/acpica/utdelete.c:632
+ acpi_ds_clear_implicit_return+0x156/0x1f0 drivers/acpi/acpica/dsutils.c:55
+ acpi_ds_exec_end_control_op+0x533/0xe00 drivers/acpi/acpica/dscontrol.c:226
+ acpi_ds_exec_end_op+0x799/0x1b00 drivers/acpi/acpica/dswexec.c:462
+ acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_method+0x89d/0xa70 drivers/acpi/acpica/psxface.c:190
+ acpi_ns_evaluate+0xd05/0x1320 drivers/acpi/acpica/nseval.c:205
+ acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
+ acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
+ acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
+ acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
+ acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
+ acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
+ do_pci_disable_device drivers/pci/pci.c:2203 [inline]
+ pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
+ pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
+ device_remove drivers/base/dd.c:616 [inline]
+ __device_release_driver drivers/base/dd.c:1349 [inline]
+ device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
+ pci_stop_dev drivers/pci/remove.c:27 [inline]
+ pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
+ pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
+ pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
+ remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
+ kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x612/0xba0 fs/read_write.c:687
+ ksys_write+0x150/0x270 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
+ do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The buggy address belongs to the object at ffff888000d624e0
+ which belongs to the cache Acpi-Operand of size 72
+The buggy address is located 9 bytes inside of
+ freed 72-byte region [ffff888000d624e0, ffff888000d62528)
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xd62
+flags: 0x7ff00000000000(node=0|zone=0|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 007ff00000000000 ffff88801c0a0dc0 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000200270027 00000000f5000000 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 3956366881
+ set_page_owner include/linux/page_owner.h:33 [inline]
+ post_alloc_hook+0x1f9/0x250 mm/page_alloc.c:1871
+ prep_new_page mm/page_alloc.c:1879 [inline]
+ get_page_from_freelist+0x2209/0x2280 mm/page_alloc.c:3943
+ __alloc_frozen_pages_noprof+0x217/0x5a0 mm/page_alloc.c:5436
+ alloc_slab_page mm/slub.c:3347 [inline]
+ allocate_slab+0x7d/0x620 mm/slub.c:3462
+ new_slab mm/slub.c:3513 [inline]
+ refill_objects+0x2d5/0x350 mm/slub.c:7418
+ refill_sheaf mm/slub.c:2885 [inline]
+ __pcs_replace_empty_main+0x2c8/0x6c0 mm/slub.c:4774
+ alloc_from_pcs mm/slub.c:4850 [inline]
+ slab_alloc_node mm/slub.c:4984 [inline]
+ kmem_cache_alloc_noprof+0x399/0x600 mm/slub.c:5010
+ acpi_ut_allocate_object_desc_dbg+0x8c/0x230 drivers/acpi/acpica/utobject.c:359
+ acpi_ut_create_internal_object_dbg+0x4d/0x310 drivers/acpi/acpica/utobject.c:69
+ acpi_ds_build_internal_object+0x294/0x690 drivers/acpi/acpica/dsobject.c:94
+ acpi_ds_build_internal_package_obj+0x599/0xbe0 drivers/acpi/acpica/dspkginit.c:202
+ acpi_ds_eval_data_object_operands+0x337/0x5c0 drivers/acpi/acpica/dsopcode.c:638
+ acpi_ds_exec_end_op+0x1307/0x1b00 drivers/acpi/acpica/dswexec.c:-1
+ acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
+ acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
+ acpi_ps_execute_table+0x352/0x440 drivers/acpi/acpica/psxface.c:295
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888000d62380: fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc fc
+ ffff888000d62400: fc fc 00 00 00 00 00 00 00 00 00 fc fc fc fc 00
+>ffff888000d62480: 00 00 00 00 00 00 00 00 fc fc fc fc fa fb fb fb
+                                                          ^
+ ffff888000d62500: fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb
+ ffff888000d62580: fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc
+==================================================================
+
+
 ---
- drivers/acpi/acpi_extlog.c |   6 +++
- drivers/ras/ras.c          |   1 +
- include/ras/ras_event.h    | 102 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 109 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-index 7ad3b36013cc..9e4d16e06244 100644
---- a/drivers/acpi/acpi_extlog.c
-+++ b/drivers/acpi/acpi_extlog.c
-@@ -231,6 +231,12 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
- 			if (gdata->error_data_length >= sizeof(*mem))
- 				trace_extlog_mem_event(mem, err_seq, fru_id, fru_text,
- 						       (u8)gdata->error_severity);
-+		} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
-+			struct cper_sec_mem_err2 *mem = acpi_hest_get_payload(gdata);
-+
-+			if (gdata->error_data_length >= sizeof(*mem))
-+				trace_extlog_mem2_event(mem, err_seq, fru_id, fru_text,
-+						      	(u8)gdata->error_severity);
- 		} else if (guid_equal(sec_type, &CPER_SEC_CXL_PROT_ERR)) {
- 			struct cxl_cper_sec_prot_err *prot_err =
- 				acpi_hest_get_payload(gdata);
-diff --git a/drivers/ras/ras.c b/drivers/ras/ras.c
-index 03df3db62334..c6b14202a5e9 100644
---- a/drivers/ras/ras.c
-+++ b/drivers/ras/ras.c
-@@ -111,6 +111,7 @@ subsys_initcall(ras_init);
- 
- #if defined(CONFIG_ACPI_EXTLOG) || defined(CONFIG_ACPI_EXTLOG_MODULE)
- EXPORT_TRACEPOINT_SYMBOL_GPL(extlog_mem_event);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(extlog_mem2_event);
- #endif
- EXPORT_TRACEPOINT_SYMBOL_GPL(mc_event);
- EXPORT_TRACEPOINT_SYMBOL_GPL(non_standard_event);
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index fdb785fa4613..0c0dbe068dc8 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -74,6 +74,108 @@ TRACE_EVENT(extlog_mem_event,
- 		  &__entry->fru_id,
- 		  __get_str(fru_text))
- );
-+
-+/*
-+ * Memory Error Section 2 exposes each field separately so userspace can
-+ * discover its layout. Validation bits use the UEFI Section 2 assignments.
-+ */
-+TRACE_EVENT(extlog_mem2_event,
-+	TP_PROTO(const struct cper_sec_mem_err2 *mem,
-+		 u32 err_seq,
-+		 const guid_t *fru_id,
-+		 const char *fru_text,
-+		 u8 sev),
-+
-+	TP_ARGS(mem, err_seq, fru_id, fru_text, sev),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, err_seq)
-+		__field(u8, sev)
-+		__field_struct(guid_t, fru_id)
-+		__string(fru_text, fru_text)
-+		__field(u64, validation_bits)
-+		__field(u64, error_status)
-+		__field(u64, physical_addr)
-+		__field(u64, physical_addr_mask)
-+		__field(u16, node)
-+		__field(u16, card)
-+		__field(u16, module)
-+		__field(u16, bank)
-+		__field(u32, device)
-+		__field(u32, row)
-+		__field(u32, column)
-+		__field(u32, rank)
-+		__field(u32, bit_pos)
-+		__field(u8, chip_id)
-+		__field(u8, error_type)
-+		__field(u8, status)
-+		__field(u64, requestor_id)
-+		__field(u64, responder_id)
-+		__field(u64, target_id)
-+		__field(u32, mem_array_handle)
-+		__field(u32, mem_dev_handle)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->err_seq = err_seq;
-+		__entry->sev = sev;
-+		__entry->fru_id = *fru_id;
-+		__assign_str(fru_text);
-+		__entry->validation_bits = mem->validation_bits;
-+		__entry->error_status = mem->error_status;
-+		__entry->physical_addr = mem->physical_addr;
-+		__entry->physical_addr_mask = mem->physical_addr_mask;
-+		__entry->node = mem->node;
-+		__entry->card = mem->card;
-+		__entry->module = mem->module;
-+		__entry->bank = mem->bank;
-+		__entry->device = mem->device;
-+		__entry->row = mem->row;
-+		__entry->column = mem->column;
-+		__entry->rank = mem->rank;
-+		__entry->bit_pos = mem->bit_pos;
-+		__entry->chip_id = mem->chip_id;
-+		__entry->error_type = mem->error_type;
-+		__entry->status = mem->status;
-+		__entry->requestor_id = mem->requestor_id;
-+		__entry->responder_id = mem->responder_id;
-+		__entry->target_id = mem->target_id;
-+		__entry->mem_array_handle = mem->mem_array_handle;
-+		__entry->mem_dev_handle = mem->mem_dev_handle;
-+	),
-+
-+	TP_printk("{%u} %s error: validation_bits: 0x%llx "
-+		  "error_status: 0x%llx physical_addr: 0x%llx "
-+		  "physical_addr_mask: 0x%llx node: %u card: %u "
-+		  "module: %u bank: %u device: %u row: %u column: %u "
-+		  "rank: %u bit_pos: %u chip_id: %u error_type: %u "
-+		  "status: 0x%x requestor_id: 0x%llx responder_id: 0x%llx "
-+		  "target_id: 0x%llx mem_array_handle: 0x%x "
-+		  "mem_dev_handle: 0x%x FRU: %pUl %.20s",
-+		  __entry->err_seq, cper_severity_str(__entry->sev),
-+		  __entry->validation_bits,
-+		  __entry->error_status,
-+		  __entry->physical_addr,
-+		  __entry->physical_addr_mask,
-+		  __entry->node,
-+		  __entry->card,
-+		  __entry->module,
-+		  __entry->bank,
-+		  __entry->device,
-+		  __entry->row,
-+		  __entry->column,
-+		  __entry->rank,
-+		  __entry->bit_pos,
-+		  __entry->chip_id,
-+		  __entry->error_type,
-+		  __entry->status,
-+		  __entry->requestor_id,
-+		  __entry->responder_id,
-+		  __entry->target_id,
-+		  __entry->mem_array_handle,
-+		  __entry->mem_dev_handle,
-+		  &__entry->fru_id, __get_str(fru_text))
-+);
- #endif
- 
- /*
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
