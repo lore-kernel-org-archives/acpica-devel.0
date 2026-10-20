@@ -1,53 +1,117 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.167.200
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792455401;
-	b=u7vL4+ibtA6rBpyteR7C8pkbG5UQLItgv2REaIRxavLfMWajCsfQ8L9wIOELawUH1O3A
-	 Uwgk5fYLZ/3SOTlDYzsEtwwiyxvYJFVLaMwRgl5aOGa6M8wmWczWELmsI2l+rT9ejMefZ
-	 xyLYwiJavLjPWDy5GgGZnEkGtwd5348ghvIgJpRCzrs4+icffgRVU0m2qQr7Mzytci6UA
-	 KVDdl9FNDmwvlySsdu51pJNU7cLJdtOkE1ldtVoFT7swu9tK8STNAPBA20V0iGhBS/f54
-	 CELQ1qY47tDV8h6MPbzIOyWff1OY3ByHYTzilyGUYd9/b1aEPO00dWo76C1WsZ9ehiA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792455401;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Gm-Message-State:
-	 MIME-Version:X-Received:Date:X-Google-Appengine-App-Id:
-	 X-Google-Appengine-App-Id-Alias:Message-ID:Subject:From:To:
-	 Content-Type;
-	bh=HOD+pvsCAakPIqAhHkyWdm2kYq6q1N6qhotia7J/S1c=;
-	b=wmVRInrcMCObiXsxmb8iuZ2h1hrGVZxkFxI/iXTaKbAlb38IxbmvZUsaCqWrZLKFuoOW
-	 cu+wZnVNv5ehuqAhJ/vLWromqQKNPNNfWvN7rwK30vSeSs+D+8g0IY25aS46fPqSr3Emr
-	 mAKqycVwt9DTSA9p1l4NyaznV7uAhpsxiUDKvKuX7p/blMBCRuoCOUBRUx6cNn5sD1gdt
-	 7AqzTViVEFkQNMARmiY72khYanUve8UueIJQrsv061keo26A8XRv7uLpl/HBpagOdJGJg
-	 gvsiOapFJjCIGReu44cmTZy1mWNNR5H5F59U225fBpCacLLxNu8PM4hmyiCo4E1fZPw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=syzkaller.appspotmail.com;
-	spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com;
-	arc=none smtp.remote-ip=209.85.167.200
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.195.39
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792498760;
+	b=1Vfh+Ziyzh4F4z2ApgQz49M3nIcQBtE2p3zZpwtwGqljIg9HLKYJaXJkUHNfAHbjI67y
+	 sp3gPr/1NCwXaHdPLZneoc+36WAAGks4KAk04WoTB8DY2EAGXReO1cFASk+/07d7z6unX
+	 dBonI3by/frKqJXn6NtrwUF5ifl2qsrip9/xujIVVV5V8SK5LxYrCZ+1MDwx7JW5pe+4A
+	 lyovx+UJw8S79M9gDkJG8G+Qq2ksPgZaj/VBtdtoREXieSLzLtJLOMvyyEzM6xIMIqim8
+	 6se1Xgc4Z24tbBs5M/ifwv6XeyJWfmHWyz1C5eae8QEqGbh9l2ivt1JYg08kS5KFhRA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792498760;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:
+	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
+	 Received:Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+	 Content-Type:X-NV-OnPremToCloud:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=Bqui4gSEsLKVOJwH65N6nGKURuZZrTOxGnpUytKUWO0=;
+	b=vY36pnoxKtsSFJ5CL5ptDBuTCDhjdQCqHR8ZaCvXC0TaX3w8yQG51W7iRO4u5pcZam+K
+	 Wl8te+t04qB6Y3e6GzKwvXadoLuiZJQ/rHreqYBVn0IURUuuhQ1UHtJo0u6PuQ+Gop256
+	 1jGX3NL6U1DIaxcw6tlcKyQv32LV2t1fIkMOHd0++lvrVkCKAsZ22W3NZrp71PA7Fe3Uz
+	 kCT9HmRUxlvNN4FYJdcNGifZM60LyHirpRMcRvxJeaDLKQB2CtruXalts8TRZaMQMzZKy
+	 jgDm9+RJ76ONsHnWftY96Vs9V1Owi2W0Zilk3lVY0SKpxkLQYlH6uALI2voxgcJ808Q==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=nvidia.com;
+	spf=fail smtp.mailfrom=nvidia.com;
+	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=g+YgJloq;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.195.39
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012039.outbound.protection.outlook.com [40.93.195.39])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB7F606A32D
-	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 00:16:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FB7F606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-4a7de733fa9so4365772b6e.3
-        for <acpica-devel@lists.linux.dev>; Mon, 19 Oct 2026 17:16:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792455400; x=1793060200;
-        h=content-type:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=HOD+pvsCAakPIqAhHkyWdm2kYq6q1N6qhotia7J/S1c=;
-        b=nqufA85Y8hH2rruRbJck/9/tzSt3urNuitwlJbIv+dW5jJLx8zx9GRTP7KIhcqkt6e
-         lRLN3RKI452CmrvFXX0D+VDwOOmh3F5urXGnFwS9kZNlfDT8jFJBvM5bc35zHV1mTcLN
-         WgzaLNt+yOkg8Aa+nzAxUZ3o065yJ73GZlZW7QNGw47wNF+dh3NjjleaGwSXsDeOHD7G
-         qUDcL5GQBQvF/6rsOsyC5pvidc9rpqWimuDmsNAtYREYCTRj8kvQFXhPIKp9DrKlaXYe
-         qL+6mtMNmdgXV+4d5QVWxn+rIf/o02NI8oXHKeZ0r8h7TSfuShHOo97ZP+F03IMO8Xs+
-         vfPA==
-X-Gm-Message-State: AFq9FYLZ0Dh0pbJaAbypUk3+f35j3Yx8hFQwT4pMlKjUG6lJ0EGdr2kU
-	+C7sjfR5AJ9o2MfStnJtLhmAhZqQLO3kBqk+GEDAfMDWi49MWsKJkH2gb1FpOZoHz4hhJESdp34
-	sCRn2iyLkuRZYz3zpk+qrdW8Ot8S1C+BOypl6xabnQaM2CQnuhlHsaaZh8lU=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA55F606A31B
+	for <acpica-devel@lists.linux.dev>; Tue, 20 Oct 2026 12:19:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EA55F606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=g+YgJloq
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JmX+CD0rGvqrI4Q1pkudWY48dUWFPA+JSV0OPYsydu1waG7/cNCPjUud4+VLIdPOM6DdFn+owphouFJhj2MiMFjJ2zgZT3JE9kFFhiIfY9qF/8EWWUBmaPySbO+W94WSQp3/b3ZflKTKkNspOjOFGhLcr2CFnvgvvUMG5Z7JQbdTc9VFKctRg09q7K24jHKdYMhtIsaZd8VSQMtj86v07Vx7m8kRWGXUyfooCGCx6zZVpLy6JQvbr/Dg51JjkTsxq3CQB8LRRcJHH+9GmXMaG+6w3kItdeiGH7XK9DPOGOyxOchlU2V9ilRv0BhTQbfstVA2fqNXL0COVtlOjznzig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Bqui4gSEsLKVOJwH65N6nGKURuZZrTOxGnpUytKUWO0=;
+ b=ALs8xWxHJMdkMNM5Trx0HEurGivFDkTy2YN4WPmEq7v8r+jtTj0C7SG+W+dLr76gGwMM1JIsZxat7Qp5I95hvX+GfXPRFglQniE2r+WVv1A02TCJNrrtMPjdzOgoR87Rgy/CvvjJ7dT/aUj2OXylrRBZr6Au6aFn4aDHI99SCNio6zQ+1luzqzl1eCnKd7135XTNCbz81+aw1MbKdouqRzJE4L4k6GLGumaCR6ipnJy4jcPJSVDOj8OCGbKeAVqupclNrhfn0wNGCfm+W7xgfU5kOSnXNM8SRTA/Hl8BZHMb16gJKHpasfAqiiGVfcCXoVlQm/qjL0kQUz7ZxEMzZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bqui4gSEsLKVOJwH65N6nGKURuZZrTOxGnpUytKUWO0=;
+ b=g+YgJloqBZ7gths84XkkyouAnl5ZF656QgkI+1sQ2mxbAGzpCOVh8Z+hGWxpbRhYBcyNK1N+RecMvteq04tUWySruaWKmfpaGM4Ozzkc7VsHtYbIm5FQQTWEvMBQkNv57dRn51h9R76BjVurvBCoUWxTWZby2eTpKStQWt7/kEuDGftOLg2k3MvX7qjtGZmhhiTzhMrISHwtQ+gmQv+r3A11vRJHM2izu41sED+Ci4ee+Ay3FvwqI4ee8D5uXraCS7vCoScnz9AHv7E3V/j2bLKapMCEy3eq5Pfz1RrSCWHvX81xnnlA40nupa+Vn5MV8FCmj4suiT9hQt7cUwJOOA==
+Received: from BLAPR03CA0065.namprd03.prod.outlook.com (2603:10b6:208:329::10)
+ by SA1PR12MB9546.namprd12.prod.outlook.com (2603:10b6:806:459::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.522.19; Tue, 20 Oct
+ 2026 12:19:15 +0000
+Received: from MN7PEPF0000014E.namprd04.prod.outlook.com
+ (2603:10b6:208:329:cafe::76) by BLAPR03CA0065.outlook.office365.com
+ (2603:10b6:208:329::10) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.496.5 via Frontend Transport; Tue, 20
+ Oct 2026 12:19:15 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 216.228.117.161) smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MN7PEPF0000014E.mail.protection.outlook.com (10.167.254.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.546.15 via Frontend Transport; Tue, 20 Oct 2026 12:19:14 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.56; Tue, 20 Oct
+ 2026 05:18:58 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.49; Tue, 20 Oct
+ 2026 05:18:57 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.2562.49 via Frontend
+ Transport; Tue, 20 Oct 2026 05:18:50 -0700
+From: Sumit Gupta <sumitg@nvidia.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>, <pierre.gondois@arm.com>,
+	<christian.loehle@arm.com>, <ionela.voinescu@arm.com>,
+	<zhenglifeng1@huawei.com>, <zhanjie9@hisilicon.com>, <lenb@kernel.org>,
+	<ray.huang@amd.com>, <mario.limonciello@amd.com>, <perry.yuan@amd.com>,
+	<kprateek.nayak@amd.com>, <maciej.wieczor-retman@intel.com>,
+	<pawel.chmielewski@intel.com>, <linux-pm@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+CC: <linux-tegra@vger.kernel.org>, <treding@nvidia.com>,
+	<jonathanh@nvidia.com>, <vsethi@nvidia.com>, <ksitaraman@nvidia.com>,
+	<sanjayc@nvidia.com>, <mochs@nvidia.com>, <bbasu@nvidia.com>,
+	<sumitg@nvidia.com>
+Subject: [PATCH v6 0/5] cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+Date: Tue, 20 Oct 2026 17:48:41 +0530
+Message-ID: <20261020121846.691218-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -57,296 +121,117 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:4f53:b0:4f6:1336:cdf9 with SMTP id
- 5614622812f47-53cd42a766amr8944900b6e.35.1792455400424; Mon, 19 Oct 2026
- 17:16:40 -0700 (PDT)
-Date: Mon, 19 Oct 2026 17:16:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6ad6b2e8.b5bd089a.6b57.0083.GAE@google.com>
-Subject: [syzbot] [acpica?] KASAN: slab-use-after-free Read in acpi_ns_check_package
-From: syzbot <syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com>
-To: acpica-devel@lists.linux.dev, lenb@kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, maciej.wieczor-retman@intel.com, 
-	pawel.chmielewski@intel.com, rafael@kernel.org, robert.moore@intel.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN7PEPF0000014E:EE_|SA1PR12MB9546:EE_
+X-MS-Office365-Filtering-Correlation-Id: 31788edf-7acc-48a4-4b59-08df2ea45b55
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|23010399003|36860700016|82310400026|1800799024|7416014|6133799003|18002099003|13003099007|921020|261009221227099003|11063799006|10067099003|261009223027099003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	0xW0x6kfFikfqXydZcfzQlAH6RDUlVCXYi7SoIDc8vUspPHjBHDWZa2j2NXfWdjcz/tJM6rsxW5/ua9j+3Q2wVwiO7d08dqEFgBVZK/nrhDlgKqZHfc3X0qnig4vFjJo5L8QsdIrSB+QirI931SB+SU/gj/4Maien/hmQSK9T4Uit+6pFpjOgKMaSAT+4KoWB1HYTCUYKpNUfnO5eGMR3PGppIOpDcaSNFtTZQUgQ5fJs4UgMA7xV7WAlOZt0gp2kTQzZP3U990Bslwi4cJ8uyehYHiv+vuyIrhZpU1neSK+zj+7/SoPnCxZo8rtm39c3v/0jqBdHP4QctFyPbaTU3qZs/lz2X6Wd7OQrsmfUO82XceZYTqPWE/jY6q5O/iFURBSFmZ+Got6QoGZKDlUQHEC4fIeLs7pNwd6BbRyrkRbJo0DyRcuVdmSoiKxuEN3ctKgY68Z+hA5JxgmyDPORtjM2GxRAZezMZqsAQAvs1Vg0evrq+8A1ygL4gMGKRDm69fQHjrY6PtWcLukFiNUgE7Ihx7qZRcXVdkAgFIitqr6oQ2qvSpG5UFoHlBeU2sXiTUjCbY37GiCfidFxFlt7v0goT5plM2HjmKpXuqhtkVadG5XqgmzETtF+CAcp0K9s5RwDMRTbyHAZSep8gpLD5KbFXelI5+lE21GPUk4OqAq320d/0M1InTBY1sZVQgR4PrDpXWky01ukADhdc95V2KYwq9sIPJ+1m4sutkiVEstZ34ZdNTA5Y/0RjexsOem
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(23010399003)(36860700016)(82310400026)(1800799024)(7416014)(6133799003)(18002099003)(13003099007)(921020)(261009221227099003)(11063799006)(10067099003)(261009223027099003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	Iiaf1VAIC8QBlX9vmfd1xXsWcOciNCEQq270IHQrLD9Y6dzJF4GwUebBbvgB+L8TPDSTLby38FEPDtVtj0qReDmUutRfDPyYwJ39HO0xEWTU1GKSVT090oWctEqMNeaX9U4fAur3VIpvkjNoCgdLml3JQz44lj5dktSC4ADftp+2Tp0oocM7N/ZPvzMuSboc8wkrQtF2rPo/coKeSiHME4XXSnpn0STaepsxfmzeWzxKwlGoKYptvKslrL0PHYILSBWuPy6ywa+uGDAeiKKTcVWH199Z41NZkXY07DQ7OKMoiQ76hx2rbrQhgNClynjuIdqxDcTtTruuB2nm5pwA74QKJEH41iLeCNQaX4McSejRDZHsZkmUCJpm6HMRnmKpN6EVpQn9IIr6RQhz+4D7RDTPwec/iWMMQJSyQeJ5fV5mYT+ls1pTEw5i8BlaUzFT
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2026 12:19:14.9925
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31788edf-7acc-48a4-4b59-08df2ea45b55
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN7PEPF0000014E.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB9546
 
-Hello,
+This series preserves the OSPM-set CPPC registers (Energy Performance
+Preference, Autonomous Activity Window, Autonomous Selection - set via
+sysfs) across CPU hotplug and suspend/resume. On driver unload, it puts
+back the values they had before the driver loaded.
 
-syzbot found the following issue on:
+To do this, it keeps the CPPC cpufreq policy alive across CPU hotplug.
+It also orders the performance-control writes in cppc_set_perf(), so
+that restoring them after a platform reset never sends an invalid
+request.
 
-HEAD commit:    0fcb05b72344 Merge tag 'libcrypto-fixes-for-linus' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10dab29c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4ccb65e03706547e
-dashboard link: https://syzkaller.appspot.com/bug?extid=e1268acad3c273b12120
-compiler:       Debian clang version 22.1.8 (1~deb13u4), Debian LLD 22.1.8
+Without online()/offline() callbacks, the core tears a policy down when
+its last CPU goes offline and rebuilds it on the way back, re-reading the
+CPPC capabilities each time. The values written to these registers can
+be lost:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+ - Across CPU hotplug or suspend/resume: the platform may reset them
+   while the CPU is offline or suspended.
+ - On driver unload: the driver-written value is left in the register
+   instead of returning to its pre-driver state.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-0fcb05b7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d63a4093e9d7/vmlinux-0fcb05b7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/238bf14f8b3f/bzImage-0fcb05b7.xz
+Handle these with:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com
+ - Patch 1: orders the Desired, MIN and MAX writes in cppc_set_perf(), so
+   that the platform never sees an invalid request. Christian proposed
+   it in [6], and this version adds fixes found in testing.
+ - Patch 2: adds online()/offline() callbacks so the core keeps policy
+   alive across CPU hotplug instead of tearing it down and rebuilding it.
+ - Patch 3: makes the autonomous selection register helpers take a u64.
+ - Patch 4: adds a table-driven mechanism that captures each register's
+   firmware value at init(), restores it from offline(), and reapplies
+   the OSPM-set value from online().
+ - Patch 5: extends the same save/restore to system suspend/resume.
 
-ACPI Error: AE_NO_MEMORY, Could not update object reference count (20260408/utdelete-651)
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 0
-CPU: 0 UID: 0 PID: 5326 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- fail_dump lib/fault-inject.c:73 [inline]
- should_fail_ex+0x410/0x560 lib/fault-inject.c:174
- should_failslab+0xa8/0x100 mm/failslab.c:46
- slab_pre_alloc_hook mm/slub.c:4638 [inline]
- slab_alloc_node mm/slub.c:4974 [inline]
- kmem_cache_alloc_noprof+0xa1/0x600 mm/slub.c:5010
- acpi_ut_create_generic_state drivers/acpi/acpica/utstate.c:90 [inline]
- acpi_ut_create_update_state+0x76/0x110 drivers/acpi/acpica/utstate.c:165
- acpi_ut_create_update_state_and_push+0x2a/0x70 drivers/acpi/acpica/utmisc.c:172
- acpi_ut_update_object_reference+0x2c0/0x870 drivers/acpi/acpica/utdelete.c:563
- acpi_ds_do_implicit_return+0x2ba/0x3c0 drivers/acpi/acpica/dsutils.c:113
- acpi_ds_is_result_used+0x7a/0x8c0 drivers/acpi/acpica/dsutils.c:156
- acpi_ds_delete_result_if_not_used+0xb1/0x190 drivers/acpi/acpica/dsutils.c:320
- acpi_ds_exec_end_op+0x1015/0x1b00 drivers/acpi/acpica/dswexec.c:740
- acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x89d/0xa70 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0xd05/0x1320 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
- do_pci_disable_device drivers/pci/pci.c:2203 [inline]
- pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
- pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
- device_remove drivers/base/dd.c:616 [inline]
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
- pci_stop_dev drivers/pci/remove.c:27 [inline]
- pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
- pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
- pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
- remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
- kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x612/0xba0 fs/read_write.c:687
- ksys_write+0x150/0x270 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f32c179e559
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f32c2588fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f32c1a25fa0 RCX: 00007f32c179e559
-RDX: 0000000000000001 RSI: 0000200000000580 RDI: 0000000000000009
-RBP: 00007f32c18358b0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f32c1a26038 R14: 00007f32c1a25fa0 R15: 00007fff5dc47ed8
- </TASK>
-ACPI Error: AE_NO_MEMORY, Could not update object reference count (20260408/utdelete-651)
-==================================================================
-BUG: KASAN: slab-use-after-free in acpi_ns_check_package+0x163c/0x1950 drivers/acpi/acpica/nsprepkg.c:274
-Read of size 1 at addr ffff888000d624e9 by task syz.0.0/5326
+v5[5] -> v6:
+ - Patch 1 (new):
+   - add Christian's patch [6] ordering the performance-control writes.
+   - init() requests the full range when the live MAX is zero, to avoid
+     a probe failure.
+   - clamp Desired to MIN and MAX, as rounding can put it below MIN.
+ - Patch 2:
+   - offline() lowers MIN to lowest_perf with Desired, so that the parked
+     request stays valid. (Pierre)
+   - drop cppc_cpufreq_prepare_perf_restore(), as cppc_set_perf() now
+     orders the writes. (Jie Zhan, Christian, Pierre)
+   - online() caches the restored limits only once the platform takes
+     them, as set_target() and fast_switch() do.
+ - Patch 3:
+   - add Prateek's Reviewed-by and Tested-by.
+ - Patch 4:
+   - replace struct cppc_saved_vals with a u64 array indexed by register
+     and type, which drops cppc_cpufreq_saved_reg_value(). (Pierre)
+ - Patch 5:
+   - fie_init() covers related_cpus, so CPUs onlined after resume() also
+     restart their frequency invariance updates. (Sashiko, Pierre)
+   - drop the fast-path cache reset in resume(), as online() does it.
+ - Prateek's v5 Tested-by is not carried to patches 2, 4 and 5, as they
+   changed. A retest would be welcome.
 
-CPU: 0 UID: 0 PID: 5326 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- print_address_description+0x55/0x1e0 mm/kasan/report.c:378
- print_report+0x58/0x70 mm/kasan/report.c:482
- kasan_report+0x117/0x150 mm/kasan/report.c:595
- acpi_ns_check_package+0x163c/0x1950 drivers/acpi/acpica/nsprepkg.c:274
- acpi_ns_check_return_value+0x22f/0x3a0 drivers/acpi/acpica/nspredef.c:136
- acpi_ns_evaluate+0xd5f/0x1320 drivers/acpi/acpica/nseval.c:261
- acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
- do_pci_disable_device drivers/pci/pci.c:2203 [inline]
- pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
- pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
- device_remove drivers/base/dd.c:616 [inline]
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
- pci_stop_dev drivers/pci/remove.c:27 [inline]
- pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
- pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
- pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
- remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
- kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x612/0xba0 fs/read_write.c:687
- ksys_write+0x150/0x270 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f32c179e559
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f32c2588fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f32c1a25fa0 RCX: 00007f32c179e559
-RDX: 0000000000000001 RSI: 0000200000000580 RDI: 0000000000000009
-RBP: 00007f32c18358b0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f32c1a26038 R14: 00007f32c1a25fa0 R15: 00007fff5dc47ed8
- </TASK>
+Christian Loehle (1):
+  ACPI: CPPC: Order performance-control updates
 
-Allocated by task 1:
- kasan_save_stack mm/kasan/common.c:57 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
- unpoison_slab_object mm/kasan/common.c:351 [inline]
- __kasan_slab_alloc+0x6c/0x80 mm/kasan/common.c:377
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4683 [inline]
- slab_alloc_node mm/slub.c:4996 [inline]
- kmem_cache_alloc_noprof+0x2b9/0x600 mm/slub.c:5010
- acpi_ut_allocate_object_desc_dbg+0x8c/0x230 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x4d/0x310 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_package_obj+0x126/0xbe0 drivers/acpi/acpica/dspkginit.c:92
- acpi_ds_eval_data_object_operands+0x337/0x5c0 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0x1307/0x1b00 drivers/acpi/acpica/dswexec.c:-1
- acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x352/0x440 drivers/acpi/acpica/psxface.c:295
- acpi_ns_execute_table+0x5d0/0x890 drivers/acpi/acpica/nsparse.c:116
- acpi_ns_parse_table+0xef/0x170 drivers/acpi/acpica/nsparse.c:268
- acpi_ns_load_table+0x131/0x430 drivers/acpi/acpica/nsload.c:71
- acpi_tb_load_namespace+0x2ca/0x880 drivers/acpi/acpica/tbxfload.c:158
- acpi_load_tables+0x53/0xf0 drivers/acpi/acpica/tbxfload.c:59
- acpi_bus_init+0x82/0x360 drivers/acpi/bus.c:1373
- acpi_init+0xa1/0x1f0 drivers/acpi/bus.c:1486
- do_one_initcall+0x250/0x870 init/main.c:1362
- do_initcall_level+0x10a/0x1a0 init/main.c:1424
- do_initcalls+0x59/0xa0 init/main.c:1440
- kernel_init_freeable+0x29d/0x3e0 init/main.c:1675
- kernel_init+0x22/0x1d0 init/main.c:1565
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+Sumit Gupta (4):
+  cpufreq: CPPC: Keep the policy across CPU hotplug
+  ACPI: CPPC: Make autonomous selection helpers take a u64
+  cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+  cpufreq: CPPC: Preserve OSPM-set registers across suspend/resume
 
-Freed by task 5326:
- kasan_save_stack mm/kasan/common.c:57 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:264 [inline]
- __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:296
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2748 [inline]
- slab_free mm/slub.c:6509 [inline]
- kmem_cache_free+0x182/0x650 mm/slub.c:6636
- acpi_os_release_object+0x1d/0x30 drivers/acpi/osl.c:1661
- acpi_ut_delete_object_desc+0x9b/0x110 drivers/acpi/acpica/utobject.c:402
- acpi_ut_delete_internal_obj drivers/acpi/acpica/utdelete.c:316 [inline]
- acpi_ut_update_ref_count+0x174c/0x1d10 drivers/acpi/acpica/utdelete.c:436
- acpi_ut_update_object_reference+0x4a8/0x870 drivers/acpi/acpica/utdelete.c:632
- acpi_ds_clear_implicit_return+0x156/0x1f0 drivers/acpi/acpica/dsutils.c:55
- acpi_ds_exec_end_control_op+0x533/0xe00 drivers/acpi/acpica/dscontrol.c:226
- acpi_ds_exec_end_op+0x799/0x1b00 drivers/acpi/acpica/dswexec.c:462
- acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_method+0x89d/0xa70 drivers/acpi/acpica/psxface.c:190
- acpi_ns_evaluate+0xd05/0x1320 drivers/acpi/acpica/nseval.c:205
- acpi_ut_evaluate_object+0xe1/0x560 drivers/acpi/acpica/uteval.c:60
- acpi_rs_get_prt_method_data+0xb2/0x150 drivers/acpi/acpica/rsutils.c:446
- acpi_get_irq_routing_table+0x98/0xe0 drivers/acpi/acpica/rsxface.c:137
- acpi_pci_irq_find_prt_entry+0x163/0x1040 drivers/acpi/pci_irq.c:215
- acpi_pci_irq_lookup+0x45/0x690 drivers/acpi/pci_irq.c:299
- acpi_pci_irq_disable+0x151/0x340 drivers/acpi/pci_irq.c:499
- do_pci_disable_device drivers/pci/pci.c:2203 [inline]
- pci_disable_device+0x1d6/0x320 drivers/pci/pci.c:2239
- pci_device_remove+0x99/0x1c0 drivers/pci/pci-driver.c:535
- device_remove drivers/base/dd.c:616 [inline]
- __device_release_driver drivers/base/dd.c:1349 [inline]
- device_release_driver_internal+0x48b/0x880 drivers/base/dd.c:1372
- pci_stop_dev drivers/pci/remove.c:27 [inline]
- pci_stop_bus_device+0xf6/0x120 drivers/pci/remove.c:94
- pci_stop_and_remove_bus_device drivers/pci/remove.c:129 [inline]
- pci_stop_and_remove_bus_device_locked+0x77/0xb0 drivers/pci/remove.c:137
- remove_store+0xe5/0x150 drivers/pci/pci-sysfs.c:524
- kernfs_fop_write_iter+0x3a4/0x540 fs/kernfs/file.c:345
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x612/0xba0 fs/read_write.c:687
- ksys_write+0x150/0x270 fs/read_write.c:739
- do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
- do_syscall_64+0x166/0x520 arch/x86/entry/syscall_64.c:84
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+ drivers/acpi/cppc_acpi.c       | 314 ++++++++++++++++------
+ drivers/cpufreq/amd-pstate.c   |   2 +-
+ drivers/cpufreq/cppc_cpufreq.c | 465 +++++++++++++++++++++++++++++++--
+ include/acpi/cppc_acpi.h       |   9 +-
+ 4 files changed, 684 insertions(+), 106 deletions(-)
 
-The buggy address belongs to the object at ffff888000d624e0
- which belongs to the cache Acpi-Operand of size 72
-The buggy address is located 9 bytes inside of
- freed 72-byte region [ffff888000d624e0, ffff888000d62528)
+[1] v1: https://lore.kernel.org/lkml/20260623095403.3407436-1-sumitg@nvidia.com/
+[2] v2: https://lore.kernel.org/lkml/20260716153820.2007095-1-sumitg@nvidia.com/
+[3] v3: https://lore.kernel.org/lkml/20260724215937.3368276-1-sumitg@nvidia.com/
+[4] v4: https://lore.kernel.org/lkml/20260806200857.601152-1-sumitg@nvidia.com/
+[5] v5: https://lore.kernel.org/lkml/20260916103820.1760297-1-sumitg@nvidia.com/
+[6] https://lore.kernel.org/lkml/1be30b2b-e1e5-41ed-a0dc-0dd5ad3c47cd@arm.com/
 
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xd62
-flags: 0x7ff00000000000(node=0|zone=0|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 007ff00000000000 ffff88801c0a0dc0 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000200270027 00000000f5000000 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0xd2cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 3956366881
- set_page_owner include/linux/page_owner.h:33 [inline]
- post_alloc_hook+0x1f9/0x250 mm/page_alloc.c:1871
- prep_new_page mm/page_alloc.c:1879 [inline]
- get_page_from_freelist+0x2209/0x2280 mm/page_alloc.c:3943
- __alloc_frozen_pages_noprof+0x217/0x5a0 mm/page_alloc.c:5436
- alloc_slab_page mm/slub.c:3347 [inline]
- allocate_slab+0x7d/0x620 mm/slub.c:3462
- new_slab mm/slub.c:3513 [inline]
- refill_objects+0x2d5/0x350 mm/slub.c:7418
- refill_sheaf mm/slub.c:2885 [inline]
- __pcs_replace_empty_main+0x2c8/0x6c0 mm/slub.c:4774
- alloc_from_pcs mm/slub.c:4850 [inline]
- slab_alloc_node mm/slub.c:4984 [inline]
- kmem_cache_alloc_noprof+0x399/0x600 mm/slub.c:5010
- acpi_ut_allocate_object_desc_dbg+0x8c/0x230 drivers/acpi/acpica/utobject.c:359
- acpi_ut_create_internal_object_dbg+0x4d/0x310 drivers/acpi/acpica/utobject.c:69
- acpi_ds_build_internal_object+0x294/0x690 drivers/acpi/acpica/dsobject.c:94
- acpi_ds_build_internal_package_obj+0x599/0xbe0 drivers/acpi/acpica/dspkginit.c:202
- acpi_ds_eval_data_object_operands+0x337/0x5c0 drivers/acpi/acpica/dsopcode.c:638
- acpi_ds_exec_end_op+0x1307/0x1b00 drivers/acpi/acpica/dswexec.c:-1
- acpi_ps_parse_loop+0xfa3/0x23f0 drivers/acpi/acpica/psloop.c:553
- acpi_ps_parse_aml+0x388/0x1020 drivers/acpi/acpica/psparse.c:489
- acpi_ps_execute_table+0x352/0x440 drivers/acpi/acpica/psxface.c:295
-page_owner free stack trace missing
+-- 
+2.34.1
 
-Memory state around the buggy address:
- ffff888000d62380: fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc fc
- ffff888000d62400: fc fc 00 00 00 00 00 00 00 00 00 fc fc fc fc 00
->ffff888000d62480: 00 00 00 00 00 00 00 00 fc fc fc fc fa fb fb fb
-                                                          ^
- ffff888000d62500: fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb
- ffff888000d62580: fb fb fc fc fc fc fa fb fb fb fb fb fb fb fb fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
