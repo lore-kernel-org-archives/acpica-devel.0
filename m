@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792691884;
-	b=N9W/Sdj/HcdS1zpHew1FAyxZSf8kSDv0+fcxwtISERM+l+uvXwUmY2Jl9q/UomrQiuGb
-	 BL1vqrCrQBL/rQTRt0q81YU5AfNVaWfHbDYlXzn2mR6hFSfEkYh1JjSOUsQGW4vEEOou2
-	 oUT/W2MLgxNeMgJWxJp62VtDEZX4ZB+R/TMi4yDjH0RQQIL/yOttS6qylwJ0JVxV7OBDS
-	 uIGQS6xion05/rizEMmSXksNkjQ26FIjmpWls2Es4YNYyC9rfQHtCbszQM170uyTCDthZ
-	 Lymj5TNGgm4V9HGi0V0L+0rPE/SfzLVGIyIKPxJz9vJqI4WHYFHcQVIa7PyMlnVTT7w==
+	t=1792692796;
+	b=liLieJao9z05+nAVQZwTiGZAPkIBQU2SH22+uFdLyeAovso0Vjm/xRsKKmG+ukwHzeka
+	 OHxT9nmhxS/QFOUlDNNnBc8CmUiTPgVnr3ZtYP1whSpkzn05xyy/UB5vd0zKyBh+YULFP
+	 kxhWn0qnEYpnCyMPUgu3dEVrJ/pi91c9hanal6ORcCyQgsBVQMb4re2BR45oMAo8hy1tT
+	 ZOCv3fCFc19R/OQWwimMyqmiZnNCPneCUmWuSrdtWghZ4Cjx4PD3lUgG6Ge6W5BnbOWlD
+	 dYlfoHN9U8EJI/iFhDwx89p5X/7v0XU9YkIxuY2ttdzsHOxTi39LKpEq/zlxZL/pzkQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792691884;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792692796;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=n1REvRKYYNfK5I+aUVJkrK0y0rIac5QSu0xgyudqYaQ=;
-	b=ZRyHhnIcj8qSyoc/4rNEzyRlePAhgPgT96t4sXvHKlTu6ehrjmlDohtMHQp6yhxxW8Wk
-	 s0KU1BKn4pp23lJsLm4NsM572FrTFDW7SDmxoCP/pR36GWChc6BjHGKG6qrauThP0ttF/
-	 CChcJ5etfbZRpGWc0HGvj2QvI/cx7G4OapbiZauhrTmAt73hj6yMUpSpwDDphSE2e69Wz
-	 vA4t4O569VXsXYyn02VWtEC6cSZddta/ZMv0rJDxg40ueuWvN5lyiV6w8cP+QojOgkeHQ
-	 aYsvRCpGnChLBPfYEvLsJ+zcYE87XyzXkJu7SW3qwO4W2WQvM+12eHHfDBNlFi5v+Cw==
+	bh=WoKfb/2yGGVSnXt6CYH/Pbj+IvavfA6u3d8Xn/n1Rd0=;
+	b=stdM4kpAzcsSO1KjTfvLKQ39A02MDYXeVQd6+Q4RZETa5nCD9QG/z7sGboqn9HFkNBN5
+	 soFCUKwvqavAWxRsNe+C7iZ0m8llxG/WVuvj1uQ2I7UvZQdQsuns7tkkXi3to5T23ZznO
+	 SYI/flL5XSgGVb0KVRavBelSvI2rBnAoyg4wGxLSegDphlWaX04+2FR10lPLQgLM2NTp9
+	 VOEb7O+7sY2dNfdBiutSkHJxSlFsomeESraKvi0ma8bf0827PBktm1QC4OZ+mZFtCbilb
+	 ZYr4weUENxCSM6Hs8A+oDk1JpgFcAhuns1VK5FiOzlcpFc3TIYDt9lwQN1fAoceocnA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ESPLJ8uy;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HGT0N5Ne;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAF9606A321
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 17:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD401606A319
+	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 18:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ESPLJ8uy
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 432EE1F031F3
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 17:58:03 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HGT0N5Ne
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B3B1F031E1
+	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 18:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792691883;
-	bh=n1REvRKYYNfK5I+aUVJkrK0y0rIac5QSu0xgyudqYaQ=;
+	s=k20260515; t=1792692795;
+	bh=WoKfb/2yGGVSnXt6CYH/Pbj+IvavfA6u3d8Xn/n1Rd0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=ESPLJ8uyn9I9Q8vwd0wftJM/00hPrIbl0LqcSweUdd9MNDyyY2z3cATHvF2GoN+AJ
-	 JolU0v0O8/StGNwXLF9xfJMoMyA5fXGyLr5BHCM9gr4WPadC9qWc/rFh/LLwqZDL88
-	 PY9kYsyM1a/a5b5YDekHDeHF5aQ4D/iRrF/A4wJTGDhZmr05fJXePpk85nWKUWf4Cs
-	 5uxIIogHSGsYqvhE9XGaREvJJUVDFt0X2n1jkRdmGt0Knm5Ei0RoRdhQlXYolVTe+c
-	 AsYmUduLKfMy2GnO0W7i7RGONQ0rPH25FD3922dA6l6IjhtQLIUpchvr52QOl4t+ay
-	 s0d4PsRVFbxbw==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5ba36cc21cdso2557047e87.1
-        for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 10:58:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxZRYc1ne8jEGymTY54tgnsxnjGiv1DiiFNMTLCg36/fLqGdZCqCmdwLOCgMT3C+y6b7se9mceGy8IoDLY=@lists.linux.dev
-X-Gm-Message-State: AFq9FYJ2EsFc1XtmjLAo+Ml9RRmPwX0z0LvEccAB/zxGMlz8wIirdH6B
-	TzTdo5m9xxu3FgnU2uBiiajGBuKDUksfW9V9z+3JICtywduck2XsISl6yMqJqFTfR2bKgPOmlku
-	xpHYiw5DNW2ws7tqVZZsvh1tmelStBy0=
-X-Received: by 2002:a05:6512:138a:b0:5bc:b67d:58d0 with SMTP id
- 2adb3069b0e04-5bfa1bee863mr2387595e87.24.1792691881611; Thu, 22 Oct 2026
- 10:58:01 -0700 (PDT)
+	b=HGT0N5NekN0KEUSsObqhZrI0IV6Jy0/nsLWp5XhIGufZMljEMcfM81bQMi+uQ9gwf
+	 CrYb4CFqawsRdcoxpa3pfccQ2SVip8zroqYY0HM//eETThHjGtBSjB0V19vcWgfaLH
+	 guThOcgte4ydi4eTG52G7kKUEtPHZh4RKQ00zlmsx+GZdpg7WTnRF9mlomNGZ/Sn7N
+	 AgkyZk+A2UWvdexa8X7raknOxt2rd5Dfrj8Fqao+EKo3dvFO6ch+d+CzFKOtG9U3bs
+	 v5hcBHRSG1hjA8IPySHccloEpBljpj/+Zm3Vl0pD+lMOvppU3lFDHJUGqugn4KY9ad
+	 U8tueRB35WcvQ==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5bc18f54abbso1763951e87.1
+        for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 11:13:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBwlUjfnrpelHECgcnoF8eCukLKJV2TqgNInb6/W3NInZ+3vzusJYBdux0EAaoTOjFLwQ+V/ACvxRWFjjgo=@lists.linux.dev
+X-Gm-Message-State: AFq9FYKQnMruAQvjvDUOT70bwHntECbW3x5mDR6PGI94j10pVhii7xqe
+	dhinmYxIzdYkzUg/j/jNd6ogguB9BajNHQlcqZdc3CPKcYpRyyI8aHdMNTMs22npEHXCR48kxAI
+	No40X7xkiv8m0ZLOWij/OIjw0sUP6Hi0=
+X-Received: by 2002:a05:6512:238f:b0:5bc:b23c:f7dc with SMTP id
+ 2adb3069b0e04-5bfa1c6ad0fmr2527167e87.9.1792692793746; Thu, 22 Oct 2026
+ 11:13:13 -0700 (PDT)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,81 +59,76 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-References: <20261018122220.678822-1-aliamemis@disroot.org>
-In-Reply-To: <20261018122220.678822-1-aliamemis@disroot.org>
+References: <20261019145421.47181-1-leonard@lausen.nl> <20261019145421.47181-2-leonard@lausen.nl>
+In-Reply-To: <20261019145421.47181-2-leonard@lausen.nl>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Thu, 22 Oct 2026 19:55:41 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hke5wNJSJvAmiA3ON4yPXcGL=v2n5ev6=MZuVs-=dSPg@mail.gmail.com>
-X-Gm-Features: AclHuK9EPLLPC_-L6-IZdNf5QI0rsgLXOu6t35sNCcJB1-f2gYVIoB-IIxp3uJY
-Message-ID: <CAJZ5v0hke5wNJSJvAmiA3ON4yPXcGL=v2n5ev6=MZuVs-=dSPg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] ACPI: Serialize battery, INT3403 _TMP and ideapad methods
-To: =?UTF-8?Q?Ali_Ahmet_Memi=C5=9F?= <aliamemis@disroot.org>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Hans de Goede <johannes.goede@oss.qualcomm.com>, 
-	Rong Zhang <i@rong.moe>, Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Ike Panhc <ikepanhc@gmail.com>, "Derek J . Clark" <derekjohn.clark@gmail.com>, 
-	Mark Pearson <mpearson-lenovo@squebb.ca>, Armin Wolf <W_Armin@gmx.de>, 
-	Charis Stratakis <c.stratakis@proton.me>, Avraham Hollander <anhollander516@gmail.com>, 
-	=?UTF-8?Q?Jeffrey_W=C3=A4lti?= <jeffrey@waelti.dev>, 
-	Rick <rickk1166@gmail.com>, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
+Date: Thu, 22 Oct 2026 20:10:52 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0ihGqbpJQiic7DkPw19LG-XXL4BmDht-0Mdx8PFNMh+Kg@mail.gmail.com>
+X-Gm-Features: AclHuK8OnYNaemA-MReRJfiarOYd7azLSGRGGQtr9eN1fRbWuuXKTTqItN58h4A
+Message-ID: <CAJZ5v0ihGqbpJQiic7DkPw19LG-XXL4BmDht-0Mdx8PFNMh+Kg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ACPICA: Initialize ParserState.AmlEnd in AcpiInstallMethod
+To: Leonard Lausen <leonard@lausen.nl>
+Cc: linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, 
+	Pawel Chmielewski <pawel.chmielewski@intel.com>, acpica-devel@lists.linux.dev, 
+	Len Brown <lenb@kernel.org>, Armin Wolf <W_Armin@gmx.de>, Ivan Hu <ivan.hu@canonical.com>, 
+	Joshua Grisham <josh@joshuagrisham.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 18, 2026 at 2:22=E2=80=AFPM Ali Ahmet Memi=C5=9F <aliamemis@dis=
-root.org> wrote:
+On Mon, Oct 19, 2026 at 4:54=E2=80=AFPM Leonard Lausen <leonard@lausen.nl> =
+wrote:
 >
-> On ThinkPad P1 Gen2 and P53, INT3403 _TMP switches the EC page selector
-> without taking the mutex the battery methods use.  On some Lenovo
-> IdeaPad and Yoga models, the battery _BIX and the ideapad GBMD take the
-> EC mutex and a serialized method in opposite order and deadlock until
-> an AML mutex times out.
+> From: Ivan Hu <ivan.hu@canonical.com>
 >
-> As discussed in [1], add exclusive variants of the AML evaluation
-> helpers and use them for the battery, INT3403 _TMP and ideapad methods.
-> Patches 2-4 depend on patch 1.
+> In AcpiInstallMethod(), the local ParserState is stack-allocated and
+> only ParserState.Aml was initialized. Parser helpers called by this path
+> read ParserState.AmlEnd for bounds checking: AcpiPsPeekOpcode() reads it
+> before validating the first AML opcode, and AcpiPsGetNextPackageEnd()
+> reads it indirectly via AcpiPsGetNextPackageLength(). The subsequent
+> package-limit check also compares against ParserState.AmlEnd. Because
+> AmlEnd was never set, these checks operated on an uninitialized value,
+> which Coverity flagged as an uninitialized read (CID 1684785) and which
+> could lead to incorrect parser bounds decisions.
 >
-> Changes in v3:
-> - Also evaluate _TMP exclusively where int3403 and processor_thermal
->   probe for it
+> Coverity report:
 >
-> Changes in v2:
-> - Merge the follow-up series [2] and drop its EC query and UCSI patches
->   until they are shown to help
-> - Add acpi_execute_simple_method_exclusive() for _BTP and ideapad
-> - Make the helpers wrappers that take the lock around the existing ones
-> - Join lines up to 100 columns, add a Link: for Suggested-by:
-> - Drop Hans' Reviewed-by from patch 1 due to the rework
+> *** CID 1684785:         Memory - illegal accesses  (UNINIT)
+> /src/acpica/source/components/namespace/nsxfname.c: 712             in Ac=
+piInstallMethod()
+>         ParserState.Aml +=3D AcpiPsGetOpcodeSize (Opcode);
+> >>>     CID 1684785:         Memory - illegal accesses  (UNINIT)
+> >>>     Using uninitialized value "ParserState.AmlEnd" when calling
+>         "AcpiPsGetNextPackageEnd".
+>         ParserState.PkgEnd =3D AcpiPsGetNextPackageEnd (&ParserState);
 >
-> Link: https://lore.kernel.org/all/CAJZ5v0gS4agVUkCO6M=3DVW4Wi2y1-s+k23bpz=
-mX9aAZ0Rsv4z9Q@mail.gmail.com/ [1]
-> Link: https://lore.kernel.org/all/20261014190544.150093-1-aliamemis@disro=
-ot.org/ [2]
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D221065
-> v2: https://lore.kernel.org/all/20261017130652.318778-1-aliamemis@disroot=
-.org/
-> v1: https://lore.kernel.org/all/20261014132703.93355-1-aliamemis@disroot.=
-org/
+> Initialize ParserState.AmlEnd to the end of the table
+> (Buffer + Table->Length) so the parser bounds checks operate on a valid
+> limit.
 >
-> Ali Ahmet Memi=C5=9F (4):
->   ACPI: utils: Add exclusive AML evaluation helpers
->   ACPI: battery: Evaluate battery methods exclusively
->   thermal: intel: int340x: Evaluate _TMP exclusively
->   platform/x86: ideapad-laptop: Evaluate ACPI methods exclusively
+> Link: https://github.com/open-acpica/acpica/commit/19429ef91ebfb2144c9180=
+38dce13e297b4ef051
+> Fixes: bdc357540129 ("ACPICA: add boundary checks in two places")
+> Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
+> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> Signed-off-by: Leonard Lausen <leonard@lausen.nl>
+> ---
+>  drivers/acpi/acpica/nsxfname.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
->  drivers/acpi/battery.c                        | 12 +++---
->  drivers/acpi/utils.c                          | 41 +++++++++++++++++++
->  drivers/platform/x86/lenovo/ideapad-laptop.c  | 12 ++++--
->  .../intel/int340x_thermal/int3403_thermal.c   |  3 +-
->  .../int340x_thermal/int340x_thermal_zone.c    |  6 ++-
->  .../processor_thermal_device.c                |  2 +-
->  include/acpi/acpi_bus.h                       |  7 ++++
->  7 files changed, 68 insertions(+), 15 deletions(-)
+> diff --git a/drivers/acpi/acpica/nsxfname.c b/drivers/acpi/acpica/nsxfnam=
+e.c
+> index b6534187cd43..fcd94947fedb 100644
+> --- a/drivers/acpi/acpica/nsxfname.c
+> +++ b/drivers/acpi/acpica/nsxfname.c
+> @@ -503,6 +503,7 @@ acpi_status acpi_install_method(u8 *buffer)
+>         /* First AML opcode in the table must be a control method */
 >
->
-> base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+>         parser_state.aml =3D buffer + sizeof(struct acpi_table_header);
+> +       parser_state.aml_end =3D buffer + table->length;
+>         opcode =3D acpi_ps_peek_opcode(&parser_state);
+>         if (opcode !=3D AML_METHOD_OP) {
+>                 return (AE_BAD_PARAMETER);
 > --
 
-Whole series applied as 7.4-rc material, thanks!
+Applied as 7.4-rc material, thanks!
