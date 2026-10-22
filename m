@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792677771;
-	b=gMrVugrUBfv3m4YleaQ71wH/RJUYdb/vwRbWJQgYa4SDIhYCBr7A4X4r6rZd09wv9des
-	 NdEtRaEwGVl0zbUsKg/kyv0re0PsRKW+QA80x2q34QbfiK7Vmkqt8fieTDbsg/aGaJ/ZA
-	 UrHb6EMMRFz3Fu+eLeWbqd+SWIuwUijezNkjhqgBXHTIQLaeZai9U06QNTuy42GaAG2k7
-	 vnIvsW3OJnPHT8zsd7uDHiImGQA17n/xrZ+8XYul8hLtzTReMDhSC2po/vysJLte5ck3r
-	 TFkruoM9a+CXqnjJrCILfxwnvyQ9bJSAjRQMYcPUMdGM5ZOPjC79tW4Gy0TO5ivIetg==
+	t=1792691884;
+	b=N9W/Sdj/HcdS1zpHew1FAyxZSf8kSDv0+fcxwtISERM+l+uvXwUmY2Jl9q/UomrQiuGb
+	 BL1vqrCrQBL/rQTRt0q81YU5AfNVaWfHbDYlXzn2mR6hFSfEkYh1JjSOUsQGW4vEEOou2
+	 oUT/W2MLgxNeMgJWxJp62VtDEZX4ZB+R/TMi4yDjH0RQQIL/yOttS6qylwJ0JVxV7OBDS
+	 uIGQS6xion05/rizEMmSXksNkjQ26FIjmpWls2Es4YNYyC9rfQHtCbszQM170uyTCDthZ
+	 Lymj5TNGgm4V9HGi0V0L+0rPE/SfzLVGIyIKPxJz9vJqI4WHYFHcQVIa7PyMlnVTT7w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792677771;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792691884;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=89oFWpy7/fXqqbrfoJkdUcmDMlD4RYJFfDd35c+oJhg=;
-	b=veSnfUX0jTwPJNuuofIUTN6GH7Tba41St0TscxuCq6Fe118htl7FR/x8Lyc7krGrtHF+
-	 GI/gnjNej8CJUJlaojQu1KwzaTH1HBW32Ag888a0n3gAK+3J96zDlLf4GvwDX92ut9Nkh
-	 Zn8uBClagx+VBX8rTlRFi17rgFCkIFk51mSiiE2nw/BIQNdr8GTtyAQUJVeRMv+P9k8ay
-	 YEkluQBUzSJhdw7P1nFsFNRZB71TXswHnEFByMTBS6/6+JXfxfU2hTXH1aWwaNr8zQDWc
-	 MkG69ZJjt4/B8nD86m1BR4fa/DtUPPq4+ylaphyq+Ds8+lrsunWS1r+zSHw84vNHP4w==
+	bh=n1REvRKYYNfK5I+aUVJkrK0y0rIac5QSu0xgyudqYaQ=;
+	b=ZRyHhnIcj8qSyoc/4rNEzyRlePAhgPgT96t4sXvHKlTu6ehrjmlDohtMHQp6yhxxW8Wk
+	 s0KU1BKn4pp23lJsLm4NsM572FrTFDW7SDmxoCP/pR36GWChc6BjHGKG6qrauThP0ttF/
+	 CChcJ5etfbZRpGWc0HGvj2QvI/cx7G4OapbiZauhrTmAt73hj6yMUpSpwDDphSE2e69Wz
+	 vA4t4O569VXsXYyn02VWtEC6cSZddta/ZMv0rJDxg40ueuWvN5lyiV6w8cP+QojOgkeHQ
+	 aYsvRCpGnChLBPfYEvLsJ+zcYE87XyzXkJu7SW3qwO4W2WQvM+12eHHfDBNlFi5v+Cw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JgE1FJhG;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ESPLJ8uy;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0AB606A319
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 14:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAF9606A321
+	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 17:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JgE1FJhG
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FDCC1F000C1
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 14:02:50 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ESPLJ8uy
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 432EE1F031F3
+	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 17:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792677770;
-	bh=89oFWpy7/fXqqbrfoJkdUcmDMlD4RYJFfDd35c+oJhg=;
+	s=k20260515; t=1792691883;
+	bh=n1REvRKYYNfK5I+aUVJkrK0y0rIac5QSu0xgyudqYaQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=JgE1FJhGZy2aDKaJ0gRpV8e6diMaQy+ymqNl1hxg4Veesrqdj9MG88vGrWP/w7Lni
-	 gxtqGd7yTFX9TubnCDOA1wGdRXThlRDaf6PfFFVVwYW/Qt+dfgCAdy0HIYcPQvvHOa
-	 HBZEofbWDI7GiWKPq09NCMjoS7Vaql37BGLw87JVj3AlemrEZrNfyHfG3pREOw8FIu
-	 9h9skjbTqfzI/0g5fdEb+XjR65yeOnSZS6hoVEFJRXvmJJCwhO9pTD85zCDAk2ITiV
-	 EFjw0RV1cY1m2vgZ0bHbjFWI0rC0lStqVQmhwFCHgnFQN1qDBK2C6QumDLiqszJrn/
-	 YhyHqnB6faQhw==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5be42ae8eb1so1157490e87.2
-        for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 07:02:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvByrEcMPXZrg/ExbIg1pWtSqZt4BcT/vVJYxu+leMtEXEof7SvhRN9V0Uk2RaSyly3kxBx4ZijpvcTZqs84=@lists.linux.dev
-X-Gm-Message-State: AFq9FYIRMJvqOU7UkAwytzHLqWcoEdVzle5N3rRBFYbMF4B2M7jjYCgj
-	18E2vOtB69MNjZciA6+UlssKBqZGjVABcGa53MMCQEFSl7IkGlTkNEkbbXujSsHPKE1JeBSAVWO
-	iPA2tDlQIncWIL/gnCy4N0Tci2FCAtK0=
-X-Received: by 2002:a05:6512:31cd:b0:5be:42c0:6ce4 with SMTP id
- 2adb3069b0e04-5bfa1be92b4mr2034800e87.17.1792677768810; Thu, 22 Oct 2026
- 07:02:48 -0700 (PDT)
+	b=ESPLJ8uyn9I9Q8vwd0wftJM/00hPrIbl0LqcSweUdd9MNDyyY2z3cATHvF2GoN+AJ
+	 JolU0v0O8/StGNwXLF9xfJMoMyA5fXGyLr5BHCM9gr4WPadC9qWc/rFh/LLwqZDL88
+	 PY9kYsyM1a/a5b5YDekHDeHF5aQ4D/iRrF/A4wJTGDhZmr05fJXePpk85nWKUWf4Cs
+	 5uxIIogHSGsYqvhE9XGaREvJJUVDFt0X2n1jkRdmGt0Knm5Ei0RoRdhQlXYolVTe+c
+	 AsYmUduLKfMy2GnO0W7i7RGONQ0rPH25FD3922dA6l6IjhtQLIUpchvr52QOl4t+ay
+	 s0d4PsRVFbxbw==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5ba36cc21cdso2557047e87.1
+        for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 10:58:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxZRYc1ne8jEGymTY54tgnsxnjGiv1DiiFNMTLCg36/fLqGdZCqCmdwLOCgMT3C+y6b7se9mceGy8IoDLY=@lists.linux.dev
+X-Gm-Message-State: AFq9FYJ2EsFc1XtmjLAo+Ml9RRmPwX0z0LvEccAB/zxGMlz8wIirdH6B
+	TzTdo5m9xxu3FgnU2uBiiajGBuKDUksfW9V9z+3JICtywduck2XsISl6yMqJqFTfR2bKgPOmlku
+	xpHYiw5DNW2ws7tqVZZsvh1tmelStBy0=
+X-Received: by 2002:a05:6512:138a:b0:5bc:b67d:58d0 with SMTP id
+ 2adb3069b0e04-5bfa1bee863mr2387595e87.24.1792691881611; Thu, 22 Oct 2026
+ 10:58:01 -0700 (PDT)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,113 +59,81 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-References: <20261020121846.691218-1-sumitg@nvidia.com> <20261020121846.691218-5-sumitg@nvidia.com>
- <cf4e3153-ff80-4d0d-94f7-572a26f369c1@arm.com> <51747329-abe1-406a-aeae-94ebb7a35bf4@nvidia.com>
- <85da866f-4fbb-4cf2-9376-3f7405e049ef@arm.com>
-In-Reply-To: <85da866f-4fbb-4cf2-9376-3f7405e049ef@arm.com>
+References: <20261018122220.678822-1-aliamemis@disroot.org>
+In-Reply-To: <20261018122220.678822-1-aliamemis@disroot.org>
 From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Thu, 22 Oct 2026 16:00:28 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iXip_5Ywk3EkrGL_u2w_hOcGKA1XvrubLPb3diWHx5Lw@mail.gmail.com>
-X-Gm-Features: AclHuK-vTfvlIZ3lOGv_EwwgmPMlFSmRAOWiMov9GEuALAEDP0Pgfx35UBoLgu8
-Message-ID: <CAJZ5v0iXip_5Ywk3EkrGL_u2w_hOcGKA1XvrubLPb3diWHx5Lw@mail.gmail.com>
-Subject: Re: [PATCH v6 4/5] cpufreq: CPPC: Preserve OSPM-set registers across
- hotplug and unload
-To: Christian Loehle <christian.loehle@arm.com>, Sumit Gupta <sumitg@nvidia.com>
-Cc: viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com, 
-	zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, ray.huang@amd.com, 
-	mario.limonciello@amd.com, perry.yuan@amd.com, kprateek.nayak@amd.com, 
-	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, treding@nvidia.com, 
-	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
-	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+Date: Thu, 22 Oct 2026 19:55:41 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hke5wNJSJvAmiA3ON4yPXcGL=v2n5ev6=MZuVs-=dSPg@mail.gmail.com>
+X-Gm-Features: AclHuK9EPLLPC_-L6-IZdNf5QI0rsgLXOu6t35sNCcJB1-f2gYVIoB-IIxp3uJY
+Message-ID: <CAJZ5v0hke5wNJSJvAmiA3ON4yPXcGL=v2n5ev6=MZuVs-=dSPg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] ACPI: Serialize battery, INT3403 _TMP and ideapad methods
+To: =?UTF-8?Q?Ali_Ahmet_Memi=C5=9F?= <aliamemis@disroot.org>
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Hans de Goede <johannes.goede@oss.qualcomm.com>, 
+	Rong Zhang <i@rong.moe>, Len Brown <lenb@kernel.org>, Daniel Lezcano <daniel.lezcano@kernel.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Ike Panhc <ikepanhc@gmail.com>, "Derek J . Clark" <derekjohn.clark@gmail.com>, 
+	Mark Pearson <mpearson-lenovo@squebb.ca>, Armin Wolf <W_Armin@gmx.de>, 
+	Charis Stratakis <c.stratakis@proton.me>, Avraham Hollander <anhollander516@gmail.com>, 
+	=?UTF-8?Q?Jeffrey_W=C3=A4lti?= <jeffrey@waelti.dev>, 
+	Rick <rickk1166@gmail.com>, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, acpica-devel@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 22, 2026 at 3:23=E2=80=AFPM Christian Loehle
-<christian.loehle@arm.com> wrote:
+On Sun, Oct 18, 2026 at 2:22=E2=80=AFPM Ali Ahmet Memi=C5=9F <aliamemis@dis=
+root.org> wrote:
 >
-> On 10/22/26 11:10, Sumit Gupta wrote:
-> > Hi Christian,
-> >
-> >
-> > On 20/10/26 21:41, Christian Loehle wrote:
-> >> External email: Use caution opening links or attachments
-> >>
-> >>
-> >> On 10/20/26 13:18, Sumit Gupta wrote:
-> >>> Values written to OSPM-set CPPC registers via sysfs can be lost in tw=
-o
-> >>> ways:
-> >>>
-> >>>    - Across CPU hotplug: the platform may reset a CPU's registers whi=
-le it
-> >>>      is offline.
-> >>>    - On driver unload: the value the driver wrote is left in the regi=
-ster
-> >>>      instead of returning to its pre-driver state.
-> >>>
-> >>> Add a small table-driven mechanism that handles both:
-> >>>
-> >>>    - On init(), capture each register's firmware value before the
-> >>>      driver programs anything.
-> >>>    - On offline(), read back each register's current value (whatever =
-was
-> >>>      last set via sysfs) so it can be reapplied, then restore the fir=
-mware
-> >>>      value.
-> >>
-> >> Sorry for the late suggestion, but all the ospm-set registers I think =
-we can
-> >> save ourselves some headache by just saving these at sysfs_store (and =
-not deal
-> >> with potential read-errors during offline/suspend (which actually may =
-happen!).
-> >>
-> >
-> > v1 [1] saved the values at store time. In v2 I switched to reading
-> > them in offline(), following the flow discussed in [2]. One read there
-> > covers every store handler and the pending boot parameter series.
+> On ThinkPad P1 Gen2 and P53, INT3403 _TMP switches the EC page selector
+> without taking the mutex the battery methods use.  On some Lenovo
+> IdeaPad and Yoga models, the battery _BIX and the ideapad GBMD take the
+> EC mutex and a serialized method in opposite order and deadlock until
+> an AML mutex times out.
 >
-> Ah right!
+> As discussed in [1], add exclusive variants of the AML evaluation
+> helpers and use them for the battery, INT3403 _TMP and ideapad methods.
+> Patches 2-4 depend on patch 1.
 >
-> >
-> > But a read error in offline() or suspend() drops the request. A failed
-> > reapply in online() can also leave the register at its firmware or rese=
-t
-> > value, which the next offline() or suspend() then saves over the
-> > request. Saving at store time keeps the request in both cases.
+> Changes in v3:
+> - Also evaluate _TMP exclusively where int3403 and processor_thermal
+>   probe for it
 >
-> Yup, that's more reasonable IMO
+> Changes in v2:
+> - Merge the follow-up series [2] and drop its EC query and UCSI patches
+>   until they are shown to help
+> - Add acpi_execute_simple_method_exclusive() for _BTP and ideapad
+> - Make the helpers wrappers that take the lock around the existing ones
+> - Join lines up to 100 columns, add a Link: for Suggested-by:
+> - Drop Hans' Reviewed-by from patch 1 due to the rework
+>
+> Link: https://lore.kernel.org/all/CAJZ5v0gS4agVUkCO6M=3DVW4Wi2y1-s+k23bpz=
+mX9aAZ0Rsv4z9Q@mail.gmail.com/ [1]
+> Link: https://lore.kernel.org/all/20261014190544.150093-1-aliamemis@disro=
+ot.org/ [2]
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D221065
+> v2: https://lore.kernel.org/all/20261017130652.318778-1-aliamemis@disroot=
+.org/
+> v1: https://lore.kernel.org/all/20261014132703.93355-1-aliamemis@disroot.=
+org/
+>
+> Ali Ahmet Memi=C5=9F (4):
+>   ACPI: utils: Add exclusive AML evaluation helpers
+>   ACPI: battery: Evaluate battery methods exclusively
+>   thermal: intel: int340x: Evaluate _TMP exclusively
+>   platform/x86: ideapad-laptop: Evaluate ACPI methods exclusively
+>
+>  drivers/acpi/battery.c                        | 12 +++---
+>  drivers/acpi/utils.c                          | 41 +++++++++++++++++++
+>  drivers/platform/x86/lenovo/ideapad-laptop.c  | 12 ++++--
+>  .../intel/int340x_thermal/int3403_thermal.c   |  3 +-
+>  .../int340x_thermal/int340x_thermal_zone.c    |  6 ++-
+>  .../processor_thermal_device.c                |  2 +-
+>  include/acpi/acpi_bus.h                       |  7 ++++
+>  7 files changed, 68 insertions(+), 15 deletions(-)
+>
+>
+> base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+> --
 
-Yes, please!
-
-Cache stuff at store time.
-
-> >
-> > We could combine the two. Keep the policy across hotplug and the
-> > firmware restore in offline() from v2, and save the requested values
-> > at store time as in v1:
-> >  - init() saves the firmware values and uses them as the initial
-> >    requested values.
->
-> Yes, I guess if we cannot read the initial values at init() (or first
-> autosel enable?) there's no point in letting the driver initialize
-> (or allowing autosel=3D1 respectively)?
->
-> >  - Each sysfs store updates the requested value after it succeeds.
->    The boot parameter series will do the same.
-> >  - offline() and suspend() restore the firmware values without
-> >    reading the registers.
-> >  - online() and resume() reapply the requested values. If that fails,
-> >    the request is kept for a later online().
-> >
-> > Does this sound fine and keep the intent of the earlier discussion?
-> > I will respin accordingly.
->
->
-> To me it does,
-
-+1
-
-Thanks!
+Whole series applied as 7.4-rc material, thanks!
