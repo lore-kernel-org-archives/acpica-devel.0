@@ -1,44 +1,45 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=13.77.154.182
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792703595;
-	b=r/sh97TZju4NltGNqz3P6l4lyncVIOAozsv0te+DcYuiylJVz993h0B0zVrNepfFbHS6
-	 KUa4MXsWfbMf37Az6HeU1N76DxPlp6K6i/jw0XyaKusFIPyq79YBAfk6RnlUabUlO+wCM
-	 C4gViJTZj8MoZ8F1f0ti7IcV28WXdGB/WlAXLSkSHdqF0zWQ0NYeFPUVkF1UO2z0sR908
-	 7+NhyII5XsBaeGjaiiCMRvY/LN4NzR3Aj3dkTwX4uN0c6041ZMJ0oYUKD2JJel5ljZt7q
-	 jNp032Lg5gkOizlOf0lD9HzCTE+8Z1LVyZdvVCCl9AN4VzUW+gYtEFEo6YfWk99F1nA==
+	t=1792703596;
+	b=sQYhE1/DrJkObrzF+G/1C6IgmeWkWI3Hh4gRrFehlXQaCpSbZZ3z3BeCJ2oxIp5N95un
+	 YiFy1wMF6bU5JF9uBqnAjl5kxL7K/2ri0hzCvBYwBR9Sd9eYKuuN6T7G9lIucfYac1Q++
+	 +rJJ4j425xb//Gd46/3LjYwx59eWcUIhuQDTuLa6eg5XOgOK+bVsfQQCxUCi6mhPhtwyg
+	 KhNCfZZ/wSn7Hmk+0myMxqPZeEc5usi+PIOnyHuGdXZrFVnlTv6EBKRsBfppvJf3+gSGP
+	 +5OB0XN3F/Uc5Cb3IBedWixA5K0xxTOoLDYbyY+bLyyOn7dfIaaCkz60zZowffD+ebQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792703595;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792703596;
 	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=Ach3hL2Srzfu+a6M+3ZUllFO4YG7jNYVYfsD1QvzpSw=;
-	b=bAwB/gcxCZahDfjm7j8Yb8EZ//e1mWynD0yK41kA4X/ysKZWJmIzSvaq8Rz1RbE3undf
-	 paCh0x/32ey7tTaPPsP5mJDlLynUkkI0Wc2CufEfd076irxjWCBfbMWDB1hFowXgyipNT
-	 Qd7mwgPs54F/GZ8le+TJ9Z6PkvdDQTDOfctFIWLBa1tW1ZAwpWRYXWxezy3AyfyORTRxu
-	 uClipkkJqRn7Vgie5nq+a7ynhtzOWs8oCY+3etnXYlxJgVQQQo9LYmHRAzEszagB2yAeu
-	 i1XXH7+y4oB6r1035JUdMdPFrrwJ9PINKmQxv1Z1LfDDizk8oETwoLuBm1T6oxJYzJg==
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=HVfBLk4HTc3Q1JSz/tfe3BVw+fdZ6OMFICyRLMEHTb0=;
+	b=VFc072vm8cy210bApm6mPvcF1kPgeGO7+TNb1mRW8N71W/81VP6xF6dgL5Lr0FxjHfkf
+	 6ne9ndqNVOStFtQ6y2rCk2XSOK7Q291fOK1tBd5KVUX3FAK2owzz5MNMiTuGy0yFIhdDg
+	 RZ7qGOCBYJCRddSVTG7Ad7cHDFV/l0/absi2+Gxulv8uV01cTrVweF7550z7EkXFKMQLz
+	 zVX6o8Zhq6VDq5m7XBFdHhqGxyk0ShHaTjbQiajxxhvL8oRC+DMQMO5VCH1JOSJ4FVIKh
+	 u4HXb0cAeaSE3lvmDOCSei98ISEfJSxYWqObUVC+4/OxLy+bcxMOcaBCyUXEAoM2Dmw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=linux.microsoft.com;
 	spf=pass smtp.mailfrom=linux.microsoft.com;
-	dkim=pass header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b=m19zDvon;
+	dkim=pass header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b="EpkiT5/P";
 	arc=none smtp.remote-ip=13.77.154.182
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7ED606A31D
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3023C606A31E
 	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 21:13:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2D7ED606A31D
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3023C606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b=m19zDvon
+	dkim=pass (1024-bit key, unprotected) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b=EpkiT5/P
 Received: by linux.microsoft.com (Postfix, from userid 1216)
-	id 9172820B7166; Thu, 22 Oct 2026 14:13:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9172820B7166
+	id 9FC2820B7167; Thu, 22 Oct 2026 14:13:06 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9FC2820B7167
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1792703586;
-	bh=Ach3hL2Srzfu+a6M+3ZUllFO4YG7jNYVYfsD1QvzpSw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=m19zDvoniUbLgmQyGS/jD2Dk3YMVInWpfLB6326M8aCRpyKVLIC9bK1wjnp8CuLlW
-	 atgUsnO31fdHcRz0lRfEZ7frLjI15x8j4iGOE6VT9lWTt9WJ0I3gUZ8yF8Y44muLej
-	 TUbnHTPKWMFxtkLiJyZ3gQzr9XVMrcjDGogwAkwk=
+	bh=HVfBLk4HTc3Q1JSz/tfe3BVw+fdZ6OMFICyRLMEHTb0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EpkiT5/PFjdo40SKtLABbtNcnlTX13uBQMIZSpTOpqmmD3/h6dlfmo7uI+jS3pNuo
+	 dA3PMomECm134w2pkCHYbFTSBhvDDgnM2lgVTTBKI0sRtyx4U3Z+Pe9T1GxdFNSuO5
+	 KrHbK2p+4tz1kKlZyP4DDuuYpb6w3wxxUZGUzlDY=
 From: Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
 To: linux-acpi@vger.kernel.org,
 	linux-efi@vger.kernel.org
@@ -50,10 +51,12 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	acpica-devel@lists.linux.dev,
 	Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
-Subject: [PATCH 1/2] ACPI: TAD: introduce acpi_tad_rtc_available()
-Date: Thu, 22 Oct 2026 17:13:03 -0400
-Message-ID: <20261022211304.2285792-1-hamzamahfooz@linux.microsoft.com>
+Subject: [PATCH 2/2] efi: don't register rtc-efi if the ACPI TAD can drive the RTC
+Date: Thu, 22 Oct 2026 17:13:04 -0400
+Message-ID: <20261022211304.2285792-2-hamzamahfooz@linux.microsoft.com>
 X-Mailer: git-send-email 2.43.7
+In-Reply-To: <20261022211304.2285792-1-hamzamahfooz@linux.microsoft.com>
+References: <20261022211304.2285792-1-hamzamahfooz@linux.microsoft.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -65,137 +68,45 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Code outside of the TAD driver, such as the EFI subsystem, may need to
-know whether or not the RTC can be driven via the ACPI TAD, for example
-to avoid registering a redundant RTC.
+EFI runtime services are best avoided where possible, and ACPI defines a
+standard interface to the real time clock in the form of the Time and
+Alarm Device (TAD), which the acpi-tad driver has been exposing as an
+RTC class device since commit 8a1e7f4b1764 ("ACPI: TAD: Add RTC class
+device interface").
 
-For this purpose, add a new header, include/acpi/acpi_tad.h, containing
-a define for the TAD's hardware ID, the TAD capability flags moved there
-from the driver, and a helper, acpi_tad_rtc_available(), that returns
-whether or not acpi-tad will register an RTC class device for a TAD.
+So, don't register the rtc-efi platform device if acpi-tad is going to
+register an RTC class device for the TAD, according to
+acpi_tad_rtc_available().
 
-acpi-tad does that for a TAD that implements the Get/Set Real Time
-methods, as advertised by bit 2 of its _GCP return value, but only if
-the TAD has been enumerated as a platform device, so make the helper
-check both.
-
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
 ---
- drivers/acpi/acpi_tad.c | 15 ++-------
- include/acpi/acpi_tad.h | 67 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+), 12 deletions(-)
- create mode 100644 include/acpi/acpi_tad.h
+ drivers/firmware/efi/efi.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpi_tad.c b/drivers/acpi/acpi_tad.c
-index 45459a4ca..5fb978523 100644
---- a/drivers/acpi/acpi_tad.c
-+++ b/drivers/acpi/acpi_tad.c
-@@ -33,21 +33,12 @@
- #include <linux/rtc.h>
- #include <linux/suspend.h>
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 9bc22de0d..706064479 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -34,6 +34,8 @@
+ #include <linux/security.h>
+ #include <linux/notifier.h>
  
 +#include <acpi/acpi_tad.h>
 +
- MODULE_DESCRIPTION("ACPI Time and Alarm (TAD) Device Driver");
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Rafael J. Wysocki");
+ #include <asm/early_ioremap.h>
  
--/* ACPI TAD capability flags (ACPI 6.6, Section 9.17.2) */
--#define ACPI_TAD_AC_WAKE	BIT(0)
--#define ACPI_TAD_DC_WAKE	BIT(1)
--#define ACPI_TAD_RT		BIT(2)
--#define ACPI_TAD_RT_IN_MS	BIT(3)
--#define ACPI_TAD_S4_S5__GWS	BIT(4)
--#define ACPI_TAD_AC_S4_WAKE	BIT(5)
--#define ACPI_TAD_AC_S5_WAKE	BIT(6)
--#define ACPI_TAD_DC_S4_WAKE	BIT(7)
--#define ACPI_TAD_DC_S5_WAKE	BIT(8)
--
- /* ACPI TAD alarm timer selection */
- #define ACPI_TAD_AC_TIMER	(u32)0
- #define ACPI_TAD_DC_TIMER	(u32)1
-@@ -895,7 +886,7 @@ static int acpi_tad_probe(struct platform_device *pdev)
- }
+ struct efi __read_mostly efi = {
+@@ -459,7 +461,8 @@ static int __init efisubsys_init(void)
+ 	if (!efi_enabled(EFI_BOOT))
+ 		return 0;
  
- static const struct acpi_device_id acpi_tad_ids[] = {
--	{"ACPI000E", 0},
-+	{ACPI_TAD_HID, 0},
- 	{}
- };
+-	if (efi_rt_services_supported(EFI_RT_SUPPORTED_TIME_SERVICES))
++	if (efi_rt_services_supported(EFI_RT_SUPPORTED_TIME_SERVICES) &&
++	    !acpi_tad_rtc_available())
+ 		platform_device_register_simple("rtc-efi", 0, NULL, 0);
  
-diff --git a/include/acpi/acpi_tad.h b/include/acpi/acpi_tad.h
-new file mode 100644
-index 000000000..4825e10e9
---- /dev/null
-+++ b/include/acpi/acpi_tad.h
-@@ -0,0 +1,67 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * ACPI Time and Alarm Device (TAD) definitions (ACPI 6.6, Section 9.17)
-+ */
-+#ifndef __ACPI_TAD_H
-+#define __ACPI_TAD_H
-+
-+#include <linux/acpi.h>
-+#include <linux/bits.h>
-+#include <linux/platform_device.h>
-+#include <linux/types.h>
-+
-+#define ACPI_TAD_HID		"ACPI000E"
-+
-+/* ACPI TAD capability flags (ACPI 6.6, Section 9.17.2) */
-+#define ACPI_TAD_AC_WAKE	BIT(0)
-+#define ACPI_TAD_DC_WAKE	BIT(1)
-+#define ACPI_TAD_RT		BIT(2)
-+#define ACPI_TAD_RT_IN_MS	BIT(3)
-+#define ACPI_TAD_S4_S5__GWS	BIT(4)
-+#define ACPI_TAD_AC_S4_WAKE	BIT(5)
-+#define ACPI_TAD_AC_S5_WAKE	BIT(6)
-+#define ACPI_TAD_DC_S4_WAKE	BIT(7)
-+#define ACPI_TAD_DC_S5_WAKE	BIT(8)
-+
-+#if IS_ENABLED(CONFIG_ACPI_TAD) && IS_ENABLED(CONFIG_RTC_CLASS)
-+/**
-+ * acpi_tad_rtc_available - Check if the RTC can be driven via the ACPI TAD
-+ *
-+ * Check if there is a TAD that the acpi-tad driver will register an RTC class
-+ * device for.
-+ *
-+ * Context: Process context, after the ACPI namespace has been scanned.
-+ *
-+ * Return: %true if acpi-tad will provide an RTC, %false otherwise.
-+ */
-+static inline bool acpi_tad_rtc_available(void)
-+{
-+	struct acpi_device *adev;
-+	unsigned long long caps;
-+	struct device *dev;
-+	acpi_status status;
-+
-+	adev = acpi_dev_get_first_match_dev(ACPI_TAD_HID, NULL, -1);
-+	if (!adev)
-+		return false;
-+
-+	dev = bus_find_device_by_acpi_dev(&platform_bus_type, adev);
-+	if (!dev) {
-+		acpi_dev_put(adev);
-+		return false;
-+	}
-+	put_device(dev);
-+
-+	status = acpi_evaluate_integer(adev->handle, "_GCP", NULL, &caps);
-+	acpi_dev_put(adev);
-+
-+	return ACPI_SUCCESS(status) && (caps & ACPI_TAD_RT);
-+}
-+#else
-+static inline bool acpi_tad_rtc_available(void)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_ACPI_TAD && CONFIG_RTC_CLASS */
-+
-+#endif /* __ACPI_TAD_H */
+ 	/* We register the efi directory at /sys/firmware/efi */
 -- 
 2.56.0
 
