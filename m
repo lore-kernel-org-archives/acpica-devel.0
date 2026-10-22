@@ -1,154 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=2 smtp.remote-ip=52.101.70.29
-ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792652888;
-	b=VbIOYu70iw4i3H+uMTQjxyTCp+2SmAI61awUARgNN+2pkHUF6ZD41BaMWs/2CpRfB9+o
-	 MHlXcVl+zlFG6C7PHe0GScv7MCNY6Fwt7q213SCElzuG4lwoVyBuk95/C2aY87EKpQI9/
-	 IgkqnZiva9fXdAxDzUj8oi1FVaRPV4u1pVRlkhau19BkNg2gNJlUIec6BVdKvRHM170ZQ
-	 Cp/dq+rnSKk1IrSzAPjyawEZzMreW0Lt8nnkmMkUjSTLPp6teygjp1eNGNkxdVMjSzMqD
-	 AmVaV6cMvAmA5aDSkERxlStZZFF1Xg9i/1EtdKeI/mwx4F0XG5P16ejZMcK4su1BlSQ==
-ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792652888;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:
-	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:
-	 DKIM-Signature:Authentication-Results-Original:Received:Received:
-	 Message-ID:Date:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-ClientProxiedBy:MIME-Version:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-LD-Processed:
-	 x-checkrecipientrouted:NoDisclaimer:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam-Untrusted:
-	 X-Microsoft-Antispam-Message-Info-Original:
-	 X-Forefront-Antispam-Report-Untrusted:X-Exchange-RoutingPolicyChecked:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:
-	 X-EOPAttributedMessage:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
-	 X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.48.23
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792663823;
+	b=BHqtCj0XlwqcuV49EZaNxV+f5kPqS5unNJhMrI+hurZkb3Sw5hD011SpSx1ifZZ8CfRk
+	 YwcIXd4drmcqRc+vLT/IJmC8MlBg3cP9SHNFtSeyeH58NsspCP1EPezuu8ukCbJH42CtG
+	 wKq5PG40sgQkwuZ/lyBWiH5h9VA+/+3b4PSHHJgFavWnek+m/CP80pVHJ1M08YSgYYFkw
+	 FnKHQemBa5tUJnFfN6BfxSdltw7f5fkpCz/yP8a9GK/LOsIkiBQ9hpxM/5NMzkrFgfD0h
+	 asPkRtKsmwIukZW8vfnGHro5KYfBCKtUc7l02o0RAth74g0qjZde+PkqT6bnwWWwGUw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792663823;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
 	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
 	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
 	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
 	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
 	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
 	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=B7wd/Gi2j/nfsCtmMPCLQuvF3H358IuX30uGA0uWjHk=;
-	b=Y+3aAW2zhZW9dF3OE+4SGVFmU8LVSMnfDhSDX+Bz02T7AvEcL703yIy14HzooRilSMGI
-	 BR/Dlrrhb1ooxprrHTT7+45VQscVeFU4X4jMIlnCCGm03lQW1btAbNb3z45XVcIBbWHdm
-	 SQtZjiw7XujjVrJiDESG9NVbtq/+89NAAy1as2Xw24TRJ5l48yXjZbB0jXs8bXZuy5YjG
-	 1oGaJLrjvo1BnZdYTIqi8Fb4/Gf2qU+TVsbqaHo7obmGXVPDZ82tfHbyEDIrqaJnYE4zc
-	 06Z+BqBotrH+DJByXdP7rql6btscuCOV2p9sW0sb09ui1hPZYlYmI/uOe1vjb8dr7Vw==
-ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b="fH2u/URs";
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b="fH2u/URs";
-	arc=pass header.oldest-pass=2 smtp.remote-ip=52.101.70.29
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011029.outbound.protection.outlook.com [52.101.70.29])
+	bh=5eTaeLrTJd60CfarPCv+CYMfGu8OOJ2oO1Agp6UwY/Q=;
+	b=a07WGfjfZ9mrN7kpKLb/CvI/P8UNwBghVcEuNh96j/2jIfW33/1Zy86nEi18stsjEtKn
+	 6LKS3M1xTsYF+bceG0G5sSOVmZvEPSLkRY9gLj9evyzIELszFZ2KYfqA9cTAGjnGtIXPU
+	 BNivstoSBi085rCpaOj0p9DsW85WetNNMb1jA28KqFXz56+nNTMLN/km2/j60tknGB1Sx
+	 UThSAOoc+oIHGEx1CAauu7HyXoY9RegxwPNsyWqNEr01omlMkvUpT/fdvI5EUzru7Mjx2
+	 h8mZTPHjVnUWpqJYCJ7bykVl+6bkDMGkB1gdG/9l0nBiMTnPGSRBUPxKbRA6MnIm3Ig==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=nvidia.com;
+	spf=fail smtp.mailfrom=nvidia.com;
+	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=YLMKvWdw;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.48.23
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012023.outbound.protection.outlook.com [52.101.48.23])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09611606A31A
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 07:08:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 09611606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69803606A31A
+	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 10:10:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 69803606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=fH2u/URs;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=fH2u/URs
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=UwLbD3V1bFyRZhHIMFI95mrUNzW89uPSpIf0qP/E4BVk+DUQbE9QuHdrtj9e2prNRid6gkTixGw6OJ4KtcTQbvxPoJv5RHp1DndSCIPMO7MeRaSgsfxZTxQ5kqmomiMzgas7Mxiriw5L1zbEeuKeu+JcLnvlMCVFXKolPPxrZbh/ot2VzaF468nlF49Tz5secqcyS7otjMRQlecXuLel2a7HYE45jTm+FUfiIIhzpQTSomA9SiFqgxI721XYmQ4qNvkPfLTAThkAlYpg7Szt3zZ3wrUaelZ/goU6doGAXmAYEZnYvxzXCxvKzBU+qLpYWxHsDash1fNwK4/wR5hHNQ==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B7wd/Gi2j/nfsCtmMPCLQuvF3H358IuX30uGA0uWjHk=;
- b=M8clJCdJbK0Z+VZOHHr42mnvLNUZz9W0lETZfEsy5Q4yGJvmudF/CiK3527PfbL6qf+CSLQzKK2g0FdSMD7BPmE+To4WZeG0mPyOw7rLIoHeTFpm8ArmWUlf/Sa504UtG0smwG/dzRHTC8dPOLfYEKVimOxnRnSuvFAsUQVkaWXlj295PnUXQ2Ps+w816mcfErYGOtuDmp1A/sjhDpYpc8Vi2k/S5rv1lVIi0BG0su0K3oI/znte3eHx2WprmWUNReNxzKVAe/aJ3B9VRxebN0asPbuwbRih9cxrL4i4e5MaUlInaElV/aekU5QGlg0N9T/OfJ6+cTMB6z8ukllDQQ==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=oss.qualcomm.com smtp.mailfrom=arm.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
- dkim=pass (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B7wd/Gi2j/nfsCtmMPCLQuvF3H358IuX30uGA0uWjHk=;
- b=fH2u/URsZ/84JSziAST6bc+SV91ID4vOCXv0MVz+Vm78d62Uw9gjXKrF33IBXP7qOV7jL5Blc2M9JQQYDeWEw3Rj0v/hXn0OtLgbqeMdsuLXUPvNTGgeGT90hXyMIFss4iuQarapUY0NlTLi+XviNz0wY22Uv8I9HvUbGQFd7/I=
-Received: from PR3P195CA0005.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::10)
- by AS8PR08MB6373.eurprd08.prod.outlook.com (2603:10a6:20b:33a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Thu, 22 Oct
- 2026 07:08:02 +0000
-Received: from MAD0EPF000008AB.eurprd04.prod.outlook.com
- (2603:10a6:102:b6:cafe::4e) by PR3P195CA0005.outlook.office365.com
- (2603:10a6:102:b6::10) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.546.16 via Frontend Transport; Thu,
- 22 Oct 2026 07:08:01 +0000
-X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
- is 4.158.2.129) smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- MAD0EPF000008AB.mail.protection.outlook.com (10.167.241.183) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.546.15
- via Frontend Transport; Thu, 22 Oct 2026 07:08:01 +0000
+	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=YLMKvWdw
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QOIti4oi1u8IpW42j2r3ZOj+aVkgEn7E4ouPllAeBl0sLAJIUYVPrm2Zjtxoglt7NzIToasc0C0qppE6uaVRzLOfdcu2SqPqNEZ1bxXttO+D2W0pObTZ/sKLYVEi0PdqNszrq8Y4AquiqO8LoGJkkATvyTkY9iPe3o0ZR48XyR0Cg9QtUj2jSPEJvhEFs+w6j1TTX+Ck894drmYf5SDXLsQxStddfrd4qM5CS7deGCQS0LfBnEz/6R96q9kiYLumtoIrEho0JynsET/5pJmGGuh39m+5FREINTJR5qEPHUQPc3D0gmGygInDzfbvABHod+CZhPsmNrLVXg70xUR5RQ==
+ b=goS/NMASLNNtOeEzXch5rH55rbwK5OJbb6Tbt1mhLyqQkR+OaSjeIO9O4lHWA62J1QJyVe2iMOqelhsQ99mD9tC5EwxeD84jFT/FZb5jPGwutqTYSQvZ89hbusKf2+kQM+pJB8ygE0x0MuVVoBJV5a4E89uOQLAIrdGqb3z0adthIstwWEvNgBjtHhkieFzCTJS07utjovTfSHaiILwYvC/Mq8O192lKTbKXOljPhUWXz201GUKEjugbO6t8+ZgaV2PWrhZcMWjt+QvpXUf501Ih1AEoBXf+G20MHHda0y99AJTjm4ysj1sPZn6JlnPr7RYk8nMVntKUExEdG56k3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B7wd/Gi2j/nfsCtmMPCLQuvF3H358IuX30uGA0uWjHk=;
- b=yfQkH3/vxXMdPpjrXhDOkO7N86Gdnr19H2U86qWfVXG2s6UxD+NdPQGiyQ4AXoLRLBPzAoYRek66ACWIhMZTxYtTNtSsbKT/TMvXSP1/qAx6G+Rr3BdHg0QlTcXtbJ9rabXLiRzVBJnoAQi4zZrtUXKqhYtcBtdxP6z6zNC5wjF/qkCtQj/x+MtMf9TslBi5hOLt/Hxm7g5ZPk6tNonADqIenM5iewkxgYp52VsRl3TFA4P/wCcZQA18x4npIBeUHnCCvFaE2cuQIo2h9y5gd3euIMMd0orb3tu6jerUOUkVPtdCrxJDAu/oGVwMzoo0yYfzVd2L1RRxgsEXeJHeNw==
+ bh=5eTaeLrTJd60CfarPCv+CYMfGu8OOJ2oO1Agp6UwY/Q=;
+ b=ZpmO5Jj1JT7bhSzul27MUGNRP5OoCh2gslvx+MptGbUERCnbFolS2iqhYczD/hb0vXstplTEdLBDhCbL4zYdJcOqcOP6Dx+pbSL9TNfTrHGXzs0rH75vPuXbemQS2aEMijdezLnYgt9ThVRzmZkKVO+VN1dnv2b3StnbGghuoYdCzoGO9czm3pKyeVVbPeZNbe0EA0H8yTAQCNZZbXC/NJizQJu5hQkJzeBYcHkn9MpWSg/AacLduURnwUuoIjORXuwPno1/GzL0ZRNuXQx2bwsTAedz+IkYsa6/HJc/Nv5RfJEgUSd/Mftpz7jp4nzn1APZY1Qn9z9C+BqgNIPp8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B7wd/Gi2j/nfsCtmMPCLQuvF3H358IuX30uGA0uWjHk=;
- b=fH2u/URsZ/84JSziAST6bc+SV91ID4vOCXv0MVz+Vm78d62Uw9gjXKrF33IBXP7qOV7jL5Blc2M9JQQYDeWEw3Rj0v/hXn0OtLgbqeMdsuLXUPvNTGgeGT90hXyMIFss4iuQarapUY0NlTLi+XviNz0wY22Uv8I9HvUbGQFd7/I=
-Authentication-Results-Original: mx.microsoft.com 1; dkim=none (message not
- signed) header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23) by DU0PR08MB8164.eurprd08.prod.outlook.com
- (2603:10a6:10:3ef::13) with Microsoft SMTP Server (version=TLS1_2,
+ bh=5eTaeLrTJd60CfarPCv+CYMfGu8OOJ2oO1Agp6UwY/Q=;
+ b=YLMKvWdw63dEoKsp0hAMqwG4r03JnxM+Bt6uf1WiiUdQbJ2DDVa2niUDF/EAZioIfGjhYNC31dDBPxL/O4wToX5sOeSQLGhAeXF4MlkmZMhKFRoxT8Xgd3nbCJqcWdggvFx76JQ+BlEEkLKOT4aPqo3WhKJwsSMQEJVc4fCXPvqd9xfbnwUwbmM3UL6WcUY0X+n1U20t6ZILY90rA9CasYAvMhFcSnjrU2Tgc2PXipxQQSggCL3wl+FACDWeYDA9b0MXZ5vOGGzS2L5d4pZlEJGYot8Xyqsk50KFt2RFZZPvYYYpFZTcXnfYqARwC7yqPvmbZsHWnOd1EYq1yHYSsw==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH4PR12MB720178.namprd12.prod.outlook.com
+ (2603:10b6:610:50e::10) by DS0PR12MB8200.namprd12.prod.outlook.com
+ (2603:10b6:8:f5::16) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Thu, 22 Oct
- 2026 07:07:27 +0000
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62]) by BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62%6]) with mapi id 15.21.0546.012; Thu, 22 Oct 2026
- 07:07:27 +0000
-Message-ID: <0817615d-5e96-4a3a-b39e-3e5d1b88e716@arm.com>
-Date: Thu, 22 Oct 2026 09:07:25 +0200
+ 2026 10:10:16 +0000
+Received: from CH4PR12MB720178.namprd12.prod.outlook.com
+ ([fe80::2a60:de1e:e60d:7052]) by CH4PR12MB720178.namprd12.prod.outlook.com
+ ([fe80::2a60:de1e:e60d:7052%4]) with mapi id 15.21.0546.016; Thu, 22 Oct 2026
+ 10:10:15 +0000
+Message-ID: <51747329-abe1-406a-aeae-94ebb7a35bf4@nvidia.com>
+Date: Thu, 22 Oct 2026 15:40:01 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] CPER: Add Memory Error Section 2 support
-To: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
-Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
- Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Borislav Petkov <bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Shuai Xue <xueshuai@linux.alibaba.com>,
- Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
- Pawel Chmielewski <pawel.chmielewski@intel.com>,
- Dave Jiang <dave.jiang@intel.com>,
- "Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
- Breno Leitao <leitao@debian.org>, Dan Williams <djbw@kernel.org>,
- Terry Bowman <terry.bowman@amd.com>, Ard Biesheuvel <ardb@kernel.org>,
- Morduan Zang <zhangdandan@uniontech.com>, linux-acpi@vger.kernel.org,
- linux-edac@vger.kernel.org, acpica-devel@lists.linux.dev
-References: <20261019203915.2019037-1-pierre.gondois@arm.com>
- <20261020101048.00000186@oss.qualcomm.com>
+Subject: Re: [PATCH v6 4/5] cpufreq: CPPC: Preserve OSPM-set registers across
+ hotplug and unload
+To: Christian Loehle <christian.loehle@arm.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
+ ray.huang@amd.com, mario.limonciello@amd.com, perry.yuan@amd.com,
+ kprateek.nayak@amd.com, maciej.wieczor-retman@intel.com,
+ pawel.chmielewski@intel.com, linux-pm@vger.kernel.org,
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ mochs@nvidia.com, bbasu@nvidia.com
+References: <20261020121846.691218-1-sumitg@nvidia.com>
+ <20261020121846.691218-5-sumitg@nvidia.com>
+ <cf4e3153-ff80-4d0d-94f7-572a26f369c1@arm.com>
 Content-Language: en-US
-From: Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20261020101048.00000186@oss.qualcomm.com>
+From: Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <cf4e3153-ff80-4d0d-94f7-572a26f369c1@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PA7P264CA0277.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:373::9) To BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23)
+X-ClientProxiedBy: PN4PR01CA0040.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:277::10) To CH4PR12MB720178.namprd12.prod.outlook.com
+ (2603:10b6:610:50e::10)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -158,88 +108,371 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	BESPR08MB999898:EE_|DU0PR08MB8164:EE_|MAD0EPF000008AB:EE_|AS8PR08MB6373:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8215d87-53ca-497e-ed5b-08df300b35ba
-X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr,ExtAddr
-x-checkrecipientrouted: true
-NoDisclaimer: true
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH4PR12MB720178:EE_|DS0PR12MB8200:EE_
+X-MS-Office365-Filtering-Correlation-Id: 02d89d63-e0dc-480a-4782-08df3024aa8a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|366016|1800799024|23010399003|7416014|376014|18002099003|22082099003|10067099003|261021121427099003|4143699003|261009223027099003|11063799006|56012099006;
-X-Microsoft-Antispam-Message-Info-Original:
- KwFu6HJcceQp9V47iprTbKDIYJFr/Cg2T2d/5q3JRZlNLR4N1mcYS1+mOv4bjaf1aS1n5P2dXTZ5Out5CS+5nNJp92DPo886bmtFkHzJzye12RhZtq55eRvtpyh7W8PRvL0IVWYnrCGJHxjeHMxsAWk4VkVsAqfzyjbBk6AJ7wPrMIBTY+mqaPPHmb4q3A8eTN49Lymf9eiYTcpQGtw067Qk1S4dCbIDtyHN58cMh1Sk4/djSH0lEg9SpecjeR8Fe6AA3Ofk9vGpaEbaC2iYq5mlHOuIYClMRDX12IDsM65FkirFLpJyTOsJUy0IkGO7qKZCcz3Mo8pSrGm8fh4MQxMdW86dUJeqa/HimYg3HE5HLUTQhFJIQngkeBc+sndMB0jNizeJowMKGF7Z/Otvua4ETxxUU8xS34L0KEUELMKI6FDR+pUmhz2JNJF1eSq2cr8t01j5FJYNzsPtPoy7c/VoYKJDCB8fMfo9qt43O49uC4Vho5H3Cfv/UKVwD2iUWzjBWhTgy5guMHcPOW5V2gTScwgELDHQe9OfZ8EPKFPGpmUv+4PioKakg06T2thP6WvqfIDlHETIHHgK39INmILmoVSFIKEfLc5Kcs8adtvHmrZKtJ5s1BnD59SL+XLeWy073jNVScPEKWyR9bkcwjZE6W8TjPG71Rtj8Odu2+c=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BESPR08MB999898.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(23010399003)(7416014)(376014)(18002099003)(22082099003)(10067099003)(261021121427099003)(4143699003)(261009223027099003)(11063799006)(56012099006);DIR:OUT;SFP:1101;
-X-Exchange-RoutingPolicyChecked:
- NsjEppnfwzAFMVm2QfutG+Iu8GX/syjNA6OXab/gEfXqE/l4a7zdsO1troNwaERbdf4Jo+iaX8omjf4OJR90+H/fddiAWMN8wRoLIRD1+opNyZI+Y/R8Ns9IjcOwTBSvM7YIv3LvAgdLss6MlE8lEa15Wmps6S+9BC3IU5dNw0SnbatZGCT28Ix34qw4lfhA68kAHWCQv82YPKEpUte+9nJdkSlSBhpfl2DDC1NsPUd+iBsm62tHBXtQMfww+XXuGnGgWFHAGqnp+ciyx3GEvFquieMI4tDkK/2Qt+kgntCeYIhq7JegQLEw4b+S18jfLyoIYOnBmkEMhfKXHqs7Yg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB8164
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- MAD0EPF000008AB.eurprd04.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	ada6b0e5-c43a-4dbc-1d18-08df300b2104
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|7416014|376014|14060799003|35042699022|36860700016|82310400026|23010399003|56012099006|4143699003|11063799006|261009223027099003|10067099003|18002099003|22082099003|261021121427099003;
+	BCL:0;ARA:13230040|23010399003|1800799024|376014|7416014|366016|6133799003|22082099003|18002099003|921020|4143699003|5023799004|11063799006|261009223027099003|261021121427099003|261021123027099003|10067099003|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	awm7nhIa1W28/wHBR1R3y0Cn7pdNOTCy89Qk+Xs57TJ7hbbGu3Ms6vHIQYikWWqr+d6ZB1z/skCYmrHyNW4cImHgYY7q+ad28v2yzIt+GJ/+qTRKNVCdzHEU2Hj++7Q3kU7ZG5jGSNmn2yvU0Egwl8wI6OV8NbQy7sPM+qQpoFjVW5yEdyoQFUglrJFXO56Kpgj+XzcYgASdrOc/B0yr17pLLW5PgXKdIx8JG/Gs3ASFXmer03Pud2x4joPuyVwemu+9hf/8mM1ogJ1eC+PXDPWllYuPjzMmqCP2NUTO0D1jAvZdLiWe9Q5oH3WXVZFYXItHR/QcRC5Xg7+wnZsJ1aG4I37NecV381MXGc9mOJ1gg//OkOwPwxMylk0KYaNnWGVG2hf3P/ivkD38049XTyGhlfrS+1tMCMErqwmK0Wu0OtxVxE2a597HGKO6KmGHWUlOFhI5I7tH8t0CTOjiZd6m84yX40XuexMjiSwTnnN68dHxpZysjPu/Yd5jkm3aNc/21HIxatFuT6gwrcujsY0am2dTVe9H3qXNBOQS9oZ4jjgte1QyXQ15qAtENcCbqoCsr3fq1LcNhUVU3KqI4rl7d0IWV5lqABe6OP+bb17RloFLvXdgz4z0sDhjJCwDe0tjbiNn3KF5s5lcsMV8/mKeCCz14b7/kjHZ3yOl0cbwC+51p9PbY69kdUikC7fEFYzWAjvkeMr+gKYJi3VORA==
+	xoUPW6hRmp2Ey+FtzO1cooRNHFBoYJhyoGd7KuFMioMnIhnF7Np2KTRfvPfnSTpBEXSrA3fVm4eMkPDmufoCtGiSF/9aKhv2H514XhyrAC+NmARUBaeZ44kYHU7Mu0V+wonK6vjTZGNH+usb71fo+47XdWBkvGStBFFoW5II3wHHkm/Kfkjht1aNnjMjaY+yZsDTbuVEf5MCAbr40IuquUSdKcAHSyhTD8yAU4xMbuEmJUNwcPB0MVNcjUjUekQL9m6jGvz2YKNAqzM72p0d1lDFllkiv7V8W+O87Gv6x5Etnk2Sl18Eak967eyqgEVF1KnLahPBGISY0geicDVOYnwhMV4DwiiAdS5p8VCpDtTEfOsyxYDAqolz8tuJY/91Q1tMr9sV1DOoMFhoMaUhOAgXwfZYrdQFvub6PkwwLPj3BnRF9uUCX/czIceXCfRC/EcNvPxsOsNkwfBAhROIXu0BxzpIEO1p3qViAfvy+/Mx/3PyoYWG1cBjkjiwomy7RFZFv68KXhBe5upkFiCwkRY1LcoAafUBEP7DyLm8NcNq3CMHXfaGdAn0OZWp0y6RQpf38UeeMykyZbpFuwrI6ReFT2iZDKaVGjFhg00igv3WxSDuzVWMfb8PZIvH34+PzM7F/QpVSsMkbp2yJFqwykFMg4lPmKfq2MbXlAiyYWUjvHPPZhjzrCJX43ipde/BUSSmDxFBgWmJEa9qHZob7A==
 X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(14060799003)(35042699022)(36860700016)(82310400026)(23010399003)(56012099006)(4143699003)(11063799006)(261009223027099003)(10067099003)(18002099003)(22082099003)(261021121427099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH4PR12MB720178.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(1800799024)(376014)(7416014)(366016)(6133799003)(22082099003)(18002099003)(921020)(4143699003)(5023799004)(11063799006)(261009223027099003)(261021121427099003)(261021123027099003)(10067099003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	nDOA7uxl/NP+HAwZAhdm7ZuVdpt9zGz2zH6lUEPBk1LkGZp9AYyiNqhUeFidONNW90wi9302XGRD5EF7A4Ws+Yn1/ZkCH26P9RPv7/NESa+XBeQBMVong3rYxCtYgkq23Ltr4A7bhh2f+R8zK4r5bn1ndTJ7WTTYOgbKkzdK+mnpNl0JNyxCjMTf01IonhJ+QeTPcomV2b7Z67pOdN1vNWOAh/O7VH5v16x6EglVOSTJZnrFh4bUDctAwdkq721xyb4w1Wj5m+L1a/tcutzRFM9/FgMvo4FBbKbXZGcZAiyjgqBVcPSe2qKCjG8tLtX7oUgGWDXWoNRA09nVEp2g01gd49VgmLanWI3HZ7yQOrq6g4YZaWpGOIjsrm9crLjfRQjSRGgUu1g9jjPukbGwY/9WgcgeIzHM6e9i9405MZC6vdWbjVa6jWBrpSrMXr3j
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 07:08:01.2495
+	=?utf-8?B?OXpIZjRKNE5wSStzYzRZY1FqdmVlVnBnTTlWRFBGY3pnTTlTcHQ1MXErbysy?=
+ =?utf-8?B?MXlKOEpCMHlhQ2tXSXBMc01pMGVjR2JxVC9ldmNUQlg3ZUlsZGh2TVRoUTNQ?=
+ =?utf-8?B?aWhsOGdRZk5MVXhRbit3dS9vR1pNaXR6TkFORDlBQ201R2poV2NCcTN4N2RG?=
+ =?utf-8?B?c05BVnFEbDhsTk9LdnlHZVZnTHlVUVlFYWN5SnlCbVV1bmtRRkpEbDh6R0M1?=
+ =?utf-8?B?NnR0NkdXZ1ZqeEpSb0pNUW43TUo4dHB2STNBMDc1ZUJVNW4wR3VxYS9DRm1E?=
+ =?utf-8?B?WmFXVEtHdDdjYXYwVW1maW9jKzh4U0hvK2ZTZ2toTzc3TmlROTlhS2ZOY3cz?=
+ =?utf-8?B?bXZPQ25PcnJseGwwcnhoNm43WG9OMndKYjhhMUpGaVNYUVRyQWx0aUdKUnZo?=
+ =?utf-8?B?dVh0Q2FSOStZVlhaZGZ1b3pUN2dpVzlsdHNKSE9mdllGV3pTZFNzNTBMWjM1?=
+ =?utf-8?B?YXN4WEFldlBpenAvSnl5SmgrOHpqZGpKTzN2dHlvNU1kc01oMHJiUWpPc1ha?=
+ =?utf-8?B?MjZMS2w3S3ZOc09zNGZUSWJSL1kwZXJYZmhwdGp2VWpWZGZDZnRMWTdpaURY?=
+ =?utf-8?B?ZzNEWVpMU1pxejNkajBrUnZVd3hnaDRSc3dMdFRmTjhaYnNjc0dNM1ljY0dt?=
+ =?utf-8?B?RzRZbzlWUHNZaE1lOGhBWnRLR2xwRUE1T3AvK3ZQVzRaS1ArRVZPNzkwd2ZF?=
+ =?utf-8?B?bUZac1BjVHNTN040aTBrM1dpUEJvcXRmWHZyMzloOHJWenVmckgzazB5MWFp?=
+ =?utf-8?B?ZEFZUU9ob2pSTHFiek5qS3JoVGxsZXptVEhuU1ROamNTbkZkdkZ4NzRweU5Z?=
+ =?utf-8?B?OXp2bHpQMlNLTVNtZk1XU2hkYkhWeExaOEVPQ3F4WEFuSVNOV0h6b0Iyc2JB?=
+ =?utf-8?B?VkVlOWZnVFZpNTR2d3h1a1ppWnpzb0RDQzBSVnJRcHFucmtOMVpSMkdqV3g3?=
+ =?utf-8?B?cUNOK1pOeFlMYm95VlZEb2xGQkNFYmthY3ZuWUh3SE9MSzV2cXF2MnZaMWhT?=
+ =?utf-8?B?K1ZPcWpjaFg1a2ZjQ0N3clZHZWFYK1QwZjNsYTA0RVY4N2NEcXo2RFFxakJk?=
+ =?utf-8?B?Q0FaY21qN3cvYzBvWHcrV25ENVp4ZHUzVWFRTDlxcksrb0lZcjFrVkdXNXdB?=
+ =?utf-8?B?KzhiajdQU0dmYVM2OTl1K0piaDFwdmJIL3ZOME5oN0NlTjArRkNJMjdpYko2?=
+ =?utf-8?B?aHJnd0hMS21ZNHNIS2pTRUlhV2JhMzc0ZEplQUZYSVBmcEp2ZW50SXdIdGhE?=
+ =?utf-8?B?S05oRk41SUlQLzZMelFUa2kvcFYzOExQUHlNbUsrMlI4T1Z5Wk94UjlxeUd6?=
+ =?utf-8?B?ZUptRFpZQ3ZrN2xBTU9nVnE4aC9PVWVjWTh1VVJFOWRxUGZORVFSUHc1OHl0?=
+ =?utf-8?B?bmg2L0JWOHZkRGNTZnJraXpLRDBwL3hKd0IrSmtzSUdGQWRxL2EyT2U3ajcx?=
+ =?utf-8?B?aERnRGFiRENiVnErbGlXRWNITTF5QVdGb1BBNHNJdCtxUGcxOXJEN1Z6VjZO?=
+ =?utf-8?B?Q0FNc2t5SmtodkhpeFdhWkJJQUtFSFJmNnArMXFzRFc4NnRxNW0ydlZCTlRS?=
+ =?utf-8?B?MkU4M293bUc5VExvTzNNeXdVK1lFaTh0SUNBK1JVMGxGMndBVUJwRVhOOEpU?=
+ =?utf-8?B?QUM3MWFMMXB4aEw0M2JCNmkyenFNdStieXc5Z1h3RUhPamhVQnhnNnlwQU1j?=
+ =?utf-8?B?aVVpekhISXZaSUxFSjBySk11bGUxanBhWHZPZTN6QlU4RDhWWkJXd1RydGtn?=
+ =?utf-8?B?OGo5UUphWGNJbHYwTjI4dy9MMlhIK2JuWnJvbURBRUdlbDdlSHh5MFo4RWNE?=
+ =?utf-8?B?Ty9wdk5RZEJuelk0UTBrNVhzakNQTFMwSzZqSTNSaUJERnJ2TEovN3lWeW9J?=
+ =?utf-8?B?OTJOVlBZcUtQaFpSZ0NnajdURldScFQwRlJqb2lLU1A4UGV1dldNRFpza3Zx?=
+ =?utf-8?B?d1RyVVYxVHMxVXQ1T29OMnNUenBkL0c0dlYxQk45Y0NwUVdNNXlSZEtQSms1?=
+ =?utf-8?B?OWdLbjV6TU56Mi85V2VsZm5UTm9GTVNzYzRpWkNNdkFKNXR4dDBablVBeXp2?=
+ =?utf-8?B?NnNkWkZMMjFRLzZUTmxENjdxQkkxRkNTSlc4d2Z0TEkxMTRoTlJuZE0yRWkx?=
+ =?utf-8?B?TytvTW5tRndYUFN6RlhkRnNpb2NOVFFLMlB6MFdtMVJIc1lHckY5WmZRQUlL?=
+ =?utf-8?B?L1FEV2hOd29nbmpjYXM0d0lCc3dUL0U3TkxJcEJRaG9VNld0ZU92RHczNm9D?=
+ =?utf-8?B?R1hGbTc1eGdRakY0V1dpSmJ0aXRWTkxnUmhNdkV6aEtCbmIwMHdSemxGNXVm?=
+ =?utf-8?Q?BAqdISXrwyboT+REn6?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02d89d63-e0dc-480a-4782-08df3024aa8a
+X-MS-Exchange-CrossTenant-AuthSource: CH4PR12MB720178.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 10:10:15.1102
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8215d87-53ca-497e-ed5b-08df300b35ba
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MAD0EPF000008AB.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6373
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ahlZO6LpoJI7LoXzwlYE2d167eDuAShBtd5Uu0KJPVQA3VSwm/tLo3yjZcr/o2oN8KPrj4qBvLV1Adocfu0wRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8200
+
+Hi Christian,
 
 
-On 10/20/26 19:10, Jonathan Cameron wrote:
-> On Mon, 19 Oct 2026 22:38:39 +0200
-> Pierre Gondois <pierre.gondois@arm.com> wrote:
->
->> The support is mostly duplicated from Memory Error Section handling.
->> Other than differences coming from the content of  Memory Error
->> Section 1 and 2, differences in the support are:
+On 20/10/26 21:41, Christian Loehle wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 10/20/26 13:18, Sumit Gupta wrote:
+>> Values written to OSPM-set CPPC registers via sysfs can be lost in two
+>> ways:
 >>
->> - v2 do not rely on a compact "struct cper_mem_err_compact" struct.
->> This structure was used to support older versions of the Memory
->> Error Section (1). This is not needed for the new structure.
+>>    - Across CPU hotplug: the platform may reset a CPU's registers while it
+>>      is offline.
+>>    - On driver unload: the value the driver wrote is left in the register
+>>      instead of returning to its pre-driver state.
 >>
->> - The compact version is also used by the tracing framework.
->> To avoid relying and propagating a non-standard record format,
->> through trace event (cf. extlog_mem event) the new trace event
->> prints each field individually.
+>> Add a small table-driven mechanism that handles both:
 >>
->> The last patch of the serie was only build-tested due to the
->> absence of relevant hardware. apei_mce_report_mem_error() and
->> arch_apei_report_mem_error() implementations were also removed since
->> last version.
+>>    - On init(), capture each register's firmware value before the
+>>      driver programs anything.
+>>    - On offline(), read back each register's current value (whatever was
+>>      last set via sysfs) so it can be reapplied, then restore the firmware
+>>      value.
+> 
+> Sorry for the late suggestion, but all the ospm-set registers I think we can
+> save ourselves some headache by just saving these at sysfs_store (and not deal
+> with potential read-errors during offline/suspend (which actually may happen!).
+> 
+
+v1 [1] saved the values at store time. In v2 I switched to reading
+them in offline(), following the flow discussed in [2]. One read there
+covers every store handler and the pending boot parameter series.
+
+But a read error in offline() or suspend() drops the request. A failed
+reapply in online() can also leave the register at its firmware or reset
+value, which the next offline() or suspend() then saves over the
+request. Saving at store time keeps the request in both cases.
+
+We could combine the two. Keep the policy across hotplug and the
+firmware restore in offline() from v2, and save the requested values
+at store time as in v1:
+  - init() saves the firmware values and uses them as the initial
+    requested values.
+  - Each sysfs store updates the requested value after it succeeds.
+    The boot parameter series will do the same.
+  - offline() and suspend() restore the firmware values without
+    reading the registers.
+  - online() and resume() reapply the requested values. If that fails,
+    the request is kept for a later online().
+
+Does this sound fine and keep the intent of the earlier discussion?
+I will respin accordingly.
+
+Thanks,
+Sumit
+
+[1] https://lore.kernel.org/lkml/20260623095403.3407436-1-sumitg@nvidia.com/
+[2] 
+https://lore.kernel.org/lkml/15def9ce-abbd-4ef5-bb8f-0c55b42a0181@arm.com/
+
+Thanks,
+Sumit
+
+
+>>    - On online(), reapply the value captured at offline() after
+>>      reprogramming the performance controls. A failed write to the controls
+>>      does not skip the reapply, as no other path restores these registers.
+>>    - On exit(), nothing is needed, as the core calls offline() first, which
+>>      already restored the firmware values.
 >>
->> It will also require a proper handling from the rasdaemon. Applying
->> this last patch without rasdaemon support will silent the reports of
->> Memory Error Section 2 error, cf. ras_userspace_consumers() check.
-> Hi Pierre,
->
-> I'd slow down a bit.  We are mid merge window and convention is normally
-> one version a week or so anyway.  Better to gather up feedback from
-> a number of folk and spin only one revision to cover it all.
->
-Hello Jonathan,
-
-Ok sure, as the v1 was reviewed quickly I thought there was a chance
-of having the serie accepted quickly aswell. I ll wait a bit more.
-
-Thanks for the review,
-
-Pierre
+>> Cover the Autonomous Selection (auto_sel), Energy Performance Preference
+>> (EPP) and Autonomous Activity Window (auto_act_window) registers. Writes
+>> to EPP and auto_act_window only have meaning while auto_sel is enabled,
+>> so write auto_sel before them when enabling it and after them when
+>> disabling it. While autonomous selection stays disabled, the platform may
+>> ignore those writes.
+>>
+>> Suggested-by: Pierre Gondois <pierre.gondois@arm.com>
+>> Link: https://lore.kernel.org/all/86780f97-29ee-4a72-b311-38c89434b707@arm.com/
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/cpufreq/cppc_cpufreq.c | 176 ++++++++++++++++++++++++++++++++-
+>>   1 file changed, 173 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+>> index 9e1214e1cb0d..1b733f15d641 100644
+>> --- a/drivers/cpufreq/cppc_cpufreq.c
+>> +++ b/drivers/cpufreq/cppc_cpufreq.c
+>> @@ -29,6 +29,166 @@
+>>
+>>   static struct cpufreq_driver cppc_cpufreq_driver;
+>>
+>> +/*
+>> + * OSPM-set CPPC registers tracked for save/restore. A value the OS wrote is
+>> + * reapplied from online() across CPU hotplug, and the firmware value is
+>> + * restored from offline().
+>> + *
+>> + * Autonomous Selection (auto_sel) is kept first, as the registers after it
+>> + * only have meaning while it is enabled.
+>> + */
+>> +enum cppc_saved_reg_id {
+>> +     CPPC_SAVED_AUTO_SEL,
+>> +     CPPC_SAVED_EPP,
+>> +     CPPC_SAVED_AUTO_ACT_WINDOW,
+>> +     CPPC_NR_SAVED_REGS,
+>> +};
+>> +
+>> +struct cppc_saved_reg {
+>> +     const char *name;
+>> +     int (*get)(int cpu, u64 *val);
+>> +     int (*set)(int cpu, u64 val);
+>> +};
+>> +
+>> +static const struct cppc_saved_reg cppc_saved_regs[CPPC_NR_SAVED_REGS] = {
+>> +     [CPPC_SAVED_AUTO_SEL] = {
+>> +             .name = "auto_sel",
+>> +             .get = cppc_get_auto_sel,
+>> +             .set = cppc_set_auto_sel,
+>> +     },
+>> +     [CPPC_SAVED_EPP] = {
+>> +             .name = "epp",
+>> +             .get = cppc_get_epp_perf,
+>> +             .set = cppc_set_epp,
+>> +     },
+>> +     [CPPC_SAVED_AUTO_ACT_WINDOW] = {
+>> +             .name = "auto_act_window",
+>> +             .get = cppc_get_auto_act_window,
+>> +             .set = cppc_set_auto_act_window,
+>> +     },
+>> +};
+>> +
+>> +enum cppc_saved_type {
+>> +     CPPC_SAVED_FIRMWARE,
+>> +     CPPC_SAVED_REQUESTED,
+>> +     CPPC_NR_SAVED_TYPES,
+>> +};
+>> +
+>> +/*
+>> + * Per-policy values saved for each register in cppc_saved_regs[], U64_MAX
+>> + * if there is none:
+>> + *   CPPC_SAVED_FIRMWARE  - value before the driver touched it, captured at
+>> + *                          init() and written back when the policy goes
+>> + *                          offline
+>> + *   CPPC_SAVED_REQUESTED - value in effect when the policy last went offline,
+>> + *                          reapplied at online()
+>> + */
+>> +struct cppc_policy_state {
+>> +     u64 regs[CPPC_NR_SAVED_REGS][CPPC_NR_SAVED_TYPES];
+>> +};
+>> +
+>> +static DEFINE_PER_CPU(struct cppc_policy_state, cppc_policy_state);
+>> +
+>> +/*
+>> + * Per-policy state is kept in the per-CPU variable of the first CPU the policy
+>> + * manages. related_cpus (the policy's full set of CPUs) never changes while the
+>> + * policy exists, so this CPU (unlike policy->cpu) stays the same across CPU
+>> + * hotplug, and every callback reaches the same copy.
+>> + */
+>> +static struct cppc_policy_state *
+>> +cppc_cpufreq_policy_state(struct cpufreq_policy *policy)
+>> +{
+>> +     const struct cpumask *policy_cpus = policy->related_cpus;
+>> +
+>> +     /*
+>> +      * related_cpus is empty until the core fills it in after init(), so
+>> +      * fall back to policy->cpus, which has the same first CPU.
+>> +      */
+>> +     if (cpumask_empty(policy_cpus))
+>> +             policy_cpus = policy->cpus;
+>> +
+>> +     return &per_cpu(cppc_policy_state, cpumask_first(policy_cpus));
+>> +}
+>> +
+>> +/*
+>> + * Save each register's current value, either as the firmware value, captured
+>> + * before the driver programs anything, or as the requested value, to reapply
+>> + * at online().
+>> + */
+>> +static void cppc_cpufreq_save_regs(struct cpufreq_policy *policy,
+>> +                                enum cppc_saved_type saved_type)
+>> +{
+>> +     struct cppc_policy_state *st = cppc_cpufreq_policy_state(policy);
+>> +     unsigned int cpu = policy->cpu;
+>> +     u64 val;
+>> +     int i;
+>> +
+>> +     for (i = 0; i < CPPC_NR_SAVED_REGS; i++) {
+>> +             if (cppc_saved_regs[i].get(cpu, &val))
+>> +                     val = U64_MAX;
+>> +
+>> +             st->regs[i][saved_type] = val;
+>> +             if (saved_type == CPPC_SAVED_FIRMWARE)
+>> +                     st->regs[i][CPPC_SAVED_REQUESTED] = U64_MAX;
+>> +     }
+>> +}
+>> +
+>> +/*
+>> + * Write one tracked register, skipping it when there is no saved value.
+>> + * A register the platform does not allow writing is not an error.
+>> + */
+>> +static void cppc_cpufreq_write_saved_reg(unsigned int cpu,
+>> +                                      enum cppc_saved_reg_id reg, u64 val,
+>> +                                      enum cppc_saved_type saved_type)
+>> +{
+>> +     const char *op = (saved_type == CPPC_SAVED_FIRMWARE) ?
+>> +                      "restore firmware" : "reapply saved";
+>> +     int ret;
+>> +
+>> +     if (val == U64_MAX)
+>> +             return;
+>> +
+>> +     ret = cppc_saved_regs[reg].set(cpu, val);
+>> +     if (ret == -EOPNOTSUPP)
+>> +             return;
+>> +     if (ret)
+>> +             pr_debug("Failed to %s %s=%llu on CPU%u (%d)\n", op,
+>> +                      cppc_saved_regs[reg].name, val, cpu, ret);
+>> +}
+>> +
+>> +/*
+>> + * Apply the saved firmware or requested value to each tracked register.
+>> + *
+>> + * Write auto_sel first when the value being applied enables autonomous
+>> + * selection and last when it disables it, so the writes to the dependent
+>> + * registers can still take effect. While autonomous selection stays disabled,
+>> + * the platform may ignore those writes. Do not enable it temporarily to force
+>> + * them through.
+>> + */
+>> +static void cppc_cpufreq_apply_saved_regs(struct cpufreq_policy *policy,
+>> +                                       enum cppc_saved_type saved_type)
+>> +{
+>> +     const struct cppc_policy_state *st = cppc_cpufreq_policy_state(policy);
+>> +     unsigned int cpu = policy->cpu;
+>> +     u64 auto_sel, val;
+>> +     int i;
+>> +
+>> +     auto_sel = st->regs[CPPC_SAVED_AUTO_SEL][saved_type];
+>> +
+>> +     if (auto_sel)
+>> +             cppc_cpufreq_write_saved_reg(cpu, CPPC_SAVED_AUTO_SEL, auto_sel,
+>> +                                          saved_type);
+>> +
+>> +     for (i = CPPC_SAVED_AUTO_SEL + 1; i < CPPC_NR_SAVED_REGS; i++) {
+>> +             val = st->regs[i][saved_type];
+>> +             cppc_cpufreq_write_saved_reg(cpu, i, val, saved_type);
+>> +     }
+>> +
+>> +     if (!auto_sel)
+>> +             cppc_cpufreq_write_saved_reg(cpu, CPPC_SAVED_AUTO_SEL, auto_sel,
+>> +                                          saved_type);
+>> +}
+>> +
+>>   #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+>>   static enum {
+>>        FIE_UNSET = -1,
+>> @@ -800,6 +960,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>        policy->cur = cppc_perf_to_khz(caps, desired_perf);
+>>        cpu_data->perf_ctrls.desired_perf = desired_perf;
+>>
+>> +     cppc_cpufreq_save_regs(policy, CPPC_SAVED_FIRMWARE);
+>> +
+>>        ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+>>        if (ret) {
+>>                pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+>> @@ -843,12 +1005,14 @@ static void cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+>>    *
+>>    * The platform may have disabled CPPC and reset the performance controls
+>>    * (desired, min and max performance) while the CPU was offline, so re-enable
+>> - * CPPC and reprogram them.
+>> + * CPPC and reprogram them. Also reapply the OSPM-set registers that offline()
+>> + * reset to firmware values.
+>>    *
+>>    * Report failures without returning them, or the core would free the policy and
+>>    * leave the CPU without cpufreq. A failed write to the performance controls is
+>> - * not fatal, as the governor's next request programs them again. A failed CPPC
+>> - * enable stops the restore, as the writes that follow may not reach the
+>> + * not fatal, as the governor's next request programs them again. The OSPM-set
+>> + * registers are reapplied even then, as no other path restores them. A failed
+>> + * CPPC enable skips both restores, as the writes that follow may not reach the
+>>    * platform.
+>>    */
+>>   static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>> @@ -896,6 +1060,8 @@ static int cppc_cpufreq_cpu_online(struct cpufreq_policy *policy)
+>>                WRITE_ONCE(cpu_data->perf_limits_valid, true);
+>>        }
+>>
+>> +     cppc_cpufreq_apply_saved_regs(policy, CPPC_SAVED_REQUESTED);
+>> +
+>>   out_fie:
+>>        /* Restart what offline() stopped, with a new counter snapshot. */
+>>        cppc_cpufreq_cpu_fie_init(policy);
+>> @@ -915,6 +1081,10 @@ static int cppc_cpufreq_cpu_offline(struct cpufreq_policy *policy)
+>>        unsigned int cpu = policy->cpu;
+>>        int ret;
+>>
+>> +     /* Save what the OS set, and leave the platform in its pre-driver state. */
+>> +     cppc_cpufreq_save_regs(policy, CPPC_SAVED_REQUESTED);
+>> +     cppc_cpufreq_apply_saved_regs(policy, CPPC_SAVED_FIRMWARE);
+>> +
+>>        /*
+>>         * Stop the frequency invariance updates and cancel the pending work, so
+>>         * that no sample spans the offline window. online() restarts them with
+> 
 
