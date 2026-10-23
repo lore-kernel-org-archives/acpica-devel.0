@@ -1,62 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.177
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792703596;
-	b=sQYhE1/DrJkObrzF+G/1C6IgmeWkWI3Hh4gRrFehlXQaCpSbZZ3z3BeCJ2oxIp5N95un
-	 YiFy1wMF6bU5JF9uBqnAjl5kxL7K/2ri0hzCvBYwBR9Sd9eYKuuN6T7G9lIucfYac1Q++
-	 +rJJ4j425xb//Gd46/3LjYwx59eWcUIhuQDTuLa6eg5XOgOK+bVsfQQCxUCi6mhPhtwyg
-	 KhNCfZZ/wSn7Hmk+0myMxqPZeEc5usi+PIOnyHuGdXZrFVnlTv6EBKRsBfppvJf3+gSGP
-	 +5OB0XN3F/Uc5Cb3IBedWixA5K0xxTOoLDYbyY+bLyyOn7dfIaaCkz60zZowffD+ebQ==
+	t=1792741612;
+	b=x9uLdTUweZMirbUynKbwL9JvhhiWk8XIplsrZBjsVvm+H9VrRqYJCDCdtniFY2JhDJ9n
+	 LXNTXkpC6JlknN+2oCZf+ZFWm/i2JW1ZcI0FuH2XhhEPIk//+NfGjl60T/RXVGwBgRHN9
+	 27Q4Otf95PRM4VMBvIrG2s3qutn4UvpRfMEASRd75FScuohyLLk1EiewDBq65qKkRasid
+	 aD/HuHIbxkdohXaJ3Jix2P3+lPQIFRz/eBN9ltqJEJ77tH70Vwjr5sOF6/balbW/92sCy
+	 7QX7XCnVqNLr6NuoDUo/g/Z4zXxQh69MYFq3ZmJOE3OMj47cH+T3+NW6yZfJLwvo7eg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792703596;
-	h=DMARC-Filter:Received:DKIM-Filter:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	a=rsa-sha256; c=relaxed/relaxed; t=1792741612;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=HVfBLk4HTc3Q1JSz/tfe3BVw+fdZ6OMFICyRLMEHTb0=;
-	b=VFc072vm8cy210bApm6mPvcF1kPgeGO7+TNb1mRW8N71W/81VP6xF6dgL5Lr0FxjHfkf
-	 6ne9ndqNVOStFtQ6y2rCk2XSOK7Q291fOK1tBd5KVUX3FAK2owzz5MNMiTuGy0yFIhdDg
-	 RZ7qGOCBYJCRddSVTG7Ad7cHDFV/l0/absi2+Gxulv8uV01cTrVweF7550z7EkXFKMQLz
-	 zVX6o8Zhq6VDq5m7XBFdHhqGxyk0ShHaTjbQiajxxhvL8oRC+DMQMO5VCH1JOSJ4FVIKh
-	 u4HXb0cAeaSE3lvmDOCSei98ISEfJSxYWqObUVC+4/OxLy+bcxMOcaBCyUXEAoM2Dmw==
+	bh=i1/WuK8dW5/pyvLMu4dA8Lh0jH9UtF3/CqDkw4QhSPY=;
+	b=GxnHyglJWeUR1K6GnpTm6FUWKFm1X14zvT5MaJyu6leWTShfAP7ZhEgi9rmsZNmJO4Mz
+	 GQ/O0tcACwbaQQQLYTEBUqzSfrsm5S/FpPnByGlLZEvXrlAB+YNtivf6EF/aRGdGUG+Kk
+	 Sq2UbCC5RgQAh3H7hnZZ5GByFEffGDPYMzFfxnFzraXSU7KK2qK+D57HYHcQUxASR/3ZL
+	 +dV5NcKYuqiRHkRHeirmKW0KilD0jfBHUqrqgdxtH5xug4r3kTnviOOrP0utvoF5mEj/X
+	 LHv6ZOq6wJtG+eyjuG5/dlVobRJmXBAdb8LqwDcjmSuHii1t9tNoHMo5pclzz/njNfw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.microsoft.com;
-	spf=pass smtp.mailfrom=linux.microsoft.com;
-	dkim=pass header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b="EpkiT5/P";
-	arc=none smtp.remote-ip=13.77.154.182
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3023C606A31E
-	for <acpica-devel@lists.linux.dev>; Thu, 22 Oct 2026 21:13:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3023C606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=C9iww4Yv;
+	arc=none smtp.remote-ip=74.125.82.177
+Received: from mail-dy1-f177.google.com (mail-dy1-f177.google.com [74.125.82.177])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF3D606A323
+	for <acpica-devel@lists.linux.dev>; Fri, 23 Oct 2026 07:46:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BAF3D606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.a=rsa-sha256 header.s=default header.b=EpkiT5/P
-Received: by linux.microsoft.com (Postfix, from userid 1216)
-	id 9FC2820B7167; Thu, 22 Oct 2026 14:13:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9FC2820B7167
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1792703586;
-	bh=HVfBLk4HTc3Q1JSz/tfe3BVw+fdZ6OMFICyRLMEHTb0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EpkiT5/PFjdo40SKtLABbtNcnlTX13uBQMIZSpTOpqmmD3/h6dlfmo7uI+jS3pNuo
-	 dA3PMomECm134w2pkCHYbFTSBhvDDgnM2lgVTTBKI0sRtyx4U3Z+Pe9T1GxdFNSuO5
-	 KrHbK2p+4tz1kKlZyP4DDuuYpb6w3wxxUZGUzlDY=
-From: Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
-To: linux-acpi@vger.kernel.org,
-	linux-efi@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=C9iww4Yv
+Received: by mail-dy1-f177.google.com with SMTP id 5a478bee46e88-3535bf8b3e0so992482eec.0
+        for <acpica-devel@lists.linux.dev>; Fri, 23 Oct 2026 00:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792741611; x=1793346411; darn=lists.linux.dev;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=i1/WuK8dW5/pyvLMu4dA8Lh0jH9UtF3/CqDkw4QhSPY=;
+        b=C9iww4YvgXSxaV5cRsr0DHuYVsKdsqRULAtL2dWWB8Tx6zXPdMU84tmtq0saIE6mJ7
+         R5H/RF1xh6hF4KZdL7bQ3v3otpuf/pg1LdPuDhU++CB4mzRjkTWZBmpu0k5rRyKov0w9
+         m8ymsZc/GLrJWAe2MT5RohEK7Zjiwq1TJtcrF90jYZH5+VMfgefgJj2W9NqKxoFWaRDr
+         +hqWqz4+hBqLR8FHIn1VwDMKwLkji5SFhL11h4RJyFLvF7oIqSALFxt4qbSE7ku1TBkz
+         Gp4v/Q3SMpjMckZkHmqMNWd2P4NLV0C1taz9Wz+dlYpUJPYxDUCVyxtofLB6WaWm16mE
+         e7/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792741611; x=1793346411;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=i1/WuK8dW5/pyvLMu4dA8Lh0jH9UtF3/CqDkw4QhSPY=;
+        b=SuubR7vc1CY9rb52Ef74Cc2DTEuRJjRvkTSwUNGjvvC5H29GWiOGz1jRDixHqk4LpD
+         kpI//aOl+E/76uevpdtJEhlqjf6O2F73kIMTypnnGgns2uOY5o3LzWfv9ryHtrPl0M+8
+         yr4jR5cAFhKTHQ1wfKQyJDj7lf5fWBMYzTFlnGFH9txaa+Lds/bgPL8l83LvIlggTdRY
+         uEyxSBPZHNNQC8IlwLNon50wvQIEsE4qdafJZB03pU6cwxvkT8l8szoRxCvYUyGbgwwA
+         gb9y0fMz63b+zbK5fW/1cZw/chW/mKn++d/ynq9AWKuVApwM1rqymLUC7OnA9oC6kFj8
+         U4fQ==
+X-Forwarded-Encrypted: i=1; AKwUvByIJIAuVvFrZJdblvi0LqbSwHYENcyUq9Oc7RSssGpkfFGx9NuGxSqKwwGFGjbxKECtMHVEqw+ZTPe49Bk=@lists.linux.dev
+X-Gm-Message-State: AFq9FYIFtfRqaMnXB03O1NbYvoZFcc7h5rAIBqRv/QoMV0tAqveapmHp
+	4BZ2zZZ2K0skuM2lJ+x/L7bJzEDvksTK6uSNgPeHw9Rxci+CamoEZg9j
+X-Gm-Gg: AYBFou12it3QsH/P6yuZ/dhsPeMGlcee2Yzpco+h9m/xBwA1pA4ZZxX03DsVpYyPV2Y
+	YAoEX7t7vrWSLvlyRxvZTLlLmJVI0OX49ZvedveMMkFLBKggs6YeeUNRW25nVfeMA6zcaWg4fyb
+	RQ5IB13baQ8GI2GPpCACahPE/2rZtsWZK2sSyzfgOjYG9qbzGoNB4eEoQXgKXfDPWyFuISFbc67
+	/DjNjiWKt/QE+ffWWEUYI7FN027LhPZ+6ER2lZQRJtxQeY8X4waSA3ueBYyh2a970WjrEyGT5ik
+	xZSp97IYRHyIONZg969qd4rb9xRh0Mx2u/L5tERKRws/TJJTEYqGJpCu7hX2GlKtyiCMXrtkbH7
+	2Ey+NMp9CoTaip0e0SPXaGpRo8qoFG0pU6GgVxi/n5M2yzE96ondRBwXqpD+ugQCBGLGgc/Z38x
+	xpE4wdI2hVIK5jCdeVJyX6qZdqDHussE96E3OlBt0Eou0/wB9NfZskRFfey/h3uqvOdqf1O9Hzl
+	FlLsHdSnY7qSVfUNLbt/jQad5AT824QJ0I0Rm6MrZsUkN2OYqS7eu747HhH2ExFzZQ=
+X-Received: by 2002:a05:7301:619b:10b0:35d:7565:8577 with SMTP id 5a478bee46e88-369d980cabamr1885558eec.15.1792741610605;
+        Fri, 23 Oct 2026 00:46:50 -0700 (PDT)
+Received: from Hruday.lan ([2409:4091:903b:c404:6995:b26d:3edb:5202])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-369d9a72ff2sm4479935eec.0.2026.10.23.00.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2026 00:46:50 -0700 (PDT)
+From: Rahul Rao <shreeramrahul94@gmail.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>
+Cc: Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>,
+	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
-	Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
-Subject: [PATCH 2/2] efi: don't register rtc-efi if the ACPI TAD can drive the RTC
-Date: Thu, 22 Oct 2026 17:13:04 -0400
-Message-ID: <20261022211304.2285792-2-hamzamahfooz@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20261022211304.2285792-1-hamzamahfooz@linux.microsoft.com>
-References: <20261022211304.2285792-1-hamzamahfooz@linux.microsoft.com>
+	linux-kernel@vger.kernel.org,
+	syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com,
+	Rahul Rao <shreeramrahul94@gmail.com>
+Subject: [PATCH] ACPI: ACPICA: Fall back to inline recursion if update state allocation fails
+Date: Fri, 23 Oct 2026 13:15:02 +0530
+Message-ID: <20261023074502.103681-1-shreeramrahul94@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -68,45 +102,152 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-EFI runtime services are best avoided where possible, and ACPI defines a
-standard interface to the real time clock in the form of the Time and
-Alarm Device (TAD), which the acpi-tad driver has been exposing as an
-RTC class device since commit 8a1e7f4b1764 ("ACPI: TAD: Add RTC class
-device interface").
+When acpi_ut_update_object_reference() traverses nested package elements
+or field elements to increment/decrement reference counts, it allocates a
+temporary union acpi_generic_state via
+acpi_ut_create_update_state_and_push()
+to avoid deep C stack recursion.
 
-So, don't register the rtc-efi platform device if acpi-tad is going to
-register an RTC class device for the TAD, according to
-acpi_tad_rtc_available().
+If memory allocation fails (for instance, under slab fault injection),
+the function aborts mid-traversal. This leaves sub-object reference counts
+out of sync with parent containers. Callers cannot readily roll back the
+partial updates, leading to reference count underflows and slab
+use-after-free bugs (such as in acpi_ns_check_package()).
 
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>
+Fix this by introducing acpi_ut_push_or_update_object(). When allocating
+a deferred update state fails, fall back to inline recursive traversal up
+to a safe bounded recursion limit (ACPI_UT_MAX_UPDATE_DEPTH = 16). This
+ensures reference counts remain consistent even during severe memory
+pressure.
+
+Reported-by: syzbot+e1268acad3c273b12120@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=e1268acad3c273b12120
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Rahul Rao <shreeramrahul94@gmail.com>
 ---
- drivers/firmware/efi/efi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/acpi/acpica/utdelete.c | 78 +++++++++++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 9bc22de0d..706064479 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -34,6 +34,8 @@
- #include <linux/security.h>
- #include <linux/notifier.h>
+diff --git a/drivers/acpi/acpica/utdelete.c b/drivers/acpi/acpica/utdelete.c
+index e8180099d01f..87ae66c7eee8 100644
+--- a/drivers/acpi/acpica/utdelete.c
++++ b/drivers/acpi/acpica/utdelete.c
+@@ -20,6 +20,14 @@ static void acpi_ut_delete_internal_obj(union acpi_operand_object *object);
+ static void
+ acpi_ut_update_ref_count(union acpi_operand_object *object, u32 action);
  
-+#include <acpi/acpi_tad.h>
++static acpi_status
++acpi_ut_update_object_reference_depth(union acpi_operand_object *object,
++				      u16 action, u32 depth);
 +
- #include <asm/early_ioremap.h>
++/* Max inline nesting used when a deferred update state cannot be allocated */
++
++#define ACPI_UT_MAX_UPDATE_DEPTH	16
++
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ut_delete_internal_obj
+@@ -457,6 +465,28 @@ acpi_ut_update_ref_count(union acpi_operand_object *object, u32 action)
+ 	}
+ }
  
- struct efi __read_mostly efi = {
-@@ -459,7 +461,8 @@ static int __init efisubsys_init(void)
- 	if (!efi_enabled(EFI_BOOT))
- 		return 0;
++/*
++ * Queue an object for a later reference count update. If the update state
++ * cannot be allocated, update the object right away instead of failing: an
++ * update abandoned half way leaves the counts of the sub-objects out of
++ * step with the count of their parent, and callers (most of which cannot
++ * handle an error) would later drop references that were never added.
++ */
++static acpi_status
++acpi_ut_push_or_update_object(union acpi_operand_object *object, u16 action,
++			      union acpi_generic_state **state_list, u32 depth)
++{
++	acpi_status status;
++
++	status = acpi_ut_create_update_state_and_push(object, action,
++						      state_list);
++	if (ACPI_SUCCESS(status) || depth >= ACPI_UT_MAX_UPDATE_DEPTH)
++		return status;
++
++	return acpi_ut_update_object_reference_depth(object, action,
++						      depth + 1);
++}
++
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ut_update_object_reference
+@@ -480,6 +510,13 @@ acpi_ut_update_ref_count(union acpi_operand_object *object, u32 action)
  
--	if (efi_rt_services_supported(EFI_RT_SUPPORTED_TIME_SERVICES))
-+	if (efi_rt_services_supported(EFI_RT_SUPPORTED_TIME_SERVICES) &&
-+	    !acpi_tad_rtc_available())
- 		platform_device_register_simple("rtc-efi", 0, NULL, 0);
+ acpi_status
+ acpi_ut_update_object_reference(union acpi_operand_object *object, u16 action)
++{
++	return acpi_ut_update_object_reference_depth(object, action, 0);
++}
++
++static acpi_status
++acpi_ut_update_object_reference_depth(union acpi_operand_object *object,
++				      u16 action, u32 depth)
+ {
+ 	acpi_status status = AE_OK;
+ 	union acpi_generic_state *state_list = NULL;
+@@ -560,8 +597,9 @@ acpi_ut_update_object_reference(union acpi_operand_object *object, u16 action)
+ 					 * for later processing (this eliminates recursion.)
+ 					 */
+ 					status =
+-					    acpi_ut_create_update_state_and_push
+-					    (next_object, action, &state_list);
++					    acpi_ut_push_or_update_object
++					    (next_object, action, &state_list,
++					     depth);
+ 					if (ACPI_FAILURE(status)) {
+ 						goto error_exit;
+ 					}
+@@ -579,31 +617,23 @@ acpi_ut_update_object_reference(union acpi_operand_object *object, u16 action)
  
- 	/* We register the efi directory at /sys/firmware/efi */
+ 		case ACPI_TYPE_LOCAL_BANK_FIELD:
+ 
+-			next_object = object->bank_field.bank_obj;
+-			status =
+-			    acpi_ut_create_update_state_and_push(object->
+-								 bank_field.
+-								 region_obj,
+-								 action,
+-								 &state_list);
+-			if (ACPI_FAILURE(status)) {
+-				goto error_exit;
+-			}
+-			break;
++		next_object = object->bank_field.bank_obj;
++		status = acpi_ut_push_or_update_object(
++				object->bank_field.region_obj, action,
++				&state_list, depth);
++		if (ACPI_FAILURE(status))
++			goto error_exit;
++		break;
+ 
+ 		case ACPI_TYPE_LOCAL_INDEX_FIELD:
+ 
+-			next_object = object->index_field.index_obj;
+-			status =
+-			    acpi_ut_create_update_state_and_push(object->
+-								 index_field.
+-								 data_obj,
+-								 action,
+-								 &state_list);
+-			if (ACPI_FAILURE(status)) {
+-				goto error_exit;
+-			}
+-			break;
++		next_object = object->index_field.index_obj;
++		status = acpi_ut_push_or_update_object(
++				object->index_field.data_obj, action,
++				&state_list, depth);
++		if (ACPI_FAILURE(status))
++			goto error_exit;
++		break;
+ 
+ 		case ACPI_TYPE_LOCAL_REFERENCE:
+ 			/*
 -- 
-2.56.0
+2.43.0
 
