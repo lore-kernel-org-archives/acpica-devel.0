@@ -1,55 +1,49 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793813166;
-	b=KFbjl+qIcOvfncK2aJNJGYN1xPoT12b4POIB00QqNKBWeA+OBTnDZrQ57ncE8etiIzQq
-	 PJchODY+HP/OxFp48RIApUET5TvppZkJR3KVvKdrMdQbvATPxH9ip6LKnwa1/mjm9D5Kr
-	 zdlXfUvWHBNCL3E4iG/BFoPSIh0HhQK/gN8kZ3tJwnNVA04QuEfiCFf399+v10MOwD2kh
-	 9H9mKGj4Pxjd35IuSYsh+vlTyZvDp1Ui2V28aM6pI6Ne4G4Tte87C7TSt/Kv2SUb+acYK
-	 hxd0m+Lv3z3xXisojRsgvR+/VTQHxzK/zVerXETs1PL//fQxm4pRjm3cZS3PxjeRyqQ==
+	t=1793813958;
+	b=E8eltQ5+h4zwHkNpfY+HV55c4CioIkmVpp0JFLYfJQ1L7P+Ec0wVSU5CcYpvlHusY4Be
+	 blN8GLjBrYdl8n1quOA9kc7uCEkVTC2yaXn5odXOQemWOZQltSTwGjoy7ak4pR8v+nzYu
+	 N6cOJNiR3t+fmvnd5PrIWKxFsAOn0z3xfrhztZwNvpmDRbZTAbHCyYeQnCv1hJvUc0UvJ
+	 HT1kTzgxvwdgd708vqB61C2lj30UudQdFTDL5nQk74VGYlAIqHEeHxukpsqXooLCGIX+n
+	 r5ePGeGiGTdbjiuWfbJkpmMyFuFoeFq4nqPWjaQqLnWZ56cVIkhygvgBzMzLCvFKd6g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793813166;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:X-Cookie;
-	bh=x9ff6M0sp5VgSXGtim1j8WATytOjQDQzXjDY2PMCYn4=;
-	b=z2b7StmoojIMJC8gNZU/LhhGYCHwX8vppCCTpQ0WgAYNP/owv0KpPmIByd6UxG+JEaM5
-	 SCTDIdFkgRZTFVqCQjKPlqxHHdcx1X59S7knUHcXQqHO22MgeXTobwnJjoWyOUhmoAPnT
-	 zPWkH/S9wPXEvWtessbnCs7NsOZiKS1yxm9BuyN0rchce15E8NFfB2sJ709G6Ad8RT7+k
-	 RwXQJlOgTYXQ1Nq3SRTVJ7JtX/Ciutk79tC4GmN69wkMbwMd/0Hq3nd+k6tmLGQoRI0fL
-	 Do08OdxMfzT5qmLjr3U/A/DSUgYydtmuKvJZ3ke/SNvZvDFqyYy3p0oNefbgx4Es/Bg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793813958;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=9CcDkjihi+yiVBZ4yDcPql+O9dE6UXuwMcC+J0dZmUE=;
+	b=uR/9dkIcmWEPIdfp48vnpRoDoEb63Ry05XHy5f8gEFtGil1xsZhIx8xtTiukD8jN0/BI
+	 rIK9MlRfbz+ecxLiaGK38CBgH9Eoi6VNIi7iABpE4xC19FqEy2dP5vz3d84UqZ6KbJgXs
+	 Cg1fVQ8hiQtMlBn5JbJXzpvjFht9wDiT58HxS56euZJl8KjRJnU7Trt8HaAPIuzyRx2H9
+	 AQKZPhmDPEtSmtOKkwcf8Z5bJgchYHDxJffyHfnmsJ2D9hNdJBPq/NaTtYEXjcNmWrToI
+	 rcfoN8a7fyADBPiKZawIAspn6K0tmYeE9PIwj+P8EFC4Xrodu+X4XLyYkL2A3Z3HXNw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63458606A32F;
-	Wed,  4 Nov 2026 17:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 640CF1F00A02;
-	Wed,  4 Nov 2026 17:26:01 +0000 (UTC)
-Date: Wed, 4 Nov 2026 17:25:58 +0000
-From: Mark Brown <broonie@debian.org>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Terry Bowman <terry.bowman@amd.com>, Dan Williams <djbw@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Morduan Zang <zhangdandan@uniontech.com>,
-	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v3 3/7] cper: add helpers to handle Memory Error Section 2
-Message-ID: <6016f3f4-7bf7-4b71-9b8f-06a7f31095b0@sirena.org.uk>
-References: <20261104110355.1437249-1-pierre.gondois@arm.com>
- <20261104110355.1437249-4-pierre.gondois@arm.com>
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=DVRMrYGo;
+	arc=none smtp.remote-ip=217.140.110.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBD9606A332
+	for <acpica-devel@lists.linux.dev>; Wed,  4 Nov 2026 17:39:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DCBD9606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=DVRMrYGo
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED35B1BB0;
+	Wed,  4 Nov 2026 09:39:12 -0800 (PST)
+Received: from [10.0.130.179] (e127648.arm.com [10.0.130.179])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7CD13F673;
+	Wed,  4 Nov 2026 09:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1793813956; bh=/kyJGjVyWY310MgT5Xs9DoLM2JJz9yZzou7eKEpHhQ0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DVRMrYGopu7hfbBwieaIEXe7c7Z92PBAzHy7ulMbhJD+hoaYTBXEyH2ha7GUBsGBf
+	 zrurxqeaIA2Qs7md8EwI8Mv4t8mFutsixlKN6TlziDNGZREfw1mmJ90aRttF+MaFiI
+	 GGPPF+opoDATNdEYtaU7YNgBD8aOH5Dq3oXltZCs=
+Message-ID: <4b7d65dd-6103-4363-ac9b-cbcd2ece905b@arm.com>
+Date: Wed, 4 Nov 2026 17:39:10 +0000
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,65 +53,145 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YNGke8jv/OA0HEod"
-Content-Disposition: inline
-In-Reply-To: <20261104110355.1437249-4-pierre.gondois@arm.com>
-X-Cookie: All rights reserved.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 1/3] ACPI: CPPC: Add ospm_nominal_perf support
+To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+ viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
+ zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
+ mario.limonciello@amd.com, maciej.wieczor-retman@intel.com,
+ pawel.chmielewski@intel.com, linux-pm@vger.kernel.org,
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
+ mochs@nvidia.com, bbasu@nvidia.com
+References: <20261030172745.2045743-1-sumitg@nvidia.com>
+ <20261030172745.2045743-2-sumitg@nvidia.com>
+Content-Language: en-US
+From: Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <20261030172745.2045743-2-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 10/30/26 17:27, Sumit Gupta wrote:
+> Expose the OSPM Nominal Performance register (ACPI 6.6, Section
+> 8.4.6.1.2.6), which conveys the nominal performance level at which the
+> platform may run. Unlike the read-only Nominal Performance register, it
+> is writable, so OSPM can ask for a nominal level below the
+> platform-reported one, which then becomes the boundary between boosted
+> and throttled operation.
+> 
+> Add cppc_set_ospm_nominal_perf() to write the register. Per the spec,
+> the value must lie in [Lowest Performance, Nominal Performance], which
+> the caller is responsible for validating.
+> 
+> Add cppc_ospm_nominal_perf_supported() to report whether the platform
+> implements the register as writable, since a write-only register cannot
+> be probed by reading it. It uses the same cpc_is_writable() test as the
+> setter, so support is never reported for a register that a write would
+> reject, and takes cpc_desc_lock while looking the descriptor up.
+> 
+> The register also joins the writable set that the SystemMemory overlap
+> validation uses, as the driver now writes it and can compete with
+> another control sharing an access unit.
+> 
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 
---YNGke8jv/OA0HEod
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Christian Loehle <christian.loehle@arm.com>
 
-On Wed, Nov 04, 2026 at 12:03:11PM +0100, Pierre Gondois wrote:
-> Add separate location and printing helpers for Memory Error
-> Section 2:
-> - cper_mem_err2_location()
-> - cper_dimm_err2_location()
-> - cper_print_mem2()
-
-> +int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
+> ---
+>  drivers/acpi/cppc_acpi.c | 44 ++++++++++++++++++++++++++++++++++++++++
+>  include/acpi/cppc_acpi.h | 10 +++++++++
+>  2 files changed, 54 insertions(+)
+> 
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 5a1f84fddb7f..3a0ecdd1ab11 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -463,6 +463,7 @@ static bool cpc_reg_is_writable(unsigned int reg_idx)
+>  	case AUTO_SEL_ENABLE:
+>  	case AUTO_ACT_WINDOW:
+>  	case ENERGY_PERF:
+> +	case OSPM_NOMINAL_PERF:
+>  		return true;
+>  	default:
+>  		return false;
+> @@ -3232,6 +3233,49 @@ int cppc_set_epp(int cpu, u64 epp_val)
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_set_epp);
+>  
+> +/**
+> + * cppc_set_ospm_nominal_perf() - Write OSPM Nominal Performance register.
+> + * @cpu: CPU on which to write register.
+> + * @ospm_nominal_perf: Value to write to the OSPM Nominal Performance register.
+> + *
+> + * OSPM Nominal Performance conveys the desired nominal performance level
+> + * at which the platform may run. Per ACPI 6.6, s8.4.6.1.2.6, the value
+> + * must lie within [Lowest Performance, Nominal Performance] and may be
+> + * set independently of Minimum, Maximum and Desired performance. The
+> + * caller is responsible for validating the range.
+> + *
+> + * Return: 0 on success, -EOPNOTSUPP if the platform does not implement the
+> + * register as writable, or another negative error code.
+> + */
+> +int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
 > +{
-> +	u32 len, n;
-> +	const char *bank = NULL, *device = NULL;
+> +	return cppc_set_reg_val(cpu, OSPM_NOMINAL_PERF, ospm_nominal_perf);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_set_ospm_nominal_perf);
 > +
-> +	if (!msg || !(mem->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE))
-> +		return 0;
+> +/**
+> + * cppc_ospm_nominal_perf_supported() - Check OSPM Nominal Performance support.
+> + * @cpu: CPU to query.
+> + *
+> + * The OSPM Nominal Performance register is write-only, so its value
+> + * cannot be read back. This only reports whether the platform implements
+> + * it as a writable register.
+> + *
+> + * Context: Process context.
+> + * Return: true if the register is supported, false otherwise.
+> + */
+> +bool cppc_ospm_nominal_perf_supported(int cpu)
+> +{
+> +	struct cpc_desc *cpc_desc;
 > +
-> +	/* SMBIOS handles are 16 bits; never truncate a Section 2 handle. */
-> +	if (mem->mem_dev_handle <= U16_MAX)
-> +		dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
-> +	else
-> +		pr_warn(FW_WARN "Memory Error Section 2 module handle 0x%x exceeds SMBIOS range\n",
-> +			mem->mem_dev_handle);
+> +	guard(mutex)(&cpc_desc_lock);
+> +	cpc_desc = per_cpu(cpc_desc_ptr, cpu);
+> +
+> +	return cpc_desc &&
+> +	       cpc_is_writable(&cpc_desc->cpc_regs[OSPM_NOMINAL_PERF]);
+> +}
+> +EXPORT_SYMBOL_GPL(cppc_ospm_nominal_perf_supported);
+> +
+>  /**
+>   * cppc_get_auto_act_window() - Read autonomous activity window register.
+>   * @cpu: CPU from which to read register.
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index a5545fd3f8bd..2cec54b4d2e2 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -195,6 +195,8 @@ extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+>  extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+>  extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls, bool enable);
+>  extern int cppc_set_epp(int cpu, u64 epp_val);
+> +extern int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf);
+> +extern bool cppc_ospm_nominal_perf_supported(int cpu);
+>  extern int cppc_get_auto_act_window(int cpu, u64 *auto_act_window);
+>  extern int cppc_set_auto_act_window(int cpu, u64 auto_act_window);
+>  extern int cppc_get_auto_sel(int cpu, u64 *enable);
+> @@ -290,6 +292,14 @@ static inline int cppc_set_epp(int cpu, u64 epp_val)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> +static inline int cppc_set_ospm_nominal_perf(int cpu, u64 ospm_nominal_perf)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +static inline bool cppc_ospm_nominal_perf_supported(int cpu)
+> +{
+> +	return false;
+> +}
+>  static inline int cppc_get_auto_act_window(int cpu, u64 *auto_act_window)
+>  {
+>  	return -EOPNOTSUPP;
 
-Should this be rate limited?
-
-> +	len = CPER_REC_LEN;
-> +	if (bank && device)
-> +		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-> +	else
-> +		n = snprintf(msg, len,
-> +			     "DIMM location: not present. DMI handle: 0x%.8x ",
-> +			     mem->mem_dev_handle);
-
-Shouldn't this be scnprintf(), especially in the first case where the
-strings come from the firmware?
-
---YNGke8jv/OA0HEod
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrraqYACgkQJNaLcl1U
-h9AajAf/W7R0CEUqtpIYoBl2hZk1nuGn9tkyTqfdf9mJWE4vi9igIzfRMj75lpki
-tgacOw5Dggxv6jSV6YoNll9CUeJy9h+OUFf/N7/IRFO1R/EpdtFJZjX3sX8AlKwS
-2OgJFjrKBU6Ei4+9hKoUYr4eWuibp+zZ+0FOgT75l3jk1ro+VFnums5/kmsutjVd
-ysMyZPaUj8HMLzqXnx3Zf/pmDG0NHukEAC02hPy/QqPNGhD2o+OzXLTW5jwH83zh
-5yVaCX18ZoN+E6dWl2Ii+I+6XjJV/wDxfqnZcOnPv76KYsLQidPRqywHwHMz+Tt6
-HZHePjuzQwwJJiWOhDhb+xKVIOXocA==
-=6Yex
------END PGP SIGNATURE-----
-
---YNGke8jv/OA0HEod--
