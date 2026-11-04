@@ -1,49 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793813977;
-	b=Q3wHaAZx5lZfrvCZQxJ+4/E3kJGn2V3im5dZYDzoFFHl51eqCK4bbmyCa9s5j6snNw6l
-	 /NrpillqAaR70iryiGyaxEFfxUhZfNOIZHI6WeIHt5iF1iA5bPfwq68weP0IOxTVBkZ5V
-	 akNk61YRXsyEqaroCr7Hv2hBwdBSLwf0YBVTB5UbQQOVrHxYcjE6IRv2VXNIKSddJ472k
-	 hDUAvB0sMvKoqv7VXolpUg8X9JAJq56d+i8QGjkEN7sAT1xzKmSkJ8Oasd3a0qYglr7cZ
-	 nmt2jGzKjx0tzkrhg4v8hqKK9il9tVoTskIO/Q6yUHht/usgjXFs862HQqNSRXKnCeg==
+	t=1793814729;
+	b=oQVFQU0jyc2o0V7UhZXuwgElziGZejM0GwL4u3vitdsWH4HRAowSKz2bwQ4sQsjbduxm
+	 S5uVta9b+wCcNg9LiEMVV4mCfh7jda/wb6O6tiFGT1YA2Thp415k87GaRE173b3yxcAQ6
+	 ysLBHz84kG429rTosVQSY/mIVzHTSqyr5a42OZzFfW0VmTCa3OVEGBNeTusr3RJ5HHZYW
+	 +aQOCtb/cAHxCjrhONfgi32KXky7Yg2RpQIDO9W2kHoHuOVPkQzn0hNv9OeZAgdBfT07F
+	 qtN/O6bp4nTi00B/s9EbJAdci7qnvE5AIpBw1XK/CV23u/ttaOQorcfs8pdNcG9+Cvw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793813977;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
-	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	bh=ZRKlMChbObdDIR4yRgSAznCCf8n/+N94KMVWhJg4P/c=;
-	b=XvZ/OYAJDDBhc+VBoEu35drHspimVv7/X5cEIKaxCpfkZ+LdI5LZ5KXcKna0ufCW4NpF
-	 Mb5Hk0YdBGOWAZpSf8Lsm2l/huik5MOfwN97cctfH2cW7D6MPR1VfkuX5PWySloURAvVZ
-	 MwmzGDGMAxKrYgIP9e2N0kwcuprw8jQe115z6lL6uRoKDEr4Yrj4lmPefXw7t2PWm7m37
-	 S3u3FctBK6fh1P/kQye2PA56uFGsBDeCB7R27duVpIDjgAlzr9DKZOjZpa+ejm9aDSMed
-	 moKyxGznvcDHIFn2oFuENHNVCm8o7JCCU9WYAoITQ7kIKqK+UEPyYFoDNotZILSe1zQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793814729;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:X-Cookie;
+	bh=ac1TdzMdRVAfu/3pdJwOc0sC5HEYhrnVimqwcvhMZuY=;
+	b=nq3/BN/r/GoFzzuEPTbQqKtFNjLWNLIpdWJbV17pc28U2dnSOkMFkybW68jlvc2m3UUV
+	 Pp4y5++f9imWxZFP23VZ5VQX/9RCLNyc2if2lSEuqKD8fuN0NsAbg6NgO00l6VNDZ5c4G
+	 QyMAWWcJPri9WZdVlq8l/SgPyvTdzw7WSH/o5yb+5W96WR83Gp8UauJjuVTLZswavYudz
+	 YaofRNdEqd2VcZqyq5Bghlh/JoKTbE6KFGRjZPpAIgrgPTHERDpWlU+KQE420fkycjhfi
+	 Pisbuit1GbdBN3T5iADWQrhoB/DsavntJmqVu7Fo0nGeAq4spCDUOfoYaLSDo679KnQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=qT5ZPMUW;
-	arc=none smtp.remote-ip=217.140.110.172
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6421606A329
-	for <acpica-devel@lists.linux.dev>; Wed,  4 Nov 2026 17:39:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D6421606A329
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=qT5ZPMUW
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 334831BB0;
-	Wed,  4 Nov 2026 09:39:32 -0800 (PST)
-Received: from [10.0.130.179] (e127648.arm.com [10.0.130.179])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CCDB3F673;
-	Wed,  4 Nov 2026 09:39:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1793813975; bh=PyfAlFhsPQ8iAO3hNEf2+zQIfdM2JyqpLxshBsMkr8M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qT5ZPMUW+6XHss/1mzVLtw3ZoufepZXQsy7i6cOLqZ+ZAIJjG5CaRxYGxXLaTrvdV
-	 H5iitWPD/U6DLy5A9Bj7hJIrQTsFl2YAE+P7mG5WQcLIpLsAW/DN6AfxywqTalNo7C
-	 eU0uCkbVjzF4o52wsTfxlRUTlCaWGG3m4Agzj6v0=
-Message-ID: <8be9a4f7-1b9a-4372-9751-6e5074305a5c@arm.com>
-Date: Wed, 4 Nov 2026 17:39:29 +0000
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22D46071F41;
+	Wed,  4 Nov 2026 17:52:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E57251F000C1;
+	Wed,  4 Nov 2026 17:51:51 +0000 (UTC)
+Date: Wed, 4 Nov 2026 17:51:45 +0000
+From: Mark Brown <broonie@debian.org>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	Borislav Petkov <bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>, Dan Williams <djbw@kernel.org>,
+	Terry Bowman <terry.bowman@amd.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Morduan Zang <zhangdandan@uniontech.com>,
+	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v3 6/7] ACPI: APEI: add separate Memory Error Section 2
+ handlers
+Message-ID: <94b213b2-dabc-46b4-8d21-a5dc8e8e51bb@sirena.org.uk>
+References: <20261104110355.1437249-1-pierre.gondois@arm.com>
+ <20261104110355.1437249-7-pierre.gondois@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -53,257 +60,79 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/3] cpufreq: CPPC: Add ospm_nominal_freq attribute
-To: Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
- viresh.kumar@linaro.org, pierre.gondois@arm.com, ionela.voinescu@arm.com,
- zhenglifeng1@huawei.com, zhanjie9@hisilicon.com, lenb@kernel.org,
- mario.limonciello@amd.com, maciej.wieczor-retman@intel.com,
- pawel.chmielewski@intel.com, linux-pm@vger.kernel.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Cc: linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
- vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com,
- mochs@nvidia.com, bbasu@nvidia.com
-References: <20261030172745.2045743-1-sumitg@nvidia.com>
- <20261030172745.2045743-3-sumitg@nvidia.com>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <20261030172745.2045743-3-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8UKtglv2OUYLjMwF"
+Content-Disposition: inline
+In-Reply-To: <20261104110355.1437249-7-pierre.gondois@arm.com>
+X-Cookie: All rights reserved.
 
-On 10/30/26 17:27, Sumit Gupta wrote:
-> OSPM Nominal Performance (ACPI 6.6, Section 8.4.6.1.2.6) lets the OS
-> request a nominal performance level below the platform-reported one. The
-> platform treats performance above that level as boosted and below it as
-> throttled. A lower value moves that boundary down, so more levels count
-> as boost.
-> 
-> Expose it as a per-policy cpufreq attribute in kHz, matching the unit
-> convention of the other frequency attributes:
-> 
->   /sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
-> 
-> Writes are converted with cppc_khz_to_perf() and rejected unless they
-> fall in [Lowest Performance, Nominal Performance]. The register cannot
-> be read back, so a read returns the last value written, or "<unset>"
-> before the first write.
-> 
-> Also track the register in the OSPM-set save/restore table, so a
-> requested value survives CPU hotplug and suspend/resume. The store
-> handler records the request rather than init() capturing a firmware
-> value, so the driver writes the register only once the OS has set it.
-> CPU offline and driver unload write the platform-reported Nominal
-> Performance to the register.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 
-Reviewed-by: Christian Loehle <christian.loehle@arm.com>
+--8UKtglv2OUYLjMwF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  .../ABI/testing/sysfs-devices-system-cpu      |  27 +++++
->  drivers/cpufreq/cppc_cpufreq.c                | 101 ++++++++++++++++--
->  2 files changed, 121 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> index 545687ebadcc..6af7fa86e44c 100644
-> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-> @@ -350,6 +350,33 @@ Description:	Performance Limited
->  
->  		This file is only present if the cppc-cpufreq driver is in use.
->  
-> +What:		/sys/devices/system/cpu/cpuX/cpufreq/ospm_nominal_freq
-> +Date:		October 2026
-> +Contact:	linux-pm@vger.kernel.org
-> +Description:	OSPM Nominal Performance (kHz)
+On Wed, Nov 04, 2026 at 12:03:14PM +0100, Pierre Gondois wrote:
+> Add dedicated GHES and EDAC callbacks for Memory Error Section 2
+> records. Use a separate GHES notifier chain so existing consumers
+> continue to receive legacy memory error sections.
+
+> @@ -1008,6 +1021,16 @@ static void ghes_do_proc(struct ghes *ghes,
+> =20
+>  			arch_apei_report_mem_error(sev, mem_err);
+>  			queued |=3D ghes_handle_memory_failure(gdata, sev, sync);
+> +		} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
+> +			struct cper_sec_mem_err2 *mem_err =3D acpi_hest_get_payload(gdata);
 > +
-> +		OSPM uses this attribute to request a nominal performance level
-> +		lower than the platform-reported nominal. The platform treats
-> +		performance above this level as boost and below as throttle.
-> +
-> +		Write a value in kHz, between the frequencies corresponding to
-> +		Lowest Performance and Nominal Performance.
-> +
-> +		The register cannot be read back, so a read returns the last
-> +		value written, rounded to a performance level. It returns
-> +		"<unset>" before the first write. Reads and writes fail with
-> +		-EOPNOTSUPP if the platform does not implement the register.
-> +
-> +		Note that tasks may be migrated from one CPU to another by the
-> +		scheduler's load-balancing algorithm, and if different OSPM
-> +		Nominal Performance values are set for those CPUs (through
-> +		different cpufreq policies), that may lead to undesirable
-> +		outcomes. To avoid such issues it is better to set the same
-> +		value across all policies, or to pin every task potentially
-> +		sensitive to it to a specific CPU.
-> +
-> +		This file is only present if the cppc-cpufreq driver is in use.
-> +
->  What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
->  Date:		August 2008
->  KernelVersion:	2.6.27
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 76cb803617f5..662397526433 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -34,11 +34,13 @@ static struct cpufreq_driver cppc_cpufreq_driver;
->   * reapplied from online() across CPU hotplug, and the firmware value is
->   * restored from offline().
->   *
-> - * Autonomous Selection (auto_sel) is kept first, as the registers after it
-> - * only have meaning while it is enabled.
-> + * Autonomous Selection (auto_sel) splits the list: the registers before it are
-> + * independent of it, and those after it have meaning only while autonomous
-> + * selection is enabled. Place a new register on the matching side.
->   */
->  enum cppc_saved_reg_id {
-> -	CPPC_SAVED_AUTO_SEL,
-> +	CPPC_SAVED_OSPM_NOMINAL_PERF,
-> +	CPPC_SAVED_AUTO_SEL,	/* Entries below need auto_sel enabled. */
->  	CPPC_SAVED_EPP,
->  	CPPC_SAVED_AUTO_ACT_WINDOW,
->  	CPPC_NR_SAVED_REGS,
-> @@ -51,6 +53,11 @@ struct cppc_saved_reg {
->  };
->  
->  static const struct cppc_saved_reg cppc_saved_regs[CPPC_NR_SAVED_REGS] = {
-> +	/* The register is write-only, so the driver tracks the requested value. */
-> +	[CPPC_SAVED_OSPM_NOMINAL_PERF] = {
-> +		.name = "ospm_nominal_perf",
-> +		.set = cppc_set_ospm_nominal_perf,
-> +	},
->  	[CPPC_SAVED_AUTO_SEL] = {
->  		.name = "auto_sel",
->  		.get = cppc_get_auto_sel,
-> @@ -83,6 +90,9 @@ enum cppc_saved_type {
->   *   CPPC_SAVED_REQUESTED - value the OS asked for, reapplied at online().
->   *                          It starts as the firmware value and changes only
->   *                          when a write from the OS succeeds.
-> + *
-> + * A write-only register cannot be read back. init() leaves both values unset,
-> + * and its store handler sets them.
->   */
->  struct cppc_policy_state {
->  	u64 regs[CPPC_NR_SAVED_REGS][CPPC_NR_SAVED_TYPES];
-> @@ -135,11 +145,19 @@ static int cppc_cpufreq_save_firmware_regs(struct cpufreq_policy *policy)
->  	int i, ret;
->  
->  	for (i = 0; i < CPPC_NR_SAVED_REGS; i++) {
-> -		ret = cppc_saved_regs[i].get(cpu, &val);
-> -		if (ret == -EOPNOTSUPP)
-> +		const struct cppc_saved_reg *reg = &cppc_saved_regs[i];
-> +
-> +		if (!reg->get) {
-> +			/* A write-only register has no value to read. */
->  			val = U64_MAX;
-> -		else if (ret)
-> -			return ret;
-> +		} else {
-> +			ret = reg->get(cpu, &val);
-> +			/* Leave a register the platform does not implement unset. */
-> +			if (ret == -EOPNOTSUPP)
-> +				val = U64_MAX;
-> +			else if (ret)
-> +				return ret;
-> +		}
->  
->  		st->regs[i][CPPC_SAVED_FIRMWARE] = val;
->  		st->regs[i][CPPC_SAVED_REQUESTED] = val;
-> @@ -198,6 +216,12 @@ static void cppc_cpufreq_apply_saved_regs(struct cpufreq_policy *policy,
->  	u64 auto_sel, val;
->  	int i;
->  
-> +	/* Registers before auto_sel do not depend on it. */
-> +	for (i = 0; i < CPPC_SAVED_AUTO_SEL; i++) {
-> +		val = st->regs[i][saved_type];
-> +		cppc_cpufreq_write_saved_reg(cpu, i, val, saved_type);
-> +	}
-> +
->  	auto_sel = st->regs[CPPC_SAVED_AUTO_SEL][saved_type];
->  
->  	if (auto_sel)
-> @@ -1470,11 +1494,73 @@ static int cppc_get_perf_limited_filtered(int cpu, u64 *perf_limited)
->  CPPC_CPUFREQ_ATTR_RW_U64(perf_limited, cppc_get_perf_limited_filtered,
->  			 cppc_set_perf_limited)
->  
-> +static ssize_t show_ospm_nominal_freq(struct cpufreq_policy *policy, char *buf)
+> +			if (gdata->error_data_length < sizeof(*mem_err)) {
+> +				pr_warn(FW_WARN "Memory Error Section 2 length is too small\n");
+
+The v1 code uses pr_warn_ratelimited() which seems sensible.
+
+> +static int ghes_edac_report_mem_error2(struct notifier_block *nb,
+> +				       unsigned long val, void *data)
 > +{
-> +	const struct cppc_policy_state *st = cppc_cpufreq_policy_state(policy);
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	u64 perf;
-> +
-> +	if (!cppc_ospm_nominal_perf_supported(policy->cpu))
-> +		return -EOPNOTSUPP;
-> +
-> +	/* The register cannot be read back, so report the tracked request. */
-> +	perf = st->regs[CPPC_SAVED_OSPM_NOMINAL_PERF][CPPC_SAVED_REQUESTED];
-> +	if (perf == U64_MAX)
-> +		return sysfs_emit(buf, "<unset>\n");
-> +
-> +	return sysfs_emit(buf, "%u\n",
-> +			  cppc_perf_to_khz(&cpu_data->perf_caps, perf));
-> +}
-> +
-> +static ssize_t store_ospm_nominal_freq(struct cpufreq_policy *policy,
-> +				       const char *buf, size_t count)
-> +{
-> +	struct cppc_cpudata *cpu_data = policy->driver_data;
-> +	struct cppc_policy_state *st;
-> +	unsigned int freq_khz;
-> +	u32 perf;
-> +	int ret;
-> +
-> +	ret = kstrtouint(buf, 0, &freq_khz);
-> +	if (ret)
-> +		return ret;
-> +
-> +	perf = cppc_khz_to_perf(&cpu_data->perf_caps, freq_khz);
-> +	if (perf < cpu_data->perf_caps.lowest_perf ||
-> +	    perf > cpu_data->perf_caps.nominal_perf)
-> +		return -EINVAL;
-> +
-> +	ret = cppc_set_ospm_nominal_perf(policy->cpu, perf);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * The OS can write this register but cannot read it back.
-> +	 *
-> +	 * The register lets the OS ask for a nominal level below the platform
-> +	 * Nominal Performance. offline() and driver unload write the platform
-> +	 * Nominal in place of the requested value. This removes the lower
-> +	 * level the OS asked for. The value from before the first OS write
-> +	 * cannot be read, so the driver cannot restore it. online() writes
-> +	 * the requested value again.
-> +	 *
-> +	 * Set both values here and not at init(). The driver then writes the
-> +	 * register only after the OS has set it.
-> +	 */
-> +	st = cppc_cpufreq_policy_state(policy);
-> +	st->regs[CPPC_SAVED_OSPM_NOMINAL_PERF][CPPC_SAVED_REQUESTED] = perf;
-> +	st->regs[CPPC_SAVED_OSPM_NOMINAL_PERF][CPPC_SAVED_FIRMWARE] =
-> +		cpu_data->perf_caps.nominal_perf;
-> +
-> +	return count;
-> +}
-> +
->  cpufreq_freq_attr_ro(freqdomain_cpus);
->  cpufreq_freq_attr_rw(auto_select);
->  cpufreq_freq_attr_rw(auto_act_window);
->  cpufreq_freq_attr_rw(energy_performance_preference_val);
->  cpufreq_freq_attr_rw(perf_limited);
-> +cpufreq_freq_attr_rw(ospm_nominal_freq);
->  
->  static struct freq_attr *cppc_cpufreq_attr[] = {
->  	&freqdomain_cpus,
-> @@ -1482,6 +1568,7 @@ static struct freq_attr *cppc_cpufreq_attr[] = {
->  	&auto_act_window,
->  	&energy_performance_preference_val,
->  	&perf_limited,
-> +	&ospm_nominal_freq,
->  	NULL,
->  };
->  
+> +	struct cper_sec_mem_err2 *mem_err =3D data;
+> +	struct edac_raw_error_desc *e;
+> +	struct mem_ctl_info *mci;
+> +	struct ghes_pvt *pvt;
+> +	char *p;
 
+> +	/* Memory error location, mapped on e->location */
+> +	p =3D e->location;
+> +	p +=3D cper_mem_err2_location(mem_err, p);
+> +
+> +	if (mem_err->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE) {
+> +		struct dimm_info *dimm =3D NULL;
+> +
+> +		p +=3D cper_dimm_err2_location(mem_err, p);
+
+Do we need to raise the size of e->location?  It's 256 bytes and
+there's an awful ot of potential fields that could be decoded here,
+including some with 64 bit IDs.
+
+> +		if (mem_err->mem_dev_handle <=3D U16_MAX)
+> +			dimm =3D find_dimm_by_handle(mci, mem_err->mem_dev_handle);
+> +		else
+> +			pr_warn(FW_WARN "Memory Error Section 2 module handle 0x%x exceeds SM=
+BIOS range\n",
+> +				mem_err->mem_dev_handle);
+
+There's an equivalent print in cper_dimm_err2_location().
+
+--8UKtglv2OUYLjMwF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmrrcLAACgkQJNaLcl1U
+h9Cbiwf8CL414tJA0b71RDfEqi+/59cDTX6lTkzXJzKGchYn2YCqF5pNEgaNIP4L
+U8b9QzaaMJSQ7bwzHIZ8op0nj/yMBG47ggbuj0DEweeu9004HssW1o0DS3epuFps
+ccL0B2DpwfoqfNtKL/N4kwTzZgZGEwxF1jJ02Up4H/nQ3DoX4D0h0SExGpJK/Aqo
+pb9cDiTpII+1YMP8bw1Sd4CihbraxI30q313c4CCMkSDUGq85NLYZ4K85IwwATZF
+Y2+bX8uL1Hd5jm+xsPTrDOdtT40Wr/mMUAKa0IxlzDCK3kGoYXlMeoYm7e1HI4KO
+Oce91tEKWOpPveVa1U3hVyyHRvJI7w==
+=0wR+
+-----END PGP SIGNATURE-----
+
+--8UKtglv2OUYLjMwF--
