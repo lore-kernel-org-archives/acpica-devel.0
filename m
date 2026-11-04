@@ -1,54 +1,53 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793790283;
-	b=VM4rJ6VaGhtm6deg9mJ9XJgCjWme3x6DsRXxDAQrmvgzZDvIg2ufDG4FZeOSwGUUxPc7
-	 cwNVdJTQxPv0hqjNWN4jnP15Mq8zKmfE2rhQ2ZuSmry+p7G2g0r6zf2/oZQno1o9aVJOg
-	 rQcS/T9G1jj2dsm0lxu3ZlP6Ub5KrRvcn2XfksgZSeVPFfMTjthC5Tcb9QP17HE71AnSv
-	 ZTHfnhuR7NV7+e23gKkKbwLnmiCHGqiYtmjEr0oDVmS7CKKsSxV3fTPT0NfuuKgn/6BBu
-	 au61TZtgPLen9SQHtiEh2Hgo5XUTbgJzR1M4bOS+D7GKoZyOWzZDZrGXr8yZucCqybw==
+	t=1793790294;
+	b=JLbeMw1uK3r9P540X4Iw2KWQ+kCwBK5HFyMS2QiGWSd2lZIzHD+EMrUJB8hs1W4MGfLH
+	 Zk4GVPm8q26sY+WZ+V/t9iKt768vfiOUmVjru4/WU41yduZ2XrbRPgScxxYsx1vI55oiv
+	 uiSxnPmNh5mKWWT2DJT9OwFOBdzcy2D/446WtMD3+8CdgwgFOLbnuHrMjwboSx0yiPRb2
+	 ErTugMu0/o4Ul8/T/b8J6RZs/rzUbYZq1nXhPC4nj3XRkHn2Hw1xbDAvQVVGWy4MOfrpe
+	 DKA5esWY35BMfibApIhWDI9pWSK+0KCKdPpW7D27uaBDHOhJ2jL6csKQwjVWPvz08XQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793790283;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793790294;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=lMf8e4nkDMYSVYGvtvN74k9+RxU8tnF0FV8aM7fGeSI=;
-	b=qtr7Wl3LffmhWbhYXI8PWeuItbOjyV1DER1K8rpD0Tq2iU20/jNT/7S65O7/3R74YckI
-	 EOSkpfryJI6W2WHW05KHtKCwKGhB4TrlBouX15YHqHaYvrP0G4A1nqaaUrzk/7ik9DDy1
-	 8QV7sF/PlbusiJLccdS9v8UvJtp3pW086gu+zynI1z1ibEf23UXTwEPZtST5R5SQ9QZXv
-	 7JYo3rSnE2U+tcKu2ytNNvacnSoM4RdZ/5afuj/SzddnSF1SO5d5K6atO/AOie318mulh
-	 j0C1DbT1r9PHqSCtz1OcH6OxyVuOQKR0nZvN6guReX4SabgXt1dYrPXZF66oMOUI7jg==
+	bh=N7tzisTZ7XayTQOM7ex+AzOMYbM7bM2s5ptXR9xROr0=;
+	b=0R1tU21B5PK0uEeXc27pG+krPuVHuVFhQ02DMRDQ/heSRW/4+Mg/XB0keKONIZWHnHGs
+	 YlVuteI6qVUMVgihWBhD6DYr2k9ik/xpKkYdt3JSWy7Y9uy/07lV8lixxnUJ7mj87aHDR
+	 kXJC48RlSTTaVadugoeQb+WKcYDJPO+IhA9LcK/m9rRP2MmsJv7ux++RyvhhbupedoTK7
+	 XTXitSNzbQkYSJ1HosfyvvyBxPMQkeLt3uXvkIz7jfjSJmwrVAbbe+fUlvuM9DUwxBThh
+	 ChhSJ7uo58dbVi6g2z+gwab6T81+3gd35oHkCqo8VduCDBmltZQDUrte0ABmwx9YP5A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=LH0wKGiY;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=TQf2t0NR;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF116606A326
-	for <acpica-devel@lists.linux.dev>; Wed,  4 Nov 2026 11:04:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF116606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C48F606A32C
+	for <acpica-devel@lists.linux.dev>; Wed,  4 Nov 2026 11:04:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7C48F606A32C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=LH0wKGiY
+	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=TQf2t0NR
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F5891476;
-	Wed,  4 Nov 2026 03:04:39 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B049722EA;
+	Wed,  4 Nov 2026 03:04:48 -0800 (PST)
 Received: from e135073.arm.com (unknown [10.57.64.194])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7A5933F632;
-	Wed,  4 Nov 2026 03:04:37 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C7AAC3F632;
+	Wed,  4 Nov 2026 03:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1793790282; bh=NXZU1xHRJos2+kj5C7mbZ3HoqRfBoS9k5eiVFwWjD+c=;
+	t=1793790291; bh=AZkmCOQLesKZZpCMQgTAbRGu3Upa1r3cM9CB8F+WgRo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LH0wKGiYTFKCiAOUMrCcbg1vPKY0YXVu4n5zE3AyyLTjpZaureTQ13EAYXlhbgW0+
-	 udvnPzzhIQvgASNE0fWbtzOj/IoNhGOzVWopFtWfRNVuVLOtEZF2FLwkn0UOeTvYZT
-	 OLkSyBYHsItg8UDkC2VIKWE/Nmrxisl444zdhL0E=
+	b=TQf2t0NRjJjhztkrZNFSPV0/ZQVLwvPij3AozsakrDvQgwGp6X5b1f1dgmT38f0yr
+	 Op0GMT5W/MKc9Lk4F+3U8zI0zZmHvbQBoH9++cBWlvBkCbuFSZXDW+/rwVJYNzA3F6
+	 8kbugg7r3+vnxOzEYedXVeWWiITDeALiw29M81eM=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: James Morse <james.morse@arm.com>,
 	Mark Brown <broonie@kernel.org>,
 	Pierre Gondois <pierre.gondois@arm.com>,
 	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	Breno Leitao <leitao@debian.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Len Brown <lenb@kernel.org>,
 	Tony Luck <tony.luck@intel.com>,
@@ -60,16 +59,17 @@ Cc: James Morse <james.morse@arm.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Dave Jiang <dave.jiang@intel.com>,
 	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Dan Williams <djbw@kernel.org>,
+	Breno Leitao <leitao@debian.org>,
 	Terry Bowman <terry.bowman@amd.com>,
+	Dan Williams <djbw@kernel.org>,
 	Ard Biesheuvel <ardb@kernel.org>,
 	Morduan Zang <zhangdandan@uniontech.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v3 2/7] cper: add Memory Error Section 2 structures
-Date: Wed,  4 Nov 2026 12:03:10 +0100
-Message-ID: <20261104110355.1437249-3-pierre.gondois@arm.com>
+Subject: [PATCH v3 3/7] cper: add helpers to handle Memory Error Section 2
+Date: Wed,  4 Nov 2026 12:03:11 +0100
+Message-ID: <20261104110355.1437249-4-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261104110355.1437249-1-pierre.gondois@arm.com>
 References: <20261104110355.1437249-1-pierre.gondois@arm.com>
@@ -84,94 +84,165 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add CPER Memory Error Section 2 definitions to the CPER headers.
+Add separate location and printing helpers for Memory Error
+Section 2:
+- cper_mem_err2_location()
+- cper_dimm_err2_location()
+- cper_print_mem2()
+
+Similar functions/logic exists for Memory Error Section (1),
+but require a compact version of the record. To avoid relying
+and propagating a non-standard record format, the new functions
+directly rely on struct cper_sec_mem_err2.
 
 Reviewed-by: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
-Reviewed-by: Breno Leitao <leitao@debian.org>
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- include/linux/cper.h | 54 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ drivers/firmware/efi/cper.c | 109 ++++++++++++++++++++++++++++++++++++
+ include/linux/cper.h        |   3 +
+ 2 files changed, 112 insertions(+)
 
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index 13b3e72c3b62..6502afbedaf0 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -463,6 +463,107 @@ static void cper_print_mem(const char *pfx, const struct cper_sec_mem_err *mem,
+ 		printk("%s%s\n", pfx, rcd_decode_str);
+ }
+ 
++int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
++{
++	u32 len, n;
++
++	if (!msg)
++		return 0;
++
++	n = 0;
++	len = CPER_REC_LEN;
++	if (mem->validation_bits & CPER_MEM2_VALID_NODE)
++		n += scnprintf(msg + n, len - n, "node:%d ", mem->node);
++	if (mem->validation_bits & CPER_MEM2_VALID_CARD)
++		n += scnprintf(msg + n, len - n, "card:%d ", mem->card);
++	if (mem->validation_bits & CPER_MEM2_VALID_MODULE)
++		n += scnprintf(msg + n, len - n, "module:%d ", mem->module);
++	if (mem->validation_bits & CPER_MEM2_VALID_RANK_NUMBER)
++		n += scnprintf(msg + n, len - n, "rank:%u ", mem->rank);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK)
++		n += scnprintf(msg + n, len - n, "bank:%d ", mem->bank);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK_GROUP)
++		n += scnprintf(msg + n, len - n, "bank_group:%d ",
++			       mem->bank >> CPER_MEM_BANK_GROUP_SHIFT);
++	if (mem->validation_bits & CPER_MEM2_VALID_BANK_ADDRESS)
++		n += scnprintf(msg + n, len - n, "bank_address:%d ",
++			       mem->bank & CPER_MEM_BANK_ADDRESS_MASK);
++	if (mem->validation_bits & CPER_MEM2_VALID_DEVICE)
++		n += scnprintf(msg + n, len - n, "device:%u ", mem->device);
++	if (mem->validation_bits & CPER_MEM2_VALID_ROW)
++		n += scnprintf(msg + n, len - n, "row:%u ", mem->row);
++	if (mem->validation_bits & CPER_MEM2_VALID_COLUMN)
++		n += scnprintf(msg + n, len - n, "column:%u ", mem->column);
++	if (mem->validation_bits & CPER_MEM2_VALID_BIT_POSITION)
++		n += scnprintf(msg + n, len - n, "bit_position:%u ",
++			       mem->bit_pos);
++	if (mem->validation_bits & CPER_MEM2_VALID_REQUESTOR_ID)
++		n += scnprintf(msg + n, len - n, "requestor_id:0x%016llx ",
++			       mem->requestor_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_RESPONDER_ID)
++		n += scnprintf(msg + n, len - n, "responder_id:0x%016llx ",
++			       mem->responder_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_TARGET_ID)
++		n += scnprintf(msg + n, len - n, "target_id:0x%016llx ",
++			       mem->target_id);
++	if (mem->validation_bits & CPER_MEM2_VALID_CHIP_ID)
++		n += scnprintf(msg + n, len - n, "chip_id:%d ",
++			       mem->chip_id);
++
++	return n;
++}
++EXPORT_SYMBOL_GPL(cper_mem_err2_location);
++
++int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
++{
++	u32 len, n;
++	const char *bank = NULL, *device = NULL;
++
++	if (!msg || !(mem->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE))
++		return 0;
++
++	/* SMBIOS handles are 16 bits; never truncate a Section 2 handle. */
++	if (mem->mem_dev_handle <= U16_MAX)
++		dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
++	else
++		pr_warn(FW_WARN "Memory Error Section 2 module handle 0x%x exceeds SMBIOS range\n",
++			mem->mem_dev_handle);
++
++	len = CPER_REC_LEN;
++	if (bank && device)
++		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
++	else
++		n = snprintf(msg, len,
++			     "DIMM location: not present. DMI handle: 0x%.8x ",
++			     mem->mem_dev_handle);
++
++	return n;
++}
++EXPORT_SYMBOL_GPL(cper_dimm_err2_location);
++
++static void cper_print_mem2(const char *pfx, const struct cper_sec_mem_err2 *mem)
++{
++	char rcd_decode_str[CPER_REC_LEN];
++
++	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_STATUS)
++		printk("%serror_status: %s (0x%016llx)\n", pfx,
++		       cper_mem_err_status_str(mem->error_status), mem->error_status);
++	if (mem->validation_bits & CPER_MEM2_VALID_PA)
++		printk("%sphysical_address: 0x%016llx\n", pfx, mem->physical_addr);
++	if (mem->validation_bits & CPER_MEM2_VALID_PA_MASK)
++		printk("%sphysical_address_mask: 0x%016llx\n", pfx,
++		       mem->physical_addr_mask);
++	if (cper_mem_err2_location(mem, rcd_decode_str))
++		printk("%s%s\n", pfx, rcd_decode_str);
++	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_TYPE)
++		printk("%serror_type: %u, %s\n", pfx, mem->error_type,
++		       cper_mem_err_type_str(mem->error_type));
++	if (mem->validation_bits & CPER_MEM2_VALID_STATUS)
++		printk("%sstatus: 0x%02x\n", pfx, mem->status);
++	if (cper_dimm_err2_location(mem, rcd_decode_str))
++		printk("%s%s\n", pfx, rcd_decode_str);
++}
++
+ static const char * const pcie_port_type_strs[] = {
+ 	"PCIe end point",
+ 	"legacy PCI end point",
+@@ -668,6 +769,14 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
+ 				       gdata->error_data_length);
+ 		else
+ 			goto err_section_too_small;
++	} else if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM2)) {
++		struct cper_sec_mem_err2 *mem_err = acpi_hest_get_payload(gdata);
++
++		printk("%ssection_type: memory error 2\n", newpfx);
++		if (gdata->error_data_length >= sizeof(*mem_err))
++			cper_print_mem2(newpfx, mem_err);
++		else
++			goto err_section_too_small;
+ 	} else if (guid_equal(sec_type, &CPER_SEC_PCIE)) {
+ 		struct cper_sec_pcie *pcie = acpi_hest_get_payload(gdata);
+ 
 diff --git a/include/linux/cper.h b/include/linux/cper.h
-index 81cda9874b25..ed355b240685 100644
+index ed355b240685..a466cba4fd61 100644
 --- a/include/linux/cper.h
 +++ b/include/linux/cper.h
-@@ -198,6 +198,10 @@ enum {
- #define CPER_SEC_PLATFORM_MEM						\
- 	GUID_INIT(0xA5BC1114, 0x6F64, 0x4EDE, 0xB8, 0x63, 0x3E, 0x83,	\
- 		  0xED, 0x7C, 0x83, 0xB1)
-+/* Platform Memory 2 */
-+#define CPER_SEC_PLATFORM_MEM2						\
-+	GUID_INIT(0x61EC04FC, 0x48E6, 0xD813, 0x25, 0xC9, 0x8D, 0xAA,	\
-+		  0x44, 0x75, 0x0B, 0x12)
- #define CPER_SEC_PCIE							\
- 	GUID_INIT(0xD995E954, 0xBBC1, 0x430F, 0xAD, 0x91, 0xB4, 0x4D,	\
- 		  0xCB, 0x3C, 0x6F, 0x35)
-@@ -262,6 +266,30 @@ enum {
- #define CPER_MEM_VALID_BANK_ADDRESS		BIT_ULL(20)
- #define CPER_MEM_VALID_CHIP_ID			BIT_ULL(21)
+@@ -656,6 +656,9 @@ void cper_print_proc_ia(const char *pfx,
+ int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg);
+ int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg);
  
-+/* Memory Error Section 2 validation bits, UEFI v2.11 sec N.2.6. */
-+#define CPER_MEM2_VALID_ERROR_STATUS		BIT_ULL(0)
-+#define CPER_MEM2_VALID_PA			BIT_ULL(1)
-+#define CPER_MEM2_VALID_PA_MASK			BIT_ULL(2)
-+#define CPER_MEM2_VALID_NODE			BIT_ULL(3)
-+#define CPER_MEM2_VALID_CARD			BIT_ULL(4)
-+#define CPER_MEM2_VALID_MODULE			BIT_ULL(5)
-+#define CPER_MEM2_VALID_BANK			BIT_ULL(6)
-+#define CPER_MEM2_VALID_DEVICE			BIT_ULL(7)
-+#define CPER_MEM2_VALID_ROW			BIT_ULL(8)
-+#define CPER_MEM2_VALID_COLUMN			BIT_ULL(9)
-+#define CPER_MEM2_VALID_RANK_NUMBER		BIT_ULL(10)
-+#define CPER_MEM2_VALID_BIT_POSITION		BIT_ULL(11)
-+#define CPER_MEM2_VALID_CHIP_ID			BIT_ULL(12)
-+#define CPER_MEM2_VALID_ERROR_TYPE		BIT_ULL(13)
-+#define CPER_MEM2_VALID_STATUS			BIT_ULL(14)
-+#define CPER_MEM2_VALID_REQUESTOR_ID		BIT_ULL(15)
-+#define CPER_MEM2_VALID_RESPONDER_ID		BIT_ULL(16)
-+#define CPER_MEM2_VALID_TARGET_ID		BIT_ULL(17)
-+#define CPER_MEM2_VALID_CARD_HANDLE		BIT_ULL(18)
-+#define CPER_MEM2_VALID_MODULE_HANDLE		BIT_ULL(19)
-+#define CPER_MEM2_VALID_BANK_GROUP		BIT_ULL(20)
-+#define CPER_MEM2_VALID_BANK_ADDRESS		BIT_ULL(21)
++int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg);
++int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg);
 +
- #define CPER_MEM_EXT_ROW_MASK			0x3
- #define CPER_MEM_EXT_ROW_SHIFT			16
- 
-@@ -506,6 +534,32 @@ struct cper_sec_mem_err {
- 	u16	mem_dev_handle;		/* "module handle" in UEFI 2.4 */
- };
- 
-+/* Memory Error Section 2, UEFI v2.11 sec N.2.6 */
-+struct cper_sec_mem_err2 {
-+	u64	validation_bits;
-+	u64	error_status;
-+	u64	physical_addr;
-+	u64	physical_addr_mask;
-+	u16	node;
-+	u16	card;
-+	u16	module;
-+	u16	bank;
-+	u32	device;
-+	u32	row;
-+	u32	column;
-+	u32	rank;
-+	u32	bit_pos;
-+	u8	chip_id;
-+	u8	error_type;
-+	u8	status;
-+	u8	reserved;
-+	u64	requestor_id;
-+	u64	responder_id;
-+	u64	target_id;
-+	u32	mem_array_handle;	/* "card handle" */
-+	u32	mem_dev_handle;		/* "module handle" */
-+};
-+
- struct cper_mem_err_compact {
- 	u64	validation_bits;
- 	u16	node;
+ struct acpi_hest_generic_status;
+ void cper_estatus_print(const char *pfx,
+ 			const struct acpi_hest_generic_status *estatus);
 -- 
 2.43.0
 
