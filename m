@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793977131;
-	b=PH1x/M09eUOoZRPYQoeXXx1WZAP7xmaFdGmfbAmeoED0LarN03uX2WyHWqqa6mnYRfAA
-	 dV12oePmgg/Z9KyoW/CKAId1z7wI0kiw2V7pGV5blP6itSQZTkq8NxmUuU1tomiS3INON
-	 BAZnfzJoc8d1GdQVoPDZI2SifyIR6Lwwj5It9p0H+amF8pcJlkgATI7eTYEpzUg3haxpE
-	 h0Vcj26QghQDrDofVUIod0zSKKzvvQvqxKJwzfsmrrGD/B0vdVGRMEgvjAH9zSZ50EUv/
-	 lWkLmt6971DXquJUDeVjKgEI3ObN3IfbrKznqWBspLe5PCLbT0m/RGJ3xsJKCl9aQIQ==
+	t=1793981343;
+	b=ZZSooRAMBUNEpOYk0GdV7AF3BOy8PROoGF7RUiU5LnCO/4bYJE74vDDACvrAwlieVsPc
+	 wfJ7f7vzHofYg8+sVZ+7AnSRtsv5mZZjCH0BPlKLT4Guj8PQ9WaGkb14Uraw9od6ZIsrC
+	 euOKkckgtDfrZVB5n9Wjaj7J/PqeXkZJ+biLL5MJRIvRtq8HnM/rJsJl5wJKQJ+baoyQT
+	 BsS5PfhMeK5zOZGpiBdyRUGSJj5yBVuslMGic39uySTYP7IxiOwzon1HkwzKs7lyXPl19
+	 WqJm3lbvpnbN8EHpp9TCIHSfLDo2Z3D9koDBgJixHbPTZ68qOnTpW7Y35bzkBSCrztQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793977131;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793981343;
 	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=XEalOsXN3Dev0rHb+5Zu8ZzbpTD7rK6WayG4C7CI4C4=;
-	b=om9gcy/L/aPZ2smsXCPo98yo4UeH5MeY0zFuKYhCNr3lYYNL9BGxWhDSX2lLH/JHNYx1
-	 kNagz8qREqlJ1j9hK+MqW/a7i/scFlAUSry+c9GGet0Jxx2PWyNfZBth1nSe30iFyRzxU
-	 +JaeCLrryyIjkFZNr4f8wdIeedLj5NStq0U98FvhKEWRJKWhcYnrJ3Tbz/SilpTlUnYuR
-	 L0mWNNkQskRfq5Ba6IVoUZFh+S+ELVrLrYr3WH8IaYBwqXEeqokj8YHbfZl3iLCxG5XWO
-	 Jh8pF5JcoXT1pRZLCt/ECmMxy+xDRsviiqAOKHKGVKDWZ9SKjXYyx/u3f/mNCCo2TEQ==
+	bh=QBFuPA5o7efP4jGw5Uh62IHRMOskGTud10helT98leM=;
+	b=b1jegmugrosKJyAwAqXnzB/5s00t9HcVKd0ikS3ox+q8khZE1L3zyT9cjXtZE3T+3ZDv
+	 E2VYft7yhTItx2E8koa1Dtfb/fTg1K7q5PLY1Cd2clH5IthLHxwagBRyyTUVc+tdyqWpA
+	 fTVbBkS1hMmDb0Htv4Z62hfbz0khfuxdcyBO57wwHYhxfPjIGHNT8mpehaFkuecVVlIhI
+	 fS/48X1xJvwZFxSReceqfsYcd7amDQ7jqaoubQlEKQoiJCQg6e58WGStUPbHcjJJCruvs
+	 mJkVufpcipeA4IMCcG/qt9W7vLkOc4zBeIAxXGj4dHeY1zLfvM1q09gQ8heIcjkCtDA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UN1zk4Up;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Onp3LCqv;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8100606A32D
-	for <acpica-devel@lists.linux.dev>; Fri,  6 Nov 2026 14:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFF860A5BD3
+	for <acpica-devel@lists.linux.dev>; Fri,  6 Nov 2026 16:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UN1zk4Up
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545CC1F008A5
-	for <acpica-devel@lists.linux.dev>; Fri,  6 Nov 2026 14:58:50 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Onp3LCqv
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D75041F00921
+	for <acpica-devel@lists.linux.dev>; Fri,  6 Nov 2026 16:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793977130;
-	bh=XEalOsXN3Dev0rHb+5Zu8ZzbpTD7rK6WayG4C7CI4C4=;
+	s=k20260515; t=1793981342;
+	bh=QBFuPA5o7efP4jGw5Uh62IHRMOskGTud10helT98leM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=UN1zk4Uphe5CdaTHvBnATH/qAbECMB+wDcg5c7jQfY83OidxuC6MXhLoNJ/DwDtWS
-	 oLZXPFZx2caD+67L5pPpp5DATkI5kTxdVgAKIgKQ3GD7PLkfIGhQw5Tc8uDjl/JgIY
-	 W4i2iI2rCfl8zo7EHzy/sq2Ii5loj74rKah/JNf8nIF4vH0UtnVuf47eQ0bFFDgMDv
-	 WVGIxhCAXIkmlMTcJnMIyOLGqxmuy/qsIeQElbHwp2V8r/4lGwB9qzrR0U2QmYPsuA
-	 knyAEytypGzLhPULxb5+wPBpWMYrEmeCCwdkieEaKm/rR8j8bIDKXGASOQRJm4ThRo
-	 m5qgqdTDsuftQ==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6b56221d361so805789a12.3
-        for <acpica-devel@lists.linux.dev>; Fri, 06 Nov 2026 06:58:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErEh+XVmHg1ZQaxBWRqJQr+3oNi0a3Psqljj8nad9IWJiFJD/dBdRvapRffWeWp5wKQ6kDiwRP4oEeUDtMU=@lists.linux.dev
-X-Gm-Message-State: APuU4Z/XZOaeJV/e6A/xd5vPMNFvpE9+fVRQb8l6G0iiY/2ZF0jjUVZ2
-	0HCWHSHs8CP/JzyM4+pXHkYUPmt46lfM7YkxwopZy9Fm5PEKsP1nW7KQAqj0RSYrKsn40mm/iTa
-	wn4qtb5NzLF9mlY2rxV1OrxIcXA8Eijs=
-X-Received: by 2002:aa7:d34e:0:b0:6b5:8cf6:18aa with SMTP id
- 4fb4d7f45d1cf-6b597816c51mr1300269a12.45.1793977128939; Fri, 06 Nov 2026
- 06:58:48 -0800 (PST)
+	b=Onp3LCqvywTHDRvfDq1zTDxYo6l/fjkbiivRZmFSZ6NJjQNAlZg987N8Pj07hR1+z
+	 nmZdvQbThHxL7ARPBnwUTgJF2L4auEo+WrvDTwHd9PU49UU4wMULgDhWvdIvVPcJwX
+	 xrjiv/nv6DJKKygPhI70hQsqxeSJ3hwVM4KwWbhdmMXdgZ4bUXrSyL0mYjyx1yBtF/
+	 uRo2akYd4rvPJwp35/5IJW1LOCfh07YtO0yb/Kiv89YXV3MDOC/kFIKuJu3F9BeeTG
+	 EtZRHn7ZzpATa0KCJiZSf+ckMHIlCAm98oioIqtSQ8pwPs1wqSZvLARzc5sLHJyhEc
+	 iOO9ASG1UbZKA==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5bfc32574e7so882732e87.0
+        for <acpica-devel@lists.linux.dev>; Fri, 06 Nov 2026 08:09:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErEAKkPT6hyQnkdZLRetstnjsK00PgmIX0k8mZu/avBIu/aCiRmLeIEjJuyjyIPGKpsJpuvKbxniUkNm4zU=@lists.linux.dev
+X-Gm-Message-State: APuU4Z+CZ5gl0gORGHUkLRdr9vMZ0HkFN7GlOicg7auQW4mvjWx02tJ8
+	BdeTo+mZvQ52t8BapqikEsRdwVmK/Gx5yQ4FeX073ZuUWbPtzMVtPrM7S5s6KXW2H1H89/MDiD5
+	B1xox6TXATO/aQg8dDtUW4GYBSzBD8fc=
+X-Received: by 2002:a05:6512:8399:b0:5c0:62:7fe7 with SMTP id
+ 2adb3069b0e04-5c00062885emr928894e87.43.1793981341359; Fri, 06 Nov 2026
+ 08:09:01 -0800 (PST)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,229 +59,103 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-References: <20260922121058.972734-2-maobibo@loongson.cn> <10bd45f8-2d37-42f0-b7d2-a4a84933c9b3@loongson.cn>
- <CAAhV-H7Vq2ayLJNLRSo5RRiWOcmF2BXT_QOhEDg_jWOzYteqWw@mail.gmail.com>
- <6f8a9203-6fb1-268a-8d37-37e69fbf2ee9@loongson.cn> <CAAhV-H5k8EJrAuqPH44y_+1gcXGCjCoozzK5ii9cLtiLDj5eog@mail.gmail.com>
- <66b9d482-d577-748c-729d-0fba70701d3d@loongson.cn> <CAAhV-H6PL6RLM3KA4BLQEt804FnsDE4CtKeB0KaW7Gj8rm2PMw@mail.gmail.com>
- <843a9418-2017-c2c6-45c5-38628e7e0bdb@loongson.cn>
-In-Reply-To: <843a9418-2017-c2c6-45c5-38628e7e0bdb@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Fri, 6 Nov 2026 22:58:38 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4O07hKyPJ8rTMo=vD=t+qFM7UAJOPDGZDVJ0Ti-gOdEQ@mail.gmail.com>
-X-Gm-Features: AclHuK_AEHK_XvIpwEC7N5JxRM5P9YdQztWX0TP-7vlsuAjfx-iuC3kJWfywbDw
-Message-ID: <CAAhV-H4O07hKyPJ8rTMo=vD=t+qFM7UAJOPDGZDVJ0Ti-gOdEQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] ACPICA: actbl2.h: Add bit constants of the Flags
- field in the IOVT IOMMU structure
-To: Bibo Mao <maobibo@loongson.cn>
-Cc: rafael@kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, lenb@kernel.org, linux-kernel@vger.kernel.org, 
-	lixianglai@loongson.cn, loongarch@lists.linux.dev, 
-	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com
+References: <20261030172745.2045743-1-sumitg@nvidia.com>
+In-Reply-To: <20261030172745.2045743-1-sumitg@nvidia.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Fri, 6 Nov 2026 17:08:48 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hDm=FMftFfxnzthRQXWzUqcm8SkAaxzVWZcsyQtNLj6g@mail.gmail.com>
+X-Gm-Features: AclHuK_TjpF2X7DtDNnULSldqJeN07Zp0bFqVqftslA3UX5WlTorGVSf-fIrR3E
+Message-ID: <CAJZ5v0hDm=FMftFfxnzthRQXWzUqcm8SkAaxzVWZcsyQtNLj6g@mail.gmail.com>
+Subject: Re: [PATCH v8 0/3] ACPI / cpufreq: CPPC: Add ospm_nominal_perf support
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, pierre.gondois@arm.com, 
+	christian.loehle@arm.com, ionela.voinescu@arm.com, zhenglifeng1@huawei.com, 
+	zhanjie9@hisilicon.com, lenb@kernel.org, mario.limonciello@amd.com, 
+	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, 
+	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com, 
+	vsethi@nvidia.com, ksitaraman@nvidia.com, sanjayc@nvidia.com, 
+	mochs@nvidia.com, bbasu@nvidia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 5, 2026 at 7:22=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrote=
-:
->
->
->
-> On 2026/11/5 =E4=B8=8B=E5=8D=886:31, Huacai Chen wrote:
-> > On Thu, Nov 5, 2026 at 5:49=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> w=
-rote:
-> >>
-> >>
-> >>
-> >> On 2026/11/5 =E4=B8=8B=E5=8D=885:31, Huacai Chen wrote:
-> >>> On Thu, Nov 5, 2026 at 5:14=E2=80=AFPM Bibo Mao <maobibo@loongson.cn>=
- wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2026/10/23 =E4=B8=8B=E5=8D=883:59, Huacai Chen wrote:
-> >>>>> Bibo,
-> >>>>>
-> >>>>> Now I have applied this series but with some modifications, please
-> >>>>> double check and test the code.
-> >>>>>
-> >>>>> https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-lo=
-ongson.git/log/?h=3Dloongarch-next
-> >>>> In my v4 submit, it is:
-> >>>> +               case ACPI_IOVT_DEVICE_ENTRY_START:
-> >>>> +                       is_start =3D true;
-> >>>> +                       start_devid =3D ep->device_id;
-> >>>> +                       break;
-> >>>> however in rc1, it is modified as:
-> >>>>                    case ACPI_IOVT_DEVICE_ENTRY_START:
-> >>>>                            is_start =3D true;
-> >>>>                            entry->start_devid =3D ep->device_id;
-> >>>>                            break;
-> >>>> Here entry is not allocated and NULL pointer, it is allocated in
-> >>>> ACPI_IOVT_DEVICE_ENTRY_END switch case.
-> >>>>
-> >>>> I really do not know what is aid to modify it and let others to test=
-.
-> >>> Sorry, it's my fault.
-> >>>
-> >>> In theory I should point out the modification (eliminating the local
-> >>> variable start_devid) and refresh a new version. But we have no time
-> >>> to do this because when the first patch is merged into the ACPI repo
-> >>> it is near the merge window.
-> >> Maybe our work style is different, I do not care much for the coding s=
-tyle.
-> >>>
-> >>> If you agree, I will submit such modifications to fix it.
-> >> fix is welcome.
-> >>>
-> >>> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/i=
-ovt.c
-> >>> index 87cee4f0fc80..4cdac28a1fd0 100644
-> >>> --- a/drivers/acpi/loongarch/iovt.c
-> >>> +++ b/drivers/acpi/loongarch/iovt.c
-> >>> @@ -115,6 +115,10 @@ static int __init iovt_add_iommu(struct
-> >>> acpi_iovt_iommu *iommu)
-> >>>           for (i =3D 0; i < iommu->device_entry_num; i++) {
-> >>>                   switch (ep->type) {
-> >>>                   case ACPI_IOVT_DEVICE_ENTRY_START:
-> >>> +                       entry =3D kzalloc_obj(struct iovt_device_entr=
-y,
-> >>> GFP_ATOMIC);
-> >> There will be memory leak problem if there are START/START/END in the =
-table.
-> > That means a broken table? I think we don't need to consider broken
-> > tables, because there may be kinds of broken pattern rather than just
-> > a START/START/END.
-> yes, START/END/START, START/START/END, START/SINGLE/END. what is the
-> relationship between "don't need to consider" and kinds of broken pattern=
-?
->
-> what is the policy from your side with such BIOS table? let memory leak
-> and continue?
-The driver can only work with a good table or no table, but not with a
-broken table.
+Hi Sumit,
 
-Take START1/START2/END as an example of broken table: in your original
-code, the END entry will be pairing with START2. But for a broken
-table who can ensure they are the correct pair? If the real correct
-pair is START1 and END, then (entry->start_devid, entry->end_devid)
-will be a wrong device range. Such mistakes are much worse than a
-memery leak.
-
-If you want to say "I don't care about correct pairing, memory leak is
-bad in any case.", OK, we can do it like this:
-
-diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
-index 87cee4f0fc80..ebd11e22c9be 100644
---- a/drivers/acpi/loongarch/iovt.c
-+++ b/drivers/acpi/loongarch/iovt.c
-@@ -115,6 +115,13 @@ static int __init iovt_add_iommu(struct
-acpi_iovt_iommu *iommu)
-        for (i =3D 0; i < iommu->device_entry_num; i++) {
-                switch (ep->type) {
-                case ACPI_IOVT_DEVICE_ENTRY_START:
-+                       if (is_start)
-+                               break;
-+
-+                       entry =3D kzalloc_obj(struct iovt_device_entry,
-GFP_ATOMIC);
-+                       if (!entry)
-+                               return -ENOMEM;
-+
-                        is_start =3D true;
-                        entry->start_devid =3D ep->device_id;
-                        break;
-@@ -122,10 +129,6 @@ static int __init iovt_add_iommu(struct
-acpi_iovt_iommu *iommu)
-                        if (!is_start)
-                                break;
-
--                       entry =3D kzalloc_obj(struct iovt_device_entry,
-GFP_ATOMIC);
--                       if (!entry)
--                               return -ENOMEM;
--
-                        is_start =3D false;
-                        entry->end_devid =3D ep->device_id;
-                        list_add_tail(&entry->list, &np->ep_list);
-
-Huacai
-
+On Fri, Oct 30, 2026 at 6:28=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wro=
+te:
 >
-> >
-> > Huacai
-> >
-> >>
-> >> Regards
-> >> Bibo Mao
-> >>> +                       if (!entry)
-> >>> +                               return -ENOMEM;
-> >>> +
-> >>>                           is_start =3D true;
-> >>>                           entry->start_devid =3D ep->device_id;
-> >>>                           break;
-> >>> @@ -122,10 +126,6 @@ static int __init iovt_add_iommu(struct
-> >>> acpi_iovt_iommu *iommu)
-> >>>                           if (!is_start)
-> >>>                                   break;
-> >>>
-> >>> -                       entry =3D kzalloc_obj(struct iovt_device_entr=
-y,
-> >>> GFP_ATOMIC);
-> >>> -                       if (!entry)
-> >>> -                               return -ENOMEM;
-> >>> -
-> >>>                           is_start =3D false;
-> >>>                           entry->end_devid =3D ep->device_id;
-> >>>                           list_add_tail(&entry->list, &np->ep_list);
-> >>>
-> >>> Huacai
-> >>>
-> >>>>
-> >>>>>
-> >>>>> Huacai
-> >>>>>
-> >>>>> On Mon, Oct 12, 2026 at 3:16=E2=80=AFPM Bibo Mao <maobibo@loongson.=
-cn> wrote:
-> >>>>>>
-> >>>>>> This change is already merged in acpica tree.
-> >>>>>>
-> >>>>>> slightly ping.
-> >>>>>>
-> >>>>>> On Tue, Sep 22, 2026 at 08:10:55PM +0800, Bibo Mao wrote:
-> >>>>>>     > According to the IOVT specification, define macros for each =
-bit of the
-> >>>>>>     > Flags field in the IOVT IOMMU structure.
-> >>>>>>     >
-> >>>>>>     > Link: https://github.com/open-acpica/acpica/commit/352f750e4=
-cc0
-> >>>>>>     > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> >>>>>>     > ---
-> >>>>>>     >  include/acpi/actbl2.h | 7 +++++++
-> >>>>>>     >  1 file changed, 7 insertions(+)
-> >>>>>>     >
-> >>>>>>     > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> >>>>>>     > index baef525367b5..76e4a5bc79b4 100644
-> >>>>>>     > --- a/include/acpi/actbl2.h
-> >>>>>>     > +++ b/include/acpi/actbl2.h
-> >>>>>>     > @@ -919,6 +919,13 @@ struct acpi_iovt_iommu {
-> >>>>>>     >       u32 device_entry_offset;
-> >>>>>>     >  };
-> >>>>>>     >
-> >>>>>>     > +/* Masks for Flags field above */
-> >>>>>>     > +#define ACPI_IOVT_IOMMU_PCI_DEVICE           (1<<0)
-> >>>>>>     > +#define ACPI_IOVT_IOMMU_PXM_VALID            (1<<1)
-> >>>>>>     > +#define ACPI_IOVT_IOMMU_MAGAGE_BY_SEGMENT    (1<<2)
-> >>>>>>     > +#define ACPI_IOVT_IOMMU_HW_CAP_SUPPORT               (1<<3)
-> >>>>>>     > +#define ACPI_IOVT_IOMMU_MSI_INT_BYPASS               (1<<4)
-> >>>>>>     > +
-> >>>>>>     >  struct acpi_iovt_device_entry {
-> >>>>>>     >       u8 type;
-> >>>>>>     >       u8 length;
-> >>>>>>     > --
-> >>>>>>     > 2.39.3
-> >>>>>>     >
-> >>>>>>
-> >>>>
-> >>>>
-> >>
+> This series adds support for the OSPM Nominal Performance register
+> (ACPI 6.6, Section 8.4.6.1.2.6) to the CPPC ACPI and cpufreq drivers.
 >
+> Unlike the read-only Nominal Performance register, OSPM Nominal
+> Performance is writable and lets OSPM request a nominal level below
+> the platform-reported nominal. The platform treats performance above
+> this level as boost and below as throttle.
 >
+>  - Patch 1: adds ACPI helpers to write the register and to check that
+>    the platform supports it.
+>
+>  - Patch 2: adds the per-policy ospm_nominal_freq attribute in kHz. The
+>    value is kept across CPU hotplug and suspend/resume. The register
+>    cannot be read back, so a read returns the last value written.
+>
+>  - Patch 3: uses the OSPM nominal as the maximum frequency while boost
+>    is off. Lowering the nominal creates a boost range on a platform
+>    that has none, and boost can then be enabled.
+>
+> This series applies on top of v7 of:
+>   cpufreq: CPPC: Preserve OSPM-set registers across hotplug and unload
+>   https://lore.kernel.org/lkml/20261030092416.1993889-1-sumitg@nvidia.com=
+/
+>
+> v7 -> v8:
+>  - Rebase on Christian's CPPC fixes series.
+>  - Patch 1:
+>    - use cpc_is_writable() from that series and drop cpc_reg_writable().
+>    - add the register to the list of controls the driver writes.
+>    - take cpc_desc_lock in cppc_ospm_nominal_perf_supported(), so the
+>      descriptor cannot be removed during the check.
+>  - Patch 2:
+>    - make ospm_nominal_freq read-write. A read returns the last value
+>      written, or "<unset>" before the first write. (Christian, Mario)
+>    - keep saving the values in the store handler, not at init(), so
+>      the driver writes the register only after the OS sets it. (Pierre)
+>  - Patch 3:
+>    - document in the ABI file how the OSPM nominal sets cpuinfo_max_freq
+>      and caps scaling_max_freq.
+>
+> Sumit Gupta (3):
+>   ACPI: CPPC: Add ospm_nominal_perf support
+>   cpufreq: CPPC: Add ospm_nominal_freq attribute
+>   cpufreq: CPPC: Reflect the OSPM nominal in boost and limits
+>
+>  .../ABI/testing/sysfs-devices-system-cpu      |  31 ++++
+>  drivers/acpi/cppc_acpi.c                      |  44 +++++
+>  drivers/cpufreq/cppc_cpufreq.c                | 173 +++++++++++++++++-
+>  include/acpi/cppc_acpi.h                      |  10 +
+>  4 files changed, 248 insertions(+), 10 deletions(-)
+>
+> v7: https://lore.kernel.org/lkml/20260807214837.863209-1-sumitg@nvidia.co=
+m/
+> v6: https://lore.kernel.org/lkml/20260717215330.2215058-1-sumitg@nvidia.c=
+om/
+> v5: https://lore.kernel.org/lkml/20260615185934.2383514-1-sumitg@nvidia.c=
+om/
+> v4: https://lore.kernel.org/lkml/20260527194626.185286-1-sumitg@nvidia.co=
+m/
+> v3: https://lore.kernel.org/lkml/20260514194822.1841748-1-sumitg@nvidia.c=
+om/
+> v2: https://lore.kernel.org/lkml/20260430142430.755437-1-sumitg@nvidia.co=
+m/
+> v1: https://lore.kernel.org/lkml/20260427051823.280419-1-sumitg@nvidia.co=
+m/
+>
+> --
+
+This would be good to go except that it doesn't apply for me on top of 7.4-=
+rc1.
+
+Can you please rebase it and resend, with Christian's tags included?
+
+Thanks!
