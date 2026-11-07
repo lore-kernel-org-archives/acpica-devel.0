@@ -1,101 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.56.34
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794001104;
-	b=zFOiUxsKMQyLQXEqByTJslIgO2m8NZZUpIcCeNkT4YTeSUkLT5aa/DwLk/+cm4D8gi0W
-	 xeZFm5cxcs1AT4gQbtybruu+NOpHLuylzwPDIPAvhaqXyH7lcQHGH5ul8//eOX4i2jl6Y
-	 XCJxcvLiudorWiaCEf5VBFp3ke+9V2n37kcOwtH29D4/DVumqww2aihufffgGFR8epXxi
-	 dtJc4/OKbefoS2C95INxFm7+T9pMiow7pmaRXEVTz7LSkE+R86QOOzyaL3jiqKxB+Oycx
-	 t7B+oVkQkguhA4dvS2SfOugI6WwtPDRHjB0YBqZaI4ou+0FVPNw+dRU2aOrIuEIB7uA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794001104;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
-	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=KA6hOiuUXui6fW0xBuJ5uYerAsVt8ridnqfSMzKqMds=;
-	b=Ls/vbc7y/k41WzcTbwdyukdYyALyo0yTaANGipHRqtqRPVLqYEKkLT588HQ5mFv1HrB/
-	 hsdK0twBBkt7+tiPr+yRDagnIFbuRmTOenrKO4YjGtoJt/ZUd/cpfhp/YyYVaDXbYoxHU
-	 Pneg169o5EEuR38boYyuwb9HzSoqju1BsbTPkuL/0xHgPrlZc/ytqNswbalr6ctvKh7Ds
-	 6OkiguH2HRzVfWJXpO5PF+Y7wdQcoM+B0f2hv2HQ7/Qrr6mhDHy7Eg2UzaBsMYuzl6sSL
-	 nPmnEa18JHpebiB+D4w4L47k5nsXDA4qLtmUw2X+40DdT9UsmqUkENkTlumj8PfQUxg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nvidia.com;
-	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=JnaVd4PY;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.56.34
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010034.outbound.protection.outlook.com [52.101.56.34])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB634606A326
-	for <acpica-devel@lists.linux.dev>; Fri,  6 Nov 2026 21:38:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EB634606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=JnaVd4PY
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ud/wgrNZTGxVmaE64dks7t/cx7zP6LsibJgQi9sq2aFsYE48tnZXYIX/SS3YhvnS89nI804mvnPm5x3KV3dE9O4KQdMOszXP/N34j0znr1yrAXZusucEzxSlc4xAdmCWaOEZ/PjUeYqzHhb1/NmeS3qJGUqNcmNToRRX13KhiBbDEbXCN4DksNtbKdkVgao9CCAYpspB/d2UQWnGIWYCHM04v1thJoHXgGHFL4YGyak9w/R9BWCjNjA+srp3U4dhSgWRdtnQNkxXPWDJMnvq3+HAn93BZwY5UcErqBJJxpt8P+O5aZf+Yftp9i0PJO+oYJvsP+/JRXxZe6zwqeYcxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KA6hOiuUXui6fW0xBuJ5uYerAsVt8ridnqfSMzKqMds=;
- b=T0PePSeqebnV2800yJuEVml0ZsrSYjYvNkANHKGCAqg+OSXaNIfvGU74B9TK6hOa4wccJXmgfoOVWpOPwP3lMeqPbEHeJXyhTnP0vSQ6leclTz79ajWEpXAAKlDbWhlbzCMH6+9yLLKNIuI1ZZ3bvCmjTvItge3Sh2CE82crrycFiKN1+Me2xGNF02dGWZqPTwxl85reDiRMHz6X14tIUB7fpTodZgVexELZgaS4iCPvHWRgHGngaFFKBexFs+r589o9NBw3UdiHw902sc/3SPYsUPUTmEGPjPb+AP8glzt9gdo5i+6Nj8Jor8lQVU1QZNgXG9wmtjGuOv3jOc5/hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KA6hOiuUXui6fW0xBuJ5uYerAsVt8ridnqfSMzKqMds=;
- b=JnaVd4PYclxn8/amebCMFnNfCCv4aEIIpY8oirAiKHX3tfH9fTJ13BWpC4C+bNrAWlrIeTty80bAlUXDmkHShwkMpRj6Yf9abWGjiYcTV8sZZXoppCFcGaTZCWjMPHdOOy3s03b4M7PwT5H268GLUgY9nlBXnwsbiabC1idNrbq5qX3JyeoR5uDPWjjkbuHcR2jLEJiebomUXxUQfvfyTCjFrzt6yj3MBkmsd02A2LYAm59uCZ/KWypgN3Z9FCcJ8uSz1Ffv3y6EDlzE16blqgo0YG9u8D3Wn8gCdxrujcVircBiIJ8WENIn5ZdiMyhsoPm8+q9Cjx0Yl2HZlJOm7g==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH4PR12MB720178.namprd12.prod.outlook.com
- (2603:10b6:610:50e::10) by SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.10; Fri, 6 Nov
- 2026 21:38:18 +0000
-Received: from CH4PR12MB720178.namprd12.prod.outlook.com
- ([fe80::2a60:de1e:e60d:7052]) by CH4PR12MB720178.namprd12.prod.outlook.com
- ([fe80::2a60:de1e:e60d:7052%4]) with mapi id 15.21.0592.010; Fri, 6 Nov 2026
- 21:38:17 +0000
-Message-ID: <125b1872-ce72-4842-88e3-abe7f8b1e772@nvidia.com>
-Date: Sat, 7 Nov 2026 03:08:06 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 1/8] ACPI: CPPC: Order performance-control updates
-To: rafael@kernel.org, viresh.kumar@linaro.org, pierre.gondois@arm.com,
- christian.loehle@arm.com, ionela.voinescu@arm.com, zhenglifeng1@huawei.com,
- zhanjie9@hisilicon.com, lenb@kernel.org, ray.huang@amd.com,
- mario.limonciello@amd.com, perry.yuan@amd.com, kprateek.nayak@amd.com,
- maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com,
- linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org
-Cc: treding@nvidia.com, jonathanh@nvidia.com, vsethi@nvidia.com,
- ksitaraman@nvidia.com, sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-References: <20261106193304.3347374-1-sumitg@nvidia.com>
- <20261106193304.3347374-2-sumitg@nvidia.com>
-Content-Language: en-US
-From: Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <20261106193304.3347374-2-sumitg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN5PR01CA0007.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:261::6) To CH4PR12MB720178.namprd12.prod.outlook.com
- (2603:10b6:610:50e::10)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=114.242.206.163
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794015834;
+	b=X//lw/Ig6jUucU8ReV+xaaO+kiHn7PrAAZS4iduvxI4BEkU+Sw+D4NzwBc/n2sFJYFnP
+	 KL12WnydF2EypTouuaOQvdni8VibfYC5DpkLTqFGRQOGw99jeE4e9lKr8dfgUW5ESvJny
+	 7YNhTSIUlhemkgWBvyTggFp8Njbt8KNsNwMeDjoqyTD4GQLEAJk/YvfQ/C7Ck34W+N/5j
+	 vmYPvHfFpNyXQrIHALD48Cw/LnUw2yPWFNNCgHLKRiNcjFqjDLEHoKIgQJoivr5QQoLpb
+	 LZkFricS+1ib0ZGv6KIQimoKRAJwAPoG3y3T+0j1Cwak2yypxf4mXdNLr0SABmA7Swg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794015834;
+	h=DMARC-Filter:Received:Received:Subject:To:Cc:References:From:
+	 Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:Content-Type:
+	 Content-Language:Content-Transfer-Encoding:X-CM-TRANSID:
+	 X-CM-SenderInfo:X-Coremail-Antispam;
+	bh=GFdXwzO2TBZ1vUWOss39FQ4uB3VM3cJovyEdHGPvsD8=;
+	b=xqqfFUYzyBTAqud0xcPvPCLJlThlApJ12wz59rAJWi2VsqH0WLCdaqVf1dlqXxGXjAWl
+	 /odN6Wmn5rrTAQWkb4vURig7Y76lc0j4ioLcHW/rTyTeI3ST4/1wWhcSeRvbY8t/1yWU5
+	 3T5SugdO05D7CHBqjKaHYMo0vxRuj7P7l3MgcUzGdooMZ5ZlzEgxqw0lmdV5QLFex7ayo
+	 oxl2FUgI/0b6ur0HG53SQKO1K4afPspdg2QxP1l5JV1HWa5b1ik7O+UO0jozewobSALg2
+	 nT58KsCrQOkNgTeJc5Wf0wIn8muL2CBwevg41BHOUSJNYSN9YcvRbmQuN6Mnp5uWHXw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=none header.from=loongson.cn;
+	spf=pass smtp.mailfrom=loongson.cn;
+	arc=none smtp.remote-ip=114.242.206.163
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B116606A32E;
+	Sat,  7 Nov 2026 01:43:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1B116606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.62])
+	by gateway (Coremail) with SMTP id _____8AxdvBUgu5qt0odAA--.18783S3;
+	Sat, 07 Nov 2026 09:43:49 +0800 (CST)
+Received: from [127.0.0.1] (unknown [127.0.0.1])
+	by front1 (Coremail) with SMTP id qMiowJAx1cxRgu5q6eAyAA--.10256S2;
+	Sat, 07 Nov 2026 09:43:45 +0800 (CST)
+Subject: Re: [PATCH v4 1/4] ACPICA: actbl2.h: Add bit constants of the Flags
+ field in the IOVT IOMMU structure
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: rafael@kernel.org, linux-acpi@vger.kernel.org,
+ acpica-devel@lists.linux.dev, lenb@kernel.org, linux-kernel@vger.kernel.org,
+ lixianglai@loongson.cn, loongarch@lists.linux.dev,
+ maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com
+References: <20260922121058.972734-2-maobibo@loongson.cn>
+ <10bd45f8-2d37-42f0-b7d2-a4a84933c9b3@loongson.cn>
+ <CAAhV-H7Vq2ayLJNLRSo5RRiWOcmF2BXT_QOhEDg_jWOzYteqWw@mail.gmail.com>
+ <6f8a9203-6fb1-268a-8d37-37e69fbf2ee9@loongson.cn>
+ <CAAhV-H5k8EJrAuqPH44y_+1gcXGCjCoozzK5ii9cLtiLDj5eog@mail.gmail.com>
+ <66b9d482-d577-748c-729d-0fba70701d3d@loongson.cn>
+ <CAAhV-H6PL6RLM3KA4BLQEt804FnsDE4CtKeB0KaW7Gj8rm2PMw@mail.gmail.com>
+ <843a9418-2017-c2c6-45c5-38628e7e0bdb@loongson.cn>
+ <CAAhV-H4O07hKyPJ8rTMo=vD=t+qFM7UAJOPDGZDVJ0Ti-gOdEQ@mail.gmail.com>
+From: Bibo Mao <maobibo@loongson.cn>
+Message-ID: <e04352c2-f4ce-d415-72d4-21e03b828843@loongson.cn>
+Date: Sat, 7 Nov 2026 09:45:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -105,146 +64,231 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH4PR12MB720178:EE_|SN7PR12MB8059:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6309f48d-f778-47ad-f06d-08df3c4e4516
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|23010399003|7416014|1800799024|366016|18002099003|6133799003|10067099003|22082099003|921020|56012099006|4143699003|11063799006|5023799004|261022105027099003|261026121527099003|261028144727099003|261022075727099003|261009223027099003|261102123227099003|261026140227099003|261021121427099003;
-X-Microsoft-Antispam-Message-Info:
-	vOeJZBFrPWmo6qLwQT3adKIdJZTarinSg0xWG1mImcYuoEnA7FR4Q6MyrYUSEVu82c8xZ/GFjagPANAvDav+XzJK6jkUHojr62CoSBvRQDhYWC61DmQn8W7Kh3r2OsePH0TI7FtPoFb547KrzG7e1v/ZKe9FLy0oSAiYSXj/jBJLGT8a5Re3EBD8x67Nz8xQxkbW4GkolZRGLnfsVGvmWtRK0ieOqonC0w54f1gl1uZjAVLfsdeX18YIklrpz/LHJTtxGUR51woa5BodWEutZatyKDnGzzQJKz7AXcpn3iCy2VYLv51OvMItZZRJpjdkNTs6gvadbHp25IFW5SQ17yqYE0YtojNjC0OJNn9Jv9EckmhJzvBY+Y60ofBuGJRc+nFJQZgGe83E7+mTY3GzKyguKPi/2UAnRI5Zc4KMRmtLnb/94yFrPef7SciFgiuDqrnU4EBXAACVWitcyfdl/sC5SO9WPZSMprKpHJAqS8nmRMRzvzaf3UzgPV0Cx3OW5FSLR/Kk5921ilnaBQX73g4olUNIbnjsT3gVw4RE+KRpFeFm4SNjxSSQq9WTbetAglwpClIWbzbRj0jdtahUlk+591/uJssQXulnIse5sOOalP+VV7IlwCIwmqDwRgvjk03vnSC5+tVdEbJMb/fKuH+C3oxJat3Dz8EJSdaDZuVM+8ZkP2GWwis7qO8ltdvbTQYsJF1S57vlOGg23559aw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH4PR12MB720178.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(23010399003)(7416014)(1800799024)(366016)(18002099003)(6133799003)(10067099003)(22082099003)(921020)(56012099006)(4143699003)(11063799006)(5023799004)(261022105027099003)(261026121527099003)(261028144727099003)(261022075727099003)(261009223027099003)(261102123227099003)(261026140227099003)(261021121427099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MHRnOXk1ZUdla01xUjNubk1kQXA5T2syTklueEo2blJnQ09rM3dmZ1JkMTht?=
- =?utf-8?B?S2U1OUMyOFFiZlZYb0FIV1R0QTlPNytlS1lqWjB2UVVsaW9FNDdaZllZdmQy?=
- =?utf-8?B?UzhSQ0FXcmtkTVVVU2Nrek9nVyttdXR4N0FKdnRvOG9wMkNJY00wRlArNjBM?=
- =?utf-8?B?UVBzUjBsQmdRZ3NkQXFoZjVKM0prV1hMNk11V2NSS1c5dExGZFhFbGcwazI2?=
- =?utf-8?B?NG9sMW01ZnVyaGllSjBTV2IrejNiOHp0ZENiZVppdFpEYm9qeFBXV0VQUlc3?=
- =?utf-8?B?bTgvRlYrTTRuSXQyajNWUHMwMTNKeFcvT0h3V1paUU1KeEZxTU1wVkFuUkU0?=
- =?utf-8?B?QUROamtaNWJlTC8rV3M2RTNab2lFaFdHTEY4SmpJQTZQMjRFRUVTZHkxVk45?=
- =?utf-8?B?Q3NzZ2tLZENra0ZqMjZPVW4xOENJS0tIbGw3TzloVUFLdkFSbU8yNTNDQS9W?=
- =?utf-8?B?WmQxV3NFZ3VGZVUxY1U1OEVDUmNua2l1aHNMNkZaa1NNV2grdXIzY005OHM3?=
- =?utf-8?B?eERsVHZ1TVlDbUdYejdGRWowVGVJR25Qb2V5bjNmUGlwZXY5MHo3VXVha2Zv?=
- =?utf-8?B?T1JkWlZRMDZ0RkVRc0dybmJsbERqQW1DckQ2NGRSMnc2Y09wZG5MazRoTzF1?=
- =?utf-8?B?OGJIOVNkZ0dMR0ZCVzVDOGdwdnRPbCtMOEt1QlFzVm9meEtVcUZtbk5UYWx0?=
- =?utf-8?B?NCtLUXZFTGVoTnVRTDVEb3RUODYyNUZXc2p3SDE0V1FLOCs3dVg1VC9CdDZP?=
- =?utf-8?B?NS8vcWRCOGFaTGxycW14dmNFcjlBVk1oMDl2Qktib09RSmh4RnphOVNabTFu?=
- =?utf-8?B?dzMybHcralZMRTNlZW1UN002ZG5WbTQrOVdra0hiQ0Z0bk5qN1Zzd3dRRzUz?=
- =?utf-8?B?eklFcHhUMTZKdk9xSzEwZVpib3d5bm40WjZlUm96dC9QVnhENzk3SFJNNlV3?=
- =?utf-8?B?dXMvVWVla1JaVjVlL3RwamtIS3JEQVJBUkZWS1JNanlsWGhVbU9BTnVjMHBQ?=
- =?utf-8?B?OE9GeG85ZHJTTWRuQlVSUzBKWUNiOUswYXAyUDlvZVlBS1MrYmhtOHgwUjZX?=
- =?utf-8?B?WkEvRHpES1hQczNQZG9vbTdwcG13R2VnTDVDK2ZOd1JLdGMrcVpkbUZ5eTkr?=
- =?utf-8?B?eHh0dGlMTzA1czRMMkR0ZUErZU1STmJ2Q05LYTNURXdwSldIamFoMVVrQnk3?=
- =?utf-8?B?cGVJRVljd0lHVkF5cUVsUUhIemVhSnJMTVZQM3JicXViVzkwWmduMFN5UTho?=
- =?utf-8?B?OHgxV2VsYjBSREhSNXkrYk52MjNCbkhpQ2FGQklUZ2VWeEZnZldWTFRtRHJF?=
- =?utf-8?B?V1EwckF1SDloaWVjeVdTdzE2UzFMaW9mcFVoak5jQy8vVkFxTGNhWVB1NmQr?=
- =?utf-8?B?LzFyMW83S0lORVAyVCtJQS9KNTVhL3Jqell1eTlBUkR6WW1HTG5sVi9TSVV6?=
- =?utf-8?B?RzR4RUNrUzlEZDRQQXpsb0hDclE4ZkZRR3dwY0VWY09RT1hCcnphSDJDYjR3?=
- =?utf-8?B?OUMxTUJ3dkFoR29TaHhpQjdJaUNSTlNYVWRmbkhCc2ZhYkZ0VHNVbld3cTBI?=
- =?utf-8?B?RGkva0pLbHFDMUEyS2tFRE9FdHhESi9rM2plVUMzV3JqOTI3SHpTVmVlbWUv?=
- =?utf-8?B?YnYveGtTeXV6RHIxTUJtSHVTWXplRmlXVHhZRGhCSE9XN3NyYUhKa3RtbXRN?=
- =?utf-8?B?d0RCYzh3ZVFrK0oraExJRmZRVU9nczlUWjJvVHRFVzhzYklndFBGOFJ4MDdZ?=
- =?utf-8?B?elNHeWpGT1RFbERZUHhzTzJlTzVhUlZCT2I2bExab1NxNWRCWWFXQ0xuQ21C?=
- =?utf-8?B?NUdvN2ZtRURhMHVNOUF1S0FxK2Y1L3ZuM1BFUm5qSGhnbWZBaEgvYUJ0V1F2?=
- =?utf-8?B?bVZFWTk3NmplZ0pXZllsUlJiSXRIZFFlTjBuU1JkUDFtcHQ2dG9ZVUl6WXFa?=
- =?utf-8?B?TGQyN2JXVUpYdkNCZ0pRM0hwcTgvRkFYM3Jhb1AyMHRzWUNqMHh2YmRvN0Zn?=
- =?utf-8?B?SGhKTXV2cHc1UmhSMHpBZlNmdlN0TUUwd2VPOG1FWTkyUmFuWmpkT1N4bGpa?=
- =?utf-8?B?UEdsTTcwOERsOGpCQlBUV0VlVVNHMHF0dzQvN1kySGhxYTk1ZEcvVGlIQ1FM?=
- =?utf-8?B?VmlwZmRjTEZjUGRGam5mYVNtUGxvV1c0NE1wd0wyWG5DWk8wNCtsRWtFZHdr?=
- =?utf-8?B?eTIvVzMzRFpMMys3a3E2YjEyNnBVRDFOY3piZ2hZY0tkbU01ajJ3UWRSZE9E?=
- =?utf-8?B?YmwrWTVNRzVUdEgyYXVTYXdFSyt2TmpFR0JENERERWhvWElSTEFPOFRSYnBT?=
- =?utf-8?B?ZC9acDBMTnBjUGhPb3NBSnRjdGdjMkRzVFlSWHBuWkVtWWdKYk93UT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6309f48d-f778-47ad-f06d-08df3c4e4516
-X-MS-Exchange-CrossTenant-AuthSource: CH4PR12MB720178.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2026 21:38:17.7086
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4iCUvsjaEPCZEHfng9+FmyqIHbi8Rd+PsvdE7sGKnEVNwJfi0u+G8sP7RrwJ7dEfTGXdpT5b6ZT4wZ2yHv/hUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8059
-
-Hi Rafael,
+In-Reply-To: <CAAhV-H4O07hKyPJ8rTMo=vD=t+qFM7UAJOPDGZDVJ0Ti-gOdEQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qMiowJAx1cxRgu5q6eAyAA--.10256S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxtF4DZr1UtryUZF1fZrWfCrX_yoWxZFyDpF
+	48JFW5KFWDJr17Gr10qw1Uur15tr1UGryIgryjgryUCrnrtr1rJF4UJFWYkFykAr98GF10
+	qF1jyrW7WF4UArgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWU
+	AwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+	k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
+	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxV
+	WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+	7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+	1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+	42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jYpB-UUUUU=
 
 
-On 07/11/26 01:02, Sumit Gupta wrote:
-> From: Christian Loehle <christian.loehle@arm.com>
+
+On 2026/11/6 下午10:58, Huacai Chen wrote:
+> On Thu, Nov 5, 2026 at 7:22 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>>
+>>
+>> On 2026/11/5 下午6:31, Huacai Chen wrote:
+>>> On Thu, Nov 5, 2026 at 5:49 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2026/11/5 下午5:31, Huacai Chen wrote:
+>>>>> On Thu, Nov 5, 2026 at 5:14 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 2026/10/23 下午3:59, Huacai Chen wrote:
+>>>>>>> Bibo,
+>>>>>>>
+>>>>>>> Now I have applied this series but with some modifications, please
+>>>>>>> double check and test the code.
+>>>>>>>
+>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git/log/?h=loongarch-next
+>>>>>> In my v4 submit, it is:
+>>>>>> +               case ACPI_IOVT_DEVICE_ENTRY_START:
+>>>>>> +                       is_start = true;
+>>>>>> +                       start_devid = ep->device_id;
+>>>>>> +                       break;
+>>>>>> however in rc1, it is modified as:
+>>>>>>                     case ACPI_IOVT_DEVICE_ENTRY_START:
+>>>>>>                             is_start = true;
+>>>>>>                             entry->start_devid = ep->device_id;
+>>>>>>                             break;
+>>>>>> Here entry is not allocated and NULL pointer, it is allocated in
+>>>>>> ACPI_IOVT_DEVICE_ENTRY_END switch case.
+>>>>>>
+>>>>>> I really do not know what is aid to modify it and let others to test.
+>>>>> Sorry, it's my fault.
+>>>>>
+>>>>> In theory I should point out the modification (eliminating the local
+>>>>> variable start_devid) and refresh a new version. But we have no time
+>>>>> to do this because when the first patch is merged into the ACPI repo
+>>>>> it is near the merge window.
+>>>> Maybe our work style is different, I do not care much for the coding style.
+>>>>>
+>>>>> If you agree, I will submit such modifications to fix it.
+>>>> fix is welcome.
+>>>>>
+>>>>> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
+>>>>> index 87cee4f0fc80..4cdac28a1fd0 100644
+>>>>> --- a/drivers/acpi/loongarch/iovt.c
+>>>>> +++ b/drivers/acpi/loongarch/iovt.c
+>>>>> @@ -115,6 +115,10 @@ static int __init iovt_add_iommu(struct
+>>>>> acpi_iovt_iommu *iommu)
+>>>>>            for (i = 0; i < iommu->device_entry_num; i++) {
+>>>>>                    switch (ep->type) {
+>>>>>                    case ACPI_IOVT_DEVICE_ENTRY_START:
+>>>>> +                       entry = kzalloc_obj(struct iovt_device_entry,
+>>>>> GFP_ATOMIC);
+>>>> There will be memory leak problem if there are START/START/END in the table.
+>>> That means a broken table? I think we don't need to consider broken
+>>> tables, because there may be kinds of broken pattern rather than just
+>>> a START/START/END.
+>> yes, START/END/START, START/START/END, START/SINGLE/END. what is the
+>> relationship between "don't need to consider" and kinds of broken pattern?
+>>
+>> what is the policy from your side with such BIOS table? let memory leak
+>> and continue?
+> The driver can only work with a good table or no table, but not with a
+> broken table.
+With a broken table, software can discard the whole table, or discard 
+the single table entry.
 > 
-> The ACPI specification requires Minimum Performance to remain below
-> Maximum Performance. When autonomous selection is disabled, Desired
-> Performance must also remain within those limits.
+> Take START1/START2/END as an example of broken table: in your original
+> code, the END entry will be pairing with START2. But for a broken
+> table who can ensure they are the correct pair? If the real correct
+> pair is START1 and END, then (entry->start_devid, entry->end_devid)
+there is only one policy, software does not know START1/END is right or 
+START2/END is right.
+> will be a wrong device range. Such mistakes are much worse than a
+> memery leak.
 > 
-> cppc_set_perf() writes the three controls in a fixed order. This can expose
-> an invalid tuple after firmware resets the controls or while policy bounds
-> move across the current desired value.
+> If you want to say "I don't care about correct pairing, memory leak is
+> bad in any case.", OK, we can do it like this:
 > 
-> Read the live limits. Apply non-atomic updates in three phases: widen the
-> interval, update Desired Performance, then narrow it. Submit PCC controls
-> in each phase together. Keep the existing single-command path when the
-> complete tuple is in PCC, reject invalid requests, and stop after the first
-> failed access.
+> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
+> index 87cee4f0fc80..ebd11e22c9be 100644
+> --- a/drivers/acpi/loongarch/iovt.c
+> +++ b/drivers/acpi/loongarch/iovt.c
+> @@ -115,6 +115,13 @@ static int __init iovt_add_iommu(struct
+> acpi_iovt_iommu *iommu)
+>          for (i = 0; i < iommu->device_entry_num; i++) {
+>                  switch (ep->type) {
+>                  case ACPI_IOVT_DEVICE_ENTRY_START:
+> +                       if (is_start)
+> +                               break;
+there is still memory leak with START/SINGLE/END pairs, is_start set 
+with false with ACPI_IOVT_DEVICE_ENTRY_SINGLE case.
+
+Regards
+Bibo Mao
+> +
+> +                       entry = kzalloc_obj(struct iovt_device_entry,
+> GFP_ATOMIC);
+> +                       if (!entry)
+> +                               return -ENOMEM;
+> +
+>                          is_start = true;
+>                          entry->start_devid = ep->device_id;
+>                          break;
+> @@ -122,10 +129,6 @@ static int __init iovt_add_iommu(struct
+> acpi_iovt_iommu *iommu)
+>                          if (!is_start)
+>                                  break;
 > 
-> Make cppc_cpufreq fast switches include the limits only when they differ
-> from the last successful request. Invalidate the cache across resume and
-> after a failed request, since firmware may have reset the controls or an
-> earlier phase of a failed update may have reached the platform. Publish
-> slow-path limits only after the complete request succeeds.
+> -                       entry = kzalloc_obj(struct iovt_device_entry,
+> GFP_ATOMIC);
+> -                       if (!entry)
+> -                               return -ENOMEM;
+> -
+>                          is_start = false;
+>                          entry->end_devid = ep->device_id;
+>                          list_add_tail(&entry->list, &np->ep_list);
 > 
-> At policy teardown, lower Minimum Performance together with Desired
-> Performance so the final request remains valid. On initialization, clamp
-> Desired Performance to the live interval left by firmware or an earlier
-> driver instance.
+> Huacai
 > 
-> [sumitg:
->   - In cppc_read_perf_limits(), skip an unimplemented MIN or MAX, and
->     do not fail on a live MIN above MAX.
->   - Clamp Desired into the new MIN and MAX instead of rejecting it, as
->     amd-pstate resume can round it above MAX.
->   - In init(), request the full range if the live MAX is zero or below MIN.
->   - Clamp Desired in set_target(), fast_switch() and store_auto_select(),
->     to keep the cached value in range.
->   - In store_auto_select(), publish the request only after success.]
-> 
-> Fixes: 76531df5e13b ("ACPI: CPPC: Add min and max perf register writing support")
-> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
-> Link: https://lore.kernel.org/all/01d7f07e-839c-428b-833d-713ed2128f4d@nvidia.com/
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
-
-
-Sashiko flagged three issues on this patch [1].
-I think none of them needs a change in this patch:
-
-1) SHARED_TYPE_ANY, when policy->cpu changes: the driver uses one set
-    of controls for all CPUs in the policy, and always writes them
-    through policy->cpu. So the MIN and MAX written earlier still apply.
-
-2) MIN and MAX not written when the requested frequency is the current
-    one: not new with this patch. Since commit 9801be8bef65 ("cpufreq:
-    Avoid redundant target() calls for unchanged limits"), the core
-    skips ->target() in that case unless the limits changed, also for
-    the first request after the governor starts. I will send a core fix
-    for this separately.
-
-3) store_auto_select() racing with the governor: this is not new
-    either. Before this patch, both edited the shared
-    cpu_data->perf_ctrls. Now each builds its own request.
-    store_auto_select() holds policy->rwsem, so the policy limits cannot
-    change while it runs. store_auto_select() and the governor both take
-    MIN and MAX from these limits, and keep Desired between them. So
-    MIN <= Desired <= MAX holds, whichever write lands first. At worst,
-    Desired keeps the older value until the next governor update.
-
-[1] 
-https://sashiko.dev/#/patchset/20261106193304.3347374-1-sumitg@nvidia.com
-
-Thanks,
-Sumit
-
-....
+>>
+>>>
+>>> Huacai
+>>>
+>>>>
+>>>> Regards
+>>>> Bibo Mao
+>>>>> +                       if (!entry)
+>>>>> +                               return -ENOMEM;
+>>>>> +
+>>>>>                            is_start = true;
+>>>>>                            entry->start_devid = ep->device_id;
+>>>>>                            break;
+>>>>> @@ -122,10 +126,6 @@ static int __init iovt_add_iommu(struct
+>>>>> acpi_iovt_iommu *iommu)
+>>>>>                            if (!is_start)
+>>>>>                                    break;
+>>>>>
+>>>>> -                       entry = kzalloc_obj(struct iovt_device_entry,
+>>>>> GFP_ATOMIC);
+>>>>> -                       if (!entry)
+>>>>> -                               return -ENOMEM;
+>>>>> -
+>>>>>                            is_start = false;
+>>>>>                            entry->end_devid = ep->device_id;
+>>>>>                            list_add_tail(&entry->list, &np->ep_list);
+>>>>>
+>>>>> Huacai
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Huacai
+>>>>>>>
+>>>>>>> On Mon, Oct 12, 2026 at 3:16 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>>>>>
+>>>>>>>> This change is already merged in acpica tree.
+>>>>>>>>
+>>>>>>>> slightly ping.
+>>>>>>>>
+>>>>>>>> On Tue, Sep 22, 2026 at 08:10:55PM +0800, Bibo Mao wrote:
+>>>>>>>>      > According to the IOVT specification, define macros for each bit of the
+>>>>>>>>      > Flags field in the IOVT IOMMU structure.
+>>>>>>>>      >
+>>>>>>>>      > Link: https://github.com/open-acpica/acpica/commit/352f750e4cc0
+>>>>>>>>      > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>>>>>>>>      > ---
+>>>>>>>>      >  include/acpi/actbl2.h | 7 +++++++
+>>>>>>>>      >  1 file changed, 7 insertions(+)
+>>>>>>>>      >
+>>>>>>>>      > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+>>>>>>>>      > index baef525367b5..76e4a5bc79b4 100644
+>>>>>>>>      > --- a/include/acpi/actbl2.h
+>>>>>>>>      > +++ b/include/acpi/actbl2.h
+>>>>>>>>      > @@ -919,6 +919,13 @@ struct acpi_iovt_iommu {
+>>>>>>>>      >       u32 device_entry_offset;
+>>>>>>>>      >  };
+>>>>>>>>      >
+>>>>>>>>      > +/* Masks for Flags field above */
+>>>>>>>>      > +#define ACPI_IOVT_IOMMU_PCI_DEVICE           (1<<0)
+>>>>>>>>      > +#define ACPI_IOVT_IOMMU_PXM_VALID            (1<<1)
+>>>>>>>>      > +#define ACPI_IOVT_IOMMU_MAGAGE_BY_SEGMENT    (1<<2)
+>>>>>>>>      > +#define ACPI_IOVT_IOMMU_HW_CAP_SUPPORT               (1<<3)
+>>>>>>>>      > +#define ACPI_IOVT_IOMMU_MSI_INT_BYPASS               (1<<4)
+>>>>>>>>      > +
+>>>>>>>>      >  struct acpi_iovt_device_entry {
+>>>>>>>>      >       u8 type;
+>>>>>>>>      >       u8 length;
+>>>>>>>>      > --
+>>>>>>>>      > 2.39.3
+>>>>>>>>      >
+>>>>>>>>
+>>>>>>
+>>>>>>
+>>>>
+>>
+>>
 
