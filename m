@@ -1,62 +1,163 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=114.242.206.163
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794186711;
-	b=tHhQ2/bGZUx8n0Ri76GzQuJ/sjZUK7VrffIfwAzPt2M5f25N+mfySd3Qr1iWD1CkMTRz
-	 vNzCGQC5U9YmrDoE0TVIjF5AzTvfRfz0HbvwCe4EYGQ29ffgk5fHQvKE7Xqwo7Q0V7tGU
-	 obpr6KgavNDZpcQDX5k1WBBHmaiFYwqYFoSX7EAaXoLJ+qH5pVWFMFuvodCtFhbV2Sr6z
-	 x3RgmnEDYw0KEOpM9OYA0hbm58+80HIpZy2XWgGxIaf9INsAPzpvtVtCpVLkM6WWZ2fw/
-	 kIJQFPeoOPgyk41jAOz96yo+y5Ox2Ak6PxbmOR/GP4B1CQybpipBTmzBuqvtA/zhrbQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794186711;
-	h=DMARC-Filter:Received:Received:Subject:To:Cc:References:From:
-	 Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:Content-Type:
-	 Content-Language:Content-Transfer-Encoding:X-CM-TRANSID:
-	 X-CM-SenderInfo:X-Coremail-Antispam;
-	bh=9P3WGVRobvf0VOQno0zPnA6gg2epfGNkklCx41pVOco=;
-	b=I3fmf2d8IMaCDom2VHA7NXp45j/5LqrhiItzQsI6Pg0XhbbG45uJ3TV+bPnE9aZ/Mdow
-	 5jpQzWxtGjAFxBV6YgMRIjXRomR35Tw3gbWHLglbpSaNwq9sEq8FF+SGbQGEP/0Y6AFOB
-	 KlTVTUD8UZE8zxJtSLq6SFp2Fl9rwAxyYXNULz73A8yB7TAi0NtYLQOGEfzndR3yTG3b1
-	 gTiiaj7c2xJMlM/q5tNAVxBx4Ii1gkkDxld6kdEyXzLO37xmNE9IYwCDwpzvuGMdvB0Js
-	 mj8tXQWILu1v90H+rAkvYzuAC0tHP8ywoGqjXoGazzcSC6iYsXV55AVszpKZ7093YpA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=loongson.cn;
-	spf=pass smtp.mailfrom=loongson.cn;
-	arc=none smtp.remote-ip=114.242.206.163
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E47606A31C;
-	Mon,  9 Nov 2026 01:11:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 80E47606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.62])
-	by gateway (Coremail) with SMTP id _____8Bx79LKHfFqbaodAA--.20456S3;
-	Mon, 09 Nov 2026 09:11:38 +0800 (CST)
-Received: from [127.0.0.1] (unknown [127.0.0.1])
-	by front1 (Coremail) with SMTP id qMiowJAx1czHHfFqdxMzAA--.10573S2;
-	Mon, 09 Nov 2026 09:11:35 +0800 (CST)
-Subject: Re: [PATCH v4 1/4] ACPICA: actbl2.h: Add bit constants of the Flags
- field in the IOVT IOMMU structure
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: rafael@kernel.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, lenb@kernel.org, linux-kernel@vger.kernel.org,
- lixianglai@loongson.cn, loongarch@lists.linux.dev,
- maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com
-References: <20260922121058.972734-2-maobibo@loongson.cn>
- <10bd45f8-2d37-42f0-b7d2-a4a84933c9b3@loongson.cn>
- <CAAhV-H7Vq2ayLJNLRSo5RRiWOcmF2BXT_QOhEDg_jWOzYteqWw@mail.gmail.com>
- <6f8a9203-6fb1-268a-8d37-37e69fbf2ee9@loongson.cn>
- <CAAhV-H5k8EJrAuqPH44y_+1gcXGCjCoozzK5ii9cLtiLDj5eog@mail.gmail.com>
- <66b9d482-d577-748c-729d-0fba70701d3d@loongson.cn>
- <CAAhV-H6PL6RLM3KA4BLQEt804FnsDE4CtKeB0KaW7Gj8rm2PMw@mail.gmail.com>
- <843a9418-2017-c2c6-45c5-38628e7e0bdb@loongson.cn>
- <CAAhV-H4O07hKyPJ8rTMo=vD=t+qFM7UAJOPDGZDVJ0Ti-gOdEQ@mail.gmail.com>
- <e04352c2-f4ce-d415-72d4-21e03b828843@loongson.cn>
- <CAAhV-H7phy=T1MMNpSnZdjjiQXH41S7jnFcgfZd_4b5aqffB6g@mail.gmail.com>
-From: Bibo Mao <maobibo@loongson.cn>
-Message-ID: <c2694499-c1fa-5365-6572-3688ee6b34aa@loongson.cn>
-Date: Mon, 9 Nov 2026 09:12:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.137
+ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794212841;
+	b=wvcqn/ObsexGHXWYTOgKA8JAD7pWg2FtoJsnGgseiGvqSW85L1Os3H2L/A0VR7mR/ZmS
+	 aFjL13L4Xg8r1UxEjFyeqy1DsznqxIxzjsgsZ3w5oBr2K4hfYUvVqIouZoxB4DCOfmzWw
+	 vzz6Nj1qi2sxWlEGFZw23t1+hj6j+9I/RnrAcGZdco/TGleCwunLeksGfuAEdZy3o/JO0
+	 aR5msw3+jpfHw2KmXVNEWEOhAiHHS4pUCFsSqOCVkpKiSLWh9C5EsuNuVi4s8wwOdW1zA
+	 I6yd3fHx/SIO6hgFmxntC0ewxWXJJK1Tj53VDbuhqnHGcA9rFkek79f+g4twIxciqVQ==
+ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794212841;
+	h=Received:X-Virus-Scanned:X-Spam-Flag:X-Spam-Score:X-Spam-Level:
+	 X-Spam-Status:Received:ARC-Filter:Received-SPF:Received:
+	 DKIM-Signature:Received:Received:X-MS-Exchange-Authentication-Results:
+	 Received-SPF:Received:Received:Received:Received:From:To:CC:Subject:
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=iCrFC58RZBaOgfdpKUueDt5wUMj1Jf/Cv4S1mMUsmFY=;
+	b=pFl+vJV8Idd4X1k7GneS3JLv4y/zCSn8Yas0r+5Bl0dzlrIQkxcKOKoAyM6TVtHkDw5O
+	 z+VcV380x2zz4DJq4bPeWj8D5x5oLWJi8lZDvdinE+9wXtNvjmDpIiMrbYEuQw44rAjf/
+	 SlxZW5yORdIXijjgkKElPUTR96Im9ew0m/FwCugsyTc5HGAZr2XdCE4UuLpq3Pov8BaJu
+	 fy+OK/Ku9ncRO0sAQgYGiq6Nl4pbFpHwo3E/PPZxTJFCJqZ0efg90aiNDlohaOjZ0bU8Q
+	 JPyHeuyC5Zs5+Z6Iu6VgJSCk4g2tS7tTOw6p4Lf+9/fNunhR8ZK3cMzX+zyc9koM+RQ==
+ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=x9RcsiZP;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.137
+Received: from smtp4.osuosl.org (smtp4.osuosl.org [140.211.166.137])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F63C606A321
+	for <acpica-devel@lists.linuxfoundation.org>; Mon,  9 Nov 2026 08:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=x9RcsiZP
+Received: from localhost (localhost [127.0.0.1])
+	by smtp4.osuosl.org (Postfix) with ESMTP id C79B040603
+	for <acpica-devel@lists.linuxfoundation.org>; Mon,  9 Nov 2026 08:27:20 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.353
+X-Spam-Level:
+Received: from smtp4.osuosl.org ([127.0.0.1])
+ by localhost (smtp4.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id UCufpEb-Ll1z for <acpica-devel@lists.linuxfoundation.org>;
+ Mon,  9 Nov 2026 08:27:19 +0000 (UTC)
+ARC-Filter: OpenARC Filter v1.3.2 smtp4.osuosl.org F2A39405F8
+Authentication-Results: smtp4.osuosl.org; arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::7"
+ARC-Seal: i=2; d=osuosl.org; s=arc; a=rsa-sha256; cv=pass; t=1794212839;
+	b=ruE8WiSJRYn9psbhif24EEcP8ZTBbAefTv7i3IkmVOKGOvlwT41RhuqcszFgefNWPxzn
+	 N9wbXkbgWyVzaC1rfofVUpCxrYfvbCUDb1+xN8wQ0R5tSmae9aF3exU4meyNyhK9eEHb9
+	 N9f5SUp8B46w+gRmfnaus0lOrlpV4FKfqf7nf/l1nLWxi3wJSRNSnrh8VGpCDK0fwDcCZ
+	 HSfcNJ+IOp9DNNs9eNXA6GUHiSg4xMLcaHIfYaxBA3Z66GCLp/s/UODbjFzUeUqRb9Vgh
+	 EWKIOCspYhhynafog7J53gaUfMA5BFdTA//lzTz57XYa5AwFia7/USDpVgUMcbgh7Ug==
+ARC-Message-Signature: i=2; d=osuosl.org; s=arc; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794212839;
+	h=Received-SPF:DKIM-Signature:Received:Received:
+	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
+	 Received:Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
+	 Content-Type:X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=iCrFC58RZBaOgfdpKUueDt5wUMj1Jf/Cv4S1mMUsmFY=;
+	b=W2q4T4VvOG/newrwRZteI2uM7E5UBeWQBEvrB6h9Hcvtq/MMpXRBDmwKfONoy4neGTaR
+	 3q8J/RGcoCA+JxLkVEd60N5goLiBak1CDRetuRacOIdhnI0KunUGTdYoWkJqn6jsx/A/L
+	 xj3/sFPYEDcHX4eh5M11tYcOFmAzgD8dmS60hEumknd2IjrdPeMpcggU6t2bCdxJLLLwl
+	 cSyHekZFP2NC5QjvacHdnBXcHj6aXwFM9fIBmwHgzdOTztRxe2mEia2GzfaOl1Ts3fRBc
+	 l4P6Ut28QsKRXH7xNdaT+bqvbr0GQ6hCLNrob0fDyuexmQk5oHCLDwmV6NXwFVtuZAg==
+ARC-Authentication-Results: i=2; smtp4.osuosl.org; 
+	dmarc=pass header.from=amd.com;
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=x9RcsiZP;
+	arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::7"
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a01:111:f403:c105::7; helo=ch4pr04cu002.outbound.protection.outlook.com; envelope-from=baorui.liu@amd.com; receiver=<UNKNOWN> 
+Authentication-Results: smtp4.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp4.osuosl.org;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=x9RcsiZP
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazlp170130007.outbound.protection.outlook.com [IPv6:2a01:111:f403:c105::7])
+	by smtp4.osuosl.org (Postfix) with ESMTPS id F2A39405F8
+	for <acpica-devel@lists.linuxfoundation.org>; Mon,  9 Nov 2026 08:27:17 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=mqu2CZXbBELmBUqiOe37jdvJ9iYTNzYxYu9lWo1da6PkbH2C4swVpfS6CcBaMg3W0rCY/15JlmXWMqpBBvefv/fDIiqFvwnUY9j3PZffD0qulKPN42y9/4lBlPGLrWEhcdgRzdYGYXQ7b5SK9qAW5nKSe6QImnhZHbKc/PEt2naHwuS9KNzdd6UoOuAMnrWcXmk3NHU5VMbXU7ylBYUd63wh/JxBVTZVt2rQMFEr8gND8xmV8079faOSxUAotMxwSE2ZL74ReielOK7qJZ5nd5ZkMApYsPDCoa0MCaGLV3IDTJwwffrnAF8VCwlHvnNKmLD+FfTko78gjGuaNdi0wQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iCrFC58RZBaOgfdpKUueDt5wUMj1Jf/Cv4S1mMUsmFY=;
+ b=Or+vbPpEYndqFKfnAuqX9jRZr2+UMiAWwAIkPswl6k7FDK4pumES/UADqkHbvgT7iNEp/KVxE4ybMfQ+ww8SFp8zUAhO0AG7PhhefI3kdwGFnbqIF8EPfivP2dv7X+urTD7c7HXNGbfY9ZoHlweqB5VLSry3ZB/9yfSDet5yOwT4wmhUiTuV/uQ+hbNHkWRaLDIvjVgcix1dSNOiLzuXrLEy8JeZwgfM4G0wC9T5R2HuavqdHJzAiMadi/FTTZTmaa7mZrmLICCQ/kyRqabGn1QkTC/P7iXH+2HqyJQmvMhKOwp1IUvBo6SMVaEDeFDHHQio6z2PjoKQkffxMBMmyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iCrFC58RZBaOgfdpKUueDt5wUMj1Jf/Cv4S1mMUsmFY=;
+ b=x9RcsiZP3cirCJXUB8Wj0iNRwZiCp0tNFzSM1p0Wmk55KEpJYmtmVvuyMG/v1s4k0zJKCO6VCATGZ++SXqevUjADjrbZcmdL0JGz2JIbgnqZTLFAHCsUxGQ7iN4H7LtpFd44DrUeNlJdpV1X2/M6U4p6mRXrwAlcYuYcm8gs//0=
+Received: from CH0PR03CA0448.namprd03.prod.outlook.com (2603:10b6:610:10e::11)
+ by SA1PR12MB999253.namprd12.prod.outlook.com (2603:10b6:806:4dd::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.13; Mon, 9 Nov
+ 2026 08:27:11 +0000
+Received: from CH3PEPF00024580.namprd04.prod.outlook.com
+ (2603:10b6:610:10e:cafe::91) by CH0PR03CA0448.outlook.office365.com
+ (2603:10b6:610:10e::11) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.592.13 via Frontend Transport; Mon, 9
+ Nov 2026 08:27:11 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ CH3PEPF00024580.mail.protection.outlook.com (10.167.252.26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.615.4 via Frontend Transport; Mon, 9 Nov 2026 08:27:11 +0000
+Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Mon, 9 Nov
+ 2026 02:27:11 -0600
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb09.amd.com
+ (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.53; Mon, 9 Nov
+ 2026 02:27:11 -0600
+Received: from localhost.amd.com (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.53 via Frontend
+ Transport; Mon, 9 Nov 2026 02:27:09 -0600
+From: Baorui.Liu <baorliu@amd.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>
+CC: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, kernel test robot <lkp@intel.com>,
+	Baorui.Liu <baorliu@amd.com>
+Subject: [PATCH v7] ACPI: button: Report wakeup key only for power button wakeups
+Date: Mon, 9 Nov 2026 16:27:08 +0800
+Message-ID: <20261109082708.448-1-baorliu@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20261102091049.856-1-baorliu@amd.com>
+References: <20261102091049.856-1-baorliu@amd.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -66,355 +167,317 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H7phy=T1MMNpSnZdjjiQXH41S7jnFcgfZd_4b5aqffB6g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJAx1czHHfFqdxMzAA--.10573S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Cw15KrWfZF1kJr1xZw48KrX_yoWDuFyxpF
-	4UJFW5tFWUJr47Kr10qw1DCr1Yyr18KryxWr15KryUGrnrKr1rJF4UJFyYkF95A34DGF1x
-	tF1UtrW7WF1UArgCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Jr0_Gr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v2
-	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
-	vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-	1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU70PfDUUU
-	U
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PEPF00024580:EE_|SA1PR12MB999253:EE_
+X-MS-Office365-Filtering-Correlation-Id: e690f160-ad5f-4e68-227a-08df3e3b40a2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|23010399003|36860700016|82310400026|10067099003|11063799006|56012099006|261021123027099003|261021121427099003|261022105027099003|261022075727099003|261009223027099003|261026140227099003|261026121527099003|261102130727099003|261028144727099003|261102123227099003|18002099003|22082099003|6133799003|13003099007;
+X-Microsoft-Antispam-Message-Info:
+	rIU4+mH9+aesA35L4NMEBzIFVwgwC4K6W3A+HgslwpJ3ygQIy69Fx864jSY5vLRpvq8+oX4MhY8dUvKaUw30pv2vJSamMpAMnhoR7mI8ZOEwQiYeYh1v6KV71TSqIrIcheOJYA5EVEDoZ0UUW+Q4aqMR5kNmb9w3Ao1ZAKiw1AA6MSfd0Y2BjnCyVZ2dzP1Xf5WM+G+U3BmoUMfRmBfNpOl+c5xZXWv1BxAnY4Tyf1CkXAKTM03cI45SseN+p7U0CgeIR4zQUFM/2WZz3xCCFUhGSNsbKH9ahSVb4G0MRdAVqCm7oSW4WMAbDefUJ+Eg6QEdbqYKAGgE+x3jql/1gQYBPO0a1kU+ZFCVQodru8XztelAyT+4F2nHgbMDLrsCelf8TgsVcbDD/ZbWDIYSEo5xOie98A3Zdz0QKwmBKp4Xs/I7BHL9gpdoEUKhPuqXdMjmmMPTaWp+apKIML+4DDDwwWZEZf6sqlGR9z5LbLLzub0X+BHX60V6an2U45mmEvqN5HDYswHzf/s/zjn/cNLrM0PWya+hMgT3HKdZUnDDTW5p71kaJem1ddsL5uSz9Fsyr1MDTs6p0Ztwc7RNCPZszXLo6J/feHbh9PS4OR08xYZprFeW5sOt7ev21ePkN/2rhC2nLLA/qYeRo6ZGnA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(23010399003)(36860700016)(82310400026)(10067099003)(11063799006)(56012099006)(261021123027099003)(261021121427099003)(261022105027099003)(261022075727099003)(261009223027099003)(261026140227099003)(261026121527099003)(261102130727099003)(261028144727099003)(261102123227099003)(18002099003)(22082099003)(6133799003)(13003099007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	2N1zISoeSqCNlyqSzQu9NSkAT0gVqInRnOGU2bQqgZc3tzfCBReEG/+f8ITdWbTWw4Qm6sygMJmy+kVK6qnGONxQMHPXgW+zbIsYo2Poo5neVAvhwU5+yuDB6a3Fr1T+imnMNdGwBQuaso2kJnx5jIjBsNw3r0I6LeXbCsIxYsgM9hPO5+wWEclk1JF0W6RSqWTyyyKXZVYey+GlNjXXkx9w6aVVUl3OO5qR9xCZIURX4aqXfKsHRfRIWeMkkJK5JOywPmz5H48ZQKdoMZPJUd4hvl4u4FQ+Gs6hgM1KkCx5BKUtsHpONHPksog5FKL/UKa34kHU8oI0Kz5s5bQPvwpPISE+dWuizZ4w3KAYyXg6FN+gFOzr/1Hdaqc1XCCOv/FLzN/Z8mtqI/HD0ebD90l3ICVgyiWjZT1JI01S7tTNrZV3j7oX2lJeg8nrcB6C
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2026 08:27:11.7694
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e690f160-ad5f-4e68-227a-08df3e3b40a2
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH3PEPF00024580.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB999253
 
+The ACPI button driver reports KEY_WAKEUP from the Power Button input
+device to let userspace know that the system was resumed by a power
+button wakeup.
 
+However, reporting KEY_WAKEUP from generic system resume paths can make
+userspace observe a Power Button wakeup even when the system was resumed
+by a different wake source.
 
-On 2026/11/7 下午8:25, Huacai Chen wrote:
-> On Sat, Nov 7, 2026 at 9:43 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->>
->>
->> On 2026/11/6 下午10:58, Huacai Chen wrote:
->>> On Thu, Nov 5, 2026 at 7:22 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>
->>>>
->>>>
->>>> On 2026/11/5 下午6:31, Huacai Chen wrote:
->>>>> On Thu, Nov 5, 2026 at 5:49 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 2026/11/5 下午5:31, Huacai Chen wrote:
->>>>>>> On Thu, Nov 5, 2026 at 5:14 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2026/10/23 下午3:59, Huacai Chen wrote:
->>>>>>>>> Bibo,
->>>>>>>>>
->>>>>>>>> Now I have applied this series but with some modifications, please
->>>>>>>>> double check and test the code.
->>>>>>>>>
->>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git/log/?h=loongarch-next
->>>>>>>> In my v4 submit, it is:
->>>>>>>> +               case ACPI_IOVT_DEVICE_ENTRY_START:
->>>>>>>> +                       is_start = true;
->>>>>>>> +                       start_devid = ep->device_id;
->>>>>>>> +                       break;
->>>>>>>> however in rc1, it is modified as:
->>>>>>>>                      case ACPI_IOVT_DEVICE_ENTRY_START:
->>>>>>>>                              is_start = true;
->>>>>>>>                              entry->start_devid = ep->device_id;
->>>>>>>>                              break;
->>>>>>>> Here entry is not allocated and NULL pointer, it is allocated in
->>>>>>>> ACPI_IOVT_DEVICE_ENTRY_END switch case.
->>>>>>>>
->>>>>>>> I really do not know what is aid to modify it and let others to test.
->>>>>>> Sorry, it's my fault.
->>>>>>>
->>>>>>> In theory I should point out the modification (eliminating the local
->>>>>>> variable start_devid) and refresh a new version. But we have no time
->>>>>>> to do this because when the first patch is merged into the ACPI repo
->>>>>>> it is near the merge window.
->>>>>> Maybe our work style is different, I do not care much for the coding style.
->>>>>>>
->>>>>>> If you agree, I will submit such modifications to fix it.
->>>>>> fix is welcome.
->>>>>>>
->>>>>>> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
->>>>>>> index 87cee4f0fc80..4cdac28a1fd0 100644
->>>>>>> --- a/drivers/acpi/loongarch/iovt.c
->>>>>>> +++ b/drivers/acpi/loongarch/iovt.c
->>>>>>> @@ -115,6 +115,10 @@ static int __init iovt_add_iommu(struct
->>>>>>> acpi_iovt_iommu *iommu)
->>>>>>>             for (i = 0; i < iommu->device_entry_num; i++) {
->>>>>>>                     switch (ep->type) {
->>>>>>>                     case ACPI_IOVT_DEVICE_ENTRY_START:
->>>>>>> +                       entry = kzalloc_obj(struct iovt_device_entry,
->>>>>>> GFP_ATOMIC);
->>>>>> There will be memory leak problem if there are START/START/END in the table.
->>>>> That means a broken table? I think we don't need to consider broken
->>>>> tables, because there may be kinds of broken pattern rather than just
->>>>> a START/START/END.
->>>> yes, START/END/START, START/START/END, START/SINGLE/END. what is the
->>>> relationship between "don't need to consider" and kinds of broken pattern?
->>>>
->>>> what is the policy from your side with such BIOS table? let memory leak
->>>> and continue?
->>> The driver can only work with a good table or no table, but not with a
->>> broken table.
->> With a broken table, software can discard the whole table, or discard
->> the single table entry.
-> Discard a single entry is dangerous because the pairing may be wrong,
-> so if we should handle a broken table, we should discard the whole
-> table.
-> 
-> Discarding the whole table need a rework, the is_start variable is not
-> enough. You can consider the below solution:
-Discarding the whole table is reasonable for me.
-> 
-> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
-> index 87cee4f0fc80..8381de278e3a 100644
-> --- a/drivers/acpi/loongarch/iovt.c
-> +++ b/drivers/acpi/loongarch/iovt.c
-> @@ -73,10 +73,44 @@ static int __init iovt_get_pci_iommu_fwnode(struct
-> iovt_fwnode *np, u16 segment,
->          return 0;
->   }
-> 
-> +static int __init iovt_validate_entries(struct acpi_iovt_iommu *iommu)
-> +{
-> +       int i, done = 1;
-> +       struct acpi_iovt_device_entry *ep;
-> +
-> +       ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, iommu,
-> iommu->device_entry_offset);
-> +       for (i = 0; i < iommu->device_entry_num; i++) {
-> +               switch (ep->type) {
-> +               case ACPI_IOVT_DEVICE_ENTRY_START:
-> +                       if (!done)
-> +                               return -EINVAL;
-> +
-> +                       done = 0;
-> +                       break;
-> +               case ACPI_IOVT_DEVICE_ENTRY_END:
-> +                       if (done)
-> +                               return -EINVAL;
-> +
-> +                       done = 1;
-> +                       break;
-> +               case ACPI_IOVT_DEVICE_ENTRY_SINGLE:
-> +                       if (!done)
-> +                               return -EINVAL;
-> +
-> +                       done = 1;
-> +                       break;
-> +               default:
-> +                       return -EINVAL;
-> +               }
-> +               ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, ep,
-> ep->length);
-> +       }
-> +
-> +       return done ? 0 : -EINVAL;
-> +}
-> +
->   static int __init iovt_add_iommu(struct acpi_iovt_iommu *iommu)
->   {
->          int i, ret;
-> -       bool is_start = false;
->          struct iovt_fwnode *np;
->          struct iovt_device_entry *entry;
->          struct acpi_iovt_device_entry *ep;
-> @@ -110,23 +144,22 @@ static int __init iovt_add_iommu(struct
-> acpi_iovt_iommu *iommu)
->          if (np->flag & ACPI_IOVT_IOMMU_MAGAGE_BY_SEGMENT)
->                  goto skip;
-> 
-> +       if (iovt_validate_entries(iommu) < 0)
-> +               return -EINVAL;
-> +
-the logic about adding iovt_validate_entries() is OK, here kfree(np); 
-should be added to prevent memory leak.
+This is reproducible on an AMD Android 15 Xen guest. With a kernel
+without this fix, a non-power-button S3 resume:
 
-Regards
-Bibo Mao
->          INIT_LIST_HEAD(&np->ep_list);
->          ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, iommu,
-> iommu->device_entry_offset);
->          for (i = 0; i < iommu->device_entry_num; i++) {
->                  switch (ep->type) {
->                  case ACPI_IOVT_DEVICE_ENTRY_START:
-> -                       is_start = true;
-> -                       entry->start_devid = ep->device_id;
-> -                       break;
-> -               case ACPI_IOVT_DEVICE_ENTRY_END:
-> -                       if (!is_start)
-> -                               break;
-> -
->                          entry = kzalloc_obj(struct iovt_device_entry,
-> GFP_ATOMIC);
->                          if (!entry)
->                                  return -ENOMEM;
-> 
-> -                       is_start = false;
-> +                       entry->start_devid = ep->device_id;
-> +                       break;
-> +               case ACPI_IOVT_DEVICE_ENTRY_END:
-> +                       /* START & END are paired */
->                          entry->end_devid = ep->device_id;
->                          list_add_tail(&entry->list, &np->ep_list);
->                          break;
-> @@ -135,13 +168,12 @@ static int __init iovt_add_iommu(struct
-> acpi_iovt_iommu *iommu)
->                          if (!entry)
->                                  return -ENOMEM;
-> 
-> -                       is_start = false;
->                          entry->start_devid = ep->device_id;
->                          entry->end_devid = ep->device_id;
->                          list_add_tail(&entry->list, &np->ep_list);
->                          break;
->                  default:
-> -                       break;
-> +                       return -EINVAL;
->                  }
->                  ep = ACPI_ADD_PTR(struct acpi_iovt_device_entry, ep,
-> ep->length);
->          }
-> 
->>>
->>> Take START1/START2/END as an example of broken table: in your original
->>> code, the END entry will be pairing with START2. But for a broken
->>> table who can ensure they are the correct pair? If the real correct
->>> pair is START1 and END, then (entry->start_devid, entry->end_devid)
->> there is only one policy, software does not know START1/END is right or
->> START2/END is right.
->>> will be a wrong device range. Such mistakes are much worse than a
->>> memery leak.
->>>
->>> If you want to say "I don't care about correct pairing, memory leak is
->>> bad in any case.", OK, we can do it like this:
->>>
->>> diff --git a/drivers/acpi/loongarch/iovt.c b/drivers/acpi/loongarch/iovt.c
->>> index 87cee4f0fc80..ebd11e22c9be 100644
->>> --- a/drivers/acpi/loongarch/iovt.c
->>> +++ b/drivers/acpi/loongarch/iovt.c
->>> @@ -115,6 +115,13 @@ static int __init iovt_add_iommu(struct
->>> acpi_iovt_iommu *iommu)
->>>           for (i = 0; i < iommu->device_entry_num; i++) {
->>>                   switch (ep->type) {
->>>                   case ACPI_IOVT_DEVICE_ENTRY_START:
->>> +                       if (is_start)
->>> +                               break;
->> there is still memory leak with START/SINGLE/END pairs, is_start set
->> with false with ACPI_IOVT_DEVICE_ENTRY_SINGLE case.
->>
->> Regards
->> Bibo Mao
->>> +
->>> +                       entry = kzalloc_obj(struct iovt_device_entry,
->>> GFP_ATOMIC);
->>> +                       if (!entry)
->>> +                               return -ENOMEM;
->>> +
->>>                           is_start = true;
->>>                           entry->start_devid = ep->device_id;
->>>                           break;
->>> @@ -122,10 +129,6 @@ static int __init iovt_add_iommu(struct
->>> acpi_iovt_iommu *iommu)
->>>                           if (!is_start)
->>>                                   break;
->>>
->>> -                       entry = kzalloc_obj(struct iovt_device_entry,
->>> GFP_ATOMIC);
->>> -                       if (!entry)
->>> -                               return -ENOMEM;
->>> -
->>>                           is_start = false;
->>>                           entry->end_devid = ep->device_id;
->>>                           list_add_tail(&entry->list, &np->ep_list);
->>>
->>> Huacai
->>>
->>>>
->>>>>
->>>>> Huacai
->>>>>
->>>>>>
->>>>>> Regards
->>>>>> Bibo Mao
->>>>>>> +                       if (!entry)
->>>>>>> +                               return -ENOMEM;
->>>>>>> +
->>>>>>>                             is_start = true;
->>>>>>>                             entry->start_devid = ep->device_id;
->>>>>>>                             break;
->>>>>>> @@ -122,10 +126,6 @@ static int __init iovt_add_iommu(struct
->>>>>>> acpi_iovt_iommu *iommu)
->>>>>>>                             if (!is_start)
->>>>>>>                                     break;
->>>>>>>
->>>>>>> -                       entry = kzalloc_obj(struct iovt_device_entry,
->>>>>>> GFP_ATOMIC);
->>>>>>> -                       if (!entry)
->>>>>>> -                               return -ENOMEM;
->>>>>>> -
->>>>>>>                             is_start = false;
->>>>>>>                             entry->end_devid = ep->device_id;
->>>>>>>                             list_add_tail(&entry->list, &np->ep_list);
->>>>>>>
->>>>>>> Huacai
->>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> Huacai
->>>>>>>>>
->>>>>>>>> On Mon, Oct 12, 2026 at 3:16 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>>>>>>>
->>>>>>>>>> This change is already merged in acpica tree.
->>>>>>>>>>
->>>>>>>>>> slightly ping.
->>>>>>>>>>
->>>>>>>>>> On Tue, Sep 22, 2026 at 08:10:55PM +0800, Bibo Mao wrote:
->>>>>>>>>>       > According to the IOVT specification, define macros for each bit of the
->>>>>>>>>>       > Flags field in the IOVT IOMMU structure.
->>>>>>>>>>       >
->>>>>>>>>>       > Link: https://github.com/open-acpica/acpica/commit/352f750e4cc0
->>>>>>>>>>       > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->>>>>>>>>>       > ---
->>>>>>>>>>       >  include/acpi/actbl2.h | 7 +++++++
->>>>>>>>>>       >  1 file changed, 7 insertions(+)
->>>>>>>>>>       >
->>>>>>>>>>       > diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
->>>>>>>>>>       > index baef525367b5..76e4a5bc79b4 100644
->>>>>>>>>>       > --- a/include/acpi/actbl2.h
->>>>>>>>>>       > +++ b/include/acpi/actbl2.h
->>>>>>>>>>       > @@ -919,6 +919,13 @@ struct acpi_iovt_iommu {
->>>>>>>>>>       >       u32 device_entry_offset;
->>>>>>>>>>       >  };
->>>>>>>>>>       >
->>>>>>>>>>       > +/* Masks for Flags field above */
->>>>>>>>>>       > +#define ACPI_IOVT_IOMMU_PCI_DEVICE           (1<<0)
->>>>>>>>>>       > +#define ACPI_IOVT_IOMMU_PXM_VALID            (1<<1)
->>>>>>>>>>       > +#define ACPI_IOVT_IOMMU_MAGAGE_BY_SEGMENT    (1<<2)
->>>>>>>>>>       > +#define ACPI_IOVT_IOMMU_HW_CAP_SUPPORT               (1<<3)
->>>>>>>>>>       > +#define ACPI_IOVT_IOMMU_MSI_INT_BYPASS               (1<<4)
->>>>>>>>>>       > +
->>>>>>>>>>       >  struct acpi_iovt_device_entry {
->>>>>>>>>>       >       u8 type;
->>>>>>>>>>       >       u8 length;
->>>>>>>>>>       > --
->>>>>>>>>>       > 2.39.3
->>>>>>>>>>       >
->>>>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>
->>>>
->>>>
->>
+  echo mem > /sys/power/state
+  xl trigger android s3resume
+
+makes the Power Button input device report KEY_WAKEUP. The same test on
+a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
+input device.
+
+Track whether a power button event/notify is observed while the ACPI
+button device is suspended, and report KEY_WAKEUP on resume only in that
+case.
+
+When the fixed power-button status bit is set during early S3 resume,
+clear it to avoid a deferred KEY_POWER delivery to userspace, and set a
+sleep.c-owned flag so button resume can still report KEY_WAKEUP. Do not
+call into the button driver from that IRQ-disabled path. Also clear
+wakeup_pending before setting suspended, with a compiler barrier, and
+drain ACPI notify work before clearing suspended on resume. Report
+KEY_WAKEUP before clearing suspended so a late notify cannot drop both
+KEY_WAKEUP and KEY_POWER.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202609290454.LJrhMCb3-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202611030112.cVsBZFFE-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202611030545.3st9p1ha-lkp@intel.com/
+Signed-off-by: Baorui.Liu <baorliu@amd.com>
+
+Changes since v6:
+- Include <linux/types.h> in include/acpi/button.h so the bool
+  declaration/stub of acpi_sleep_pwr_btn_wakeup_pending() builds when
+  the header is included without prior bool typedefs (0day/LKP ERROR
+  via nouveau_connector.c on parisc64-defconfig and arm64-randconfig).
+---
+ drivers/acpi/button.c | 63 ++++++++++++++++++++++++++++++++++++-------
+ drivers/acpi/sleep.c  | 47 +++++++++++++++++++++-----------
+ include/acpi/button.h | 18 +++++++++++++
+ 3 files changed, 103 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+index 34c7173b5a6c..204d5778913d 100644
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -203,6 +203,7 @@ struct acpi_button {
+ 	bool last_state;
+ 	ktime_t last_time;
+ 	bool suspended;
++	bool wakeup_pending;
+ 	bool lid_state_initialized;
+ 	bool gpe_enabled;
+ };
+@@ -488,7 +489,11 @@ static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
+ 
+ 	acpi_pm_wakeup_event(button->dev);
+ 
+-	if (button->suspended || event == ACPI_BUTTON_NOTIFY_WAKE)
++	if (button->type == ACPI_BUTTON_TYPE_POWER &&
++	    READ_ONCE(button->suspended))
++		WRITE_ONCE(button->wakeup_pending, true);
++
++	if (READ_ONCE(button->suspended) || event == ACPI_BUTTON_NOTIFY_WAKE)
+ 		return;
+ 
+ 	input = button->input;
+@@ -510,6 +515,12 @@ static void acpi_button_notify_run(void *data)
+ 
+ static u32 acpi_button_event(void *data)
+ {
++	struct acpi_button *button = data;
++
++	if (button->type == ACPI_BUTTON_TYPE_POWER &&
++	    READ_ONCE(button->suspended))
++		WRITE_ONCE(button->wakeup_pending, true);
++
+ 	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+ 	return ACPI_INTERRUPT_HANDLED;
+ }
+@@ -519,7 +530,15 @@ static int acpi_button_suspend(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+ 
+-	button->suspended = true;
++	/*
++	 * Clear wakeup_pending before marking suspended. Otherwise a power
++	 * button SCI between the two stores could set wakeup_pending and then
++	 * be overwritten here, losing a real wakeup. barrier() prevents the
++	 * compiler from reordering the stores relative to that IRQ handler.
++	 */
++	WRITE_ONCE(button->wakeup_pending, false);
++	barrier();
++	WRITE_ONCE(button->suspended, true);
+ 	return 0;
+ }
+ 
+@@ -527,21 +546,45 @@ static int acpi_button_resume(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+ 	struct input_dev *input;
++	bool report_wakeup = false;
++
++	/*
++	 * Drain notify work queued while suspended so a late power-button
++	 * notify still observes suspended == true, sets wakeup_pending, and
++	 * does not synthesize KEY_POWER for userspace.
++	 */
++	acpi_os_wait_events_complete();
++
++	/*
++	 * Sample and report KEY_WAKEUP before clearing suspended. Otherwise a
++	 * notify that arrives after sampling but before suspended is cleared
++	 * can set wakeup_pending and then be dropped without KEY_WAKEUP or
++	 * KEY_POWER. Clear suspended before wakeup_pending so a new SCI sees
++	 * suspended == false and takes the normal KEY_POWER path; barrier()
++	 * keeps that store order.
++	 */
++	if (button->type == ACPI_BUTTON_TYPE_POWER) {
++		report_wakeup = READ_ONCE(button->wakeup_pending) ||
++				acpi_sleep_pwr_btn_wakeup_pending();
++		if (report_wakeup) {
++			input = button->input;
++			input_report_key(input, KEY_WAKEUP, 1);
++			input_sync(input);
++			input_report_key(input, KEY_WAKEUP, 0);
++			input_sync(input);
++		}
++	}
++
++	WRITE_ONCE(button->suspended, false);
++	barrier();
++	WRITE_ONCE(button->wakeup_pending, false);
+ 
+-	button->suspended = false;
+ 	if (button->type == ACPI_BUTTON_TYPE_LID) {
+ 		button->last_state = !!acpi_lid_evaluate_state(ACPI_HANDLE(dev));
+ 		button->last_time = ktime_get();
+ 		acpi_lid_initialize_state(button);
+ 	}
+ 
+-	if (button->type == ACPI_BUTTON_TYPE_POWER) {
+-		input = button->input;
+-		input_report_key(input, KEY_WAKEUP, 1);
+-		input_sync(input);
+-		input_report_key(input, KEY_WAKEUP, 0);
+-		input_sync(input);
+-	}
+ 	return 0;
+ }
+ #endif
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index a94bac4422d4..5ef7531c00b8 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -22,6 +22,7 @@
+ #include <linux/syscore_ops.h>
+ #include <asm/io.h>
+ #include <trace/events/power.h>
++#include <acpi/button.h>
+ 
+ #include "internal.h"
+ #include "sleep.h"
+@@ -105,6 +106,23 @@ u32 acpi_target_system_state(void)
+ EXPORT_SYMBOL_GPL(acpi_target_system_state);
+ 
+ static bool pwr_btn_event_pending;
++static bool pwr_btn_wakeup_pending;
++
++/**
++ * acpi_sleep_pwr_btn_wakeup_pending - Consume fixed power-button wake hint.
++ *
++ * Returns true once if acpi_suspend_enter() observed and cleared the fixed
++ * power-button status bit during early S3 resume. Used by the button driver
++ * to report KEY_WAKEUP without sleeping in that IRQ-disabled path.
++ */
++bool acpi_sleep_pwr_btn_wakeup_pending(void)
++{
++	bool pending = READ_ONCE(pwr_btn_wakeup_pending);
++
++	WRITE_ONCE(pwr_btn_wakeup_pending, false);
++	return pending;
++}
++EXPORT_SYMBOL_GPL(acpi_sleep_pwr_btn_wakeup_pending);
+ 
+ /*
+  * The ACPI specification wants us to save NVS memory regions during hibernation
+@@ -504,12 +522,12 @@ static void acpi_pm_finish(void)
+ 
+ 	acpi_resume_power_resources();
+ 
+-	/* If we were woken with the fixed power button, provide a small
+-	 * hint to userspace in the form of a wakeup event on the fixed power
+-	 * button device (if it can be found).
+-	 *
+-	 * We delay the event generation til now, as the PM layer requires
+-	 * timekeeping to be running before we generate events. */
++	/*
++	 * If woken by the fixed power button, provide a wakeup event on that
++	 * device. KEY_WAKEUP input reporting is handled by the button driver
++	 * via acpi_sleep_pwr_btn_wakeup_pending() / wakeup_pending; do not
++	 * synthesize KEY_POWER here.
++	 */
+ 	if (!pwr_btn_event_pending)
+ 		return;
+ 
+@@ -625,14 +643,13 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 	/* Reprogram control registers */
+ 	acpi_leave_sleep_state_prep(acpi_state);
+ 
+-	/* ACPI 3.0 specs (P62) says that it's the responsibility
+-	 * of the OSPM to clear the status bit [ implying that the
+-	 * POWER_BUTTON event should not reach userspace ]
+-	 *
+-	 * However, we do generate a small hint for userspace in the form of
+-	 * a wakeup event. We flag this condition for now and generate the
+-	 * event later, as we're currently too early in resume to be able to
+-	 * generate wakeup events.
++	/*
++	 * ACPI 3.0 (P62): OSPM should clear the fixed power-button status bit
++	 * so the event does not reach userspace as KEY_POWER. Only set plain
++	 * flags here: this path runs with IRQs disabled, so do not call into
++	 * the button driver (it may take sleeping locks). Button resume later
++	 * consumes pwr_btn_wakeup_pending for KEY_WAKEUP; acpi_pm_finish()
++	 * uses pwr_btn_event_pending for the PM wakeup event.
+ 	 */
+ 	if (ACPI_SUCCESS(status) && (acpi_state == ACPI_STATE_S3)) {
+ 		acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
+@@ -641,8 +658,8 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 
+ 		if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+ 			acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+-			/* Flag for later */
+ 			pwr_btn_event_pending = true;
++			WRITE_ONCE(pwr_btn_wakeup_pending, true);
+ 		}
+ 	}
+ 
+diff --git a/include/acpi/button.h b/include/acpi/button.h
+index af2fce5d2ee3..44d5d078aff9 100644
+--- a/include/acpi/button.h
++++ b/include/acpi/button.h
+@@ -2,6 +2,8 @@
+ #ifndef ACPI_BUTTON_H
+ #define ACPI_BUTTON_H
+ 
++#include <linux/types.h> /* for bool */
++
+ #define ACPI_BUTTON_HID_POWER	"PNP0C0C"
+ #define ACPI_BUTTON_HID_LID	"PNP0C0D"
+ #define ACPI_BUTTON_HID_SLEEP	"PNP0C0E"
+@@ -15,4 +17,20 @@ static inline int acpi_lid_open(void)
+ }
+ #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
+ 
++/*
++ * Set in acpi_suspend_enter() when the fixed power-button status bit is
++ * observed (IRQ-disabled context). Consumed by the button driver on resume
++ * so KEY_WAKEUP can be reported without calling into the button driver from
++ * that early path. Implemented in sleep.c (built-in); safe when
++ * CONFIG_ACPI_BUTTON=m.
++ */
++#ifdef CONFIG_ACPI_SYSTEM_POWER_STATES_SUPPORT
++bool acpi_sleep_pwr_btn_wakeup_pending(void);
++#else
++static inline bool acpi_sleep_pwr_btn_wakeup_pending(void)
++{
++	return false;
++}
++#endif
++
+ #endif /* ACPI_BUTTON_H */
+
+base-commit: ee3b82351a306b559fd132b9b168185fee641a18
+-- 
+2.34.1
 
