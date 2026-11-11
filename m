@@ -1,96 +1,87 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.227.134
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.13
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794387081;
-	b=p9kSF14R+zMw4qTTndhAzu7YuSlQY7k5ewA83ArR38VHzbdY6m1nyqBY9gCzm3zbWdMe
-	 ryNw5l+wl2Saj+zMpaPGGMe+srB/lSaLW5uPlA/2YW01E4HW45tLFAl4l9R+iYZgZsRKc
-	 C8q+4wwa+GTOn7T/4DB3H3iVUBy+J+11zrCiVoYxxvesGpvfef68v/ARvlnCbV5kruVBt
-	 Boc64F8zDyxTUnbLNa01W+6wa1yz8nzlFg9mQwY4DweRNG3PbtFYMGqHH29F8bB8UKrWd
-	 c0JgyRQsy+fE7R59V0FBSdIxZndw2No8ml6pbvE0S/GVJqi25OmVryqZiLfSiE4PFXA==
+	t=1794406508;
+	b=HDvgCnef4uUR4FPaZZKFbS9mOBMdFyVtyzwEfEeZ60TzEbuIKMR/qnc1iEy0j1ZFybu3
+	 gpguA83paEuUu26CFq7LHKKZqnnDYCcC9ZCwBunJe3WKR4Z8IAm2LAssz7JSNdBi25gqQ
+	 AtBc1+iJ0N+7pu4s35qzDxgGVtTK8AlUWcreojDPsRcdm2wp+O5Rm1V6aocvt4XQ2EZto
+	 eSGSwtwF+mc7wT5T5M5JrXTcfCHMJl89s1Ny8INmWpY76vcw89Wy75dULv0B2uNFgBYXe
+	 Kwk9xTJO60aCnm5awtVgyAlEuki1k9amnocoRS6Rc5N1Lx6IMZ0aoQxWw1BO2M4KOVQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794387081;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=4FR4MYwSIUv0E3HeQxkRuXJTHYwYwGW3jDUR0WOXudI=;
-	b=uLY86SZxJ0VyRpit8PRiod1dfjwm28gPcPKFv1c4WWIXLhx/PI0gvrgTUQKGJfepM3qv
-	 bb72CV4Vi4FEkMpsD0lpyWDxAcWwdEjrkJvdJWgjA5I2KdbiFhp/XZGOA11I2HBo5mFvI
-	 1AqFt5dPPyNYteJ0JIajQtANdJKEmC+tsmJz6KJxFr4gZlcbW4QaShI9lYY7Fv3fMq4HR
-	 yxBOFaZZhvB8NIJ6MTEH0zXIkiYvQoM7s6iDMbcdr/HnkmWS0QLYGup7W7vFNJZiGg4W3
-	 4ghdc2OV91UjQC9jcP7gkFnJZEe/SUvdsC9VVd9g7pMWiCGcVFr8DxZ/ZWMIij+VLjA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794406508;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=RRKrPiiXLxIqqSj5iQKbou4siQUwjTukbqJQ8BaYzM0=;
+	b=vldnCKhV26ceSYtDEHbzuqkUQhaJJA5nASujW4w8lN1e1T5BZHtAO7D+0gep8bmOCXc3
+	 9ZyvCxfngrFleJyf1ty2w7rRKjpogxEn1gM4eObylzcEy6ThnhRUBh0WxeO9JR6JGw9Gz
+	 T90Pv6R/mDXmr15/m3DCUHh2XmH+pB8q5Q6M03O7pcfv4bFOnVhjmJv08NfBVDhulu3Mn
+	 IMcvJ31yibrXfqU0URhpwqsfdhXDSduBW6052sVEcG2UKspFFKX8dBWBdkSnU8WS9vLUi
+	 kWSPov2wEQmSQhsod9aI0P4PQ5JdAVYr/nY876F8b+2VOVyo2jeaTj9eGmmW6zjtvvw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=kylinos.cn;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=74.125.227.134
-Received: from mail-pj2-f6.google.com (mail-pj2-f6.google.com [74.125.227.134])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=G+997Pf0;
+	arc=none smtp.remote-ip=192.198.163.13
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690C1606A326
-	for <acpica-devel@lists.linux.dev>; Wed, 11 Nov 2026 08:51:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 690C1606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj2-f6.google.com with SMTP id 98e67ed59e1d1-3ad211ad92bso1057376a91.1
-        for <acpica-devel@lists.linux.dev>; Wed, 11 Nov 2026 00:51:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794387079; x=1794991879;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=4FR4MYwSIUv0E3HeQxkRuXJTHYwYwGW3jDUR0WOXudI=;
-        b=BYkad0NRkxmA2Z3mL9aRio28sd4yaU7gaTdBZh5laa3QCqqZ4A27meu3lRELBI1jlm
-         96OecIWOGMiXkkKpw1/pIPJ3y4gyznP4ZlWoVw8Qu+4D7GCt5vF9T3HNnc8s8uJuzKt5
-         /hZ1xlwR2l/jdlmmiZjV8ZmTztI7WiORcXakmRjTBBWLlgCanDRmgswYf/UXPIC+jQKr
-         jvafKjOPny654X7rYl5SVE7NChKN+IEzEPp9VEg/bMuqMO+uxgcYPw1ZCgICa9uupnLz
-         ncOtFm3sFTxxcWbWjCUkcGmIlo7h+Bna3ye63n1a7G1UiSPOWX/nxYEd1Jr5q4hXLDDS
-         SsZg==
-X-Forwarded-Encrypted: i=1; AL+hErEBvgKDnmJd98lCVuHwBhdhco2STEo8xae5YTAT8AHh+tQ5L5fqZ7FsxGKH/94QxPNLLQ5rxciTKJyjjXY=@lists.linux.dev
-X-Gm-Message-State: APuU4Z+HmQ8+XVeCBsv1RS6LmMRV/5O5Eycbsz0OxkDymK9aewZb6bM3
-	6WwYyACwlUZgnGzmAD4Ghz9tnrtdvOTN8GYCBUhOY18RLW945i78R4x/
-X-Gm-Gg: AYBFou3+DcVyAMH0L6kcCg8wfk32DuNLTt0aXeeNZGlPKpRj2UfwiwAy8lmwX7spUlN
-	aNfWBmmz5p3j7sfs8EWXic/BTVpPwBU6NQMTRe5iP+jEUxiu5wRRf97/HIOEhsw325yPSP5M1Tk
-	Vnuk8dBfqx9X+SmTLqjCX5Su4LMW9q61xs6gG23Y1oBn5rk88y77TN4ZicQrGJ9NEtA+84n2K8b
-	+lLSbHcdoRegR7Fao792f3cOAzhmclOBWMUdhwhW5Zk9GR88WLsJwOP9NQUeYGizUJ4bkTG2MIq
-	cANuZy1uZQv+dFNUg03kC2S1EVQPGVYvEz9COpvEMDY6EKFEFMg5ltfQboJ0lC/r4/WUHCm4Z5/
-	DzAQVtuipng35K7+xFn3McMSh/f4jCyW7oBj+W1P2EPDnUKC5vpuXEUC/3szTeO7eaJuqmWGQ2g
-	JFZEPa3BK/+xe6+sddSHKuhFLjq5H7FCwIh0eTMSc4OvPLhPUT73n+3XX663wDpHjtg3ofp+ZIq
-	CDfK77cTnhNoStMb3DP5hmvAklj/QflhZsom7VQQx534q+85p5sDpaQR/VNWca4eaF+7IDs+vZP
-	pMaQlFt0hpE+pOMsj6jWIwkW3TXNG1MUssr2TpuA+xPgQ+BiVB8=
-X-Received: by 2002:a17:90b:5107:b0:3ab:c80:936f with SMTP id 98e67ed59e1d1-3b182e6a221mr1613865a91.16.1794387078688;
-        Wed, 11 Nov 2026 00:51:18 -0800 (PST)
-Received: from kylin-XiaoXinPro-16-AHP9.. ([116.128.244.169])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1838e616dsm2396406a91.4.2026.11.11.00.51.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2026 00:51:18 -0800 (PST)
-From: Xueqin Luo <luoxueqin@kylinos.cn>
-To: rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	sudeep.holla@kernel.org
-Cc: zhanjie9@hisilicon.com,
-	christian.loehle@arm.com,
-	zhenglifeng1@huawei.com,
-	sumitg@nvidia.com,
-	lenb@kernel.org,
-	maciej.wieczor-retman@intel.com,
-	pawel.chmielewski@intel.com,
-	gregkh@linuxfoundation.org,
-	dakr@kernel.org,
-	johan@kernel.org,
-	ionela.voinescu@arm.com,
-	pierre.gondois@arm.com,
-	linux-pm@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	driver-core@lists.linux.dev,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048F2606A339;
+	Wed, 11 Nov 2026 14:15:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 048F2606A339
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=G+997Pf0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1794406508; x=1825942508;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FYWLjmEyrSr5TGZ1v1f2UI6FyVNvdj9IceZa13vfjIY=;
+  b=G+997Pf0U9AVu+jFxIv0KKFzwWYUTef+mRyLr1sKnfV4BWi/y8G+jIBf
+   fBPOIWP2ej+eh1FKqESnyEMvj0spWZ+bEZonIOHxoc9c6U/AMZrnf+nqj
+   l/p/i4WkJEDlviyoAxsCViIuWBxgULLCzc3DTOh8R6DwEFwzEsDYJmkc6
+   9bz+i555TUsCMBNo5QH0Dc7yBULNQqB3fgQRWpxZ7N2SFW2JyH03GHmcd
+   07+nOz7glsrm3iIc1XwCa7M1Pb/DrFJU2yfkRJJ7Orf66S2aupg+EOP4U
+   mkuvkWmbkwtTp9NVHIhvsOSYNM5TuOeQUdD0HfIubQIqiPJGxMFMOxk7L
+   Q==;
+X-CSE-ConnectionGUID: XfXINgJXTUGW2TtNGqTtIQ==
+X-CSE-MsgGUID: Hj5LS1RHTpeBrPuToKg4/g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11963"; a="3175624"
+X-IronPort-AV: E=Sophos;i="6.27,207,1787036400"; 
+   d="scan'208";a="3175624"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2026 06:15:01 -0800
+X-CSE-ConnectionGUID: fJ2hYlQmRhGtC2EHUopSdg==
+X-CSE-MsgGUID: 641PaO2GQqyGf0BX8BN1Qg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,207,1787036400"; 
+   d="scan'208";a="8424156"
+Received: from lkp-server01.sh.intel.com (HELO 0caa9d2d175c) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 11 Nov 2026 06:14:57 -0800
+Received: from kbuild by 0caa9d2d175c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xR96E-00000000yzd-0mnJ;
+	Wed, 11 Nov 2026 14:14:54 +0000
+Date: Wed, 11 Nov 2026 22:14:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Xueqin Luo <luoxueqin@kylinos.cn>, rafael@kernel.org,
+	viresh.kumar@linaro.org, sudeep.holla@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, zhanjie9@hisilicon.com,
+	christian.loehle@arm.com, zhenglifeng1@huawei.com,
+	sumitg@nvidia.com, lenb@kernel.org, maciej.wieczor-retman@intel.com,
+	pawel.chmielewski@intel.com, gregkh@linuxfoundation.org,
+	dakr@kernel.org, johan@kernel.org, ionela.voinescu@arm.com,
+	pierre.gondois@arm.com, linux-pm@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev, driver-core@lists.linux.dev,
 	Xueqin Luo <luoxueqin@kylinos.cn>
-Subject: [PATCH v6 3/3] arch_topology: Add topology_update_cpu_capacity() for runtime updates
-Date: Wed, 11 Nov 2026 16:50:22 +0800
-Message-ID: <20261111085022.1229866-4-luoxueqin@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261111085022.1229866-1-luoxueqin@kylinos.cn>
-References: <20261111085022.1229866-1-luoxueqin@kylinos.cn>
+Subject: Re: [PATCH v6 3/3] arch_topology: Add topology_update_cpu_capacity()
+ for runtime updates
+Message-ID: <202611112222.Q0bXZAjq-lkp@intel.com>
+References: <20261111085022.1229866-4-luoxueqin@kylinos.cn>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -100,184 +91,58 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261111085022.1229866-4-luoxueqin@kylinos.cn>
 
-When the CPPC Highest Performance register changes at runtime
-(e.g. via ACPI Notify(0x85)), the scheduler's view of CPU capacity
-and the frequency invariance engine's reference values become stale,
-as topology_init_cpu_capacity_cppc() is only called once during boot.
+Hi Xueqin,
 
-Keep raw_capacity allocated after CPPC init instead of freeing it,
-and introduce topology_update_cpu_capacity() to update per-CPU
-raw_capacity, capacity_freq_ref, and the normalized CPU capacity
-scale at runtime. Skip updates when the value is unchanged and
-reject a zero capacity_scale to avoid division by zero.
+kernel test robot noticed the following build warnings:
 
-Call this from cppc_cpufreq_update_limits() for every CPU in the
-policy so shared-policy Notify(0x85) targeting a non-policy CPU
-still refreshes the correct topology capacity.
+[auto build test WARNING on driver-core/driver-core-testing]
+[also build test WARNING on driver-core/driver-core-next driver-core/driver-core-linus amd-pstate/linux-next amd-pstate/bleeding-edge linus/master v7.4-rc2]
+[cannot apply to rafael-pm/linux-next rafael-pm/bleeding-edge next-20261110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Xueqin Luo <luoxueqin@kylinos.cn>
----
- drivers/base/arch_topology.c   | 77 ++++++++++++++++++++++++++++++++++
- drivers/cpufreq/cppc_cpufreq.c | 10 ++++-
- include/linux/arch_topology.h  | 13 ++++++
- 3 files changed, 99 insertions(+), 1 deletion(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Xueqin-Luo/cpufreq-cppc-Add-update_limits-support-for-Highest-Performance-changes/20261111-165020
+base:   driver-core/driver-core-testing
+patch link:    https://lore.kernel.org/r/20261111085022.1229866-4-luoxueqin%40kylinos.cn
+patch subject: [PATCH v6 3/3] arch_topology: Add topology_update_cpu_capacity() for runtime updates
+config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20261111/202611112222.Q0bXZAjq-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 16.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261111/202611112222.Q0bXZAjq-lkp@intel.com/reproduce)
 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index e51fc9f5e976..f64f8e61f210 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -229,6 +229,7 @@ static void update_topology_flags_workfn(struct work_struct *work)
- }
- 
- static u32 *raw_capacity;
-+static DEFINE_MUTEX(raw_capacity_lock);
- 
- static int free_raw_capacity(void)
- {
-@@ -370,13 +371,89 @@ static inline void topology_init_cpu_capacity_cppc(void)
- 	schedule_work(&update_topology_flags_work);
- 	pr_debug("cpu_capacity: cpu_capacity initialization done\n");
- 
-+	/*
-+	 * Keep raw_capacity for runtime updates via
-+	 * topology_update_cpu_capacity().
-+	 */
-+	return;
-+
- exit:
- 	free_raw_capacity();
- }
-+
- void acpi_processor_init_invariance_cppc(void)
- {
- 	topology_init_cpu_capacity_cppc();
- }
-+
-+/**
-+ * topology_update_cpu_capacity - Update CPU capacity after highest_perf change
-+ * @cpu: CPU whose highest performance changed
-+ * @perf_caps: Updated CPPC performance capabilities for @cpu
-+ *
-+ * When the CPPC Highest Performance register changes at runtime
-+ * (e.g. via Notify(0x85)), the scheduler's view of CPU capacity
-+ * and the frequency invariance engine's reference values become
-+ * stale. This function updates the per-CPU raw_capacity,
-+ * capacity_freq_ref and freq_inv max ratio, then re-normalizes the
-+ * CPU capacity scale for all possible CPUs and triggers a sched
-+ * domain rebuild. If the value is unchanged, everything is skipped.
-+ */
-+void topology_update_cpu_capacity(unsigned int cpu,
-+				  struct cppc_perf_caps *perf_caps)
-+{
-+	u32 highest_perf = perf_caps->highest_perf;
-+	u64 capacity, capacity_scale = 0;
-+	int c;
-+
-+	guard(mutex)(&raw_capacity_lock);
-+
-+	if (!raw_capacity || cpu >= num_possible_cpus())
-+		return;
-+
-+	/*
-+	 * Validate: highest_perf must be >= nominal_perf and >= lowest_perf,
-+	 * consistent with the boot-time check in topology_init_cpu_capacity_cppc().
-+	 */
-+	if (highest_perf < perf_caps->nominal_perf ||
-+	    highest_perf < perf_caps->lowest_perf) {
-+		pr_warn("cpu_capacity: CPU%d invalid highest_perf=%u (nominal=%u, lowest=%u), skipping\n",
-+			cpu, highest_perf, perf_caps->nominal_perf,
-+			perf_caps->lowest_perf);
-+		return;
-+	}
-+
-+	if (raw_capacity[cpu] == highest_perf)
-+		return;
-+
-+	pr_debug("cpu_capacity: CPU%d cpu_capacity=%u -> %u (raw)\n",
-+		 cpu, raw_capacity[cpu], highest_perf);
-+
-+	raw_capacity[cpu] = highest_perf;
-+	per_cpu(capacity_freq_ref, cpu) =
-+		cppc_perf_to_khz(perf_caps, highest_perf);
-+	freq_inv_set_max_ratio(cpu,
-+			       per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ);
-+
-+	/* Re-normalize all CPUs: capacity is relative. */
-+	for_each_possible_cpu(c)
-+		capacity_scale = max_t(u64, capacity_scale, raw_capacity[c]);
-+
-+	if (!capacity_scale)
-+		return;
-+
-+	for_each_possible_cpu(c) {
-+		capacity = raw_capacity[c];
-+		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
-+				     capacity_scale);
-+		topology_set_cpu_scale(c, capacity);
-+		pr_debug("cpu_capacity: CPU%d cpu_capacity=%lu\n",
-+			 c, topology_get_cpu_scale(c));
-+	}
-+
-+	schedule_work(&update_topology_flags_work);
-+}
-+EXPORT_SYMBOL_GPL(topology_update_cpu_capacity);
- #endif
- 
- #ifdef CONFIG_CPU_FREQ
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 7dab6e046b9f..a693ef611caa 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -935,7 +935,7 @@ static void cppc_cpufreq_update_limits(struct cpufreq_policy *policy)
- 	struct cppc_perf_caps *caps;
- 	u64 prev_highest_perf;
- 	u64 highest_perf;
--	int ret;
-+	int cpu, ret;
- 
- 	guard(cpufreq_policy_write)(policy);
- 
-@@ -984,6 +984,14 @@ static void cppc_cpufreq_update_limits(struct cpufreq_policy *policy)
- 
- 	refresh_frequency_limits(policy);
- 
-+	/*
-+	 * All CPUs of the policy share perf_caps, and Notify(0x85) may
-+	 * target any CPU of a shared policy, so refresh the topology
-+	 * capacity for every CPU of the policy, including offline ones.
-+	 */
-+	for_each_cpu(cpu, policy->related_cpus)
-+		topology_update_cpu_capacity(cpu, caps);
-+
- 	/*
- 	 * Autonomous selection mode uses MIN/MAX performance as runtime
- 	 * hardware control bounds. Re-program them when highest_perf
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index ebd7f8935f96..9415cb6a6c2b 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -11,6 +11,19 @@
- void topology_normalize_cpu_scale(void);
- int topology_update_cpu_topology(void);
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+struct cppc_perf_caps;
-+#ifdef CONFIG_GENERIC_ARCH_TOPOLOGY
-+void topology_update_cpu_capacity(unsigned int cpu,
-+				  struct cppc_perf_caps *perf_caps);
-+#else
-+static inline void
-+topology_update_cpu_capacity(unsigned int cpu, struct cppc_perf_caps *perf_caps)
-+{
-+}
-+#endif
-+#endif
-+
- struct device_node;
- bool topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu);
- 
--- 
-2.43.0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202611112222.Q0bXZAjq-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/seqlock.h:20,
+                    from include/linux/mmzone.h:17,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:17,
+                    from include/linux/resource_ext.h:11,
+                    from include/linux/acpi.h:14,
+                    from drivers/base/arch_topology.c:9:
+>> drivers/base/arch_topology.c:232:21: warning: 'raw_capacity_lock' defined but not used [-Wunused-variable]
+     232 | static DEFINE_MUTEX(raw_capacity_lock);
+         |                     ^~~~~~~~~~~~~~~~~
+   include/linux/mutex.h:87:22: note: in definition of macro 'DEFINE_MUTEX'
+      87 |         struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
+         |                      ^~~~~~~~~
+
+
+vim +/raw_capacity_lock +232 drivers/base/arch_topology.c
+
+   230	
+   231	static u32 *raw_capacity;
+ > 232	static DEFINE_MUTEX(raw_capacity_lock);
+   233	
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
