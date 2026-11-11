@@ -1,53 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.227.136
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794316330;
-	b=OXCNVD3boF577/CFiPVR2jCyqufqpdJT2bpFlAcMqk4bIqcnSsQ7VpvKMaE/dcL4zhYl
-	 u6v2tnu8e519vO6hj3riF1/yY1+ECNtr02BwkbBEj8QqITrQT7CJ04weqrbE3jN4HW2LE
-	 PR7UQAewAIIB0zCHMHToBF7cspRHHupiRMbk9DSjPS502/26hUQ/TcB9C/SKcQEBjjPVn
-	 1wab2ECIUZTv4oMfquhBe99dTV9cdfHxDCLBhpsBBBgdBieu3M4veTOpglDiEavUME8Mx
-	 a7Ri2RMOMpkTrDd6+Z83cMh0LyEOMUUH9XfRUDidKMFdkbfQ2ttQG2FZ4nKy9OkZl9Q==
+	t=1794387040;
+	b=Ti7PLRTCAyRvthEzSAIPMLYv/GeWLrg2aZJnRVxl000huZ+5TV8j7Snezi9f/BfX9Fce
+	 GeoKS1pRhC5FWODrBKw9SW1ZO2YwmOsn4jk/1UjRh13l2+fDp3nJdxixCbRByHV+8+UwR
+	 3eqDbBMzkgEfjU+29q/fFAoYvr+JMqbA40WnPAI9rPQ3JIzdo9q1SGLOkmsxJB8wDIvkL
+	 Ru1ZL+UzTKb/GSl9yVaL7KpTH5OPcT8Ln1gAarTNmaD7CpsTQqgDaJvori0ny6fxackhc
+	 F0KkNfGo7nGn+F3NNT8RcqEEucj/enFjgA1HDiVBc/CM0qNiZrTAi3bWqPMhQJ/wIHw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794316330;
-	h=DMARC-Filter:Received:X-Originating-IP:Date:X-CM-HeaderCharset:From:
-	 To:Cc:Subject:X-Priority:X-Mailer:In-Reply-To:References:
-	 X-CM-CTRLMSGS:Content-Type:MIME-Version:Message-ID:X-Coremail-Locale:
-	 X-CM-TRANSID:X-CM-SenderInfo:X-Coremail-Antispam;
-	bh=9Nwx6XwZnrpVLYsTsgbCQUhpSST+LF8WRM6iNJCbwig=;
-	b=IdROG9Nl3wX+pJYJ8XZepT1lLLCT73Oe+28tpPGXarvMqqjUq4s2+B9vtC5DvMJZawey
-	 J5gO3AbwPbhNMUYFJ08OL1CTrIlI985Rz2dzIYaVKGgvVJIWr3J0ya+uIUsSz6vZrZudw
-	 OL95L/ERhwVz9cUys4K3qiIZNo6/UlR1zgw60RSfUlZReHuMjQFMq5Qe1RrJ0JqYTrOmx
-	 bEHGFmOJbLkX3Uho0k0xf233n2HyhCiYSugDrnSOuDRWg+c/Ftx97yNoA53+U5S+xBfe6
-	 a0fjLv9y98cjvWPN2volhINKSuRW9Mtqeee71Ko2cCPDMZiCzWr8PxxV8hpOKNclAxQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794387040;
+	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=zCRooG2x6MjJhhdGz/yUbWYEgmkxtWTULJ4B2gjVcXc=;
+	b=FCkBD4ykzRn3POyl7teMETZhnf5lDYhXLKrqucXq7+8ETCpzzCCLBhpqFK1hbs2nF/tS
+	 9ZGbB4EuR7iWNKMRrkydjM7GgHfznGXownF8OuL32F2el8cRrzTtLFt0QX9AzIr33Naq9
+	 7B8V3MvtF0Ecjipp2/73IU2dcmNJyN3+kUJ2tWi7ThfZ9WkKLZL6Hd+XdpBhbKsn0xQxt
+	 XIE8HTB/26EBm493/F6lBKYd4O4oTHeiIX8BgFrJX273T9OrsEosKL1/8gCnd64egOUV5
+	 7hRm1QAYPhsB3M3BOBk7cwcHvLUD3dhwyr4+D08uetVCdwy3j9tIDl/TmBAv7sYkPog==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=hust.edu.cn;
-	spf=pass smtp.mailfrom=hust.edu.cn;
-	arc=none smtp.remote-ip=162.243.161.220
-Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDF5606A75C
-	for <acpica-devel@lists.linux.dev>; Tue, 10 Nov 2026 13:12:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7DDF5606A75C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hust.edu.cn
-Received: from xuhx$hust.edu.cn ( [10.12.190.107] ) by ajax-webmail-app2
- (Coremail) ; Tue, 10 Nov 2026 21:11:57 +0800 (GMT+08:00)
-Date: Tue, 10 Nov 2026 21:11:57 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5b6Q5pmX57+U?= <xuhx@hust.edu.cn>
-To: rafael@kernel.org, maciej.wieczor-retman@intel.com,
-	pawel.chmielewski@intel.com
-Cc: linux-acpi@vger.kernel.org, lenb@kernel.org,
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: ACPI: ACPICA: Reset can delete an event semaphore while another
-  thread is blocked in Wait
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2025.3-cmXT6 build
- 20260810(6c94e3b5) Copyright (c) 2002-2026 www.mailtech.cn hust
-In-Reply-To: <2026102727-data-sequel-ce41@gregkh>
-References: <4c7f9772.192e1.1a17d5c2ed5.Coremail.xuhx@hust.edu.cn>
- <2026102727-data-sequel-ce41@gregkh>
-X-CM-CTRLMSGS: =?B?oBh9DziH6nJ5xwDR7hwMki1N8jM=
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_474619_282876185.1794316317767"
+	dmarc=none header.from=kylinos.cn;
+	spf=pass smtp.mailfrom=gmail.com;
+	arc=none smtp.remote-ip=74.125.227.136
+Received: from mail-pj2-f8.google.com (mail-pj2-f8.google.com [74.125.227.136])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214CD606A32A
+	for <acpica-devel@lists.linux.dev>; Wed, 11 Nov 2026 08:50:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 214CD606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj2-f8.google.com with SMTP id 98e67ed59e1d1-3b0ae89de91so1726873a91.1
+        for <acpica-devel@lists.linux.dev>; Wed, 11 Nov 2026 00:50:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794387039; x=1794991839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=zCRooG2x6MjJhhdGz/yUbWYEgmkxtWTULJ4B2gjVcXc=;
+        b=ORSdBjFOibF87ZCJ80+AcFWd7VmHI5MQ1f6Rf66t5uunMl9R/mTSMJt36M9W6as5pg
+         HFiobCm8YDjzzNi/GU+8G+P3ClywgIuPP8XxY91ReMhorPzif0ETb09qYl7CFE5g/Nu0
+         qum9FmXb9ww1uZM80KtGYJV4x3+eCkTlD0MpFYWg6JsXDM9JSR276v+DaFK7zeOVEYLB
+         m5pawr5cXp5bB+cMW+BUb96FSIdSqYU8CgDslIz+f/U9SXP+x179QCjXjbJhWR0aj9Lv
+         adkEE4mNHeU2m1YV6Cl4JVFCqTPcYFn8yVtAh1N7/wyGk6xezeIPycDjPzcScdOMLJum
+         1RkQ==
+X-Forwarded-Encrypted: i=1; AL+hErHM7XrEPGR5tll4z7HTbG2TfTlVuafXy8eC1Hfg5jBJ4FMi8OIpc/tyrTSHIjxMN2CwnROAZVJUbFULTm8=@lists.linux.dev
+X-Gm-Message-State: APuU4Z81VpGWXVoG3xc6s5KFRgR9MdNYITOR9QkpK7KaAfdNiEFAu7HF
+	g29ANnpk+iVyI5ZFympnl2ZLhMofmRqtKd6XGOxEhO8RH2MibuMkZ7gj
+X-Gm-Gg: AYBFou1b/Fx7PxD63iqnINWNBlRL8rgjv9zQZ977l8S92LHNNPIn6cnezqeygw/31Al
+	lStn05zncucNNDWHJvLfFj77oR6sGKd7lndhMn+x7RE0MlcBl1Vk6zURB4ZrY+H8INVTc8g8wzH
+	D2fOYBfVsjmlYXZMkR7ek8DUqlS09KRlWCWpEouuCFu8xvkiPrphy8TdtRuvdMj9kvAH1W1ZpwA
+	G09hoORoofsvEWbTwhivf221/4BxRAbGoVnBXsJyrlSDbFhhSQNCjksc85BVXNQhq111l9twKFA
+	XbzNTIijJvQWAcdUyoOdgv3sahBLETm8TSD5p5vQ3B3mEPMLzpt6oq77Mp+lzgXMhiTPS45ubvY
+	5XiWKaHKp9Ui6n9fwiJ0pZyizIrCFGnVcKp30TLEU58o9szspW8Ia+cuLeR2deT0joUp5C6SBZ3
+	uCBCLYYZA/K1rqyBewXQ3JIV+P46oUvzEJBo529St5WnrgWc3rMFtPE3kipvhtEnOWnWCSJaDyH
+	/J5IZN3y+5zaWYB0NHvg1N2JCX44OJmbDA9Qy3hlO1KImHjdDwnZgQIs8tZ1x+qhhSNMv6tXbfN
+	lfqi3pmhU9hLwHpRR9xVZtlYt/3MqSph0t7eZAixhOd+B9N5sWQ=
+X-Received: by 2002:a17:90b:4fd0:b0:3ac:9f00:3bc7 with SMTP id 98e67ed59e1d1-3b182eee784mr1752558a91.33.1794387039460;
+        Wed, 11 Nov 2026 00:50:39 -0800 (PST)
+Received: from kylin-XiaoXinPro-16-AHP9.. ([116.128.244.169])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b1838e616dsm2396406a91.4.2026.11.11.00.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2026 00:50:39 -0800 (PST)
+From: Xueqin Luo <luoxueqin@kylinos.cn>
+To: rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	sudeep.holla@kernel.org
+Cc: zhanjie9@hisilicon.com,
+	christian.loehle@arm.com,
+	zhenglifeng1@huawei.com,
+	sumitg@nvidia.com,
+	lenb@kernel.org,
+	maciej.wieczor-retman@intel.com,
+	pawel.chmielewski@intel.com,
+	gregkh@linuxfoundation.org,
+	dakr@kernel.org,
+	johan@kernel.org,
+	ionela.voinescu@arm.com,
+	pierre.gondois@arm.com,
+	linux-pm@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	driver-core@lists.linux.dev,
+	Xueqin Luo <luoxueqin@kylinos.cn>
+Subject: [PATCH v6 0/3] cpufreq: cppc: Handle Highest Performance changes at runtime
+Date: Wed, 11 Nov 2026 16:50:19 +0800
+Message-ID: <20261111085022.1229866-1-luoxueqin@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -57,149 +97,105 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Message-ID: <2a71bbe6.22afa.1a1c5963447.Coremail.xuhx@hust.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:IQEQrMDW_cUdGPNqp5oNAA--.8732W
-X-CM-SenderInfo: bgsqjkayqyjmo6kx23oohg3hdfq/1tbiAgMHB2rx8m6StgAAsi
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWkKw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 
-------=_Part_474619_282876185.1794316317767
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Hi Rafael, Pierre, Christian, Jie,
 
-YWNwaV9leF9zeXN0ZW1fcmVzZXRfZXZlbnQoKSBjcmVhdGVzIGEgbmV3IHNlbWFwaG9yZSwgZGVs
-ZXRlcyB0aGUgb2xkCm9uZSwgYW5kIHJlcGxhY2VzIG9ial9kZXNjLT5ldmVudC5vc19zZW1hcGhv
-cmUgd2l0aG91dCBjaGVja2luZyB3aGV0aGVyCmEgV2FpdCBpcyBhbHJlYWR5IGJsb2NrZWQgb24g
-dGhlIG9sZCBwb2ludGVyLiAgQSB3YWl0aW5nIHRocmVhZCB0YWtlcwp0aGUgb2xkIHNlbWFwaG9y
-ZSBwb2ludGVyLCBkcm9wcyB0aGUgQUNQSUNBIGludGVycHJldGVyIGxvY2ssIGFuZApibG9ja3Mg
-aW4gZG93bl90aW1lb3V0KCk7IFJlc2V0IGNhbiB0aGVuIGNhbGwKYWNwaV9vc19kZWxldGVfc2Vt
-YXBob3JlKCksIHdob3NlIEJVR19PTihzZW0tPmZpcnN0X3dhaXRlcikgYW5kCmtmcmVlKHNlbSkg
-YXJlIHBlcmZvcm1lZCB3aXRob3V0IHNlbS0+bG9jay4gIElmIHRoZSB3YWl0ZXIgaXMgYWxyZWFk
-eQpxdWV1ZWQgdGhlIEJVR19PTiBmaXJlczsgaWYgdGhlIGNoZWNrIHBhc3NlcyBiZWZvcmUgdGhl
-IHdhaXRlciBpcwpxdWV1ZWQsIHRoZSB3YWl0ZXIgdXNlcyBmcmVlZCBtZW1vcnkuICBUaGUgQlVH
-X09OIHdhcyByZXByb2R1Y2VkIG9uIGEKS0FTQU4gNy4zIGd1ZXN0IHdpdGggYSBjdXN0b20gU1NE
-VCBhbmQgYSBtb2R1bGUgZHJpdmluZyBjb25jdXJyZW50CldhaXQvUmVzZXQsIG5vdCBqdXN0IGlu
-ZmVycmVkIGZyb20gdGhlIHNvdXJjZS4KClRoZSBkZXRhaWxlZCBkZXNjcmlwdGlvbjoKCiogVGVz
-dCBlbnZpcm9ubWVudCAvIGFmZmVjdGVkIHZlcnNpb24KCiAgTGludXggNy4zLjAgKG1haW5saW5l
-IDcuMyBzb3VyY2UsIHVubW9kaWZpZWQpLCBLQVNBTiBidWlsZCBmcm9tCiAgdmVyaWZpY2F0aW9u
-L2J1aWxkLWthc2FuLTcuMywgeDg2XzY0IFFFTVUvS1ZNIGd1ZXN0LCAyIHZDUFUsCiAgQ09ORklH
-X0tBU0FOPXksIENPTkZJR19CVUc9eS4gIEEgdGVzdCBTU0RUIHdhcyBsb2FkZWQgd2l0aCBRRU1V
-J3MKICAtYWNwaXRhYmxlIG9wdGlvbiBhbmQgcHJvdmlkZWQgYSBkZXZpY2UgXF9TQi5UU1QwIHdp
-dGggX0hJRAogICJSQUMwMDAxIiwgRXZlbnQoRVZUMCksIE1ldGhvZChNV0FJKSBleGVjdXRpbmcK
-ICBXYWl0KEVWVDAsIDB4RkZGRkZGRkYpLCBhbmQgTWV0aG9kKE1SU1QpIGV4ZWN1dGluZyBSZXNl
-dChFVlQwKS4KICBUaGUgbW9kdWxlIGFjcGlfY2FzZTUua28gY2FsbHMgTVdBSSBmcm9tIG9uZSBr
-dGhyZWFkLCB3YWl0cyBvbmUKICBzZWNvbmQgZm9yIHRoZSB3YWl0ZXIgdG8gYmxvY2ssIGFuZCBj
-YWxscyBNUlNUIGZyb20gdGhlIG1haW4gdGhyZWFkLgogIExpbmUgbnVtYmVycyBhcmUgZnJvbSBM
-aW51eCA3LjMuCgoqIE1lY2hhbmlzbQoKICAxLiBXYWl0LiAgYWNwaV9leF9zeXN0ZW1fd2FpdF9z
-ZW1hcGhvcmUoKQogICAgIChkcml2ZXJzL2FjcGkvYWNwaWNhL2V4c3lzdGVtLmM6MzEtNTkpIGZp
-cnN0IHRyaWVzCiAgICAgYWNwaV9vc193YWl0X3NlbWFwaG9yZSguLi4sIEFDUElfRE9fTk9UX1dB
-SVQpLiAgT24gQUVfVElNRSBpdAogICAgIGNhbGxzIGFjcGlfZXhfZXhpdF9pbnRlcnByZXRlcigp
-LCB3aGljaCBkcm9wcwogICAgIEFDUElfTVRYX05BTUVTUEFDRSBhbmQgQUNQSV9NVFhfSU5URVJQ
-UkVURVIKICAgICAoZHJpdmVycy9hY3BpL2FjcGljYS9leHV0aWxzLmM6OTMtMTEwKSwgdGhlbiBi
-bG9ja3MgaW4KICAgICBhY3BpX29zX3dhaXRfc2VtYXBob3JlKHNlbWFwaG9yZSwgMSwgdGltZW91
-dCkuICBUaGUgc2VtYXBob3JlCiAgICAgYXJndW1lbnQgaXMgdGhlIG9sZCBwb2ludGVyIHJlYWQg
-YmVmb3JlIHRoZSBpbnRlcnByZXRlciBsb2NrIHdhcwogICAgIGRyb3BwZWQuCgogIDIuIFJlc2V0
-LiAgYWNwaV9leF9zeXN0ZW1fcmVzZXRfZXZlbnQoKQogICAgIChkcml2ZXJzL2FjcGkvYWNwaWNh
-L2V4c3lzdGVtLmM6MjYxLTI4MCkgZG9lczoKCiAgICAgICBzdGF0dXMgPSBhY3BpX29zX2NyZWF0
-ZV9zZW1hcGhvcmUoLi4uLCAmdGVtcF9zZW1hcGhvcmUpOwogICAgICAgaWYgKEFDUElfU1VDQ0VT
-UyhzdGF0dXMpKSB7CiAgICAgICAgICAgICAgICh2b2lkKWFjcGlfb3NfZGVsZXRlX3NlbWFwaG9y
-ZShvYmpfZGVzYy0+ZXZlbnQub3Nfc2VtYXBob3JlKTsKICAgICAgICAgICAgICAgb2JqX2Rlc2Mt
-PmV2ZW50Lm9zX3NlbWFwaG9yZSA9IHRlbXBfc2VtYXBob3JlOwogICAgICAgfQoKICAgICBJdCBk
-b2VzIG5vdCB0YWtlIGEgcGVyLWV2ZW50IGxvY2ssIGRvZXMgbm90IGNoZWNrIGZvciB3YWl0ZXJz
-LAogICAgIGRvZXMgbm90IHdha2Ugb3IgY2FuY2VsIHRoZW0sIGFuZCBpZ25vcmVzIHRoZSBkZWxl
-dGUgcmVzdWx0LgoKICAzLiBEZWxldGUuICBhY3BpX29zX2RlbGV0ZV9zZW1hcGhvcmUoKQogICAg
-IChkcml2ZXJzL2FjcGkvb3NsLmM6MTI0NS0xMjcxKSBjb250YWlucyB0aGUga2VybmVsJ3Mgb3du
-IFRPRE8KICAgICBhYm91dCBub24tc3luY2hyb25pemVkIGNvbnN1bWVyczoKCiAgICAgICBCVUdf
-T04oc2VtLT5maXJzdF93YWl0ZXIpOwogICAgICAga2ZyZWUoc2VtKTsKICAgICAgIHNlbSA9IE5V
-TEw7CgogICAgIFRoZSBCVUdfT04gaXMgYW4gdW5sb2NrZWQgcmVhZCBhbmQga2ZyZWUoKSBmb2xs
-b3dzIGltbWVkaWF0ZWx5LgogICAgIGRvd25fdGltZW91dCgpIGNoZWNrcyBzZW0tPmNvdW50IHVu
-ZGVyIHNlbS0+bG9jayBhbmQsIGlmIGl0IG11c3QKICAgICBibG9jaywgY2hhaW5zIHRoZSB3YWl0
-ZXIgaW50byBzZW0tPmZpcnN0X3dhaXRlciB1bmRlciB0aGUgc2FtZQogICAgIGxvY2sgKGtlcm5l
-bC9sb2NraW5nL3NlbWFwaG9yZS5jOjE5OC0yMTEgYW5kIDI3Ni0yODQpLgogICAgIGFjcGlfb3Nf
-ZGVsZXRlX3NlbWFwaG9yZSgpIGRvZXMgbm90IHRha2Ugc2VtLT5sb2NrLCBzbyAibm8gd2FpdGVy
-CiAgICAgYXQgdGhlIGNoZWNrIiBkb2VzIG5vdCBpbXBseSAibm8gd2FpdGVyIGF0IGtmcmVlIi4K
-CiAgVHdvIGludGVybGVhdmluZ3MgbWF0dGVyOgoKICAgIEEuIFdhaXRlciBhbHJlYWR5IHF1ZXVl
-ZC4gIFdhaXQgaGFzIGxpbmtlZCBpdHMgd2FpdGVyIGludG8KICAgICAgIGZpcnN0X3dhaXRlciBh
-bmQgaXMgc2xlZXBpbmc7IFJlc2V0IGRlbGV0ZXMgdGhlIG9sZCBzZW1hcGhvcmU7CiAgICAgICBC
-VUdfT04oZmlyc3Rfd2FpdGVyKSBmaXJlcy4gIFdpdGggQ09ORklHX0JVRz15IHRoaXMgaXMgYW4g
-b29wcywKICAgICAgIGFuZCBwYW5pY19vbl9vb3BzPTEgdHVybnMgaXQgaW50byBhIHBhbmljLgoK
-ICAgIEIuIERlbGV0ZSB3aW5zIHRoZSBjaGVjay4gIEJVR19PTiBzZWVzIE5VTEwsIGtmcmVlKG9s
-ZF9zZW0pIHJ1bnMsCiAgICAgICBhbmQgb25seSB0aGVuIGRvZXMgdGhlIHdhaXRlciBlbnRlciBf
-X2Rvd25fdGltZW91dCgpIGFuZCB0YWtlCiAgICAgICBvbGRfc2VtLT5sb2NrIC8gd3JpdGUgb2xk
-X3NlbS0+Zmlyc3Rfd2FpdGVyLiAgVGhpcyBpcyBhIFVBRiBhbmQKICAgICAgIGNhbiBjb3JydXB0
-IHRoZSB3YWl0IGxpc3Qgb3IgdGhlIHJhdyBzcGlubG9jay4KCiAgU2lnbmFsIGlzIG5vdCB0aGUg
-cHJpbWFyeSB0cmlnZ2VyLiAgYWNwaV9leF9zeXN0ZW1fc2lnbmFsX2V2ZW50KCkKICAoZXhzeXN0
-ZW0uYzoxOTktMjE1KSBhbHNvIHJlYWRzIG9ial9kZXNjLT5ldmVudC5vc19zZW1hcGhvcmUsIGJ1
-dCBpdAogIHJ1bnMgdW5kZXIgdGhlIEFDUElDQSBpbnRlcnByZXRlciBsb2NrLCBzbyBpdCBjYW5u
-b3Qgb3ZlcmxhcCBSZXNldCdzCiAgZGVsZXRlLiAgQWZ0ZXIgUmVzZXQgcmVwbGFjZXMgdGhlIHBv
-aW50ZXIsIFNpZ25hbCBvcGVyYXRlcyBvbiB0aGUgbmV3CiAgc2VtYXBob3JlIGFuZCBjYW4gbGVh
-dmUgdGhlIG9sZCB3YWl0ZXIgd2l0aG91dCBhIHdha2V1cDsgdGhhdCBpcyBhbgogIGV2ZW50LXNl
-bWFudGljcy9saXZlbmVzcyBidWcsIG5vdCB0aGUgVUFGIGFib3ZlLgoKICBUaGUgdXRkZWxldGUg
-cGF0aCAoZHJpdmVycy9hY3BpL2FjcGljYS91dGRlbGV0ZS5jOjE1My0xNjEpIGFsc28KICBkZWxl
-dGVzIGFuIGV2ZW50IHNlbWFwaG9yZSwgYnV0IGl0IHJlcXVpcmVzIHRoZSBvcGVyYW5kIG9iamVj
-dCdzCiAgcmVmY291bnQgdG8gcmVhY2ggemVybyB3aGlsZSBhIFdhaXQgaXMgdXNpbmcgaXQ7IHRo
-YXQgaXMgYSBuYXJyb3dlcgogIGFuZCBsZXNzIGRpcmVjdCBwYXRoLCBzbyBpdCBpcyBub3QgdGhl
-IG1haW4gdHJpZ2dlciBoZXJlLgoKCiogUmVwcm9kdWNlciAoYXR0YWNoZWQ6IGFjcGlfY2FzZTUu
-YykgYW5kIHJlc3VsdHMgb24gNy4zCgogIFRoZSBhdHRhY2hlZCBtb2R1bGUgaXMgc2VsZi1jb250
-YWluZWQgYW5kIHVzZXMgdGhlIHRlc3QgU1NEVAogIGRlc2NyaWJlZCBhYm92ZToKCiAgICBpbnNt
-b2QgL2FjcGlfY2FzZTUua28KCiAgSXQgcmVzb2x2ZXMgXF9TQi5UU1QwIHdpdGggYWNwaV9nZXRf
-aGFuZGxlKCksIHN0YXJ0cyBhIGt0aHJlYWQgdGhhdAogIGV2YWx1YXRlcyBNV0FJIChXYWl0KSwg
-c2xlZXBzIG9uZSBzZWNvbmQsIHRoZW4gZXZhbHVhdGVzIE1SU1QKICAoUmVzZXQpIGZyb20gdGhl
-IG1vZHVsZSdzIG1haW4gdGhyZWFkLiAgQWN0dWFsIHNlcmlhbCBvdXRwdXQKICAodHJpbW1lZCk6
-CgogICAgQUNQSV9DQVNFNTogZ2V0X2hhbmRsZSBzdD0wCiAgICBBQ1BJX0NBU0U1OiB3YWl0ZXIg
-ZXZhbHVhdGluZyBNV0FJCiAgICBBQ1BJX0NBU0U1OiBldmFsdWF0aW5nIE1SU1Qgd2hpbGUgd2Fp
-dGVyIGJsb2NrZWQKICAgIGtlcm5lbCBCVUcgYXQgZHJpdmVycy9hY3BpL29zbC5jOjEyNjYhCiAg
-ICBPb3BzOiBpbnZhbGlkIG9wY29kZTogMDAwMCBbIzFdIFNNUCBLQVNBTiBOT1BUSQogICAgUklQ
-OiAwMDEwOmFjcGlfb3NfZGVsZXRlX3NlbWFwaG9yZSsweDkwLzB4YTAKICAgIENhbGwgVHJhY2U6
-CiAgICAgYWNwaV9leF9zeXN0ZW1fcmVzZXRfZXZlbnQrMHhjZC8weGYwCiAgICAgYWNwaV9leF9v
-cGNvZGVfMUFfMFRfMFIKICAgICBhY3BpX3BzX3BhcnNlX2xvb3AKICAgICBhY3BpX3BzX2V4ZWN1
-dGVfbWV0aG9kCiAgICAgYWNwaV9uc19ldmFsdWF0ZQogICAgIGFjcGlfZXZhbHVhdGVfb2JqZWN0
-CiAgICAgaW5pdF9tb2R1bGUrMHhhMC8weGZmMCBbYWNwaV9jYXNlNV0KCiAgVGhpcyBpcyB0aGUg
-IndhaXRlciBhbHJlYWR5IHF1ZXVlZCIgaW50ZXJsZWF2aW5nLCBub3QgdGhlIFVBRgogIGludGVy
-bGVhdmluZyBCLiAgSXQgcHJvdmVzIHRoYXQgUmVzZXQgY2FuIHJlYWNoIGRlbGV0ZSB3aXRoIGEK
-ICBub24tZW1wdHkgd2FpdGVyIGxpc3QgYW5kIHRoYXQgdGhlIEJVR19PTiBpcyBub3QgYSB0aGVv
-cmV0aWNhbAogIGFzc2VydGlvbi4gIEl0IGRvZXMgbm90IHByb3ZlIGEgdXNlci10cmlnZ2VyYWJs
-ZSBwYXRoOiB0aGUgY3VzdG9tCiAgU1NEVCBhbmQgbW9kdWxlIGFyZSB0ZXN0IGhhcm5lc3Nlcy4K
-CgoKKiBTdWdnZXN0ZWQgZGlyZWN0aW9uCgogIEdpdmUgdGhlIGV2ZW50IG9iamVjdCBhIGxvY2sg
-b3IgcmVmZXJlbmNlIHRoYXQgY292ZXJzIFdhaXQsIFNpZ25hbCwKICBSZXNldCwgYW5kIGRlc3Ry
-dWN0aW9uOyBtYWtlIFJlc2V0IGVpdGhlciB3YWl0IGZvci9jYW5jZWwgYWxsCiAgd2FpdGVycyBv
-ciByZXBsYWNlIHRoZSBzZW1hcGhvcmUgYXRvbWljYWxseSB3aGlsZSBXYWl0IHJldmFsaWRhdGVz
-CiAgdGhlIHBvaW50ZXIgdW5kZXIgdGhlIHNhbWUgbG9jay4gIERvIG5vdCB1c2UgQlVHX09OKGZp
-cnN0X3dhaXRlcikgYXMKICBhIGxpZmV0aW1lIGNoZWNrOiBkZWxldGUgc2hvdWxkIHRha2Ugc2Vt
-LT5sb2NrLCB3YWtlL2NhbmNlbCBxdWV1ZWQKICB3YWl0ZXJzLCBhbmQgd2FpdCBmb3IgdGhlbSB0
-byBsZWF2ZSBiZWZvcmUgZnJlZWluZy4gIEFsdGVybmF0aXZlbHksCiAgdXNlIGEgY29tcGxldGlv
-biBvciBhbm90aGVyIHByaW1pdGl2ZSB3aXRoIGEgZGVmaW5lZCBkZXN0cm95CiAgcHJvdG9jb2wu
-ICBSZXBvcnQtZmlyc3QsIG5vIHBhdGNoIGF0dGFjaGVkOyBoYXBweSB0byB0ZXN0IGFueQogIHBy
-b3Bvc2FsLgoKCgogIFBsZWFzZSBrZWVwIG1lIGluIENjOyBJIGFtIG5vdCBzdWJzY3JpYmVkIHRv
-IHRoZSBsaXN0cy4KCgoKUmVnYXJkcywKSGFueGlhbmcgWHUKeHVoeEBodXN0LmVkdS5jbgo=
-------=_Part_474619_282876185.1794316317767
-Content-Type: text/plain; name=acpi_case5.c
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="acpi_case5.c"
+This series adds support for handling ACPI CPPC Highest Performance
+register changes at runtime, triggered by Notify(0x85) on a processor
+device. When the platform changes the Highest Performance value, the
+OSPM must re-evaluate the cached capability and propagate the change
+to the cpufreq policy, the scheduler's CPU capacity model, and the
+frequency invariance engine.
 
-Ly8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKI2luY2x1ZGUgPGxpbnV4L21vZHVs
-ZS5oPgojaW5jbHVkZSA8bGludXgva3RocmVhZC5oPgojaW5jbHVkZSA8bGludXgvZGVsYXkuaD4K
-I2luY2x1ZGUgPGxpbnV4L2FjcGkuaD4KI2luY2x1ZGUgPGFjcGkvYWNwaV9idXMuaD4KCnN0YXRp
-YyBhY3BpX2hhbmRsZSB0ZXN0X2hhbmRsZTsKCnN0YXRpYyBpbnQgYWNwaV93YWl0X3RocmVhZCh2
-b2lkICpkYXRhKQp7CglhY3BpX3N0YXR1cyBzdDsKCglwcl9pbmZvKCJBQ1BJX0NBU0U1OiB3YWl0
-ZXIgZXZhbHVhdGluZyBNV0FJXG4iKTsKCXN0ID0gYWNwaV9ldmFsdWF0ZV9vYmplY3QodGVzdF9o
-YW5kbGUsICJNV0FJIiwgTlVMTCwgTlVMTCk7Cglwcl9pbmZvKCJBQ1BJX0NBU0U1OiB3YWl0ZXIg
-cmV0dXJuZWQgc3Q9JWRcbiIsIHN0KTsKCXJldHVybiAwOwp9CgpzdGF0aWMgaW50IF9faW5pdCBh
-Y3BpX2Nhc2U1X2luaXQodm9pZCkKewoJc3RydWN0IHRhc2tfc3RydWN0ICp0OwoJYWNwaV9zdGF0
-dXMgc3Q7CgoJc3QgPSBhY3BpX2dldF9oYW5kbGUoTlVMTCwgIlxcX1NCLlRTVDAiLCAmdGVzdF9o
-YW5kbGUpOwoJcHJfaW5mbygiQUNQSV9DQVNFNTogZ2V0X2hhbmRsZSBzdD0lZCBoYW5kbGU9JXB4
-XG4iLCBzdCwgdGVzdF9oYW5kbGUpOwoJaWYgKEFDUElfRkFJTFVSRShzdCkpCgkJcmV0dXJuIC1F
-Tk9ERVY7CgoJdCA9IGt0aHJlYWRfcnVuKGFjcGlfd2FpdF90aHJlYWQsIE5VTEwsICJhY3BpX2Nh
-c2U1X3dhaXQiKTsKCWlmIChJU19FUlIodCkpCgkJcmV0dXJuIFBUUl9FUlIodCk7CgoJbXNsZWVw
-KDEwMDApOwoJcHJfaW5mbygiQUNQSV9DQVNFNTogZXZhbHVhdGluZyBNUlNUIHdoaWxlIHdhaXRl
-ciBibG9ja2VkXG4iKTsKCXN0ID0gYWNwaV9ldmFsdWF0ZV9vYmplY3QodGVzdF9oYW5kbGUsICJN
-UlNUIiwgTlVMTCwgTlVMTCk7Cglwcl9pbmZvKCJBQ1BJX0NBU0U1OiBNUlNUIHJldHVybmVkIHN0
-PSVkXG4iLCBzdCk7Cgltc2xlZXAoMTAwMCk7CglyZXR1cm4gMDsKfQoKc3RhdGljIHZvaWQgX19l
-eGl0IGFjcGlfY2FzZTVfZXhpdCh2b2lkKQp7Cglwcl9pbmZvKCJBQ1BJX0NBU0U1OiB1bmxvYWRc
-biIpOwp9Cgptb2R1bGVfaW5pdChhY3BpX2Nhc2U1X2luaXQpOwptb2R1bGVfZXhpdChhY3BpX2Nh
-c2U1X2V4aXQpOwpNT0RVTEVfTElDRU5TRSgiR1BMIik7Ck1PRFVMRV9ERVNDUklQVElPTigiQUNQ
-SSBldmVudCBSZXNldC12cy1XYWl0IHJhY2UgcHJvYmUiKTsK
-------=_Part_474619_282876185.1794316317767--
+Concrete use cases discussed during review of the previous versions:
 
+- A processor can age over time and its core frequency degrades. It
+  is good if platforms can make OSPM and userspace aware of this
+  (Jie, Christian).
+
+- Platform operating mode changes between "performance" and
+  "powersave" (longer battery life) when the top-most OPP is a
+  high-cost one (Rafael).
+
+The mode-switch use case can also move Highest Performance back up,
+e.g. when switching from powersave back to performance. update_limits
+therefore accepts changes in both directions, capped at the Highest
+Performance probed at policy init, as proposed by Christian: any
+value above the first probe is ignored, since it would allow boost
+support to appear after policy init, which the cpufreq core cannot
+handle today (the boost QoS request is only created at policy init).
+A policy that started without boost cannot gain it at runtime;
+supporting that would need runtime QoS request creation in the core
+and is left for later.
+
+v5 -> v6:
+
+- Cap runtime Highest Performance changes at the value probed at
+  policy init (Christian): any value above the first probe is
+  ignored, since it would allow boost support to appear after policy
+  init, which the cpufreq core cannot handle today (the boost QoS
+  request is only created at policy init). Within that bound both
+  decreases and increases are accepted, so a platform switching back
+  to a performance mode restores the previous Highest Performance
+  (Rafael's mode-switch use case).
+
+- Refresh the topology capacity for every CPU of the policy
+  (policy->related_cpus, covering offline CPUs of the domain as
+  well) instead of only policy->cpu, so a shared-policy Notify(0x85)
+  targeting any CPU of the policy refreshes the whole domain at
+  once (Christian).
+
+- Trim the internal helper comments (cppc_cpufreq_sync_boost_limits(),
+  cppc_cpufreq_set_autonomous_perf()) down to the essential notes,
+  drop the debug-only value dump, and report boost QoS sync failures
+  through pr_err (Jie).
+
+- Ignore values that would drop Highest Performance below Nominal:
+  they violate the CPPC invariant and cannot be handled cleanly, so
+  the special-casing for them is gone; such
+  values are now warned about (Jie).
+  topology_update_cpu_capacity() rejects such values as well, to
+  match the boot-time validation.
+
+- Return early from cppc_cpufreq_update_limits() when the policy is
+  inactive: a concurrent CPU offline may have freed the driver data
+  after cpufreq_update_limits() acquired the policy reference.
+
+Note: proposed spec extensions would allow nominal_perf to change
+at runtime [1] and introduce a highest_freq value; neither is
+handled here.
+
+[1] https://lore.kernel.org/all/20260430142430.755437-3-sumitg@nvidia.com/
+
+The series is split into three patches:
+  Patch 1: Core update_limits callback with boost QoS handling;
+           runtime changes capped at the boot-probed value.
+  Patch 2: Refactor autonomous perf bounds into a reusable helper
+           and wire it into update_limits with error logging.
+  Patch 3: Topology subsystem runtime capacity updates with
+           validation, early-return optimization, and concurrent-safe
+           normalization for all CPUs of the policy.
+
+The v5 series was tested on an arm64 8-core big.LITTLE system with runtime
+highest_perf changes injected through a debugfs hook that exercises
+the same code path as ACPI Notify(0x85), including values above
+1024 and full capacity re-normalization (see the v5 discussion for
+the measured capacities).
+
+Xueqin Luo (3):
+  cpufreq: cppc: Add update_limits support for Highest Performance
+    changes
+  cpufreq: cppc: Refactor autonomous perf bounds into helper
+  arch_topology: Add topology_update_cpu_capacity() for runtime updates
+
+ drivers/base/arch_topology.c   |  77 ++++++++++++++++
+ drivers/cpufreq/cppc_cpufreq.c | 157 ++++++++++++++++++++++++++++++---
+ include/acpi/cppc_acpi.h       |   1 +
+ include/linux/arch_topology.h  |  13 +++
+ 4 files changed, 235 insertions(+), 13 deletions(-)
+
+Cc: Ionela Voinescu <ionela.voinescu@arm.com>
+
+-- 
+2.43.0
