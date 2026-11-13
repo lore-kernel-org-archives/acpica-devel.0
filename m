@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794576476;
-	b=wvHtqogG3tFR+p5wmA0CkRoBMRjycEkaNOpjKy+KL/SWgpTSEPeUO9TZY+PYBEyLUvF8
-	 X18HGaECW+BWubiPZhT4A5LRE2iibBWuiD7Ipx04FfhnSvsd559tU1kMh6eZ95zT7tZer
-	 NVUbAHG3GTX3NW3Lajc3PuE1DEVdj8l18LjY9OTOb8Tu+pqqlaz8QJPUH/b+jtAWfVUnG
-	 h+LKh6ZNdoWWDN6vrUreY42eIctD5Pgp58OaFR6KHCWWs3r1TcIWqsv5t13+vZzEsWWW3
-	 fONJ1SAWefPku1QslAqlaNWSI/E3jsVUR8hYzh+4hY0XKddgHuBQLc93Pp/L1I+7C4g==
+	t=1794576486;
+	b=cLhNydut3odlrCQKLCfT86I8XwwV5of68p3YEMGId/q66PJzWQQdViaKlsndLn5yse/C
+	 cY7wk0WSpRxdA+zSDE1VVBiQx+FIWv19Y9FlbbJtZYr/x0Pa0HBfXBT9yWsZtfyQhYjQd
+	 WbnpYspmfzFnKg3RTGmgd6UZwDTMUjDVWeG4KsU/3FEtQD7UQbhmucSv9Sdql6BZ1AUGQ
+	 dtH37KDL4YSUylFsVMZ+8r2P6tkwtLrIva2qp8oF3c3iiTEpS3kogTCOJZvgt/6Od5BDX
+	 PwEKuQHDlS4A0UK9MJqqqnrssg2OUA1qnS8aGdHdrPfrOSV6PW/TVfy8G13CX5OidpQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794576476;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794576486;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=vXiMqLho4RNuv/eY0F44Zfecir/DdxWAqcWY0anw/Ns=;
-	b=oiWN7hQAjnVZaz+g4PijpvzgccDSioEpKNcih4b35yPpfit0vqzv/vSn4jmd2CynLGk7
-	 7a8WuXOZvjIT7pvxsjDTfC+t5vGJBB2ROfKtEy33valQ8OUhWCyoH8Uzlur9DEYomlLeU
-	 a5yMgVKJwKhUJK8R3M1YOXWLEn97PFFJsP3fQFth7FPpoP7HzHqy0IwlaRNGwM4HZrw/L
-	 wIqQ6/yHKi/AJnfkSRoecDoeVWgITiJYI/oXg0AJsDTpijBVMwQm1gXS/9yaLvw7t0MuX
-	 +aITb8+VKtXRH4dBRDluBQXAzhADCPvRPwTKL/33Z0xOIZ00Be4B+eKlWuFK+6PrFKA==
+	bh=eU2UARUAckPhr4q/P8tKBwfdhmsSzqQma9MHJ//hXQc=;
+	b=nbEAhIJNslIVUzIBck2leTqup1uKaD52BBWvCrDEaGyY/on9uqmt/ZjgocdjvNTMYGAv
+	 NglHU5VcbwqAWxPgPXDt8GYMNNKp76MKLL/V2hcs6n6BBANtGzbmgG7cx9fQjl9LosJQx
+	 lUbPz6ci7a1dOOz2tqWuTPKMMeVptFyCwTb6dPxoepy3KgsjcKWx4PW8UsALhYDdo7Z+f
+	 XBTF+iO9QOzdV2tqkpVREnHgn70maT1v8F+VmbCD+XqD0zlPVp2GsqBh+b3pE871YNoio
+	 sna4TRzj7KCrLTwC/EMjHc2y6UnbQvSZz6WWaPfTvIzjTYcQc8m465P7ywF49cFqoQA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=m1e2eVX2;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=jxD4Brxm;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E227A606B540
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:27:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E227A606B540
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC0F60A6F60
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:28:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CDC0F60A6F60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=m1e2eVX2
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=jxD4Brxm
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64C9E169C;
-	Fri, 13 Nov 2026 05:27:52 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57CE816F2;
+	Fri, 13 Nov 2026 05:28:02 -0800 (PST)
 Received: from e135073.arm.com (unknown [10.57.14.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 31A143F85F;
-	Fri, 13 Nov 2026 05:27:50 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 52D7E3F85F;
+	Fri, 13 Nov 2026 05:28:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794576475; bh=M4YTbBeqX3PYCmq0Sod5RHrB7myumFEVylMcW6NPVcE=;
+	t=1794576485; bh=OvrW+o6ubR6y6R+n3mv0g5zTzffEVhjDila+yiH1P7o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=m1e2eVX2YumSflQ3b9OqjsVQUC06POJTiZNFA/giqJB3MMsJPu82aDjYWA0/sXEda
-	 rBf5TelAd/SMz6/DkuijEdgTATqFhCJN+Q++7TJtXqAEBTtNzk8P0yEw1X2eAVWtFC
-	 U/YUFfsAI6QNQXPHzOBLYp8snma3Pu+B+YXtKOZc=
+	b=jxD4Brxm6b5UNRyqxxQOHWP+VfpSN8qirnzwo7jRUOWvbv0vyzfKRkR1+7d8RidPI
+	 qwGX4bn9csQ2+gX9TTPAxPCifdvX8qRW1SN0fBIYdwbSd+s2D8HuDv59GBga/MhXIg
+	 FYry9HdtGyfOfVdbJV01JTrqaqJEuBkJXsFniuKs=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -57,10 +57,10 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
 	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
 	Breno Leitao <leitao@debian.org>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
 	Terry Bowman <terry.bowman@amd.com>,
 	Dan Williams <djbw@kernel.org>,
 	Ard Biesheuvel <ardb@kernel.org>,
@@ -68,9 +68,9 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v4 10/12] efi/cper: Pass buffer length to memory location helpers
-Date: Fri, 13 Nov 2026 14:24:52 +0100
-Message-ID: <20261113132600.3355836-11-pierre.gondois@arm.com>
+Subject: [PATCH v4 11/12] EDAC/ghes: Small buffer fixes for mem other_detail helpers
+Date: Fri, 13 Nov 2026 14:24:53 +0100
+Message-ID: <20261113132600.3355836-12-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261113132600.3355836-1-pierre.gondois@arm.com>
 References: <20261113132600.3355836-1-pierre.gondois@arm.com>
@@ -85,126 +85,82 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a length parameter to:
-- cper_mem_err_location()
-- cper_mem_err2_location()
-to prevent potential buffer overflows/truncated messages.
+scnprintf() already reserves space for the terminating NULL,
+leaving one byte unused and under-flowing the capacity when len=0.
+Callers also remove the last character unconditionally, which
+can discard valid text after truncation.
+
+Update the following functions to fix the above issues.
+- print_mem_error_other_detail()
+- print_mem_error2_other_detail()
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/edac/ghes_edac.c    |  4 ++--
- drivers/firmware/efi/cper.c | 20 +++++++++-----------
- include/linux/cper.h        |  4 ++--
- 3 files changed, 13 insertions(+), 15 deletions(-)
+ drivers/edac/ghes_edac.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-index 075328d1bb7d..f0ca61bddee6 100644
+index f0ca61bddee6..33e3aa897c18 100644
 --- a/drivers/edac/ghes_edac.c
 +++ b/drivers/edac/ghes_edac.c
-@@ -357,7 +357,7 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
- 
- 	len = sizeof(e->location);
- 	p = e->location;
--	p += cper_mem_err_location(&cmem, p);
-+	p += cper_mem_err_location(&cmem, p, len);
- 
- 	if (mem_err->validation_bits & CPER_MEM_VALID_MODULE_HANDLE) {
- 		struct dimm_info *dimm;
-@@ -472,7 +472,7 @@ static int ghes_edac_report_mem_error2(struct notifier_block *nb,
- 	/* Memory error location, mapped on e->location */
- 	len = sizeof(e->location);
- 	p = e->location;
--	p += cper_mem_err2_location(mem_err, p);
-+	p += cper_mem_err2_location(mem_err, p, len);
- 
- 	if (mem_err->validation_bits & CPER_MEM2_VALID_MODULE_HANDLE) {
- 		struct dimm_info *dimm = NULL;
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index 0c38ff65ee0b..89ebd3cc6123 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -298,15 +298,14 @@ const char *cper_mem_err_status_str(u64 status)
+@@ -243,15 +243,14 @@ static void ghes_scan_system(void)
  }
- EXPORT_SYMBOL_GPL(cper_mem_err_status_str);
  
--int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
-+int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg, size_t len)
+ static int print_mem_error_other_detail(const struct cper_sec_mem_err *mem, char *msg,
+-					const char *location, unsigned int len)
++					const char *location, size_t len)
  {
--	u32 len, n;
-+	u32 n;
+ 	u32 n;
  
 -	if (!msg)
 +	if (!msg || !len)
  		return 0;
  
  	n = 0;
--	len = CPER_REC_LEN;
- 	if (mem->validation_bits & CPER_MEM_VALID_NODE)
- 		n += scnprintf(msg + n, len - n, "node:%d ", mem->node);
- 	if (mem->validation_bits & CPER_MEM_VALID_CARD)
-@@ -419,7 +418,7 @@ const char *cper_mem_err_unpack(struct trace_seq *p,
- 	const char *ret = trace_seq_buffer_ptr(p);
- 	char rcd_decode_str[CPER_REC_LEN];
+-	len -= 1;
  
--	if (cper_mem_err_location(cmem, rcd_decode_str))
-+	if (cper_mem_err_location(cmem, rcd_decode_str, sizeof(rcd_decode_str)))
- 		trace_seq_printf(p, "%s", rcd_decode_str);
- 	if (cper_dimm_err_location(cmem, rcd_decode_str, sizeof(rcd_decode_str)))
- 		trace_seq_printf(p, "%s", rcd_decode_str);
-@@ -451,7 +450,7 @@ static void cper_print_mem(const char *pfx, const struct cper_sec_mem_err *mem,
- 		printk("%s""physical_address_mask: 0x%016llx\n",
- 		       pfx, mem->physical_addr_mask);
- 	cper_mem_err_pack(mem, &cmem);
--	if (cper_mem_err_location(&cmem, rcd_decode_str))
-+	if (cper_mem_err_location(&cmem, rcd_decode_str, sizeof(rcd_decode_str)))
- 		printk("%s%s\n", pfx, rcd_decode_str);
- 	if (mem->validation_bits & CPER_MEM_VALID_ERROR_TYPE) {
- 		u8 etype = mem->error_type;
-@@ -462,15 +461,14 @@ static void cper_print_mem(const char *pfx, const struct cper_sec_mem_err *mem,
- 		printk("%s%s\n", pfx, rcd_decode_str);
- }
+ 	n += scnprintf(msg + n, len - n, "APEI location: %s ", location);
  
--int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
-+int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg, size_t len)
+@@ -377,8 +376,8 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
+ 
+ 	/* All other fields are mapped on e->other_detail */
+ 	p = pvt->other_detail;
+-	p += print_mem_error_other_detail(mem_err, p, e->location, OTHER_DETAIL_LEN);
+-	if (p > pvt->other_detail)
++	p += print_mem_error_other_detail(mem_err, p, e->location, sizeof(pvt->other_detail));
++	if (p > pvt->other_detail && p[-1] == ' ')
+ 		*(p - 1) = '\0';
+ 
+ 	edac_raw_mc_handle_error(e);
+@@ -392,15 +391,14 @@ static struct notifier_block ghes_edac_mem_err_nb = {
+ };
+ 
+ static int print_mem_error2_other_detail(const struct cper_sec_mem_err2 *mem, char *msg,
+-					 const char *location, unsigned int len)
++					 const char *location, size_t len)
  {
--	u32 len, n;
-+	u32 n;
+ 	u32 n;
  
 -	if (!msg)
 +	if (!msg || !len)
  		return 0;
  
  	n = 0;
--	len = CPER_REC_LEN;
- 	if (mem->validation_bits & CPER_MEM2_VALID_NODE)
- 		n += scnprintf(msg + n, len - n, "node:%d ", mem->node);
- 	if (mem->validation_bits & CPER_MEM2_VALID_CARD)
-@@ -551,7 +549,7 @@ static void cper_print_mem2(const char *pfx, const struct cper_sec_mem_err2 *mem
- 	if (mem->validation_bits & CPER_MEM2_VALID_PA_MASK)
- 		printk("%sphysical_address_mask: 0x%016llx\n", pfx,
- 		       mem->physical_addr_mask);
--	if (cper_mem_err2_location(mem, rcd_decode_str))
-+	if (cper_mem_err2_location(mem, rcd_decode_str, sizeof(rcd_decode_str)))
- 		printk("%s%s\n", pfx, rcd_decode_str);
- 	if (mem->validation_bits & CPER_MEM2_VALID_ERROR_TYPE)
- 		printk("%serror_type: %u, %s\n", pfx, mem->error_type,
-diff --git a/include/linux/cper.h b/include/linux/cper.h
-index 4338c216b1dc..db69995a43bf 100644
---- a/include/linux/cper.h
-+++ b/include/linux/cper.h
-@@ -654,10 +654,10 @@ void cper_print_proc_arm(const char *pfx,
- 			 u32 length);
- void cper_print_proc_ia(const char *pfx,
- 			const struct cper_sec_proc_ia *proc);
--int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg);
-+int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg, size_t len);
- int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg, size_t len);
+-	len -= 1;
  
--int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg);
-+int cper_mem_err2_location(const struct cper_sec_mem_err2 *mem, char *msg, size_t len);
- int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg, size_t len);
+ 	n += scnprintf(msg + n, len - n, "APEI location: %s ", location);
  
- struct acpi_hest_generic_status;
+@@ -494,8 +492,8 @@ static int ghes_edac_report_mem_error2(struct notifier_block *nb,
+ 
+ 	/* All other fields are mapped on e->other_detail */
+ 	p = pvt->other_detail;
+-	p += print_mem_error2_other_detail(mem_err, p, e->location, OTHER_DETAIL_LEN);
+-	if (p > pvt->other_detail)
++	p += print_mem_error2_other_detail(mem_err, p, e->location, sizeof(pvt->other_detail));
++	if (p > pvt->other_detail && p[-1] == ' ')
+ 		*(p - 1) = '\0';
+ 
+ 	edac_raw_mc_handle_error(e);
 -- 
 2.43.0
 
