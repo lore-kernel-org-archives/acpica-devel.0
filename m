@@ -1,79 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794576496;
-	b=AIvjU7075dHw+6O3vKNwN3bS4MFCYJYcZpK52HJEMOxZuT2MdBFfJDRdZ/Y4/MCkTXwy
-	 bNhyNiZZlCDdwCn4Ndvq9N/U2cy1Ufq2cItTCyNpMttKoxAscoy9qtg61/JV3W02vaQS0
-	 2QJT1KTmR94VbEWue2M5Na3LUIVJ2GpHk13FdxxrDdS6U3sf728GDQKBM3Gy3GTsXmbut
-	 sKMllgCZYypq7WTfDTNornvoqLP5AJ4KufBjS/RuKOhblmf4nRgACte3wGfgNH0//zelz
-	 3W84m/O6RmEi21uPu9/bzX+h0yFcM9A7u8/dUpjf7q4S1cbwKK0WgT5FeI3JR/mXulA==
+	t=1794582278;
+	b=Xu0PZWLtAveAFgpquPIUi9HqCh4pCZUhFzdPULjfQx7FqC/qXOlNgMuYToPQJRHt6A/6
+	 ECKuWtMPhnLQKMsvXWVhFCvSIMnZuHSMF/MKZd9axPnX3NxxT4Kr+u0KPVOyPildx/A4g
+	 9s8t7LIiMY9pqQ+wp5FYPT7EA6tbNMj9Yi53cy2zJ1SEn/8csXyBjjVRLQaEf1d5nFjf3
+	 De8PMef0TISOUGXWr4imVVVLJBhOLi0pk1ERc8huEfFcjn9fZYLZnmHZZJLlyQE1pR+8A
+	 1XLpjQ3f1jL/nvj+DQbAJdbPMy8L5cicdaeHChcCyXmT/hxf3B6BF25RNZbS/Of+GQQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794576496;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=1+aHLi2UtIuBlcJCbpbAPaiJvtL7eNx9R7my6J/Wo6I=;
-	b=KA3tB+Jw+PjAafz60bTEFroGNqdgxTVO1+SNTKNCSuiGmM1fhi6jMRCvqGqErLiYsKUs
-	 72GVFqGy5akZ659RwXHBKX5rmMEMbb6MeIcZzj5L2eH2iAd8k1RYkrAYjyBpvvRTZseJf
-	 OGcsW09g6nzyybSeKa4sOuADyioErANGNym8u8BU66e4ITYcGX9SpVlw0y8ouoBEPjyjZ
-	 LphLKy1gR7RCedkWaK6kKZkv/QVDxrWYmqAr0Jp4qO/5pIPPY24wrIDvjZa0DgfQS+poT
-	 1BxJIaFYHh6++G23s4a4meXuENteUfLzVn3yh7zavzk7/gEL2N4Da1czrjjnExuV09w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794582278;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=kbBjRgmT9qgWX9JcAIks0NFFYmbsdb28Bgdoa2Ns/l0=;
+	b=Nzxq/vCo0oRP8qhpRcHNKyb+dGDK4CWJF02VObPvS//9CFt2gpHoWj6xr77f/0r1wl6J
+	 k8Y064ZzHEBwO5Koq9F0Ju4V4Y9RS0cq7um3WduyO19dlibSA5TCkgVrQLhu9qGtGxDiF
+	 BXPUDdL3vThZPyLCYBZEkBE/mRXwGPMeIvFBIh3LGKSsnndii/TfhNF80EV1M5umL8vFf
+	 uhipc8pxQZJOAdiviUtrL34Fq4hb/WG7KalAlrKY15igpAUE0X079dolyE+s8pyCHAxcR
+	 lkfYtC5rPsq28WshghmcmOXH2KjqIR0PFCY6gzXBQepUWdPGOS7x89HKPSBTXr3yDXA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=SmeRqcZi;
-	arc=none smtp.remote-ip=217.140.110.172
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98994606E400
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:28:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 98994606E400
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IrCrDKxV;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07F3606A327
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 15:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=SmeRqcZi
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1D8C1BB2;
-	Fri, 13 Nov 2026 05:28:11 -0800 (PST)
-Received: from e135073.arm.com (unknown [10.57.14.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 299A53F85F;
-	Fri, 13 Nov 2026 05:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794576495; bh=o0mvMz7Hkgc98u3XVYb9ZY3WvbaHGaD0B1hl0lPQEk0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SmeRqcZigWsajIP8sYoa3JsAi8Y6QEfkmYzM/Baj7a2mEEJmN5TCy82jGV6wtHaCC
-	 5xvoqeFyM0+g86zVsLGw0TF2Xb9k+vZFfP7hpJ8t53k47xuJ7LpBJO1ZmySFohO4+O
-	 nirc16pEnX+l915yFVqjq6nmHiuOVAef2tggG04c=
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
-	James Morse <james.morse@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	Breno Leitao <leitao@debian.org>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Dan Williams <djbw@kernel.org>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Morduan Zang <zhangdandan@uniontech.com>,
-	linux-acpi@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v4 12/12] efi/cper: Increase memory error location and detail buffer sizes
-Date: Fri, 13 Nov 2026 14:24:54 +0100
-Message-ID: <20261113132600.3355836-13-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261113132600.3355836-1-pierre.gondois@arm.com>
-References: <20261113132600.3355836-1-pierre.gondois@arm.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IrCrDKxV
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38E01F000CD
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 15:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794582278;
+	bh=kbBjRgmT9qgWX9JcAIks0NFFYmbsdb28Bgdoa2Ns/l0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=IrCrDKxV/9wVP7o1A7Uwwq7KjWFyRCJl3dAQ7/g7gWaijgrPjFRCRmhQlBLdWVcBH
+	 Y0JBHhUopPngdNXRgzXWeyCUbHm2ANpWsFzJs6UoBzYMjNJ9DuO58pg/jwr8b17Aee
+	 MqnJ7Fal6xcUQ6DroTmn7ezlWMbttYPwdkEbnbIMZZClr0LaaNjSyFXp+J/u7zUiEH
+	 X6kVqlDG+lBoaY0er8P3dIrFDfdGFRIOI+jmHy8D1rRS8/+xAdIjpZygXcULlQAbxi
+	 NxZykgby/i4t778qxSQH6v0jKBhX430t8ut1zBjsQpPQhGn83TTnDiuGmjaKqvwnw1
+	 D2VrlneApiEKg==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5be3cff0f6cso1031774e87.0
+        for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 07:04:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErHdeQneAgH5sneOtCXtSQYtTKTDvke3RalJIU+LZfTXXq9ETtg3or7J66DHeod7JG7XR3FNUU28aKNW6/I=@lists.linux.dev
+X-Gm-Message-State: APuU4Z8PWzBOywlPlGEU6kfz6brtfWu7nTqimWxQSBi3hYj+IW3ez9Ax
+	eF9xdsV1JVSw9G7CQZwGOS/aOuEM45ykNGCPa4mLWrVJXSQNkFJkMYdKE4e7cgFrHMSCUaftBft
+	E2O9+nX4SLAD1SK8G29Uj4TidX0/rc8g=
+X-Received: by 2002:a05:6512:3c9f:b0:5bf:d0d5:3b12 with SMTP id
+ 2adb3069b0e04-5c1709e535bmr1462462e87.42.1794582276836; Fri, 13 Nov 2026
+ 07:04:36 -0800 (PST)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -83,84 +59,331 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20261111220803.3953790-1-sumitg@nvidia.com>
+In-Reply-To: <20261111220803.3953790-1-sumitg@nvidia.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Fri, 13 Nov 2026 16:04:24 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hJExw-TYyF-TtEeuZ9kw3v5cm=H3Q=vLLqQ51V0Xn8Mg@mail.gmail.com>
+X-Gm-Features: AclHuK_uNNKHpJk3ChlalQ1s4LPVs3H0vhMDhZKt2eCu7idDfJ7Nkp1Kg8j37kg
+Message-ID: <CAJZ5v0hJExw-TYyF-TtEeuZ9kw3v5cm=H3Q=vLLqQ51V0Xn8Mg@mail.gmail.com>
+Subject: Re: [PATCH v6] cpufreq: CPPC: Add autonomous mode boot parameter support
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: rafael@kernel.org, viresh.kumar@linaro.org, zhanjie9@hisilicon.com, 
+	zhenglifeng1@huawei.com, christian.loehle@arm.com, 
+	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, lenb@kernel.org, 
+	corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org, 
+	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, treding@nvidia.com, 
+	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
+	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Memory Error Section 2 descriptions can exceed the existing buffers.
-Helpers require:
+On Wed, Nov 11, 2026 at 11:08=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wr=
+ote:
+>
+> Configuring autonomous selection and Energy Performance Preference (EPP)
+> at every boot currently requires per-policy sysfs writes.
+>
+> Add the 'cppc_cpufreq.auto_sel_mode' boot parameter to enable autonomous
+> selection during policy initialization and optionally set EPP. In
+> autonomous mode, the platform selects the performance level within the
+> MIN and MAX limits, which the driver sets from the policy limits. The EPP
+> hint guides that selection.
+>
+> The parameter accepts:
+> - performance: enable autonomous selection and set EPP to 0x00
+> - balance_performance: enable it and set EPP to 0x80
+> - balance_power: enable it and set EPP to 0xc0
+> - power: enable it and set EPP to 0xff
+> - default_epp: enable it and preserve firmware EPP
+> - disabled: preserve the firmware configuration (default)
+>
+> Warn about unrecognized values and ignore them.
+>
+> Skip policies without autonomous-selection support. The driver enables
+> autonomous selection before writing EPP, as the platform may ignore EPP
+> while autonomous selection is disabled.
+>
+> Record successful writes so the existing online and resume paths reapply
+> the requested values. The offline and suspend paths restore the saved
+> firmware values, including during driver unload.
+>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> ---
+> This is based on the "Preserve OSPM-set registers" [1] and
+> "ospm_nominal_perf" [2] series, which are applied for 7.5.
+>
+> v5 -> v6:
+> - Split "Set CPPC Enable register in cpu_init" into a separate fix [3].
+> - Accept strings only (Pierre [4]).
+> - Move the setup into cppc_cpufreq_setup_auto_sel_mode() and check
+>   autonomous selection support first (Pierre [4]).
+> - Drop the last_governor check, as init() now runs only for a new
+>   policy (Pierre [4]).
+> - Drop the MIN/MAX seeding, Desired hint and policy->min/max override,
+>   as init() and the governor already set valid values (Pierre [4]).
+> - Apply the parameter at the end of init(), after the usual
+>   performance controls write.
+> - Save auto_sel and EPP through the saved-register code from [1]
+>   (Sashiko [5]).
+> - Drop the cppc_cpufreq_exit() loop that cleared auto_sel on all
+>   present CPUs (Pierre [4], Sashiko [5]).
+> - Enable autonomous selection before writing EPP.
+> - Set EPP also when firmware has already enabled autonomous selection.
+> - Add the balance_power (0xc0) and power (0xff) modes.
+> - Ignore an unrecognized value instead of treating it as disabled.
+>
+> v5: https://lore.kernel.org/lkml/20260623080652.3353386-1-sumitg@nvidia.c=
+om/
+> [1] https://lore.kernel.org/lkml/20261106193304.3347374-1-sumitg@nvidia.c=
+om/
+> [2] https://lore.kernel.org/lkml/20261109195400.3600561-1-sumitg@nvidia.c=
+om/
+> [3] https://lore.kernel.org/lkml/20261110101246.3665797-1-sumitg@nvidia.c=
+om/
+> [4] https://lore.kernel.org/lkml/f61f592a-bc9c-4a83-bde1-e999c8101c36@nvi=
+dia.com/
+> [5] https://sashiko.dev/#/patchset/20260623080652.3353386-1-sumitg@nvidia=
+.com
+>
+>  .../admin-guide/kernel-parameters.txt         |  26 ++++
+>  drivers/cpufreq/cppc_cpufreq.c                | 120 ++++++++++++++++++
+>  include/acpi/cppc_acpi.h                      |   2 +
+>  3 files changed, 148 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
+ion/admin-guide/kernel-parameters.txt
+> index 0b3c140babd9..5714c0d30fce 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1015,6 +1015,32 @@ Kernel parameters
+>                         Format:
+>                         <first_slot>,<last_slot>,<port>,<enum_bit>[,<debu=
+g>]
+>
+> +       cppc_cpufreq.auto_sel_mode=3D
+> +                       [ACPI,CPU_FREQ] Enable ACPI CPPC autonomous perfo=
+rmance
+> +                       selection on all CPUs at boot. In autonomous mode=
+, the
+> +                       platform selects the performance level within the=
+ CPPC
+> +                       Minimum and Maximum Performance limits. The drive=
+r sets
+> +                       these limits from scaling_min_freq and scaling_ma=
+x_freq.
+> +                       The Energy Performance Preference (EPP) hint guid=
+es the
+> +                       platform toward performance (0x00) or energy effi=
+ciency
+> +                       (0xff).
+> +                       Requires the ACPI CPPC Autonomous Selection Enabl=
+e
+> +                       register. EPP is set only if the platform impleme=
+nts it.
+> +                       Format: <string>
+> +                         performance:
+> +                                 enable autonomous selection, set EPP to=
+ 0x00
+> +                         balance_performance:
+> +                                 enable autonomous selection, set EPP to=
+ 0x80
+> +                         balance_power:
+> +                                 enable autonomous selection, set EPP to=
+ 0xc0
+> +                         power:
+> +                                 enable autonomous selection, set EPP to=
+ 0xff
+> +                         default_epp:
+> +                                 enable autonomous selection, keep firmw=
+are EPP
+> +                         disabled:
+> +                                 keep the firmware configuration (defaul=
+t)
+> +                       An unrecognized value is ignored with a warning.
+> +
+>         cpuidle.off=3D1   [CPU_IDLE]
+>                         disable the cpuidle sub-system
+>
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufre=
+q.c
+> index a62589c0674f..c9bed93cf0c9 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -238,6 +238,58 @@ static void cppc_cpufreq_apply_saved_regs(struct cpu=
+freq_policy *policy,
+>                                              saved_type);
+>  }
+>
+> +/* Autonomous Selection boot parameter modes */
+> +enum {
+> +       AUTO_SEL_MODE_DISABLED,
+> +       AUTO_SEL_MODE_PERFORMANCE,
+> +       AUTO_SEL_MODE_BALANCE_PERFORMANCE,
+> +       AUTO_SEL_MODE_BALANCE_POWER,
+> +       AUTO_SEL_MODE_POWER,
+> +       AUTO_SEL_MODE_DEFAULT_EPP,
+> +};
+> +
+> +static const char * const auto_sel_mode_names[] =3D {
+> +       [AUTO_SEL_MODE_DISABLED]                =3D "disabled",
+> +       [AUTO_SEL_MODE_PERFORMANCE]             =3D "performance",
+> +       [AUTO_SEL_MODE_BALANCE_PERFORMANCE]     =3D "balance_performance"=
+,
+> +       [AUTO_SEL_MODE_BALANCE_POWER]           =3D "balance_power",
+> +       [AUTO_SEL_MODE_POWER]                   =3D "power",
+> +       [AUTO_SEL_MODE_DEFAULT_EPP]             =3D "default_epp",
+> +};
+> +
+> +static int auto_sel_mode;
+> +
+> +static int auto_sel_mode_set(const char *val, const struct kernel_param =
+*kp)
+> +{
+> +       int *mode =3D kp->arg;
+> +       int ret;
+> +
+> +       ret =3D sysfs_match_string(auto_sel_mode_names, val);
+> +       if (ret < 0) {
+> +               pr_warn("Invalid auto_sel_mode \"%s\", ignoring it\n", va=
+l);
+> +               return 0;
+> +       }
+> +
+> +       *mode =3D ret;
+> +       return 0;
+> +}
+> +
+> +static int auto_sel_mode_get(char *buffer, const struct kernel_param *kp=
+)
+> +{
+> +       int *mode =3D kp->arg;
+> +
+> +       return sysfs_emit(buffer, "%s\n", auto_sel_mode_names[*mode]);
+> +}
+> +
+> +static const struct kernel_param_ops auto_sel_mode_ops =3D {
+> +       .set =3D auto_sel_mode_set,
+> +       .get =3D auto_sel_mode_get,
+> +};
+> +
+> +module_param_cb(auto_sel_mode, &auto_sel_mode_ops, &auto_sel_mode, 0444)=
+;
+> +MODULE_PARM_DESC(auto_sel_mode,
+> +                "Autonomous selection mode: performance, balance_perform=
+ance, balance_power, power, default_epp, disabled");
+> +
+>  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+>  static enum {
+>         FIE_UNSET =3D -1,
+> @@ -938,6 +990,72 @@ static u32 cppc_cpufreq_effective_nominal(struct cpu=
+freq_policy *policy)
+>         return (u32)ospm_nominal;
+>  }
+>
+> +/*
+> + * Apply the auto_sel_mode boot parameter in init(). Enable autonomous
+> + * selection unless it is already enabled. Then set EPP for the selected=
+ mode.
+> + *
+> + * Enable auto_sel before writing EPP, as the platform may ignore EPP wh=
+ile
+> + * autonomous selection is disabled. Save each value written, so that on=
+line()
+> + * and resume() write it again.
+> + */
+> +static void cppc_cpufreq_setup_auto_sel_mode(struct cpufreq_policy *poli=
+cy)
+> +{
+> +       struct cppc_policy_state *st =3D cppc_cpufreq_policy_state(policy=
+);
+> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
+> +       unsigned int cpu =3D policy->cpu;
+> +       u64 auto_sel, epp;
+> +       int ret;
+> +
+> +       if (auto_sel_mode =3D=3D AUTO_SEL_MODE_DISABLED)
+> +               return;
+> +
+> +       /* U64_MAX means the platform does not implement the register. */
+> +       auto_sel =3D st->regs[CPPC_SAVED_AUTO_SEL][CPPC_SAVED_FIRMWARE];
+> +       if (auto_sel =3D=3D U64_MAX) {
+> +               pr_info_once("Autonomous selection is not supported, igno=
+ring auto_sel_mode\n");
+> +               return;
+> +       }
+> +
+> +       if (!auto_sel) {
+> +               ret =3D cppc_set_auto_sel(cpu, true);
+> +               if (ret) {
+> +                       pr_warn("Failed to enable auto_sel for CPU%u (%d)=
+\n",
+> +                               cpu, ret);
+> +                       return;
+> +               }
+> +               cppc_cpufreq_save_requested(policy, CPPC_SAVED_AUTO_SEL, =
+true);
+> +       }
+> +       cpu_data->perf_ctrls.auto_sel =3D true;
+> +
+> +       switch (auto_sel_mode) {
+> +       case AUTO_SEL_MODE_PERFORMANCE:
+> +               epp =3D CPPC_EPP_PERFORMANCE_PREF;
+> +               break;
+> +       case AUTO_SEL_MODE_BALANCE_PERFORMANCE:
+> +               epp =3D CPPC_EPP_BALANCE_PERFORMANCE_PREF;
+> +               break;
+> +       case AUTO_SEL_MODE_BALANCE_POWER:
+> +               epp =3D CPPC_EPP_BALANCE_POWER_PREF;
+> +               break;
+> +       case AUTO_SEL_MODE_POWER:
+> +               epp =3D CPPC_EPP_ENERGY_EFFICIENCY_PREF;
+> +               break;
+> +       default:
+> +               /* default_epp keeps the EPP value set by firmware. */
+> +               return;
+> +       }
+> +
+> +       /* EPP is optional. */
+> +       ret =3D cppc_set_epp(cpu, epp);
+> +       if (ret) {
+> +               if (ret !=3D -EOPNOTSUPP)
+> +                       pr_warn("Failed to set EPP for CPU%u (%d)\n", cpu=
+, ret);
+> +               return;
+> +       }
+> +       cpu_data->perf_ctrls.energy_perf =3D epp;
+> +       cppc_cpufreq_save_requested(policy, CPPC_SAVED_EPP, epp);
+> +}
+> +
+>  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  {
+>         unsigned int cpu =3D policy->cpu;
+> @@ -1058,6 +1176,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_pol=
+icy *policy)
+>         }
+>         cpu_data->perf_limits_valid =3D true;
+>
+> +       cppc_cpufreq_setup_auto_sel_mode(policy);
+> +
+>         cppc_cpufreq_cpu_fie_init(policy);
+>         return 0;
+>
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 2cec54b4d2e2..3d47c07f494b 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -42,6 +42,8 @@
+>  #define CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
+>
+>  #define CPPC_EPP_PERFORMANCE_PREF              0x00
+> +#define CPPC_EPP_BALANCE_PERFORMANCE_PREF      0x80
+> +#define CPPC_EPP_BALANCE_POWER_PREF            0xC0
+>  #define CPPC_EPP_ENERGY_EFFICIENCY_PREF                0xFF
+>
+>  #define CPPC_PERF_LIMITED_DESIRED_EXCURSION    BIT(0)
+> --
 
-1. cper_mem_err2_location(): ~263 chars:
-    node:65535 card:65535 module:65535 rank:4294967295 bank_group:255
-    bank_address:255 device:4294967295 row:4294967295 column:4294967295
-    bit_position:4294967295 requestor_id:0xffffffffffffffff
-    responder_id:0xffffffffffffffff target_id:0xffffffffffffffff
-    chip_id:255
-
-2. cper_dimm_err2_location(): 17 + strlen(bank) + strlen(device):
-    DIMM location: <bank> <device>
-   Or ~51 chars:
-    DIMM location: not present. DMI handle: 0xffffffff
-
-3. print_mem_error2_other_detail(): ~65 + strlen(location) +
-   strlen(status):
-    APEI location: <location> status(0xffffffffffff13ff): <status>
-    section_status:0xff
-
-Increase the size of:
-- CPER_REC_LEN: used to store the output of [1] or [2]
-- LOCATION_SIZE: used to store the output of [1] + [2]
-- OTHER_DETAIL_LEN: used to store the output of [3]
-  (which includes the size of the location buffer).
-
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
----
- drivers/edac/ghes_edac.c | 3 ++-
- include/linux/cper.h     | 4 ++--
- include/linux/edac.h     | 2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-index 33e3aa897c18..d3544dc20649 100644
---- a/drivers/edac/ghes_edac.c
-+++ b/drivers/edac/ghes_edac.c
-@@ -17,7 +17,8 @@
- #include <linux/notifier.h>
- #include <linux/string.h>
- 
--#define OTHER_DETAIL_LEN	400
-+/* Allow 65 formatting characters plus the longest status description (63). */
-+#define OTHER_DETAIL_LEN	(LOCATION_SIZE + 128)
- 
- struct ghes_pvt {
- 	struct mem_ctl_info *mci;
-diff --git a/include/linux/cper.h b/include/linux/cper.h
-index db69995a43bf..a8eedc098bb0 100644
---- a/include/linux/cper.h
-+++ b/include/linux/cper.h
-@@ -29,9 +29,9 @@
-  * CPER record length contains the CPER fields which are relevant for further
-  * handling of a memory error in userspace (we don't carry all the fields
-  * defined in the UEFI spec because some of them don't make any sense.)
-- * Currently, a length of 256 should be more than enough.
-+ * Allow room for the wider fields in Memory Error Section 2.
-  */
--#define CPER_REC_LEN					256
-+#define CPER_REC_LEN					512
- /*
-  * Severity definition for error_severity in struct cper_record_header
-  * and section_severity in struct cper_section_descriptor
-diff --git a/include/linux/edac.h b/include/linux/edac.h
-index f7a8218f9cc0..ef0569aa97be 100644
---- a/include/linux/edac.h
-+++ b/include/linux/edac.h
-@@ -48,7 +48,7 @@ static inline void opstate_init(void)
- #define EDAC_MC_LABEL_LEN	31
- 
- /* Maximum size of the location string */
--#define LOCATION_SIZE 256
-+#define LOCATION_SIZE		512
- 
- /* Defines the maximum number of labels that can be reported */
- #define EDAC_MAX_LABELS		8
--- 
-2.43.0
-
+Applied as 7.5 material, thanks!
