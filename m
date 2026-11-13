@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794576416;
-	b=F/a2f/6UnDVlj0/YEKW/bzyLiu5OQfP3LG8tHm/luXibSsJmD6AlE6BDCfPeS/NGjGdd
-	 Sda+KzHKnMbiU8cFgqTeaf8Uf80+NK4UNwsOOuU+eFc6E6FrPHiOscUTYSN+nmgQWHCdm
-	 oCiVGqrhikRGGkfjib81zMK5aADAWJaUJoaswL9VdRsaS0EJ2aemG0PM4Fu6NtLzmhgEh
-	 ZpQJsERyXD0nI5ymH7uO+xvXdsa9PAqyschcDlECNNGk95xn+fWsATKpvphQ7suWcf7u5
-	 adUZEXnJiHd+8lZZkuoWtH9kE/f3M6IWtWmz2C9nZMG+Mk3Be1o/nFHEMp5TOdvC19A==
+	t=1794576426;
+	b=f4iR/aXJ/dWYG8KgVpaChwC7ihc7RDrTti8WmgohOsbQ4gtVn86+OaQ7LEJAV5QSoUjf
+	 qZvPqJ29bEkaeIsD5xgO/eYnoyRGIQx43S9nT4aVs2DvgoCquwk1dPG60atcagCNRmMR7
+	 JB3DgHuRBmT/jg20+koDmU1AqIm3AITkM2QzELh4JwcrcMyjLfrnt2sEnFQSnX+0wzAaS
+	 KilD4npD5HhiBGqXZauUUb4ny0KUluebw2iKNRkBlNv+diDNo6WEQtK00ZKpkgcHS//bw
+	 GIDuJtRdPylqDhHNcEJE/PeN7bvXcprDJYKx9H5NakU3ysBaYW5CWUFfWWhxdPgZ9Vw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794576416;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794576426;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=rNOJaBnJqIQh0BytQrI6oFmvY3g7gJCIY1b4dTBj6VE=;
-	b=Tnf9suA6TRRJ+DXBYCdTeavBk+xPUzws5wF5MS8QhAb2rug/D891Fu9rxOFDjPEocgZG
-	 CK+9Wf108sR9AtS+BqQrk0elkVJSGM8j4kPWZ+oh7La7VHM3rIDG+gIHVo+/z1Xf7Zes3
-	 wqpdF8CTfWeh0bp5qFFgfDjRh1pS48YUjFbnnwjF2MDS0Sgh1hY6wKWh+pxaF1NcI05b3
-	 QyrwWiXVbNdspC6ETKW1EqBqZmM3A/PNBJPLo5HcecfZOCc1cpKutZ+OodfUX0A4ad5TK
-	 OAETB6bFp/R8DHEUjz9JiwbDWpKLrHLOxE4RD/8XUv+LjOOz3nRpfrONCqvqshqGFNQ==
+	bh=43pGp9axAlQuZS9lLRlDeoeo4DzZJaL1zS+zyaWjVvc=;
+	b=oedlM91NyBhvhHScB+tAAvkJPYOQ0bTFNig7wKmgru0AcDdF8k2I8WLngIpH3/cJyIM7
+	 183GT2H/l/ne52A27wuk+eQfzZF7aJfe4csXGnidsVq+jGSc6J6QUlLgHF0f3tdnRcnuI
+	 c/6p0swR71tXfm2fJe4PUYIy1wcFJqUTxk26FWPj/1w3Z/Yj3ovr+lj5ICz/hsPFPB4J+
+	 2BcJ2qhOr3Rb/AmTImEBYHekACJPYRg9T7bEgEFgHdMe3iV1pzBH8BeNTP8jAgQcg1Slo
+	 +AFTpc3s0/l8A3n+8lVlOjNuG2LKKtebOyHib9fynXR7Ta4GIqgl/KkA+EH+PgZ9AEw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=NattlqLc;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gywvj0Yo;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710B4606A8A5
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:26:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 710B4606A8A5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E92606A337
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:27:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 05E92606A337
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=NattlqLc
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gywvj0Yo
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C15C5152B;
-	Fri, 13 Nov 2026 05:26:51 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DDAB153B;
+	Fri, 13 Nov 2026 05:27:02 -0800 (PST)
 Received: from e135073.arm.com (unknown [10.57.14.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 74D1A3F85F;
-	Fri, 13 Nov 2026 05:26:49 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DB4C63F85F;
+	Fri, 13 Nov 2026 05:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794576414; bh=lx0o98oGcIWfZs1eRF4u77nrkIHJsj5SHWVSyZ3b47k=;
+	t=1794576425; bh=v9oHqHBPDYFoQAX8i62P0hF9Sv4ORzOKE4sgoztAFLE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NattlqLcAT7eoz5Ro24Za5a6OOPjRDn4YFoT5LvS4ihS1DYVPx1aLPGON5l6MYEJ9
-	 sGRmbbjVlqhO+MvAgqsMVg51tqjKcc499y9S8+Vesgu3bVxeoTGZNABoecTkL3DxGO
-	 50fA6vqxdW96Hm9xyDu1uOR7fjdgUNFqaHhyRN5s=
+	b=gywvj0You/wlIojdQbTh+fiV15HiCqpS2JIAp1qdieBObX2XuTuQQ5OmmzKbnl4jm
+	 AmjhtgeA4G8OSZnvOqF2/OriYSVemraGYMSOzrTwdr7ssEL/ZYeqrnEAXWKH1rs/TA
+	 W3oSpkLdhwrg94OI6c2C28ybisnWkvs4UZlO+EvI=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -59,8 +59,8 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Dave Jiang <dave.jiang@intel.com>,
 	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	Breno Leitao <leitao@debian.org>,
 	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
 	Terry Bowman <terry.bowman@amd.com>,
 	Dan Williams <djbw@kernel.org>,
 	Ard Biesheuvel <ardb@kernel.org>,
@@ -68,9 +68,9 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v4 04/12] cper: Return actual bytes written by DIMM location helpers
-Date: Fri, 13 Nov 2026 14:24:46 +0100
-Message-ID: <20261113132600.3355836-5-pierre.gondois@arm.com>
+Subject: [PATCH v4 05/12] EDAC/ghes: Extract error report initialization
+Date: Fri, 13 Nov 2026 14:24:47 +0100
+Message-ID: <20261113132600.3355836-6-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261113132600.3355836-1-pierre.gondois@arm.com>
 References: <20261113132600.3355836-1-pierre.gondois@arm.com>
@@ -85,55 +85,126 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use scnprintf() instead of snprintf() to return the actual chars
-written to the buffer in:
-- cper_dimm_err_location()
-- cper_dimm_err2_location()
+Extract a ghes_edac_init_error_desc() function to prepare for
+Memory Error Section 2 support (and re-usage).
 
-This allows to make the buffer progress correctly in
-the caller function.
+Also use a guard in the caller ghes_edac_report_mem_error()
+function for code simplification.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/firmware/efi/cper.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/edac/ghes_edac.c | 70 +++++++++++++++++++++-------------------
+ 1 file changed, 36 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index 218f560a2796..d8587141f8b2 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -364,11 +364,11 @@ int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
- 	len = CPER_REC_LEN;
- 	dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
- 	if (bank && device)
--		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-+		n = scnprintf(msg, len, "DIMM location: %s %s ", bank, device);
- 	else
--		n = snprintf(msg, len,
--			     "DIMM location: not present. DMI handle: 0x%.4x ",
--			     mem->mem_dev_handle);
-+		n = scnprintf(msg, len,
-+			      "DIMM location: not present. DMI handle: 0x%.4x ",
-+			      mem->mem_dev_handle);
- 
+diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
+index d80c88818691..f1cf4d640d68 100644
+--- a/drivers/edac/ghes_edac.c
++++ b/drivers/edac/ghes_edac.c
+@@ -267,6 +267,39 @@ static int print_mem_error_other_detail(const struct cper_sec_mem_err *mem, char
  	return n;
  }
-@@ -531,11 +531,11 @@ int cper_dimm_err2_location(const struct cper_sec_mem_err2 *mem, char *msg)
  
- 	len = CPER_REC_LEN;
- 	if (bank && device)
--		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
-+		n = scnprintf(msg, len, "DIMM location: %s %s ", bank, device);
- 	else
--		n = snprintf(msg, len,
--			     "DIMM location: not present. DMI handle: 0x%.8x ",
--			     mem->mem_dev_handle);
-+		n = scnprintf(msg, len,
-+			      "DIMM location: not present. DMI handle: 0x%.8x ",
-+			      mem->mem_dev_handle);
++static void ghes_edac_init_error_desc(struct edac_raw_error_desc *e,
++				      unsigned long sev, char *msg, char *other_detail)
++{
++	lockdep_assert_held(&ghes_lock);
++
++	/* Cleans the error report buffer */
++	memset(e, 0, sizeof(*e));
++	e->error_count = 1;
++	e->grain = 1;
++	e->msg = msg;
++	e->other_detail = other_detail;
++	e->top_layer = -1;
++	e->mid_layer = -1;
++	e->low_layer = -1;
++	*msg = '\0';
++	*other_detail = '\0';
++
++	switch (sev) {
++	case GHES_SEV_CORRECTED:
++		e->type = HW_EVENT_ERR_CORRECTED;
++		break;
++	case GHES_SEV_RECOVERABLE:
++		e->type = HW_EVENT_ERR_UNCORRECTED;
++		break;
++	case GHES_SEV_PANIC:
++		e->type = HW_EVENT_ERR_FATAL;
++		break;
++	default:
++	case GHES_SEV_NO:
++		e->type = HW_EVENT_ERR_INFO;
++	}
++}
++
+ static int ghes_edac_report_mem_error(struct notifier_block *nb,
+ 				      unsigned long val, void *data)
+ {
+@@ -274,9 +307,7 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
+ 	struct cper_mem_err_compact cmem;
+ 	struct edac_raw_error_desc *e;
+ 	struct mem_ctl_info *mci;
+-	unsigned long sev = val;
+ 	struct ghes_pvt *pvt;
+-	unsigned long flags;
+ 	char *p;
  
- 	return n;
+ 	/*
+@@ -287,41 +318,15 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
+ 	if (WARN_ON_ONCE(in_nmi()))
+ 		return NOTIFY_OK;
+ 
+-	spin_lock_irqsave(&ghes_lock, flags);
++	guard(spinlock_irqsave)(&ghes_lock);
+ 
+ 	pvt = ghes_pvt;
+ 	if (!pvt)
+-		goto unlock;
++		return NOTIFY_OK;
+ 
+ 	mci = pvt->mci;
+ 	e = &mci->error_desc;
+-
+-	/* Cleans the error report buffer */
+-	memset(e, 0, sizeof (*e));
+-	e->error_count = 1;
+-	e->grain = 1;
+-	e->msg = pvt->msg;
+-	e->other_detail = pvt->other_detail;
+-	e->top_layer = -1;
+-	e->mid_layer = -1;
+-	e->low_layer = -1;
+-	*pvt->other_detail = '\0';
+-	*pvt->msg = '\0';
+-
+-	switch (sev) {
+-	case GHES_SEV_CORRECTED:
+-		e->type = HW_EVENT_ERR_CORRECTED;
+-		break;
+-	case GHES_SEV_RECOVERABLE:
+-		e->type = HW_EVENT_ERR_UNCORRECTED;
+-		break;
+-	case GHES_SEV_PANIC:
+-		e->type = HW_EVENT_ERR_FATAL;
+-		break;
+-	default:
+-	case GHES_SEV_NO:
+-		e->type = HW_EVENT_ERR_INFO;
+-	}
++	ghes_edac_init_error_desc(e, val, pvt->msg, pvt->other_detail);
+ 
+ 	edac_dbg(1, "error validation_bits: 0x%08llx\n",
+ 		 (long long)mem_err->validation_bits);
+@@ -375,9 +380,6 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
+ 
+ 	edac_raw_mc_handle_error(e);
+ 
+-unlock:
+-	spin_unlock_irqrestore(&ghes_lock, flags);
+-
+ 	return NOTIFY_OK;
  }
+ 
 -- 
 2.43.0
 
