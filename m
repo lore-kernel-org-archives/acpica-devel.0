@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794576426;
-	b=f4iR/aXJ/dWYG8KgVpaChwC7ihc7RDrTti8WmgohOsbQ4gtVn86+OaQ7LEJAV5QSoUjf
-	 qZvPqJ29bEkaeIsD5xgO/eYnoyRGIQx43S9nT4aVs2DvgoCquwk1dPG60atcagCNRmMR7
-	 JB3DgHuRBmT/jg20+koDmU1AqIm3AITkM2QzELh4JwcrcMyjLfrnt2sEnFQSnX+0wzAaS
-	 KilD4npD5HhiBGqXZauUUb4ny0KUluebw2iKNRkBlNv+diDNo6WEQtK00ZKpkgcHS//bw
-	 GIDuJtRdPylqDhHNcEJE/PeN7bvXcprDJYKx9H5NakU3ysBaYW5CWUFfWWhxdPgZ9Vw==
+	t=1794576436;
+	b=mQrDTMmUPFg4wqOitAk0WkNQWczOQm4pdCMjgBxO1YvVjefcdD1YWoCq1yXmHF/VEmwv
+	 U4Mf65U6xR56y3pN5gzSCWnYnANI1H2YLX9aDbkDDip0E3paNNzB2PzfTr1oHSLvV9OsD
+	 t0KIcZGEe5GO0qE7aXOVMHbA0YSHDUJjI33WUwscXjpUPknNfm21pLYxY6ByZCswrJng9
+	 c+UO07kvgdhrvRGL+u7kKi631u7p7R20Y5HuNlc4/BcmQhownKOgEeSQ3h63HQOWpRuxN
+	 0c4a4NBddqCJVcWQsiiiYWvIctW3RW28wac05+jizbTJD43OWPtfTNUqPhqUXCoBS+A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794576426;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794576436;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=43pGp9axAlQuZS9lLRlDeoeo4DzZJaL1zS+zyaWjVvc=;
-	b=oedlM91NyBhvhHScB+tAAvkJPYOQ0bTFNig7wKmgru0AcDdF8k2I8WLngIpH3/cJyIM7
-	 183GT2H/l/ne52A27wuk+eQfzZF7aJfe4csXGnidsVq+jGSc6J6QUlLgHF0f3tdnRcnuI
-	 c/6p0swR71tXfm2fJe4PUYIy1wcFJqUTxk26FWPj/1w3Z/Yj3ovr+lj5ICz/hsPFPB4J+
-	 2BcJ2qhOr3Rb/AmTImEBYHekACJPYRg9T7bEgEFgHdMe3iV1pzBH8BeNTP8jAgQcg1Slo
-	 +AFTpc3s0/l8A3n+8lVlOjNuG2LKKtebOyHib9fynXR7Ta4GIqgl/KkA+EH+PgZ9AEw==
+	bh=zWO9fTY1l00I493GwG+dvXsBJFpaNYO5JVcgTmMBdGw=;
+	b=oqx0xL9QlnKhCL3m+xN0vGKlQb7CNDQrEa9F4EoT0gLyKidagCKszWydEPVdjkKn6DTf
+	 CwERdjnnGAYLSTx1BYGpmtqqJo5k94u43TSmY0t4Kj4St6AsEhAHpyiAqw5sEgDd6VNEh
+	 ckP3ifL99vPuDL8bJqT5NMS+pa8bt3w+3WmR2oirEv785siofsH10zJeosu6eglBmtWHt
+	 L5bzbNndG2NQcyhBz0Hwo7ODGVRB1cCP+mhiybQnzSfucAviWoemq5bvv9GUhxy2zGQKg
+	 35yrdfKxr6Ibf/3JgremV8DVqnFhHrv8hfZZ1iEgxpyQ5QdqdywGj7q1Zhpy8LqCeaA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gywvj0Yo;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=Y0RIv9vK;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E92606A337
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:27:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 05E92606A337
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BAD606ABAD
+	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 13:27:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B5BAD606ABAD
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=gywvj0Yo
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=Y0RIv9vK
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DDAB153B;
-	Fri, 13 Nov 2026 05:27:02 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11E351476;
+	Fri, 13 Nov 2026 05:27:12 -0800 (PST)
 Received: from e135073.arm.com (unknown [10.57.14.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DB4C63F85F;
-	Fri, 13 Nov 2026 05:26:59 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 2A24C3F85F;
+	Fri, 13 Nov 2026 05:27:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794576425; bh=v9oHqHBPDYFoQAX8i62P0hF9Sv4ORzOKE4sgoztAFLE=;
+	t=1794576435; bh=XXjfz1gd37X3boaZweOwGCsLH8DHwjpk9PRswkXYj20=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gywvj0You/wlIojdQbTh+fiV15HiCqpS2JIAp1qdieBObX2XuTuQQ5OmmzKbnl4jm
-	 AmjhtgeA4G8OSZnvOqF2/OriYSVemraGYMSOzrTwdr7ssEL/ZYeqrnEAXWKH1rs/TA
-	 W3oSpkLdhwrg94OI6c2C28ybisnWkvs4UZlO+EvI=
+	b=Y0RIv9vKI8srtvsbK0zbZfHPs1cxq9pYzTWnADUfK/JSymF8W5/5Q/kyECEOFnADy
+	 x7HsDr7h9sc+ig2nisyohdCFE9fMdpUOqulLdPU3C0SbzgZmoZK3vTgeSjQVSSongp
+	 fF2z5YyJc4k0dN8V5s6oPRkpaAlb9GgSd+Kq2U08=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -57,20 +57,20 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
 	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	Dave Jiang <dave.jiang@intel.com>,
 	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
 	Breno Leitao <leitao@debian.org>,
-	Terry Bowman <terry.bowman@amd.com>,
 	Dan Williams <djbw@kernel.org>,
+	Terry Bowman <terry.bowman@amd.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
 	Morduan Zang <zhangdandan@uniontech.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v4 05/12] EDAC/ghes: Extract error report initialization
-Date: Fri, 13 Nov 2026 14:24:47 +0100
-Message-ID: <20261113132600.3355836-6-pierre.gondois@arm.com>
+Subject: [PATCH v4 06/12] ACPI: APEI: Extract common memory failure handling
+Date: Fri, 13 Nov 2026 14:24:48 +0100
+Message-ID: <20261113132600.3355836-7-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261113132600.3355836-1-pierre.gondois@arm.com>
 References: <20261113132600.3355836-1-pierre.gondois@arm.com>
@@ -85,126 +85,63 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extract a ghes_edac_init_error_desc() function to prepare for
-Memory Error Section 2 support (and re-usage).
+Extract ghes_handle_memory_failure_common() to share the severity checks
+and memory failure dispatch with the upcoming Memory Error Section 2
+handler.
 
-Also use a guard in the caller ghes_edac_report_mem_error()
-function for code simplification.
+No functional change.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/edac/ghes_edac.c | 70 +++++++++++++++++++++-------------------
- 1 file changed, 36 insertions(+), 34 deletions(-)
+ drivers/acpi/apei/ghes.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/edac/ghes_edac.c b/drivers/edac/ghes_edac.c
-index d80c88818691..f1cf4d640d68 100644
---- a/drivers/edac/ghes_edac.c
-+++ b/drivers/edac/ghes_edac.c
-@@ -267,6 +267,39 @@ static int print_mem_error_other_detail(const struct cper_sec_mem_err *mem, char
- 	return n;
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 663dc2e601cf..d6bbee466b48 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -528,15 +528,11 @@ static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+ 	return true;
  }
  
-+static void ghes_edac_init_error_desc(struct edac_raw_error_desc *e,
-+				      unsigned long sev, char *msg, char *other_detail)
+-static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+-				       int sev, bool sync)
++static bool ghes_handle_memory_failure_common(struct acpi_hest_generic_data *gdata,
++					      int sev, bool sync, u64 physical_addr)
+ {
+ 	int flags = -1;
+ 	int sec_sev = ghes_severity(gdata->error_severity);
+-	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+-
+-	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+-		return false;
+ 
+ 	/* iff following two events can be handled properly by now */
+ 	if (sec_sev == GHES_SEV_CORRECTED &&
+@@ -546,11 +542,22 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+ 		flags = sync ? MF_ACTION_REQUIRED : 0;
+ 
+ 	if (flags != -1)
+-		return ghes_do_memory_failure(mem_err->physical_addr, flags);
++		return ghes_do_memory_failure(physical_addr, flags);
+ 
+ 	return false;
+ }
+ 
++static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
++				       int sev, bool sync)
 +{
-+	lockdep_assert_held(&ghes_lock);
++	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
 +
-+	/* Cleans the error report buffer */
-+	memset(e, 0, sizeof(*e));
-+	e->error_count = 1;
-+	e->grain = 1;
-+	e->msg = msg;
-+	e->other_detail = other_detail;
-+	e->top_layer = -1;
-+	e->mid_layer = -1;
-+	e->low_layer = -1;
-+	*msg = '\0';
-+	*other_detail = '\0';
++	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
++		return false;
 +
-+	switch (sev) {
-+	case GHES_SEV_CORRECTED:
-+		e->type = HW_EVENT_ERR_CORRECTED;
-+		break;
-+	case GHES_SEV_RECOVERABLE:
-+		e->type = HW_EVENT_ERR_UNCORRECTED;
-+		break;
-+	case GHES_SEV_PANIC:
-+		e->type = HW_EVENT_ERR_FATAL;
-+		break;
-+	default:
-+	case GHES_SEV_NO:
-+		e->type = HW_EVENT_ERR_INFO;
-+	}
++	return ghes_handle_memory_failure_common(gdata, sev, sync, mem_err->physical_addr);
 +}
 +
- static int ghes_edac_report_mem_error(struct notifier_block *nb,
- 				      unsigned long val, void *data)
+ static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata,
+ 				     int sev, bool sync)
  {
-@@ -274,9 +307,7 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
- 	struct cper_mem_err_compact cmem;
- 	struct edac_raw_error_desc *e;
- 	struct mem_ctl_info *mci;
--	unsigned long sev = val;
- 	struct ghes_pvt *pvt;
--	unsigned long flags;
- 	char *p;
- 
- 	/*
-@@ -287,41 +318,15 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
- 	if (WARN_ON_ONCE(in_nmi()))
- 		return NOTIFY_OK;
- 
--	spin_lock_irqsave(&ghes_lock, flags);
-+	guard(spinlock_irqsave)(&ghes_lock);
- 
- 	pvt = ghes_pvt;
- 	if (!pvt)
--		goto unlock;
-+		return NOTIFY_OK;
- 
- 	mci = pvt->mci;
- 	e = &mci->error_desc;
--
--	/* Cleans the error report buffer */
--	memset(e, 0, sizeof (*e));
--	e->error_count = 1;
--	e->grain = 1;
--	e->msg = pvt->msg;
--	e->other_detail = pvt->other_detail;
--	e->top_layer = -1;
--	e->mid_layer = -1;
--	e->low_layer = -1;
--	*pvt->other_detail = '\0';
--	*pvt->msg = '\0';
--
--	switch (sev) {
--	case GHES_SEV_CORRECTED:
--		e->type = HW_EVENT_ERR_CORRECTED;
--		break;
--	case GHES_SEV_RECOVERABLE:
--		e->type = HW_EVENT_ERR_UNCORRECTED;
--		break;
--	case GHES_SEV_PANIC:
--		e->type = HW_EVENT_ERR_FATAL;
--		break;
--	default:
--	case GHES_SEV_NO:
--		e->type = HW_EVENT_ERR_INFO;
--	}
-+	ghes_edac_init_error_desc(e, val, pvt->msg, pvt->other_detail);
- 
- 	edac_dbg(1, "error validation_bits: 0x%08llx\n",
- 		 (long long)mem_err->validation_bits);
-@@ -375,9 +380,6 @@ static int ghes_edac_report_mem_error(struct notifier_block *nb,
- 
- 	edac_raw_mc_handle_error(e);
- 
--unlock:
--	spin_unlock_irqrestore(&ghes_lock, flags);
--
- 	return NOTIFY_OK;
- }
- 
 -- 
 2.43.0
 
