@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794914330;
-	b=kqbpL2F/F/N7gvnmIXw6Ez5ZyqX9LEEOkG3e3Uv7Z5fqSfiRYSvIbaUfUmX0Cu9E9bId
-	 ICwzI21k7VyBiFbtngcFian1iGAwLhWeAiAO0CdeLimL+24JfsKUFWLeppvxpMxh/Jqyd
-	 Wkf4Qts1Iymqoo9iwAn3pyF4Y32AnhPocjgey+r9s1k3Hq0YnCSUI6UwG8fKDD197QJL3
-	 gdvAfQ2uQIzFeczHZ4uMv5hjLqKPrxWDC+HUr+25RQCNfj0u++3H/Ei0BN0dku4NV7yvb
-	 2WICmuZwcZwBf5Wwytnliau8NPYuJslbwh/MFAGtHg7t6I5XsBsPEA0tW9UcO7kFiOw==
+	t=1794914349;
+	b=2sek5pJRfYmkF4axb+XkFSmXYwLkmhTeP0vO4qAeXMfNrkrhs1rSOAs1d0C35Sbxwjjo
+	 xjngMjcsvhHGyMbyPb+qWNVnbkF/Hrl9u/N7MXW/K62I3nBjU0piTagcT352MA5gzqYc6
+	 rB5eu/UPKTkv8Va96eKNbJjyKATrRxBbthWpowMYkUTg+f/29Tmt8bn2ngQJ8Buvx588n
+	 pqsBpYNrwSVI3XBNfW9GneuAQbHH40WKPUobsvmkyYmYbikiaUPvi2hvwkCV9Iyf27vtj
+	 FEp8qFDu559SA50Or/ouu1DIfTUEs8rjZJZDVzgKajRNWzcBMotqT4w0vEnqzfax7iw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794914330;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794914349;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=ae1+zxnmYBA6LucaV0oeD7zsBTx99sDPE5ClpSm1UfI=;
-	b=WfppZdfDvd1vJUlI1wpv4/yTY7Co70u2FPUxa3GvckJBDAkyFzQW4DQZqBiLSEqq7mDb
-	 1YanVirMKI8v5JhjFj7oHs8G9PtPi6g/lvmoNXQY3Mw3hKgGgjKcxMm7KCe3F3Mfe6N1m
-	 QAD2vjB4lCsqE/sVCxPiDlpeiKt2dZgvXwhzYn/uLhc7DMWXP7Adv/uby0UYQ8ZWwjidB
-	 FPX+6teu5MkFu++Ld9lN2sQ4g1AAy33yRnyUSg3oWdTWkIHyv+Q/gjGyXW+uL2lqk4GuI
-	 XcucQMWlrju5U9SQIEusxTI/xO/sCsMRQHSeIgg/jktHI0B62sp4MZHOZIHJLVMX6uQ==
+	bh=RYSQ5kLa3H9TG5xUvnHteU+yhk15bteC+s8cksoZucI=;
+	b=LmB0kzSBTnW1mtcTfBS+ylL6teeB3oRxSKXOegwZh6N8bj35RjPgAVwJoDoWOxmP5MWE
+	 UEBt7+6xlLwGfDR7bjL6mdNYy43mOzFaAZXn5e1j4PatbiTRAnKUkBuivZ4NmX9GgY5rH
+	 rsiCDq2j0oMaaivE5xzs3dOgYDlBdNrxEPdgxo8JEJj9SSJUOQcjJuPN00S5niRs9NVJh
+	 3YpfztrrJTH8sDLA169J6FD2AyBMLT+0Sx7TFM4PdkQP1S1tmc838iKrtoUL7kVBpyY/8
+	 HvdK9dXEYshsxiLiAcTmKcQ0U6DaR6gOH5W+Q/9LSZcNFHrTYRdb5ite2+NUiaRyfTQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=JMmqUw3q;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=KIilknYp;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97F6606A329
-	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:18:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C97F6606A329
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E2D606A323
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:19:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F0E2D606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=JMmqUw3q
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=KIilknYp
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A3151BF7;
-	Tue, 17 Nov 2026 03:18:46 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36FC11BF3;
+	Tue, 17 Nov 2026 03:19:05 -0800 (PST)
 Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.135])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 278713F763;
-	Tue, 17 Nov 2026 03:18:41 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7D3B23F763;
+	Tue, 17 Nov 2026 03:19:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794914329; bh=gGwUF9uzvgflmhqCUjHXKFSBYmW8th+wZveFeobE1dU=;
+	t=1794914348; bh=VdWsKyGxR5ZeDlLk4op5RqTNUGJF8BnYRHcAvnh4Am4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JMmqUw3qcRzMiqHL+zkl2lg3vrPOi4FA+IQufjra561byq3Wejw8Md9lp1ra9Ji3v
-	 CU+CG8XBFqHVJ+nygGzVEjUtVpRUfenzODtZmt0GJtA7714YbKi3bafCR7zWJNGIT3
-	 THE8bGYiGcWMZ5yTfvyzZL+NEkFtc6S2vNGAB9fc=
+	b=KIilknYp8+I1cTjeiTHP1GTtDiTp4mHC9hqjewZSm0iB4PaisNIudYj4+XfprI/k1
+	 vOv4ttJW2ITxrTrKKdc0PSgVO2K5gGB9AQaUN+UammfdEOhmHjKg/MkXE3yEodqteg
+	 9SOdha/CFNR4QZy6gBJZC52RbPRv8FnqlnSduUqY=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -66,23 +66,23 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Yazen Ghannam <yazen.ghannam@amd.com>,
+	Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
 	Avadhut Naik <avadhut.naik@amd.com>,
 	Jonathan Cameron <jic23@kernel.org>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
 	Kai-Heng Feng <kaihengf@nvidia.com>,
 	Dave Jiang <dave.jiang@intel.com>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
 	Breno Leitao <leitao@debian.org>,
 	Terry Bowman <terry.bowman@amd.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
 	Dan Williams <djbw@kernel.org>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-pci@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v1 10/19] ACPI: extlog: Simplify fatal record printing
-Date: Tue, 17 Nov 2026 12:10:20 +0100
-Message-ID: <20261117111444.4185512-11-pierre.gondois@arm.com>
+Subject: [PATCH v1 11/19] RAS: Remove unused ras_userspace_consumers()
+Date: Tue, 17 Nov 2026 12:10:21 +0100
+Message-ID: <20261117111444.4185512-12-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261117111444.4185512-1-pierre.gondois@arm.com>
 References: <20261117111444.4185512-1-pierre.gondois@arm.com>
@@ -97,82 +97,71 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Only fatal CPER records reach print_extlog_rcd().
-Merge the two helpers, remove the unused prefix argument
-and return value, and keep a single rate limiter.
+Remove the unused ras_userspace_consumers() and atomic
+trace_count as the previous patch made extlog select
+CPER console output by severity.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- drivers/acpi/acpi_extlog.c | 39 ++++++++------------------------------
- 1 file changed, 8 insertions(+), 31 deletions(-)
+ drivers/ras/debugfs.c | 10 ----------
+ include/linux/ras.h   |  2 --
+ 2 files changed, 12 deletions(-)
 
-diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-index 16a16b12d8ccf..1782a19eb474b 100644
---- a/drivers/acpi/acpi_extlog.c
-+++ b/drivers/acpi/acpi_extlog.c
-@@ -95,46 +95,23 @@ static struct acpi_hest_generic_status *extlog_elog_entry_check(int cpu, int ban
- 	return estatus;
- }
+diff --git a/drivers/ras/debugfs.c b/drivers/ras/debugfs.c
+index 42afd3de68b22..838cc689b9989 100644
+--- a/drivers/ras/debugfs.c
++++ b/drivers/ras/debugfs.c
+@@ -5,20 +5,12 @@
  
--static void __print_extlog_rcd(const char *pfx,
--			       struct acpi_hest_generic_status *estatus, int cpu)
-+static void print_extlog_rcd(struct acpi_hest_generic_status *estatus, int cpu)
+ static struct dentry *ras_debugfs_dir;
+ 
+-static atomic_t trace_count = ATOMIC_INIT(0);
+-
+ struct dentry *ras_get_debugfs_root(void)
  {
-+	/* Not more than 2 messages every 5 seconds */
-+	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 2);
- 	static atomic_t seqno;
- 	unsigned int curr_seqno;
- 	char pfx_seq[64];
- 
--	if (!pfx) {
--		if (estatus->error_severity <= CPER_SEV_CORRECTED)
--			pfx = KERN_INFO;
--		else
--			pfx = KERN_ERR;
--	}
-+	if (!__ratelimit(&ratelimit))
-+		return;
-+
- 	curr_seqno = atomic_inc_return(&seqno);
--	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}", pfx, curr_seqno);
-+	snprintf(pfx_seq, sizeof(pfx_seq), KERN_ERR "{%u}", curr_seqno);
- 	printk("%s""Hardware error detected on CPU%d\n", pfx_seq, cpu);
- 	cper_estatus_print(pfx_seq, estatus);
+ 	return ras_debugfs_dir;
  }
+ EXPORT_SYMBOL_GPL(ras_get_debugfs_root);
  
--static int print_extlog_rcd(const char *pfx,
--			    struct acpi_hest_generic_status *estatus, int cpu)
+-int ras_userspace_consumers(void)
 -{
--	/* Not more than 2 messages every 5 seconds */
--	static DEFINE_RATELIMIT_STATE(ratelimit_corrected, 5*HZ, 2);
--	static DEFINE_RATELIMIT_STATE(ratelimit_uncorrected, 5*HZ, 2);
--	struct ratelimit_state *ratelimit;
--
--	if (estatus->error_severity == CPER_SEV_CORRECTED ||
--	    (estatus->error_severity == CPER_SEV_INFORMATIONAL))
--		ratelimit = &ratelimit_corrected;
--	else
--		ratelimit = &ratelimit_uncorrected;
--	if (__ratelimit(ratelimit)) {
--		__print_extlog_rcd(pfx, estatus, cpu);
--		return 0;
--	}
--
--	return 1;
+-	return atomic_read(&trace_count);
 -}
+-EXPORT_SYMBOL_GPL(ras_userspace_consumers);
 -
- static void extlog_print_pcie(struct acpi_hest_generic_data *gdata)
+ static int trace_show(struct seq_file *m, void *v)
  {
- #ifdef CONFIG_ACPI_APEI_PCIEAER
-@@ -210,7 +187,7 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
+ 	return 0;
+@@ -26,13 +18,11 @@ static int trace_show(struct seq_file *m, void *v)
  
- 	/* Print fatal records regardless of RAS consumer registration. */
- 	if (tmp->error_severity == CPER_SEV_FATAL)
--		print_extlog_rcd(NULL, tmp, cpu);
-+		print_extlog_rcd(tmp, cpu);
+ static int trace_open(struct inode *inode, struct file *file)
+ {
+-	atomic_inc(&trace_count);
+ 	return single_open(file, trace_show, NULL);
+ }
  
- 	/* log event via trace */
- 	err_seq++;
+ static int trace_release(struct inode *inode, struct file *file)
+ {
+-	atomic_dec(&trace_count);
+ 	return single_release(inode, file);
+ }
+ 
+diff --git a/include/linux/ras.h b/include/linux/ras.h
+index 468941bfe855f..3159f9a0877ed 100644
+--- a/include/linux/ras.h
++++ b/include/linux/ras.h
+@@ -7,11 +7,9 @@
+ #include <linux/cper.h>
+ 
+ #ifdef CONFIG_DEBUG_FS
+-int ras_userspace_consumers(void);
+ void ras_debugfs_init(void);
+ int ras_add_daemon_trace(void);
+ #else
+-static inline int ras_userspace_consumers(void) { return 0; }
+ static inline void ras_debugfs_init(void) { }
+ static inline int ras_add_daemon_trace(void) { return 0; }
+ #endif
 -- 
 2.43.0
 
