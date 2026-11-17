@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794914192;
-	b=Q8ctuHGMnkaYPrwOm8gQP4yuWmcMXH8xYE48vnIrTZcTl0466m/jFkkF8Ijq6AKNpnPi
-	 uMd/+9fKgdnxESjiH0r9Tnwh93ZXcOrpa+XeBBXMQk4cYEFPCsjp3XzLfAtKcS9XZJtwI
-	 xMvZUoeacDHg1VkIIfNFCQLouSTnwARQl9m4yHAEvP2HLnH1pbiY04PVnH0sHZw6VePL+
-	 ByyqsNLDuVJwnHHV16qXgHTgQZpLZElYNIIvAwLQfZ1rRGFmH77Z4V+X2g37GToOz4LWD
-	 1q34ZXclipci5LYqGfznv7AucLY/BAbRT2HoY/vAKPX4zJoor+vHdG80EGQSOit2/7A==
+	t=1794914212;
+	b=fIppggepmcTT/3m6vK0kGG2Be6RZWDnuxrO6LtWwTdhpCy2MmYqh4h4ftmNbglx4/+Ll
+	 C9BOexmvLalUfMku6ecU1u94uLN+nRsmkNOZ2FdX7hpnrz5xtz5l4bLQ0deXt59VS7odI
+	 R6HndcbCA4l5eiWK+DRqzuISoLmVdoLk8FjLp/YZyNtjVq75yKYFaUEHPnkv2037I8SQU
+	 YpL8mIGZSnHJwA0Gz5r9X3+Hrv7kxXZi+Nprtb8WfrRweZUb38hQP/V9Zp6VLwf4vP7c4
+	 S95Y0As2SStvb9aAMGhC1M9+PzAHhz4QRNmpC46q9pNMRO1AyZWsoe7WH/CTVB0h1ug==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794914192;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794914212;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=G2N13G5utyTe7izqnWDvvwrQ2fOwakujOweKmNqrGrA=;
-	b=H3tPgXK968/hp5waMaKOOhNl3u2gkMLwr6jQnXuCGtR6hRfO2W3eaTzwQiiLB9F+UPd4
-	 ZKaV/hkjhpQJm+C3TsukkYzLHysSZ6HYuCepERn9abNc9KuekXa8+d392yz3ByT/gDSCM
-	 b3YDJG4As1EXnDE6p5hT1KwCQQqiG1tryG3B//SxThrggY7Ws3WR39J3Bk3ds/OovkSSv
-	 8/1qPdGmuJryQOY0o1lyMfFYstGW02ENATm/Cdw1qRaVxzBIVHXLhJ0OulMc5WKATcFnL
-	 uyEBzduWDNWdQHsJebtB4Sx2ybsGeee4Vx/i/ASPXz5p0Xnnh2Yde7KP61gXvFWbaEg==
+	bh=1gFolVlbnQDXq7AXqEZR4zbd1HbosfkpV82uoaeqRJ0=;
+	b=uWpDTnosslR+1flhvkMzbvQsYENDocYJIo65XtLLHrY+w3R2oMBaBokroVCaxTsDTYCM
+	 MJYpwsmv5A0yCjbOf2E0YwCynC3GfAlBNcObM8jvpqKS07yGRfShRwpcAZ+KKhW2hAJjt
+	 xKoNeBF1wfqO5S4kI9Tdj848leeYtZ1KfM8sKHosl+iCFL6xsm8mZzF4ACkp1km/itg16
+	 DAO4Qp/SPTLGPanx2Hen1lZaQZ4DzdKy2yXHcbtJvMDc6bJPOi3Ra/qhBy+KsLr7ghgsz
+	 kJRwEKdjguLJnl6O+r08H1JpBV2EISRTspKGMQjjI6UnmnibNd/lDf4s1DIgyUUEbvg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=UE0kJdzu;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=DDZWJqL3;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79941606A31C
-	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:16:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 79941606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BE4606A323
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:16:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 10BE4606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=UE0kJdzu
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=DDZWJqL3
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E28441682;
-	Tue, 17 Nov 2026 03:16:28 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 667031A32;
+	Tue, 17 Nov 2026 03:16:48 -0800 (PST)
 Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.135])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0A46E3F763;
-	Tue, 17 Nov 2026 03:16:24 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DD5AD3F763;
+	Tue, 17 Nov 2026 03:16:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794914191; bh=nQ/pGewZ6c/kd9JIrH7S2KTGuPSpp1O8X6Rcs0KcnQQ=;
+	t=1794914211; bh=yG1nBF1b9ClCQ09cnEWfpTO17qf4/sPT/Xz+KvI9LS8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UE0kJdzuB5u+54VYGkLHh9IxD6zwtneuQSgzckgRUphS2F6ekg0cdSJG4nhoBtzyj
-	 eVdZ3PQcTpnwHS/ywvKtG7aSuAIbf9QXDXq3ei3yhCzJcRN9Ig9Bdk8ebrsbSfPjYZ
-	 9WkL0MWcxwOgbX0INOdI6xO0+nf5fQKsj4viqusA=
+	b=DDZWJqL3hpEb6fgA+Erdl+GlfKCrNmcK3poDr93VEXJbe92PdvfQewqRI75jNcKns
+	 2Zdb/0ufZrIf6sSQtpr8OvK3n9H0eyxrYw6BhS9yZUFqTPrT5XhktNX8UlqHArvYXp
+	 NBZgwM8MrOzGZuSA0iYLXFdRcJGYkZqFq+wl3uNM=
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -66,23 +66,22 @@ Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
 	Avadhut Naik <avadhut.naik@amd.com>,
 	Jonathan Cameron <jic23@kernel.org>,
 	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Kai-Heng Feng <kaihengf@nvidia.com>,
 	Dave Jiang <dave.jiang@intel.com>,
+	Kai-Heng Feng <kaihengf@nvidia.com>,
 	Breno Leitao <leitao@debian.org>,
-	Terry Bowman <terry.bowman@amd.com>,
 	Dan Williams <djbw@kernel.org>,
+	Terry Bowman <terry.bowman@amd.com>,
 	linux-acpi@vger.kernel.org,
 	linux-edac@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-pci@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v1 03/19] ras: Bound CPER FRU strings in trace events
-Date: Tue, 17 Nov 2026 12:10:13 +0100
-Message-ID: <20261117111444.4185512-4-pierre.gondois@arm.com>
+Subject: [PATCH v1 04/19] ACPI: APEI: Use empty FRU values if valid bit is absent
+Date: Tue, 17 Nov 2026 12:10:14 +0100
+Message-ID: <20261117111444.4185512-5-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261117111444.4185512-1-pierre.gondois@arm.com>
 References: <20261117111444.4185512-1-pierre.gondois@arm.com>
@@ -97,40 +96,46 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CPER FRU text occupies a fixed 20-byte field and need not contain a NUL
-terminator. Using __string() can read past the field and, for a short
-nonstandard section, past the end of the firmware record.
+When a status block contains multiple sections, a section without valid
+FRU fields inherits pointers from the preceding section.
 
-Bound FRU text in the legacy memory and nonstandard trace events with
-__string_len() and strnlen(), as already done for the Section 2 event.
+Use empty fru_id and fru_text values whenever the matching VALID
+bit is not set instead of reusing the value of the previous loop.
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- include/ras/ras_event.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/apei/ghes.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/ras/ras_event.h b/include/ras/ras_event.h
-index ce759ee1cf4cc..069c7b3a5e6c0 100644
---- a/include/ras/ras_event.h
-+++ b/include/ras/ras_event.h
-@@ -39,7 +39,7 @@ TRACE_EVENT(extlog_mem_event,
- 		__field(u64, pa)
- 		__field(u8, pa_mask_lsb)
- 		__field_struct(guid_t, fru_id)
--		__string(fru_text, fru_text)
-+		__string_len(fru_text, fru_text, strnlen(fru_text, 20))
- 		__field_struct(struct cper_mem_err_compact, data)
- 	),
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 703f3b7f700a6..444d8e82353a7 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -979,8 +979,8 @@ static void ghes_do_proc(struct ghes *ghes,
+ 	int sev, sec_sev;
+ 	struct acpi_hest_generic_data *gdata;
+ 	guid_t *sec_type;
+-	const guid_t *fru_id = &guid_null;
+-	char *fru_text = "";
++	const guid_t *fru_id;
++	const char *fru_text;
+ 	bool queued = false;
+ 	bool sync = is_hest_sync_notify(ghes);
  
-@@ -370,7 +370,7 @@ TRACE_EVENT(non_standard_event,
- 	TP_STRUCT__entry(
- 		__array(char, sec_type, UUID_SIZE)
- 		__array(char, fru_id, UUID_SIZE)
--		__string(fru_text, fru_text)
-+		__string_len(fru_text, fru_text, strnlen(fru_text, 20))
- 		__field(u8, sev)
- 		__field(u32, len)
- 		__dynamic_array(u8, buf, len)
+@@ -990,9 +990,13 @@ static void ghes_do_proc(struct ghes *ghes,
+ 		sec_sev = ghes_severity(gdata->error_severity);
+ 		if (gdata->validation_bits & CPER_SEC_VALID_FRU_ID)
+ 			fru_id = (guid_t *)gdata->fru_id;
++		else
++			fru_id = &guid_null;
+ 
+ 		if (gdata->validation_bits & CPER_SEC_VALID_FRU_TEXT)
+ 			fru_text = gdata->fru_text;
++		else
++			fru_text = "";
+ 
+ 		ghes_log_hwerr(sev, sec_type);
+ 		if (guid_equal(sec_type, &CPER_SEC_PLATFORM_MEM)) {
 -- 
 2.43.0
 
