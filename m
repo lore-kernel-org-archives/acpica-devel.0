@@ -1,55 +1,159 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794582278;
-	b=Xu0PZWLtAveAFgpquPIUi9HqCh4pCZUhFzdPULjfQx7FqC/qXOlNgMuYToPQJRHt6A/6
-	 ECKuWtMPhnLQKMsvXWVhFCvSIMnZuHSMF/MKZd9axPnX3NxxT4Kr+u0KPVOyPildx/A4g
-	 9s8t7LIiMY9pqQ+wp5FYPT7EA6tbNMj9Yi53cy2zJ1SEn/8csXyBjjVRLQaEf1d5nFjf3
-	 De8PMef0TISOUGXWr4imVVVLJBhOLi0pk1ERc8huEfFcjn9fZYLZnmHZZJLlyQE1pR+8A
-	 1XLpjQ3f1jL/nvj+DQbAJdbPMy8L5cicdaeHChcCyXmT/hxf3B6BF25RNZbS/Of+GQQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794582278;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=kbBjRgmT9qgWX9JcAIks0NFFYmbsdb28Bgdoa2Ns/l0=;
-	b=Nzxq/vCo0oRP8qhpRcHNKyb+dGDK4CWJF02VObPvS//9CFt2gpHoWj6xr77f/0r1wl6J
-	 k8Y064ZzHEBwO5Koq9F0Ju4V4Y9RS0cq7um3WduyO19dlibSA5TCkgVrQLhu9qGtGxDiF
-	 BXPUDdL3vThZPyLCYBZEkBE/mRXwGPMeIvFBIh3LGKSsnndii/TfhNF80EV1M5umL8vFf
-	 uhipc8pxQZJOAdiviUtrL34Fq4hb/WG7KalAlrKY15igpAUE0X079dolyE+s8pyCHAxcR
-	 lkfYtC5rPsq28WshghmcmOXH2KjqIR0PFCY6gzXBQepUWdPGOS7x89HKPSBTXr3yDXA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IrCrDKxV;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.133
+ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794899844;
+	b=x5o1XPJQbUs+ichXyAs9lpWQ0lnsOAsLIGbuWFjqil+sQFmI3HpNqxi2CKcWWgcITIP+
+	 nvAuFQfJpLTsglXNM5hQp+crDEBAwiPpHMGwbZSk5qb3d+tHUYARMURSvjTmYvogTSzJo
+	 pWnsPdPvut3qC4jIGUr1wNT3HkTyFb1iDp5IjvcIF6PHH+z4Uxix4Q1C+r3t2K/5xsLgK
+	 iCAlViAhKgaz1jAB/dAOo7MA70Jc6p1edpQ7mg4kcOFnUU5PTFvMZcHybovg2/7IA5ESl
+	 yYHhrDs8m1RVrofylLMJbJj2nEYEa84d+exYtIG5AbKLeOO28a5vQ2bS33FEni4Y4cA==
+ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794899844;
+	h=Received:X-Virus-Scanned:X-Spam-Flag:X-Spam-Score:X-Spam-Level:
+	 X-Spam-Status:Received:ARC-Filter:Received-SPF:Received:
+	 DKIM-Signature:Received:Received:X-MS-Exchange-Authentication-Results:
+	 Received-SPF:Received:Received:Received:From:To:CC:Subject:Date:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-EOPAttributedMessage:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=jC+7tR67qPnvbeyKQ7U6GLlz7BRySjJmNMZ5NqYZ8x4=;
+	b=kD2nmyZzYLfJkaZfnF63DmQJD83Vhk+9sK1/7qoEfSFkZ5DDPMA44/6dt275xEttTjc2
+	 VLfUhnR+BmZ9pYTKJI5EJpCOZqBekCUTra0SiCYUeC6RexorKTeRUtLqmCw+zofztCevZ
+	 sCufz7W3L5LNSNd8DPcJ0gAjc0vfp3rIMtwMah+PYE56S64DEE6xG6Skk3Zgr5H2ZGTi0
+	 buh8iTIYmIGLityKNPNCBe8xiVRFf3Cod+b/O8Z1tCVFC3ZXKTG6i/iKN/6F16C0ysYPK
+	 MewYfH3F7EZiUWkweOYAuWv0frbjNXKfOCPXHSCneisV0kJciyWi4lH8VYQlY3+dEEA==
+ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=G1tJror4;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.133
+Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07F3606A327
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 15:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F7E606A333
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 17 Nov 2026 07:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IrCrDKxV
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38E01F000CD
-	for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 15:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794582278;
-	bh=kbBjRgmT9qgWX9JcAIks0NFFYmbsdb28Bgdoa2Ns/l0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=IrCrDKxV/9wVP7o1A7Uwwq7KjWFyRCJl3dAQ7/g7gWaijgrPjFRCRmhQlBLdWVcBH
-	 Y0JBHhUopPngdNXRgzXWeyCUbHm2ANpWsFzJs6UoBzYMjNJ9DuO58pg/jwr8b17Aee
-	 MqnJ7Fal6xcUQ6DroTmn7ezlWMbttYPwdkEbnbIMZZClr0LaaNjSyFXp+J/u7zUiEH
-	 X6kVqlDG+lBoaY0er8P3dIrFDfdGFRIOI+jmHy8D1rRS8/+xAdIjpZygXcULlQAbxi
-	 NxZykgby/i4t778qxSQH6v0jKBhX430t8ut1zBjsQpPQhGn83TTnDiuGmjaKqvwnw1
-	 D2VrlneApiEKg==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5be3cff0f6cso1031774e87.0
-        for <acpica-devel@lists.linux.dev>; Fri, 13 Nov 2026 07:04:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErHdeQneAgH5sneOtCXtSQYtTKTDvke3RalJIU+LZfTXXq9ETtg3or7J66DHeod7JG7XR3FNUU28aKNW6/I=@lists.linux.dev
-X-Gm-Message-State: APuU4Z8PWzBOywlPlGEU6kfz6brtfWu7nTqimWxQSBi3hYj+IW3ez9Ax
-	eF9xdsV1JVSw9G7CQZwGOS/aOuEM45ykNGCPa4mLWrVJXSQNkFJkMYdKE4e7cgFrHMSCUaftBft
-	E2O9+nX4SLAD1SK8G29Uj4TidX0/rc8g=
-X-Received: by 2002:a05:6512:3c9f:b0:5bf:d0d5:3b12 with SMTP id
- 2adb3069b0e04-5c1709e535bmr1462462e87.42.1794582276836; Fri, 13 Nov 2026
- 07:04:36 -0800 (PST)
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=G1tJror4
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.osuosl.org (Postfix) with ESMTP id 241774017B
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 17 Nov 2026 07:17:24 +0000 (UTC)
+X-Virus-Scanned: amavis at osuosl.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.353
+X-Spam-Level:
+Received: from smtp2.osuosl.org ([127.0.0.1])
+ by localhost (smtp2.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
+ id CsLMNKdadZ4C for <acpica-devel@lists.linuxfoundation.org>;
+ Tue, 17 Nov 2026 07:17:22 +0000 (UTC)
+ARC-Filter: OpenARC Filter v1.3.2 smtp2.osuosl.org B019540048
+Authentication-Results: smtp2.osuosl.org; arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c001::2"
+ARC-Seal: i=2; d=osuosl.org; s=arc; a=rsa-sha256; cv=pass; t=1794899842;
+	b=G76W7JuChdfvzV6SuLIk64Xr54SiRIF3R+bg/Fdf99vlGZxJvtTVDs5FLHpTy3SVjICX
+	 vw/NBIS6++LJ/PKQYpY2Xph/r4NEY+QK2V3aWtVjmqlPCQJnak3Zwh2g+PoTueXDTvBDG
+	 enSpqE3bYJQZ0aW/BNO3rpl2c217mBkad8rgZ9T23dD2R9IvKh2r3B10I0AMCNTsJO85P
+	 h36utDUmQfKbNeQHosI+ci7mOwRb93o1+wYaYwdvoPLZYOebZjJS3em30oKifVGscFhfd
+	 tH4xV1WMPZrIpItcZVrdSjh7rgpNkh4cp47/yEnxsLFtNxz7iDbYgIv5FkfJsnahuDw==
+ARC-Message-Signature: i=2; d=osuosl.org; s=arc; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794899842;
+	h=Received-SPF:DKIM-Signature:Received:Received:
+	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
+	 Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type:
+	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=jC+7tR67qPnvbeyKQ7U6GLlz7BRySjJmNMZ5NqYZ8x4=;
+	b=LI+5zq8frniBPhTDeLRFKje15azj7IjwMBZLsJY6MM24UjUnfLqYagfwbznbu8syT+8Y
+	 jywsF+Zu2oLVbPD7yGrgPkJK/7jWJ4lAfSLOMIUNoYPxRD3PbPHYxcILtCdyoXZ804xqi
+	 RvHU7HMZIfODJ4V2Zggq+oiShq4V1gsFDWTcdWtVz4bHOXylUqEEvPqVccfsFs/ZzBM/l
+	 i7Fn5oMD3He0ThpA0YpbxFu2RSCHNVLGDgECYlMHo/b5RToTLYNMvk1d2v2ADEuOJY81X
+	 JeCWPKhJt7beoDjRL769OzpHs52A7SKwnAzbgIkhN7zP/prOMwhmfm39MfnmHak2JXw==
+ARC-Authentication-Results: i=2; smtp2.osuosl.org; 
+	dmarc=pass header.from=amd.com;
+	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=G1tJror4;
+	arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c001::2"
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a01:111:f403:c001::2; helo=sj2pr03cu001.outbound.protection.outlook.com; envelope-from=baorui.liu@amd.com; receiver=<UNKNOWN> 
+Authentication-Results: smtp2.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp2.osuosl.org;
+	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=G1tJror4
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazlp170120002.outbound.protection.outlook.com [IPv6:2a01:111:f403:c001::2])
+	by smtp2.osuosl.org (Postfix) with ESMTPS id B019540048
+	for <acpica-devel@lists.linuxfoundation.org>; Tue, 17 Nov 2026 07:17:19 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jb61I6v8Eb+rWPYOX+J7cgcy+dFGG8Osra9rQn2dseQhXEK8mhFSPWr0/dgJWIG0YVTsDlMCqSu9FMSL6K83P/cbbQYEMuHrMBrlqqHoTSga5TSZD6V0qXl7mn0x+KWwfOd+oEwnz+Xy6Z914LFylZSGbZzlixrmIFj+f8SaoHDbdtk7NTismnmuOQ0/17cHKiKiXiQ8fqrLYjB6qAacW/Roh0hqoycdSrRPbov2CQ9o/9ImF54gpiv31OV/rZGuC1Dmv2wdJ8JIUI3VrGyi77WdJ/WVS2jB07rJTOETy4RLEowKdW6G42IFkzktopgmX63JGTwJj492XGJFCEujDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jC+7tR67qPnvbeyKQ7U6GLlz7BRySjJmNMZ5NqYZ8x4=;
+ b=OP+bTicIGsW61rYARDx5r/nFXQczRvrp29t/IMxrbg6M8p9WxOkw/zVsHPvuD3hgdtRgP9vG9KrGruN8Ip9hPrHCcfe/CDocqqJNa1TVSR1yX7kQLb1tRGqS58ZzZ0WWGzjJDeXCiH46stCJOd4iY6RnxPdY/Pw5BHHTW0bBa9Kr8x190u7biiOd/zghtEVReDQ4XwfBIRPnakJC/r8j0IKDE/iHqRmlYb5NtAmqKCRKXymGTr2JOIxZsY3J7Oq0g59KGi/Fk7oR0XBRV3oFI2WuI3URZmp8pkMDXfoEopY3eGU71VnTWYOXw6biJ3YTf8zvrUI7LUCvtcoXsbuwtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jC+7tR67qPnvbeyKQ7U6GLlz7BRySjJmNMZ5NqYZ8x4=;
+ b=G1tJror42B1CpmN0UXqygh/0LAUzIhTltOgtTBwlf0GBqvVuPDSG1Gh++doKl/iDVGgkVZCw1J5j4/8gQ07M4zRCWfdLvwzKgzfZSPem1L5lfwqRn11xGvk5uYrRKddan3LxvUYhoFMWUVC46lQObyEywkMPDTMy1U/dz1/vY5s=
+Received: from CH0PR03CA0239.namprd03.prod.outlook.com (2603:10b6:610:e7::34)
+ by IA1PR12MB7757.namprd12.prod.outlook.com (2603:10b6:208:422::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.13; Tue, 17 Nov
+ 2026 07:17:13 +0000
+Received: from BN7PEPF000000A7.namprd05.prod.outlook.com
+ (2603:10b6:610:e7:cafe::6d) by CH0PR03CA0239.outlook.office365.com
+ (2603:10b6:610:e7::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.615.13 via Frontend Transport; Tue,
+ 17 Nov 2026 07:17:13 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ BN7PEPF000000A7.mail.protection.outlook.com (10.167.245.231) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.639.5 via Frontend Transport; Tue, 17 Nov 2026 07:17:13 +0000
+Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.57; Tue, 17 Nov
+ 2026 01:17:11 -0600
+Received: from localhost.amd.com (10.180.168.240) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.57 via Frontend
+ Transport; Tue, 17 Nov 2026 01:17:09 -0600
+From: Baorui.Liu <baorliu@amd.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>
+CC: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<acpica-devel@lists.linuxfoundation.org>, kernel test robot <lkp@intel.com>,
+	Baorui.Liu <baorliu@amd.com>
+Subject: [PATCH v8] ACPI: button: Report wakeup key only for power button wakeups
+Date: Tue, 17 Nov 2026 15:17:09 +0800
+Message-ID: <20261117071709.428-1-baorliu@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20261109082832.496-1-baorliu@amd.com>
+References: <20261109082832.496-1-baorliu@amd.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,331 +163,326 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-References: <20261111220803.3953790-1-sumitg@nvidia.com>
-In-Reply-To: <20261111220803.3953790-1-sumitg@nvidia.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Fri, 13 Nov 2026 16:04:24 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hJExw-TYyF-TtEeuZ9kw3v5cm=H3Q=vLLqQ51V0Xn8Mg@mail.gmail.com>
-X-Gm-Features: AclHuK_uNNKHpJk3ChlalQ1s4LPVs3H0vhMDhZKt2eCu7idDfJ7Nkp1Kg8j37kg
-Message-ID: <CAJZ5v0hJExw-TYyF-TtEeuZ9kw3v5cm=H3Q=vLLqQ51V0Xn8Mg@mail.gmail.com>
-Subject: Re: [PATCH v6] cpufreq: CPPC: Add autonomous mode boot parameter support
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: rafael@kernel.org, viresh.kumar@linaro.org, zhanjie9@hisilicon.com, 
-	zhenglifeng1@huawei.com, christian.loehle@arm.com, 
-	maciej.wieczor-retman@intel.com, pawel.chmielewski@intel.com, lenb@kernel.org, 
-	corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org, 
-	linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, treding@nvidia.com, 
-	jonathanh@nvidia.com, vsethi@nvidia.com, ksitaraman@nvidia.com, 
-	sanjayc@nvidia.com, mochs@nvidia.com, bbasu@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN7PEPF000000A7:EE_|IA1PR12MB7757:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a8d0a19-2c6c-4a20-bbd7-08df447acd45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|23010399003|36860700016|1800799024|376014|18002099003|22082099003|6133799003|13003099007|11063799006|10067099003|261026140227099003|261022075727099003|261026121527099003|261022105027099003|261028144727099003|261021123027099003|261021121427099003|56012099006|261009223027099003|261102130727099003|261102123227099003;
+X-Microsoft-Antispam-Message-Info:
+	rFFQV3EXY2xl0yxKO2gq3MxFjqyz/e2ruVs5bDp/OC1JtdHbARqumSeMaQRG7eItgxsp//SON648pjIND2jvQ6bENoDSlO2D0no/HKheNXJscKaSydacBbnMik4MEkKbhRzpBkdLShuRGN2I7VBWyzinMOWKpoXUCOiDL4MclG2N6sQuyILQ2aNAcROgqvY/h014K6C3vyz+1G2lGBFJGV00wgRQ0b7U8edpArutNPt10RB11KQYvWtoIAsKbegMbHTalkwcXzsoyOCmh/zcFTUhtxpHQTyNDM64Oha1VhinyPoMKyxoveaIqDes9Y1XWKTlhcvsl0/r0bHYSr4k47ETSg1CNWkTT3mhs0FwLwuVS5yExsJtEx/rKctO0LhmW7aQxQNKGSDcD7ma+S1eJBD2Gl6PVfEiAmRx6Bg51M3/AmQG5HwZ9wZo5k6iQ+1ej6RCzWTKCiP8Ow5Ck+UyGkZSK7J5p8af1HRruKWrOlE0XrPTLIGDaqxrp7H/0FWBGY0+nhNlSzX8wzGubcEjYTqr8sDRiMi+7sul8DltB5lRrmQGHhYiwaCfh8knRSEKPbPz4Fs2bK4Jd1rwfwKm2PQUKRn6uovujoF6MtOjQz6dhKgplB2P3JRGHcN4aZ0BWB+p+5sAmlvZZBUYqvmNRA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(23010399003)(36860700016)(1800799024)(376014)(18002099003)(22082099003)(6133799003)(13003099007)(11063799006)(10067099003)(261026140227099003)(261022075727099003)(261026121527099003)(261022105027099003)(261028144727099003)(261021123027099003)(261021121427099003)(56012099006)(261009223027099003)(261102130727099003)(261102123227099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	t6eVQN9reUQ8QtLmQ/V5JZrLh8DLB9n2VXMT/jMuWFbnoKYefSuN6b4USyXmF5Hm+UbFAYIlcTnIXEFvdNGsjA+VRJfaPXL1jBlfRTcuRQhqpuWw3G0dqz2o9OIRlduXBQhC6dZM/HMvUWkYub8UdS23pWs3pibrUYQEB9pHgPKGHG+Fm5XF0hBcROFW/eFSKkPxH8M7DjXCGXNDZLFCx4Ukv7Ro/r+QlcujLkg2y1gYbJrjuulssJdtBF1iKygSJYKELfn/UqwOWVxidakaHyZ+Dd+1TU44AtS9HJP8pbz+ggv4vFI+KzEK6qTFjpLRJagRXgtRu2KXMYgZJ/VQuLjTCPDSdrJkpbjGLVZOKD/tHaFWj9D4M4/mmXlFy2+6gIacC+zyouIlAsk+bqrVoi6bqa857Iq37hKyK18rl9HUcg5mMaCqQkQWNJhmzg49
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2026 07:17:13.0057
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a8d0a19-2c6c-4a20-bbd7-08df447acd45
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN7PEPF000000A7.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7757
 
-On Wed, Nov 11, 2026 at 11:08=E2=80=AFPM Sumit Gupta <sumitg@nvidia.com> wr=
-ote:
->
-> Configuring autonomous selection and Energy Performance Preference (EPP)
-> at every boot currently requires per-policy sysfs writes.
->
-> Add the 'cppc_cpufreq.auto_sel_mode' boot parameter to enable autonomous
-> selection during policy initialization and optionally set EPP. In
-> autonomous mode, the platform selects the performance level within the
-> MIN and MAX limits, which the driver sets from the policy limits. The EPP
-> hint guides that selection.
->
-> The parameter accepts:
-> - performance: enable autonomous selection and set EPP to 0x00
-> - balance_performance: enable it and set EPP to 0x80
-> - balance_power: enable it and set EPP to 0xc0
-> - power: enable it and set EPP to 0xff
-> - default_epp: enable it and preserve firmware EPP
-> - disabled: preserve the firmware configuration (default)
->
-> Warn about unrecognized values and ignore them.
->
-> Skip policies without autonomous-selection support. The driver enables
-> autonomous selection before writing EPP, as the platform may ignore EPP
-> while autonomous selection is disabled.
->
-> Record successful writes so the existing online and resume paths reapply
-> the requested values. The offline and suspend paths restore the saved
-> firmware values, including during driver unload.
->
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
-> This is based on the "Preserve OSPM-set registers" [1] and
-> "ospm_nominal_perf" [2] series, which are applied for 7.5.
->
-> v5 -> v6:
-> - Split "Set CPPC Enable register in cpu_init" into a separate fix [3].
-> - Accept strings only (Pierre [4]).
-> - Move the setup into cppc_cpufreq_setup_auto_sel_mode() and check
->   autonomous selection support first (Pierre [4]).
-> - Drop the last_governor check, as init() now runs only for a new
->   policy (Pierre [4]).
-> - Drop the MIN/MAX seeding, Desired hint and policy->min/max override,
->   as init() and the governor already set valid values (Pierre [4]).
-> - Apply the parameter at the end of init(), after the usual
->   performance controls write.
-> - Save auto_sel and EPP through the saved-register code from [1]
->   (Sashiko [5]).
-> - Drop the cppc_cpufreq_exit() loop that cleared auto_sel on all
->   present CPUs (Pierre [4], Sashiko [5]).
-> - Enable autonomous selection before writing EPP.
-> - Set EPP also when firmware has already enabled autonomous selection.
-> - Add the balance_power (0xc0) and power (0xff) modes.
-> - Ignore an unrecognized value instead of treating it as disabled.
->
-> v5: https://lore.kernel.org/lkml/20260623080652.3353386-1-sumitg@nvidia.c=
-om/
-> [1] https://lore.kernel.org/lkml/20261106193304.3347374-1-sumitg@nvidia.c=
-om/
-> [2] https://lore.kernel.org/lkml/20261109195400.3600561-1-sumitg@nvidia.c=
-om/
-> [3] https://lore.kernel.org/lkml/20261110101246.3665797-1-sumitg@nvidia.c=
-om/
-> [4] https://lore.kernel.org/lkml/f61f592a-bc9c-4a83-bde1-e999c8101c36@nvi=
-dia.com/
-> [5] https://sashiko.dev/#/patchset/20260623080652.3353386-1-sumitg@nvidia=
-.com
->
->  .../admin-guide/kernel-parameters.txt         |  26 ++++
->  drivers/cpufreq/cppc_cpufreq.c                | 120 ++++++++++++++++++
->  include/acpi/cppc_acpi.h                      |   2 +
->  3 files changed, 148 insertions(+)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
-ion/admin-guide/kernel-parameters.txt
-> index 0b3c140babd9..5714c0d30fce 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1015,6 +1015,32 @@ Kernel parameters
->                         Format:
->                         <first_slot>,<last_slot>,<port>,<enum_bit>[,<debu=
-g>]
->
-> +       cppc_cpufreq.auto_sel_mode=3D
-> +                       [ACPI,CPU_FREQ] Enable ACPI CPPC autonomous perfo=
-rmance
-> +                       selection on all CPUs at boot. In autonomous mode=
-, the
-> +                       platform selects the performance level within the=
- CPPC
-> +                       Minimum and Maximum Performance limits. The drive=
-r sets
-> +                       these limits from scaling_min_freq and scaling_ma=
-x_freq.
-> +                       The Energy Performance Preference (EPP) hint guid=
-es the
-> +                       platform toward performance (0x00) or energy effi=
-ciency
-> +                       (0xff).
-> +                       Requires the ACPI CPPC Autonomous Selection Enabl=
-e
-> +                       register. EPP is set only if the platform impleme=
-nts it.
-> +                       Format: <string>
-> +                         performance:
-> +                                 enable autonomous selection, set EPP to=
- 0x00
-> +                         balance_performance:
-> +                                 enable autonomous selection, set EPP to=
- 0x80
-> +                         balance_power:
-> +                                 enable autonomous selection, set EPP to=
- 0xc0
-> +                         power:
-> +                                 enable autonomous selection, set EPP to=
- 0xff
-> +                         default_epp:
-> +                                 enable autonomous selection, keep firmw=
-are EPP
-> +                         disabled:
-> +                                 keep the firmware configuration (defaul=
-t)
-> +                       An unrecognized value is ignored with a warning.
-> +
->         cpuidle.off=3D1   [CPU_IDLE]
->                         disable the cpuidle sub-system
->
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufre=
-q.c
-> index a62589c0674f..c9bed93cf0c9 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -238,6 +238,58 @@ static void cppc_cpufreq_apply_saved_regs(struct cpu=
-freq_policy *policy,
->                                              saved_type);
->  }
->
-> +/* Autonomous Selection boot parameter modes */
-> +enum {
-> +       AUTO_SEL_MODE_DISABLED,
-> +       AUTO_SEL_MODE_PERFORMANCE,
-> +       AUTO_SEL_MODE_BALANCE_PERFORMANCE,
-> +       AUTO_SEL_MODE_BALANCE_POWER,
-> +       AUTO_SEL_MODE_POWER,
-> +       AUTO_SEL_MODE_DEFAULT_EPP,
-> +};
-> +
-> +static const char * const auto_sel_mode_names[] =3D {
-> +       [AUTO_SEL_MODE_DISABLED]                =3D "disabled",
-> +       [AUTO_SEL_MODE_PERFORMANCE]             =3D "performance",
-> +       [AUTO_SEL_MODE_BALANCE_PERFORMANCE]     =3D "balance_performance"=
-,
-> +       [AUTO_SEL_MODE_BALANCE_POWER]           =3D "balance_power",
-> +       [AUTO_SEL_MODE_POWER]                   =3D "power",
-> +       [AUTO_SEL_MODE_DEFAULT_EPP]             =3D "default_epp",
-> +};
-> +
-> +static int auto_sel_mode;
-> +
-> +static int auto_sel_mode_set(const char *val, const struct kernel_param =
-*kp)
-> +{
-> +       int *mode =3D kp->arg;
-> +       int ret;
-> +
-> +       ret =3D sysfs_match_string(auto_sel_mode_names, val);
-> +       if (ret < 0) {
-> +               pr_warn("Invalid auto_sel_mode \"%s\", ignoring it\n", va=
-l);
-> +               return 0;
-> +       }
-> +
-> +       *mode =3D ret;
-> +       return 0;
-> +}
-> +
-> +static int auto_sel_mode_get(char *buffer, const struct kernel_param *kp=
-)
-> +{
-> +       int *mode =3D kp->arg;
-> +
-> +       return sysfs_emit(buffer, "%s\n", auto_sel_mode_names[*mode]);
-> +}
-> +
-> +static const struct kernel_param_ops auto_sel_mode_ops =3D {
-> +       .set =3D auto_sel_mode_set,
-> +       .get =3D auto_sel_mode_get,
-> +};
-> +
-> +module_param_cb(auto_sel_mode, &auto_sel_mode_ops, &auto_sel_mode, 0444)=
-;
-> +MODULE_PARM_DESC(auto_sel_mode,
-> +                "Autonomous selection mode: performance, balance_perform=
-ance, balance_power, power, default_epp, disabled");
-> +
->  #ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
->  static enum {
->         FIE_UNSET =3D -1,
-> @@ -938,6 +990,72 @@ static u32 cppc_cpufreq_effective_nominal(struct cpu=
-freq_policy *policy)
->         return (u32)ospm_nominal;
->  }
->
-> +/*
-> + * Apply the auto_sel_mode boot parameter in init(). Enable autonomous
-> + * selection unless it is already enabled. Then set EPP for the selected=
- mode.
-> + *
-> + * Enable auto_sel before writing EPP, as the platform may ignore EPP wh=
-ile
-> + * autonomous selection is disabled. Save each value written, so that on=
-line()
-> + * and resume() write it again.
-> + */
-> +static void cppc_cpufreq_setup_auto_sel_mode(struct cpufreq_policy *poli=
-cy)
-> +{
-> +       struct cppc_policy_state *st =3D cppc_cpufreq_policy_state(policy=
-);
-> +       struct cppc_cpudata *cpu_data =3D policy->driver_data;
-> +       unsigned int cpu =3D policy->cpu;
-> +       u64 auto_sel, epp;
-> +       int ret;
-> +
-> +       if (auto_sel_mode =3D=3D AUTO_SEL_MODE_DISABLED)
-> +               return;
-> +
-> +       /* U64_MAX means the platform does not implement the register. */
-> +       auto_sel =3D st->regs[CPPC_SAVED_AUTO_SEL][CPPC_SAVED_FIRMWARE];
-> +       if (auto_sel =3D=3D U64_MAX) {
-> +               pr_info_once("Autonomous selection is not supported, igno=
-ring auto_sel_mode\n");
-> +               return;
-> +       }
-> +
-> +       if (!auto_sel) {
-> +               ret =3D cppc_set_auto_sel(cpu, true);
-> +               if (ret) {
-> +                       pr_warn("Failed to enable auto_sel for CPU%u (%d)=
-\n",
-> +                               cpu, ret);
-> +                       return;
-> +               }
-> +               cppc_cpufreq_save_requested(policy, CPPC_SAVED_AUTO_SEL, =
-true);
-> +       }
-> +       cpu_data->perf_ctrls.auto_sel =3D true;
-> +
-> +       switch (auto_sel_mode) {
-> +       case AUTO_SEL_MODE_PERFORMANCE:
-> +               epp =3D CPPC_EPP_PERFORMANCE_PREF;
-> +               break;
-> +       case AUTO_SEL_MODE_BALANCE_PERFORMANCE:
-> +               epp =3D CPPC_EPP_BALANCE_PERFORMANCE_PREF;
-> +               break;
-> +       case AUTO_SEL_MODE_BALANCE_POWER:
-> +               epp =3D CPPC_EPP_BALANCE_POWER_PREF;
-> +               break;
-> +       case AUTO_SEL_MODE_POWER:
-> +               epp =3D CPPC_EPP_ENERGY_EFFICIENCY_PREF;
-> +               break;
-> +       default:
-> +               /* default_epp keeps the EPP value set by firmware. */
-> +               return;
-> +       }
-> +
-> +       /* EPP is optional. */
-> +       ret =3D cppc_set_epp(cpu, epp);
-> +       if (ret) {
-> +               if (ret !=3D -EOPNOTSUPP)
-> +                       pr_warn("Failed to set EPP for CPU%u (%d)\n", cpu=
-, ret);
-> +               return;
-> +       }
-> +       cpu_data->perf_ctrls.energy_perf =3D epp;
-> +       cppc_cpufreq_save_requested(policy, CPPC_SAVED_EPP, epp);
-> +}
-> +
->  static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  {
->         unsigned int cpu =3D policy->cpu;
-> @@ -1058,6 +1176,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_pol=
-icy *policy)
->         }
->         cpu_data->perf_limits_valid =3D true;
->
-> +       cppc_cpufreq_setup_auto_sel_mode(policy);
-> +
->         cppc_cpufreq_cpu_fie_init(policy);
->         return 0;
->
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 2cec54b4d2e2..3d47c07f494b 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -42,6 +42,8 @@
->  #define CPPC_AUTO_ACT_WINDOW_SIG_CARRY_THRESH 129
->
->  #define CPPC_EPP_PERFORMANCE_PREF              0x00
-> +#define CPPC_EPP_BALANCE_PERFORMANCE_PREF      0x80
-> +#define CPPC_EPP_BALANCE_POWER_PREF            0xC0
->  #define CPPC_EPP_ENERGY_EFFICIENCY_PREF                0xFF
->
->  #define CPPC_PERF_LIMITED_DESIRED_EXCURSION    BIT(0)
-> --
+The ACPI button driver reports KEY_WAKEUP from the Power Button input
+device to let userspace know that the system was resumed by a power
+button wakeup.
 
-Applied as 7.5 material, thanks!
+However, reporting KEY_WAKEUP from generic system resume paths can make
+userspace observe a Power Button wakeup even when the system was resumed
+by a different wake source.
+
+This is reproducible on an AMD Android 15 Xen guest. With a kernel
+without this fix, a non-power-button S3 resume:
+
+  echo mem > /sys/power/state
+  xl trigger android s3resume
+
+makes the Power Button input device report KEY_WAKEUP. The same test on
+a kernel with this fix no longer reports KEY_WAKEUP from the Power Button
+input device.
+
+Track whether a power button event/notify is observed while the ACPI
+button device is suspended, and report KEY_WAKEUP on resume only in that
+case.
+
+When the fixed power-button status bit is set during early S3 resume,
+clear it to avoid a deferred KEY_POWER delivery to userspace, and set a
+sleep.c-owned flag so button resume can still report KEY_WAKEUP. Do not
+call into the button driver from that IRQ-disabled path. Also clear
+wakeup_pending before setting suspended, with a compiler barrier, and
+drain ACPI notify work before clearing suspended on resume. Report
+KEY_WAKEUP before clearing suspended so a late notify cannot drop both
+KEY_WAKEUP and KEY_POWER.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202609290454.LJrhMCb3-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202611030112.cVsBZFFE-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202611030545.3st9p1ha-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202611100542.1xljQv20-lkp@intel.com/
+Signed-off-by: Baorui.Liu <baorliu@amd.com>
+
+Changes since v7:
+- Guard acpi_sleep_pwr_btn_wakeup_pending() with CONFIG_ACPI_SLEEP,
+  matching its definition in sleep.c, so button resume does not link
+  against a missing symbol when CONFIG_PM_SLEEP=y and CONFIG_ACPI_SLEEP
+  is unset (0day/LKP ERROR on x86_64 randconfig).
+
+Changes since v6:
+- Include <linux/types.h> in include/acpi/button.h so the bool
+  declaration/stub of acpi_sleep_pwr_btn_wakeup_pending() builds when
+  the header is included without prior bool typedefs (0day/LKP ERROR
+  via nouveau_connector.c on parisc64-defconfig and arm64-randconfig).
+---
+ drivers/acpi/button.c | 63 ++++++++++++++++++++++++++++++++++++-------
+ drivers/acpi/sleep.c  | 47 +++++++++++++++++++++-----------
+ include/acpi/button.h | 19 +++++++++++++
+ 3 files changed, 104 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/acpi/button.c b/drivers/acpi/button.c
+index c41fba556030..9a80a27e4297 100644
+--- a/drivers/acpi/button.c
++++ b/drivers/acpi/button.c
+@@ -203,6 +203,7 @@ struct acpi_button {
+ 	bool last_state;
+ 	ktime_t last_time;
+ 	bool suspended;
++	bool wakeup_pending;
+ 	bool lid_state_initialized;
+ 	bool gpe_enabled;
+ };
+@@ -488,7 +489,11 @@ static void acpi_button_notify(acpi_handle handle, u32 event, void *data)
+ 
+ 	acpi_pm_wakeup_event(button->dev);
+ 
+-	if (button->suspended || event == ACPI_BUTTON_NOTIFY_WAKE)
++	if (button->type == ACPI_BUTTON_TYPE_POWER &&
++	    READ_ONCE(button->suspended))
++		WRITE_ONCE(button->wakeup_pending, true);
++
++	if (READ_ONCE(button->suspended) || event == ACPI_BUTTON_NOTIFY_WAKE)
+ 		return;
+ 
+ 	input = button->input;
+@@ -510,6 +515,12 @@ static void acpi_button_notify_run(void *data)
+ 
+ static u32 acpi_button_event(void *data)
+ {
++	struct acpi_button *button = data;
++
++	if (button->type == ACPI_BUTTON_TYPE_POWER &&
++	    READ_ONCE(button->suspended))
++		WRITE_ONCE(button->wakeup_pending, true);
++
+ 	acpi_os_execute(OSL_NOTIFY_HANDLER, acpi_button_notify_run, data);
+ 	return ACPI_INTERRUPT_HANDLED;
+ }
+@@ -519,7 +530,15 @@ static int acpi_button_suspend(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+ 
+-	button->suspended = true;
++	/*
++	 * Clear wakeup_pending before marking suspended. Otherwise a power
++	 * button SCI between the two stores could set wakeup_pending and then
++	 * be overwritten here, losing a real wakeup. barrier() prevents the
++	 * compiler from reordering the stores relative to that IRQ handler.
++	 */
++	WRITE_ONCE(button->wakeup_pending, false);
++	barrier();
++	WRITE_ONCE(button->suspended, true);
+ 	return 0;
+ }
+ 
+@@ -527,21 +546,45 @@ static int acpi_button_resume(struct device *dev)
+ {
+ 	struct acpi_button *button = dev_get_drvdata(dev);
+ 	struct input_dev *input;
++	bool report_wakeup = false;
++
++	/*
++	 * Drain notify work queued while suspended so a late power-button
++	 * notify still observes suspended == true, sets wakeup_pending, and
++	 * does not synthesize KEY_POWER for userspace.
++	 */
++	acpi_os_wait_events_complete();
++
++	/*
++	 * Sample and report KEY_WAKEUP before clearing suspended. Otherwise a
++	 * notify that arrives after sampling but before suspended is cleared
++	 * can set wakeup_pending and then be dropped without KEY_WAKEUP or
++	 * KEY_POWER. Clear suspended before wakeup_pending so a new SCI sees
++	 * suspended == false and takes the normal KEY_POWER path; barrier()
++	 * keeps that store order.
++	 */
++	if (button->type == ACPI_BUTTON_TYPE_POWER) {
++		report_wakeup = READ_ONCE(button->wakeup_pending) ||
++				acpi_sleep_pwr_btn_wakeup_pending();
++		if (report_wakeup) {
++			input = button->input;
++			input_report_key(input, KEY_WAKEUP, 1);
++			input_sync(input);
++			input_report_key(input, KEY_WAKEUP, 0);
++			input_sync(input);
++		}
++	}
++
++	WRITE_ONCE(button->suspended, false);
++	barrier();
++	WRITE_ONCE(button->wakeup_pending, false);
+ 
+-	button->suspended = false;
+ 	if (button->type == ACPI_BUTTON_TYPE_LID) {
+ 		button->last_state = !!acpi_lid_evaluate_state(ACPI_HANDLE(dev));
+ 		button->last_time = ktime_get();
+ 		acpi_lid_initialize_state(button);
+ 	}
+ 
+-	if (button->type == ACPI_BUTTON_TYPE_POWER) {
+-		input = button->input;
+-		input_report_key(input, KEY_WAKEUP, 1);
+-		input_sync(input);
+-		input_report_key(input, KEY_WAKEUP, 0);
+-		input_sync(input);
+-	}
+ 	return 0;
+ }
+ #endif
+diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+index 7c1fb5b844be..a17318a7a3d6 100644
+--- a/drivers/acpi/sleep.c
++++ b/drivers/acpi/sleep.c
+@@ -22,6 +22,7 @@
+ #include <linux/syscore_ops.h>
+ #include <asm/io.h>
+ #include <trace/events/power.h>
++#include <acpi/button.h>
+ 
+ #include "internal.h"
+ #include "sleep.h"
+@@ -105,6 +106,23 @@ u32 acpi_target_system_state(void)
+ EXPORT_SYMBOL_GPL(acpi_target_system_state);
+ 
+ static bool pwr_btn_event_pending;
++static bool pwr_btn_wakeup_pending;
++
++/**
++ * acpi_sleep_pwr_btn_wakeup_pending - Consume fixed power-button wake hint.
++ *
++ * Returns true once if acpi_suspend_enter() observed and cleared the fixed
++ * power-button status bit during early S3 resume. Used by the button driver
++ * to report KEY_WAKEUP without sleeping in that IRQ-disabled path.
++ */
++bool acpi_sleep_pwr_btn_wakeup_pending(void)
++{
++	bool pending = READ_ONCE(pwr_btn_wakeup_pending);
++
++	WRITE_ONCE(pwr_btn_wakeup_pending, false);
++	return pending;
++}
++EXPORT_SYMBOL_GPL(acpi_sleep_pwr_btn_wakeup_pending);
+ 
+ /*
+  * The ACPI specification wants us to save NVS memory regions during hibernation
+@@ -504,12 +522,12 @@ static void acpi_pm_finish(void)
+ 
+ 	acpi_resume_power_resources();
+ 
+-	/* If we were woken with the fixed power button, provide a small
+-	 * hint to userspace in the form of a wakeup event on the fixed power
+-	 * button device (if it can be found).
+-	 *
+-	 * We delay the event generation til now, as the PM layer requires
+-	 * timekeeping to be running before we generate events. */
++	/*
++	 * If woken by the fixed power button, provide a wakeup event on that
++	 * device. KEY_WAKEUP input reporting is handled by the button driver
++	 * via acpi_sleep_pwr_btn_wakeup_pending() / wakeup_pending; do not
++	 * synthesize KEY_POWER here.
++	 */
+ 	if (!pwr_btn_event_pending)
+ 		return;
+ 
+@@ -625,14 +643,13 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 	/* Reprogram control registers */
+ 	acpi_leave_sleep_state_prep(acpi_state);
+ 
+-	/* ACPI 3.0 specs (P62) says that it's the responsibility
+-	 * of the OSPM to clear the status bit [ implying that the
+-	 * POWER_BUTTON event should not reach userspace ]
+-	 *
+-	 * However, we do generate a small hint for userspace in the form of
+-	 * a wakeup event. We flag this condition for now and generate the
+-	 * event later, as we're currently too early in resume to be able to
+-	 * generate wakeup events.
++	/*
++	 * ACPI 3.0 (P62): OSPM should clear the fixed power-button status bit
++	 * so the event does not reach userspace as KEY_POWER. Only set plain
++	 * flags here: this path runs with IRQs disabled, so do not call into
++	 * the button driver (it may take sleeping locks). Button resume later
++	 * consumes pwr_btn_wakeup_pending for KEY_WAKEUP; acpi_pm_finish()
++	 * uses pwr_btn_event_pending for the PM wakeup event.
+ 	 */
+ 	if (ACPI_SUCCESS(status) && (acpi_state == ACPI_STATE_S3)) {
+ 		acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
+@@ -641,8 +658,8 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
+ 
+ 		if (pwr_btn_status & ACPI_EVENT_FLAG_STATUS_SET) {
+ 			acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+-			/* Flag for later */
+ 			pwr_btn_event_pending = true;
++			WRITE_ONCE(pwr_btn_wakeup_pending, true);
+ 		}
+ 	}
+ 
+diff --git a/include/acpi/button.h b/include/acpi/button.h
+index af2fce5d2ee3..83f5dd373f39 100644
+--- a/include/acpi/button.h
++++ b/include/acpi/button.h
+@@ -2,6 +2,8 @@
+ #ifndef ACPI_BUTTON_H
+ #define ACPI_BUTTON_H
+ 
++#include <linux/types.h> /* for bool */
++
+ #define ACPI_BUTTON_HID_POWER	"PNP0C0C"
+ #define ACPI_BUTTON_HID_LID	"PNP0C0D"
+ #define ACPI_BUTTON_HID_SLEEP	"PNP0C0E"
+@@ -15,4 +17,21 @@ static inline int acpi_lid_open(void)
+ }
+ #endif /* IS_ENABLED(CONFIG_ACPI_BUTTON) */
+ 
++/*
++ * Set in acpi_suspend_enter() when the fixed power-button status bit is
++ * observed (IRQ-disabled context). Consumed by the button driver on resume
++ * so KEY_WAKEUP can be reported without calling into the button driver from
++ * that early path. Defined in sleep.c under CONFIG_ACPI_SLEEP. CONFIG_PM_SLEEP
++ * can be enabled without CONFIG_ACPI_SLEEP, so the stub keeps button.o
++ * linkable in that case. Safe when CONFIG_ACPI_BUTTON=m.
++ */
++#if IS_ENABLED(CONFIG_ACPI_SLEEP)
++bool acpi_sleep_pwr_btn_wakeup_pending(void);
++#else
++static inline bool acpi_sleep_pwr_btn_wakeup_pending(void)
++{
++	return false;
++}
++#endif
++
+ #endif /* ACPI_BUTTON_H */
+
+base-commit: 0069320cef67ba6ca745a05868c40e4c46b61284
+-- 
+2.34.1
+
