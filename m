@@ -1,92 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=83.223.78.233
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794914505;
-	b=xWPXe9afauJmlQrnIzHVt3nA5vPsXFBMJtoLp4WAv5MFD+YPrQ4MSM/IhQGVmjX2Zd5V
-	 1eFxAo1sqs2a8IPL2QDkxatt2jMXIMavBqRySHFn+8mZIF2nQaTLhLVXl/e808OFsMl0s
-	 i7LoyBzHWAu2wEQSoW/FuLlIpR3rli8FQBRTvXhXMMAHIZU7QIbSGG80ArwEOZueu6Aia
-	 PdfiATr9CYDCPl9W1qYnLv4ZlNfZgBqSBKmkjflatrdVC96xgcp2A88LXuFH4/utoe+P5
-	 yX9n/7lYcdEs5JzA82ZJzpzdORhXYWW98Ge9xVWI8k+u8xaw1CGnVxZXhcLHUv1RkTg==
+	t=1794915897;
+	b=m0hutKRmtwcpZ9Oe7jLxMVkSZWrwOVVcVR8X3GZn5JkSb/c5ZTiz8k8GqNmQ3Y2HWNuN
+	 w+9Ckh5aVmp8AKFR+ld2lyOM3xh73JsHJSja+n2l+oO3gnB4ArpGUuloKI4BFYp1fDXmt
+	 SF4Mo+zRYdmi+nvf+eAf8Cr7Y+OfvhiONCZ7vk6c/aY/qNtNH0nGHR6gbRwKyq5sbsAWm
+	 78TnLbwnt5et8YYbi8niznjIFIT9uqBbaFYuppEw22y9E7wBbudovnI+gtFJMA5AFGlvR
+	 9girr+ErU6MwY40aRNTiykCyaruPaDu0unyF9N9c+q1jXvjK54bJOyfV+kxkcQvj7kg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794914505;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=x7FKUaCvfIYG+OL9lzY+LhaajL+qrQZmia0tnFbeArk=;
-	b=nh5zqrsMRz8kSqCJXImKjBnY7ucpluasbacpDFkY6tgm+lXf7LDLVk6sKD/d3VjiB9km
-	 oIC6/4wkF4Nz+hvnFFFrfFJtYlsVN27X72tLAZUzO371rlCLGYXWbuHRGYOcvMgk+oFvN
-	 pitP2rH8YVgjx9PCc9ySkF2Pv5K1+dGGqdvql0FcmUCWZCXL8TB1Z2POt5Q061ckh0JbE
-	 4/qx/RntCgRlsPaj8nvqbEuesLkWljBWJ8/Rzhi0Z9S0iDIZgIK1ccLUl7YxbXh2ripMt
-	 LGNeogca6eQlED/sQT6P8+7LjiBmBWtN4OMFPQ9kNK/tJCIlWAAyVQgyFHmnKum3dQQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794915897;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=n6w3cO92Rq3N51GC+FtnyfKYSdVpvLf9WR3UZ2ynCHA=;
+	b=XVongrcCqmx7gc6eW76z1877OlST18qTBzm/ZggioIXvjfDoOtmQpr7DHzzmQncV04zP
+	 w2E4zOHkynSyCpoDgjBYaEkFhyCpnf6aUsx9UJ8mXIFRBjmBaKUVeNT6ZgZtzvydWP0Al
+	 xwqeUQkfopgieCmLmCiytvlVIHCC8IrrtMJ982inh4DKEM33Nz5tix4jbYKTQ8wsoVWpQ
+	 ZoZD5ahymceXkncg8lP/RxxFHfbzLf3czOc0gCnYKM9jIrHTf0Su2XD25/DG720W9R4pw
+	 +ykl72SjYMh/2EtB2TmMlnfl7MW08U6qWLH20qSA2omdP3Jzf4UJWVFfnlkOM3hN61g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=sQQSCwa5;
-	arc=none smtp.remote-ip=217.140.110.172
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E69606A31C
-	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:21:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06E69606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=sQQSCwa5
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EA331CDD;
-	Tue, 17 Nov 2026 03:21:40 -0800 (PST)
-Received: from e135073.nice.Arm.com (e135073.arm.com [10.34.111.135])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D26F23F763;
-	Tue, 17 Nov 2026 03:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1794914503; bh=fqjc/m+GsrUpdUZSOPvYguj57JvvOU+w3OhEK+hZgDc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sQQSCwa5WOTLaq+RJBycgz64wJdPreJtjbw51rDWGDD6fmeiEwSwMPadHDo42x6CD
-	 w0B6L9CpCqAVfP8J1GCJWQmaQr2RvZNsJtfGCigaf9sVen6xN1juZACoqSkOiiD1LX
-	 jn94lVUpKMqQdf/y9VmIULmx4T8eGFAvw0+NGqfQ=
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: Ashok Raj <ashok.raj@oss.qualcomm.com>,
-	James Morse <james.morse@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
+	dmarc=none header.from=wunner.de;
+	spf=pass smtp.mailfrom=wunner.de;
+	arc=none smtp.remote-ip=83.223.78.233
+Received: from mailout2.hostsharing.net (mailout2.hostsharing.net [83.223.78.233])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B53B606A32F
+	for <acpica-devel@lists.linux.dev>; Tue, 17 Nov 2026 11:44:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7B53B606A32F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wunner.de
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
+	 client-signature ECDSA (secp384r1) client-digest SHA384)
+	(Client CN "*.hostsharing.net", Issuer "GlobalSign GCC R6 AlphaSSL CA 2025" (verified OK))
+	by mailout2.hostsharing.net (Postfix) with ESMTPS id 107EE2825;
+	Tue, 17 Nov 2026 12:44:53 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id EFB5E6039C25; Tue, 17 Nov 2026 12:44:52 +0100 (CET)
+Date: Tue, 17 Nov 2026 12:44:52 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
+	James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
 	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
 	"H. Peter Anvin" <hpa@zytor.com>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Tony Luck <tony.luck@intel.com>,
+	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
 	Hanjun Guo <guohanjun@huawei.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Shuai Xue <xueshuai@linux.alibaba.com>,
 	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	"Oliver O'Halloran" <oohall@gmail.com>,
+	Oliver O'Halloran <oohall@gmail.com>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
 	Avadhut Naik <avadhut.naik@amd.com>,
-	Radu Rendec <radu@rendec.net>,
 	Jonathan Cameron <jic23@kernel.org>,
-	Dave Jiang <dave.jiang@intel.com>,
 	Kai-Heng Feng <kaihengf@nvidia.com>,
 	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Terry Bowman <terry.bowman@amd.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	linux-acpi@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org,
+	Dave Jiang <dave.jiang@intel.com>, Breno Leitao <leitao@debian.org>,
+	Terry Bowman <terry.bowman@amd.com>, Dan Williams <djbw@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
 	acpica-devel@lists.linux.dev
-Subject: [PATCH v1 19/19] PCI/ERR: Avoid NULL bridge pointer
-Date: Tue, 17 Nov 2026 12:10:29 +0100
-Message-ID: <20261117111444.4185512-20-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261117111444.4185512-1-pierre.gondois@arm.com>
+Subject: Re: [PATCH v1 05/19] PCI/AER: Embed aer_capability_regs copy in
+ struct aer_recover_entry
+Message-ID: <avw-NChMgIjwFuv1@wunner.de>
 References: <20261117111444.4185512-1-pierre.gondois@arm.com>
+ <20261117111444.4185512-6-pierre.gondois@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -96,32 +81,80 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261117111444.4185512-6-pierre.gondois@arm.com>
 
-Return PCI_ERS_RESULT_DISCONNECT when no upstream bridge is available,
-avoiding a NULL pointer dereference in pci_walk_bridge().
+On Tue, Nov 17, 2026 at 12:10:15PM +0100, Pierre Gondois wrote:
+> commit e2abc47a5a1a ("ACPI: APEI: Fix AER info corruption when error
+> status data has multiple sections") passed to aer_recover_queue() a
+> newly allocated copy of pcie_err->aer_info instead of providing a
+> pointer to the ghes struct. This prevented corruptions of the ghes
+> record (in case the ghes record was re-used for a new error before
+> the previous error was logged).
 
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
----
- drivers/pci/pcie/err.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Since commit eddba19b8b5f ("PCI/AER: Support Advisory Non-Fatal Errors"),
+aer_regs is modified for a recursive invocation of __pci_print_aer().
+The copy is necessary because we don't want to modify a buffer owned by
+platform firmware.
 
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 1a7fc71c79d8a..402dc74c7fe49 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -233,6 +233,11 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	else
- 		bridge = pci_upstream_bridge(dev);
- 
-+	if (!bridge) {
-+		pci_warn(dev, "no upstream bridge\n");
-+		return PCI_ERS_RESULT_DISCONNECT;
-+	}
-+
- 	pci_walk_bridge(bridge, pci_pm_runtime_get_sync, NULL);
- 
- 	pci_dbg(bridge, "broadcast error_detected message\n");
--- 
-2.43.0
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1352,7 +1352,7 @@ struct aer_recover_entry {
+>  	u8	devfn;
+>  	u16	domain;
+>  	int	severity;
+> -	struct aer_capability_regs *regs;
+> +	struct aer_capability_regs regs;
+>  };
 
+This increases stack usage significantly in aer_recover_queue(),
+which is not good.  A kzalloc() allocation may be better suited
+for such a large struct, instead of relying on the stack.
+
+> @@ -1374,24 +1374,14 @@ static void aer_recover_work_func(struct work_struct *work)
+>  					   PCI_SLOT(entry.devfn),
+>  					   PCI_FUNC(entry.devfn));
+>  		else
+> -			pci_print_aer(pdev, entry.severity, entry.regs);
+> +			pci_print_aer(pdev, entry.severity, &entry.regs);
+>  
+> -		regs = entry.regs;
+> +		regs = &entry.regs;
+>  		if (entry.severity == AER_CORRECTABLE)
+>  			err = regs->cor_status & ~regs->cor_mask;
+>  		else
+>  			err = regs->uncor_status & ~regs->uncor_mask;
+>  
+> -		/*
+> -		 * Memory for aer_capability_regs(entry.regs) is being
+> -		 * allocated from the ghes_estatus_pool to protect it from
+> -		 * overwriting when multiple sections are present in the
+> -		 * error status. Thus free the same after processing the
+> -		 * data.
+> -		 */
+> -		ghes_estatus_pool_region_free((unsigned long)entry.regs,
+> -					    sizeof(struct aer_capability_regs));
+> -
+
+So you're removing the call to ghes_estatus_pool_region_free() from the
+worker...
+
+> @@ -1441,17 +1431,18 @@ void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
+>  		.devfn		= devfn,
+>  		.domain		= domain,
+>  		.severity	= severity,
+> -		.regs		= aer_regs,
+> +		.regs		= *aer_regs,
+>  	};
+>  
+> +	ghes_estatus_pool_region_free((unsigned long)aer_regs,
+> +				      sizeof(struct aer_capability_regs));
+> +
+
+... and instead call it earlier, before even launching the worker.
+So where's the benefit?  You've traded less memory usage in the
+pool for higher stack usage.  How is that useful?
+
+Thanks,
+
+Lukas
