@@ -1,46 +1,46 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795029446;
-	b=iUMQBGeJWGr3puMr3sK6R+S9fxs+mdrsCCRou2ShubjMJAqNd3PVsMptXCTaUHByN1Ps
-	 uvBeSYlv1Dh9t/VU1HDllQoiTp+JJTMdWqB+0zr0jZkew+xi5SfDi4NVdfv3jwZwHsCV0
-	 d/9x5NGelJqH98oxwGWendEZEbuTZLVcX/XoPtlfrYIUCUGNzV8ThK4EdV5UTOqa68FO1
-	 nM0YDeydz8Usc7Aso7NoEiw88as2bxlUBBpf9RsWo6u3EdfIzlYyeSLkdqEjyifEhBnd+
-	 ccnPj5owCvV5TBRW2oUrRh4zdb+CkMkMMMaru4/9J0qloQH2AvIxNkOFiP+48B1uwDw==
+	t=1795030162;
+	b=rp6Hw8igXrIIJngig2Ng/c0OSqWlYL3St/OGhLuI1ipbpx7BWB43N0pSEC4USzQcxJyd
+	 zzt4XbjdAPWN+qdxkQC5gb5yhB8ZHyd8mMmDXjsX1il1cCPh96eeDmeS+F6IAKQ8wNfzQ
+	 9zcgKnqFqMeVeDZPzCkuHx5QkudzA6iSzXhi+SQduTyjZy5kzHMgCwsQjKXxCbeZ/gcsY
+	 DAFIRtB5ur6EWOwJsyBVF58YdWKlQS8kvP8Ns6c+FUFv601yIbl4+OmAlvlHpuNtWrqo7
+	 efJii/3q+wF1/g6kns3jztjk6hu/Jt6v9zgAjRNtxnM9xyyR6Nbo6H65LYjstOffoEQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795029446;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795030162;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=7owH4WUkerW4zIC+CKgnsga+eX0VNj1y0MG+J3/f8XA=;
-	b=E8V6NqA+W8RS4mm+6nrxwz4L7xx4ph2+Zr+JCqsK3tXA/CtwcBibZQ4l8Cq/AJSJEje6
-	 s1quq5YBV3gj9GH0U9SEemX+8IC6PObtrGSaPk32bGBvPr/gu3FhwnjFOeXqNmSiodwK4
-	 4BpOFmgLdxDJit7q6XcF4QQzHsMd3EPb/qA9yc8lTMWXyWloT5SyDw5R7U45llnX+dJQb
-	 RQVAezyPxppf8QvqxbDxIoqozLr9G8XXoqZOWpr7DiY1NUIFqpeLC4m/THol4RTSoWX+m
-	 MNNA7DCx9hZ1fImJE3DU4raF95CNjrEuwGIMmuj1BbJnTmaYY7qckQRmxitcBMTxTDA==
+	bh=JJVam/uvZJBrgEkalBet5PVx2RW+nfigUefm/MSs4n4=;
+	b=BzrdTu2zJRbhkLb3YtP4CNNfsusJlm9Zu5BA1mtgDHNRt1dZLsKfBaCAbJfFOguaL2+2
+	 moGQ0KkPn4jOIqPr+B1ada8+tLJJhkwJcvihSPKYjsTo4DISiBpWoKMnSYUjJd62j4Eds
+	 HaTkORaD26uzN54THnAy4O2HiVI+K3DUL7HfJqRuYsdJsDguVolLl56DYCK+XNZCoDi8p
+	 nOmx3W6Xzsqmx6inrmV5S8AYP6e/41fAPdH4DKWc3EZEoHtwGZ1zEgA7uZU12Zu04Krn4
+	 rMDLH6t63mP5PfrXztK340Z4sTyPPDG6XtWzORWpyb7fLIyKwbaFmzWQ+3zwEDFeciQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jUzLfTeG;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EQMF2R9P;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257AD606A320;
-	Wed, 18 Nov 2026 19:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F12E60A3819;
+	Wed, 18 Nov 2026 19:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jUzLfTeG
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1BEA1F000C4;
-	Wed, 18 Nov 2026 19:17:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EQMF2R9P
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A260E1F000C9;
+	Wed, 18 Nov 2026 19:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795029446;
-	bh=7owH4WUkerW4zIC+CKgnsga+eX0VNj1y0MG+J3/f8XA=;
+	s=k20260515; t=1795030162;
+	bh=JJVam/uvZJBrgEkalBet5PVx2RW+nfigUefm/MSs4n4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=jUzLfTeGVe+PVJWQpQLUkHhUrlMClo9R3mL7zgVI4gmp8SxXYkr468lUOUNgoDpeU
-	 kDwzn7RvYzUgRVvJS5xWYx5ms43Uidq8z+Ldn5RfAAcFsGFAlQItErJV5WESWbYvpi
-	 axnSxFLq3DJAwvWpYtGSR3KM/MimOlY/hMEOFBiiHnY2W/nMYpRdMakLP+OhixN/nn
-	 +MGHg2u7eZ++8s1o7Po6K7SjXQL396mLgmhBnPeraKdNZeo8VyIJ2DeZ1MglbFhTNO
-	 y+KLn3+Oa8wBs2ooCbN+hQsZZ/HOvwLcCmyAFlJrsOFDBIrI9ofXmIrCIG8xNrj3if
-	 8sq5P1AiMZXDA==
-Date: Wed, 18 Nov 2026 19:17:12 +0000
+	b=EQMF2R9PZs0N8mIRRWGUD6gKWClhjyEwi9hhRXRFtask4MefFvRdlvqwYTEdjfgeF
+	 SgPtKyzPxKDwpHVxzuWZyNdx4JouHyyJzK3IOsr2j/6Ms7mqp0oiVGBVChQJV6tvXe
+	 la0Z9shVkj7Bws2hWiErxteYhdqmvkCSa+5mkHUYkvUs9NcxLJvjUEh16y6LWyFUJw
+	 Y3pKsewHD11SrmLztX4KnTLxtg0sg1w2jXuYLcgzJQ79JByvIMOl00exu90tdFgzs9
+	 AfaOFNXGCJsymqIA7Ku29q7STnqQytuQgb53dcdy8XI7aaLRpbSsjmM4uMV67xfD1g
+	 mUFQohWucDh2g==
+Date: Wed, 18 Nov 2026 19:29:12 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Pierre Gondois <pierre.gondois@arm.com>
 Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -54,21 +54,21 @@ Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
  <mahesh@linux.ibm.com>, "Oliver O'Halloran" <oohall@gmail.com>, Bjorn
  Helgaas <bhelgaas@google.com>, Maciej Wieczor-Retman
  <maciej.wieczor-retman@intel.com>, Pawel Chmielewski
- <pawel.chmielewski@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>, Qiuxu
- Zhuo <qiuxu.zhuo@intel.com>, Avadhut Naik <avadhut.naik@amd.com>, "Fabio M.
- De Francesco" <fabio.m.de.francesco@linux.intel.com>, Kai-Heng Feng
- <kaihengf@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, Breno Leitao
- <leitao@debian.org>, Dan Williams <djbw@kernel.org>, Kuppuswamy
- Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Terry Bowman
- <terry.bowman@amd.com>, linux-acpi@vger.kernel.org,
- linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v1 07/19] ACPI: extlog: Provide HEST generic data to
- extlog_print_pcie()
-Message-ID: <20261118191712.19a5ebf6@jic23-hlaptop>
-In-Reply-To: <20261117111444.4185512-8-pierre.gondois@arm.com>
+ <pawel.chmielewski@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>, Radu
+ Rendec <radu@rendec.net>, Avadhut Naik <avadhut.naik@amd.com>, Kai-Heng
+ Feng <kaihengf@nvidia.com>, "Fabio M. De Francesco"
+ <fabio.m.de.francesco@linux.intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ Breno Leitao <leitao@debian.org>, Terry Bowman <terry.bowman@amd.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v1 08/19] ACPI: extlog: Align extlog_print_pcie() and
+ ghes_handle_aer()
+Message-ID: <20261118192912.7c222427@jic23-hlaptop>
+In-Reply-To: <20261117111444.4185512-9-pierre.gondois@arm.com>
 References: <20261117111444.4185512-1-pierre.gondois@arm.com>
-	<20261117111444.4185512-8-pierre.gondois@arm.com>
+	<20261117111444.4185512-9-pierre.gondois@arm.com>
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -82,16 +82,79 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 17 Nov 2026 12:10:17 +0100
+On Tue, 17 Nov 2026 12:10:18 +0100
 Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-> Pass struct acpi_hest_generic_data to extlog_print_pcie() and derive
-> the payload, severity and length from it instead of passing them
-> individually. This reduces the number of arguments and makes the
-> section flags available for subsequent changes.
+> In order to unify extlog_print_pcie() with ghes_handle_aer() and
+> prepare to remove one of the functions, align the behaviour of the
+> 2 functions. Thus:
+
+Say which function you are changing.
+
+> - Submit the decoded snapshot through aer_recover_queue() instead of
+>   just printing the error.
+
+That's a major functional change.  I'm kind of making the assumption
+that something handled the aer recovery previously that wasn't via
+this path?  So do we now handle it twice?  I can't figure out how
+this works on systems using extlog but it is certainly a bold change to make :)
+
+
+> - Override the mapped AER severity with AER_FATAL when CPER_SEC_RESET
+>   is set so the AER worker selects the frozen-channel recovery path
+>   when it finds an unmasked uncorrectable error.
 > 
 > Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-Looks fine as a standalone improvement.  So even though I haven't
-yet read on far enough to see the usage of the flags:
+> ---
+>  drivers/acpi/acpi_extlog.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+> index 125f7931b98bc..e09ea571c32f5 100644
+> --- a/drivers/acpi/acpi_extlog.c
+> +++ b/drivers/acpi/acpi_extlog.c
+> @@ -8,9 +8,11 @@
+>  
+>  #include <linux/module.h>
+>  #include <linux/acpi.h>
+> +#include <linux/aer.h>
+>  #include <linux/cper.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/edac.h>
+> +#include <linux/pci.h>
+>  #include <linux/ras.h>
+>  #include <cxl/event.h>
+>  #include <acpi/ghes.h>
+> @@ -138,7 +140,6 @@ static void extlog_print_pcie(struct acpi_hest_generic_data *gdata)
+>  #ifdef CONFIG_ACPI_APEI_PCIEAER
+>  	struct cper_sec_pcie *pcie_err = acpi_hest_get_payload(gdata);
+>  	struct aer_capability_regs aer_regs = {};
+> -	struct pci_dev *pdev;
+>  	unsigned int devfn;
+>  	unsigned int bus;
+>  	int aer_severity;
+> @@ -156,6 +157,9 @@ static void extlog_print_pcie(struct acpi_hest_generic_data *gdata)
+>  		return;
+>  
+>  	aer_severity = cper_severity_to_aer(gdata->error_severity);
+> +	/* A component reset by firmware needs reinitialization. */
+> +	if (gdata->flags & CPER_SEC_RESET)
+> +		aer_severity = AER_FATAL;
+>  
+>  	aer_cap_regs_unpack(&aer_regs, pcie_err->aer_info, sizeof(pcie_err->aer_info));
+>  
+> @@ -163,12 +167,7 @@ static void extlog_print_pcie(struct acpi_hest_generic_data *gdata)
+>  	bus = pcie_err->device_id.bus;
+>  	devfn = PCI_DEVFN(pcie_err->device_id.device,
+>  			  pcie_err->device_id.function);
+> -	pdev = pci_get_domain_bus_and_slot(domain, bus, devfn);
+> -	if (!pdev)
+> -		return;
+> -
+> -	pci_print_aer(pdev, aer_severity, &aer_regs);
+> -	pci_dev_put(pdev);
+> +	aer_recover_queue(domain, bus, devfn, aer_severity, &aer_regs);
+>  #endif
+>  }
+>  
 
-Reviewed-by: Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>
