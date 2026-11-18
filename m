@@ -1,46 +1,46 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795033057;
-	b=3s0m31S9+LFJr4yoNr2DODL1vltJaaqoujtjhBCeoFWHGenlLiunZPJBp6WJlIy1CFnQ
-	 VbqvuPO0dATkbwquDS/9tH4tmup087MREqc5nXX5fVBtlZ1QfYyRnziCkDuQ0GfbuR5m4
-	 a3+IyvLIxMQrLTbrahgHCua1ZdLzeqGMMP6PJFMIpWTA4dfJwqKajI7/h88fKL70sM0OZ
-	 M70USbN8Bvn13nacs8bDq2a8U9G2vEH1NzN3GW7hDNCLr6lwxxShj5EIjj8bX3eHD1+wb
-	 K/DpVjSEIwBOhm+0VPBxtvO/7/0J1nTQIgJFXnR2d/duQ1pFMnoB2A2NZrEdQKDdn7w==
+	t=1795033380;
+	b=lwk+ctUzLXR7fHoE3XHlkmrOmSuD23Cf01N8hls4EF+tNPm2AKYFijsftq6ElHQqSL8N
+	 hgUXVMTwTYdiKtkZuVg3OHwpApCG7KU9mYqwJ2vgN7g/3TGMO9DsT5n+ECxKEeRD0iR05
+	 cwFBe9M24px2yKBypXMrSqLpckKE4yO3QdJl4S+btFWv1IG5jY5HZKDZV6euyhCGx7FDX
+	 zsEXxXT6r8HpeXA3IzSJgPT11Vl1BXTrMqbe329rJRNhi6tR+ksgAOVgA0yNnu5AM+avl
+	 xVIa794xUXANp3Fp6DSTtmH1XYMx2yycWM4AZ2XkuupxQTN0M/iI+29Sa5NgNG9pbmg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795033057;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795033380;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 In-Reply-To:References:X-Mailer:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=mVKoPdMSwhZTZlNTmmoGkN3w0L7rZ4fmniowdnKasL8=;
-	b=tfgBxrm3ZKShXTBJmfVD39XFvQw1FR1/C+UdBbxZT7XTGARoon0ClDVwKdfrRUqqUOaa
-	 y8Z9W7ADN6J3S1watRrCEih2ipwvucXlPUH1ryl8sEjuAfhON6cby0kWdgxhWZmQW8p4M
-	 0zrvW5DRdtHhcVvGwjZUo4D0netUl9VKzy40B2bpx6fHt5UnQJfjMfojigqPIXaNgJe8J
-	 i4Y7mVOwBX6aW3nutiLzOGe3FdxKmL+glQqJzUWFa0HmreeFrndHdXACcyJe9H0QdhcYF
-	 7H1F0A40qDWiOVtMxQDvE0qzluxOyKTxvw4V+4l4RgqNRzViUcBogznITM6KxTYKlCA==
+	bh=FkNN5wo0Am75uimk9STIjbiPLRC6EWagOnVoqK+PmwI=;
+	b=fJftw59WEHD8faTc45XufLWwGmGBDE4XBbtKOujw2XycP83EXKMBFSkD9DvFHwXsq52M
+	 j4ib+RjlQLskwmQgbtUTobDZOVDlGN2T66UGXHSvSXbHSDUUarCNT0FpyigO3lYdKUqLh
+	 uan7JydI0TbhRWRu3pW73BNPrFAIYNXiBjVlEdIkxUlHBM26W/X32pkA0iwzZ8wTzeoIY
+	 3guPSN9afam5aRzKYA6mk9Dz1nHEjqS/SzY1jYOTIMpqDTye+LXrxitgOLe3fCqibGOqJ
+	 KQzpJdEpnFDCwOF4G3SR6d3ZyDBzhYu8CsZvgUIUxy8TOAVweoCO2khyDGPLlShV1AA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=beDKPYGP;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HO+kR9le;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A9F60A2602;
-	Wed, 18 Nov 2026 20:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80590606A31C;
+	Wed, 18 Nov 2026 20:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=beDKPYGP
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE8341F000C7;
-	Wed, 18 Nov 2026 20:17:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HO+kR9le
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EDA61F000C4;
+	Wed, 18 Nov 2026 20:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795033057;
-	bh=mVKoPdMSwhZTZlNTmmoGkN3w0L7rZ4fmniowdnKasL8=;
+	s=k20260515; t=1795033380;
+	bh=FkNN5wo0Am75uimk9STIjbiPLRC6EWagOnVoqK+PmwI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=beDKPYGPep6s5kZbcTpNzbPBGelfYYwJQX6xK4lL4gSNE0x6CH+gKjVOdA9SVmNaF
-	 EFYsCmTMH2K7XZmpsiepqr/FflIzKX2yvXmXBxzieXGu/Yg4Op50JpppR58y4hMhOr
-	 gxRvQWKN+1Uu/YsnaRceSzATK+5zMhJYNIUJuJm3bEhTvlC4n0HkvwPz+89zXUclKx
-	 zTSI+B1Jd58xjMI/cZSNq9L7JonxRc/hpfODsDcu87j7fuOPOq+drZ++9v73W7GEd8
-	 OC7JDx6iVDYSLA0S43DhlYyrwrfp1+7v03nfEykZaJ9Y46uTRD9PddKSQLmRNu1Isq
-	 mlQ8EPrQCrDYw==
-Date: Wed, 18 Nov 2026 20:17:22 +0000
+	b=HO+kR9le6tB0FawCiLsaWoSXs/8ddm9MKA7CskHLF837GeTsPeoB5lgFe3cWD67uV
+	 XsNRJE0ReBHK5Fd8No0uWvclkVoAFlM9KNkmbPkpOuQrR24u7zhn228ysy11LIU3i/
+	 6BHjzy+TbbZio27gMtSikd14LBTXHv/pdmbIoRZY98jSWsJ536966HH/Fiwblqi+3U
+	 8BT3a+HT4mOMLRFdS02BtqfnIX3gxvkBdJfEpUBfv0dmVPFGsBtAoNIBqJNCbK/VID
+	 q0EtuArQSHGboVZmAa9JYRLubflyz0MG3h+ou0Ri5wmaaRHWTxiYLv0MVqq+HI1I/5
+	 U+eOtWYOc3vIg==
+Date: Wed, 18 Nov 2026 20:22:49 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Pierre Gondois <pierre.gondois@arm.com>
 Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
@@ -55,19 +55,20 @@ Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
  Helgaas <bhelgaas@google.com>, Maciej Wieczor-Retman
  <maciej.wieczor-retman@intel.com>, Pawel Chmielewski
  <pawel.chmielewski@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>, Radu
- Rendec <radu@rendec.net>, Avadhut Naik <avadhut.naik@amd.com>, Kai-Heng
- Feng <kaihengf@nvidia.com>, "Fabio M. De Francesco"
- <fabio.m.de.francesco@linux.intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Breno Leitao <leitao@debian.org>, Dan Williams <djbw@kernel.org>, Terry
- Bowman <terry.bowman@amd.com>, linux-acpi@vger.kernel.org,
- linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v1 16/19] ACPI: extlog: Report error severity using GHES
- bindings in MCE
-Message-ID: <20261118201722.2e449ec9@jic23-hlaptop>
-In-Reply-To: <20261117111444.4185512-17-pierre.gondois@arm.com>
+ Rendec <radu@rendec.net>, Avadhut Naik <avadhut.naik@amd.com>, Dave Jiang
+ <dave.jiang@intel.com>, "Fabio M. De Francesco"
+ <fabio.m.de.francesco@linux.intel.com>, Kai-Heng Feng
+ <kaihengf@nvidia.com>, Breno Leitao <leitao@debian.org>, Dan Williams
+ <djbw@kernel.org>, Terry Bowman <terry.bowman@amd.com>,
+ linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+ acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v1 17/19] ACPI: APEI: Share the extlog PCIe handler with
+ GHES
+Message-ID: <20261118202249.76b98c39@jic23-hlaptop>
+In-Reply-To: <20261117111444.4185512-18-pierre.gondois@arm.com>
 References: <20261117111444.4185512-1-pierre.gondois@arm.com>
-	<20261117111444.4185512-17-pierre.gondois@arm.com>
+	<20261117111444.4185512-18-pierre.gondois@arm.com>
 X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
@@ -81,37 +82,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 17 Nov 2026 12:10:26 +0100
+On Tue, 17 Nov 2026 12:10:27 +0100
 Pierre Gondois <pierre.gondois@arm.com> wrote:
 
-> MCE extended logs report raw CPER severity values to
-> log_non_standard_event(). GHES relies on the GHES bindings in
-> ghes_do_proc(). The rasdaemon interprets the severity
-> as a GHES_SEV_* value.
+> Remove ghes_handle_aer() and re-use the existing extlog_print_pcie()
+> to have a common PCIe logging handler. Update the function
+> documentation.
 > 
-> Translate the CPER severity with ghes_severity() before reporting
-> the event.
+> Except for the warning ("PCIe error section too small"),
+> no functional change intended.
 > 
 > Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
-Bug? Fixes tag 
-
-+ Upstream this sooner rather than later so drag to start of patch set.
-
-> ---
->  drivers/acpi/apei/extlog.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/apei/extlog.c b/drivers/acpi/apei/extlog.c
-> index 8cae5bdacf1c6..bd407436928b4 100644
-> --- a/drivers/acpi/apei/extlog.c
-> +++ b/drivers/acpi/apei/extlog.c
-> @@ -216,7 +216,7 @@ void acpi_extlog_report(const struct acpi_hest_generic_status *estatus)
->  			void *err = acpi_hest_get_payload(gdata);
->  
->  			log_non_standard_event(sec_type, fru_id, fru_text,
-> -					       gdata->error_severity, err,
-> +					       ghes_severity(gdata->error_severity), err,
->  					       gdata->error_data_length);
->  		}
->  	}
-
+Fine if the earlier patch to add error handling flow
+to extlog is fine.  I'll wait for more input from others on that.
