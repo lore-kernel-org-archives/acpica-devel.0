@@ -1,78 +1,77 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195271;
-	b=ZfunrCy7prQ4fDMxxUVgvClemm9KFuSv+fXMEG2cS+ezDyxzVUlMj010SrQYoI26n6Cj
-	 Ba363IwQLl6XMlqUV52S28uLu8RcC96wQEbzI5Mc9FAViQg7aZtIoBSj8Tf3fd21FuxdH
-	 PYp9binNg8apPNps9/w4lkYBRlwQUF1zCpwDxxIaYu33ej4c3dfkadl66iarYQsoRocUh
-	 zuuOJyb1w1TvJ5wFB4g5AinPbxnGYqavA4GXNOAntqcQH6ocXPGTDNew0F9e0YyYt48Ih
-	 KFqYgYh2LIHKlBzvVdm14wsjJEUJv+DzEGFthRqGr6HydUFLnDJbio7TjvCdO52lAjA==
+	t=1795195275;
+	b=oKnTvJoq2VtMtvuewfteP4eRbaB+C6DoXMDnoh3sci6Owxd2rpiwAy3ihOuLIxoRDzXO
+	 Pt/1CZiZBZF0b1fvua2+N7Vt/BGfVMB5HfvOJslmWGwIf8lGJloBflx/6p/DM2EIlQJdk
+	 5jRqROMbIJugpOXkmcZNV95FuXQa90yOuiQlMMM4hSi9bfEimSAJ62r/+3RxN3vwkVji6
+	 ndD258riMvXUHsfGqFo2uE7ssPq+SqKbGZz8o8yk+W/uVDnhxsQiE3qecaDa6Zt041sNk
+	 Lq7gdQcHJGL18WcMWzpzZeGP9mxeTP6UAOCCOc78qETdirbnbXYVSIOKBj4S1EiGylQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195271;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195275;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=pBSfg6wFLb8885eXcfB/zlwPq5TD0EaZYVmvQvTjVuM=;
-	b=wI/dWaw7WmWWJPCnTaTZc+Ke0ylRlqkwBDhI/Jv+m6gbwnOQZ796aykMlzqwtGnV9MuD
-	 eBOfZw5TMo8qeuySwxrU4bXdUovSMw7/nLMA+5BnNmXeBNavEv6deQrHzvZuqmE4QFGaC
-	 am4ZEyZK6ZEAqaKlu9JDGFf3XCjLR7NH88OkDy2WY/v1W40lO5IvmPrHXDEauO7UsZhp+
-	 gxBRtfdYuixPlEUckhRONL1lDVtljXcwLX7Y/TUrQKxI870vgCiALHP8hs7dBI/DRu6BJ
-	 frJbqdzT1NdCTJ2TlyvrjgOca3u6cDCXVsTT6kqJjnJj883jJoSfYFBPZQ9HrAU2q5Q==
+	bh=4U/uwHAE/JCkAiNRCy6w0ySpZQBvAQunkij3nCJiKn0=;
+	b=3a+rbLyL1jNFSJwyxGoPFFO9Qhade/Rqo/6P7O1HBffPK5xQU7KxK2pBDh3t1fv7oES6
+	 ILJnnMDYiBy8OFZmfnYaAivBBHPISGtKxe670JsncXnb3zrIOg7MGJnbpNvZkGnZrmx+/
+	 kLJTiYpJIKqps21zeTzfnVFKAbN6X/wKeiPx0AtbMScqPv+ETpDmTBZ5uocavzVs62c/F
+	 VmmIG2d055o78HpzftwN7xjGCbBwM/YSDq11WrExW7L+HGyCtx6CMM2aCUOSLUNo+OYl8
+	 rk+/g4eTKLqqdedzV0R1vKhJ+GfFmPunGKQPADzCb99OzggP6u+hnqtcliEHWL65jWA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=HNMSERwo;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=IEVoEDpR;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8C160A6F73
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0F8C160A6F73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A62A60A5BE2
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A62A60A5BE2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=HNMSERwo
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=IEVoEDpR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195270; x=1826731270;
+  t=1795195272; x=1826731272;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=z9td7btWiVZKUOXrg9UGzbySRIAfn784gxhmykIlLJY=;
-  b=HNMSERwoFGv7BzmW2ckVRAzUvYFWkfiQfdkbi6QNm5VvpZiDQXalAeJi
-   QxAAJpk13vzR6sTLN+cuCk/PCSRXdG8AYfbDyA8pOceizd8OzPa/7qlyB
-   6gsCX08RHcNYNWRwjGdwYr26RVERGEnqXnA3E821z3lIHZ8oK4WLzIVEG
-   Xm85kGr392+boM6MRF8FkqpUrGWgrB9TKhIQhQ2Rvy9bFUtkPPk1uE4j7
-   EPpnz7ZAQ38aHrpp4YkUvW8Z9c2vI8bCPfQBF5V4WK+V9lgY5EEa+hSl7
-   a+G4IiyPEYliR2AGl8/B0lol66r+UXx+RF05/HBAPwDkPKAaTmOjvN1t4
+  bh=zFXoZ8Suc98Mn6omUidyPFbF9/WmIqRHVrDQaUVpDGI=;
+  b=IEVoEDpRxgUeUud21EzQn9sYmpYo0JpENKvuilOAuLOVSHY/kOKfs0Wg
+   VwdI9NQSGCMnCcs86TJrFWX7nw0bSzuUCBH9BCnfpTI9mPkZl/uXWTfHl
+   6JKCGQu9AknEa1Hs85mmZ+HIuiGmNPpV9Dm59/1FFNA0VAupNKN635FRM
+   jQ2AJ9+bfcPE9QwbcUz2ouKCm/cxlVmEpfO4l3nMBG2LePYsWf57JK4hj
+   e6/7BdjfSsUEWOzJ8tRnhcyLOu8s0D3RRrIgKqn+zv2NIkSxm8HgID4M+
+   NUjVIGJRg2tfvW9XPZAO+dNCrSTDwx+O7nDkbuj8PzYTSCaJa/T03VDyt
    Q==;
-X-CSE-ConnectionGUID: 8VajaVWTQcurOHSs3rXXpg==
-X-CSE-MsgGUID: /rQPtsGnSqGX8kwVy7o9Dg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157432"
+X-CSE-ConnectionGUID: yO9ZiRJ7TpyNvdfz9OO7Nw==
+X-CSE-MsgGUID: yQopNXY4QsancAmSB8GqHw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157437"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157432"
+   d="scan'208";a="4157437"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:09 -0800
-X-CSE-ConnectionGUID: oKVcfid/ThyQKbbaBFGQkA==
-X-CSE-MsgGUID: zCMNRB4hRU+h678MYJkozA==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:11 -0800
+X-CSE-ConnectionGUID: IDwwc45DSe6aUYl2+hyJSg==
+X-CSE-MsgGUID: 1/T3D5jSQFGHf/N0GU49WA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868091"
+   d="scan'208";a="10868104"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:06 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:09 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Len Brown <lenb@kernel.org>
-Cc: "Mario Limonciello (AMD)" <superm1@kernel.org>,
-	linux-acpi@vger.kernel.org,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>
+Cc: linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 21/42] ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
-Date: Fri, 20 Nov 2026 18:18:42 +0100
-Message-ID: <f8a7b2b9416e1de4675bd5867472641c51fc13e0.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 22/42] ACPICA: ACPI 6.5 Add support for the MISC table
+Date: Fri, 20 Nov 2026 18:18:43 +0100
+Message-ID: <e9cc7ab5219926220c7af1e968548bb033366f00.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -87,87 +86,70 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Mario Limonciello (AMD) <superm1@kernel.org>
+From: Pawel Chmielewski <pawel.chmielewski@intel.com>
 
-acpi_debug_print() emits ACPI debug output using multi-part
-acpi_os_printf() and acpi_os_vprintf() calls without any loglevel
-prefix.
+ACPI 6.5 Introduces MISC table and the definition for Miscellaneous GUIDed
+Table Entries. This commit adds support for this table, specifically in
+compiler, disassembler and template generator.
+Refer to section 5.2.33. "Miscellaneous GUIDed Table Entries" of ACPI
+6.5 specification for further information.
 
-When acpi_os_vprintf() processes a chunk without a loglevel prefix
-(printk_get_level() returns 0), it prepends KERN_CONT. Because the initial
-header chunk lacks a loglevel prefix, it either attaches to a preceding
-unfinalized log message (inheriting its level) or, when split across
-printk buffer records, falls back to the default message loglevel rather
-than KERN_DEBUG. This can cause dmesg to misinterpret and colorize debug
-messages as errors.
-
-Define ACPI_MSG_DEBUG as KERN_DEBUG in aclinux.h (with an empty fallback
-in acutils.h for ACPICA OS-independence) and prefix debug message headers
-and context switch output in acpi_debug_print() with ACPI_MSG_DEBUG so
-that printk records are properly tagged with KERN_DEBUG.
-
-Link: https://github.com/acpica/acpica/commit/802446cd7816
-Signed-off-by: Mario Limonciello (AMD) <superm1@kernel.org>
+Link: https://github.com/acpica/acpica/commit/727cd62d95fc
+Link: https://github.com/open-acpica/acpica/pull/1199
+Signed-off-by: Pawel Chmielewski <pawel.chmielewski@intel.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/acutils.h   | 3 +++
- drivers/acpi/acpica/utdebug.c   | 9 +++++----
- include/acpi/platform/aclinux.h | 1 +
- 3 files changed, 9 insertions(+), 4 deletions(-)
+ include/acpi/actbl2.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/acpi/acpica/acutils.h b/drivers/acpi/acpica/acutils.h
-index 9049bfee409c..6b06f126c653 100644
---- a/drivers/acpi/acpica/acutils.h
-+++ b/drivers/acpi/acpica/acutils.h
-@@ -100,6 +100,9 @@ extern const char *acpi_gbl_clock_input_scale[];
- #ifndef ACPI_MSG_BIOS_WARNING
- #define ACPI_MSG_BIOS_WARNING   "Firmware Warning (ACPI): "
- #endif
-+#ifndef ACPI_MSG_DEBUG
-+#define ACPI_MSG_DEBUG ""
-+#endif
+diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+index dbfea7c8bc00..3f6e093133c7 100644
+--- a/include/acpi/actbl2.h
++++ b/include/acpi/actbl2.h
+@@ -38,6 +38,7 @@
+ #define ACPI_SIG_MADT           "APIC"	/* Multiple APIC Description Table */
+ #define ACPI_SIG_MCFG           "MCFG"	/* PCI Memory Mapped Configuration table */
+ #define ACPI_SIG_MCHI           "MCHI"	/* Management Controller Host Interface table */
++#define ACPI_SIG_MISC           "MISC"	/* Miscellaneous GUIDed Table */
+ #define ACPI_SIG_MPAM           "MPAM"	/* Memory System Resource Partitioning and Monitoring Table */
+ #define ACPI_SIG_MPST           "MPST"	/* Memory Power State Table */
+ #define ACPI_SIG_MRRM           "MRRM"	/* Memory Range and Region Mapping table */
+@@ -1876,6 +1877,35 @@ struct acpi_table_mchi {
+ 	u8 pci_function;
+ };
  
- /*
-  * Common message suffix
-diff --git a/drivers/acpi/acpica/utdebug.c b/drivers/acpi/acpica/utdebug.c
-index a31e07400c34..d031c5ab63bc 100644
---- a/drivers/acpi/acpica/utdebug.c
-+++ b/drivers/acpi/acpica/utdebug.c
-@@ -155,9 +155,10 @@ acpi_debug_print(u32 requested_debug_level,
- 	thread_id = acpi_os_get_thread_id();
- 	if (thread_id != acpi_gbl_previous_thread_id) {
- 		if (ACPI_LV_THREADS & acpi_dbg_level) {
--			acpi_os_printf
--			    ("\n**** Context Switch from TID %u to TID %u ****\n\n",
--			     (u32)acpi_gbl_previous_thread_id, (u32)thread_id);
-+			acpi_os_printf(ACPI_MSG_DEBUG
-+				       "\n**** Context Switch from TID %u to TID %u ****\n\n",
-+				       (u32)acpi_gbl_previous_thread_id,
-+				       (u32)thread_id);
- 		}
- 
- 		acpi_gbl_previous_thread_id = thread_id;
-@@ -168,7 +169,7 @@ acpi_debug_print(u32 requested_debug_level,
- 	 * Display the module name, current line number, thread ID (if requested),
- 	 * current procedure nesting level, and the current procedure name
- 	 */
--	acpi_os_printf("%9s-%04d ", module_name, line_number);
-+	acpi_os_printf(ACPI_MSG_DEBUG "%9s-%04d ", module_name, line_number);
- 
- #ifdef ACPI_APPLICATION
- 	/*
-diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/aclinux.h
-index 9b30bb9ed711..5e2ed5e79d3b 100644
---- a/include/acpi/platform/aclinux.h
-+++ b/include/acpi/platform/aclinux.h
-@@ -169,6 +169,7 @@
- 
- #define ACPI_MSG_BIOS_ERROR     KERN_ERR "ACPI BIOS Error (bug): "
- #define ACPI_MSG_BIOS_WARNING   KERN_WARNING "ACPI BIOS Warning (bug): "
-+#define ACPI_MSG_DEBUG          KERN_DEBUG
- 
- /*
-  * Linux wants to use designated initializers for function pointer structs.
++/*******************************************************************************
++ *
++ * MISC - Miscellaneous GUIDed Table
++ *
++ * Conforms to section "Miscellaneous GUIDed Table Entries" of ACPI
++ * Specification v6.5
++ *
++ ******************************************************************************/
++
++struct acpi_misc_guid_entry {
++	u8 entry_guid[16];
++	u32 entry_length;
++	u32 revision;
++	char producer_id[ACPI_NAMESEG_SIZE] ACPI_NONSTRING; /* ACPI Vendor ID */
++	u8 data[];
++};
++
++/* Minimum length of a MISC entry (the header fields, without any Data) */
++
++#define ACPI_MISC_MIN_ENTRY_LENGTH 28
++
++struct acpi_table_misc {
++	struct acpi_table_header header; /* Common ACPI table header */
++	/*
++	 * Immediately followed by one or more variable-length entries:
++	 * struct acpi_misc_guid_entry Entries[];
++	 */
++};
++
+ /*******************************************************************************
+  *
+  * MPAM - Memory System Resource Partitioning and Monitoring
 -- 
 2.56.0
 
