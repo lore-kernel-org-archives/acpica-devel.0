@@ -1,66 +1,66 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195316;
-	b=gHtVGxV3dTc/FphNh0NA1EYrXrxpRt4WrfStVKPh0PQMsozNHEK3EeN+KOrfEgx/kqFj
-	 uyViFTkfNJR0YGgI8YL9Yxoqiv+0NMbfUQnSvDCNszwia/kgyMb5L/c7w1YAGnz4OSVD5
-	 77CsKmG6zNqPwdRSuCBM7UawE2UXfHN3cwzfC8hKIe40sfu/EAdr24GdHtyciVvgC/joB
-	 OeVA+1IIe2EymFDtue0+YlmQbo9M1SZx9ANyPuMUWgXNscQlpSiMJ/9rUsk1ZAehXPJ/W
-	 sTSf52Fy3mfxfWYAxsLcjmJ73XqcelvOB5ukUybnT+EOXEIVxwGsmcww9SESZdJf4rA==
+	t=1795195318;
+	b=r7VViNq+jPZwkMeXQdoDx2hrbjbq9GRMn2CLzAfC19uXFPJqT7wLwM6U86+o0kKDotSW
+	 To3izElE99A+H8qMRFHVYpPhuqNF9425x0/XysPr1PLa8F5Tf7tOFOP7WeQC5EsQOGWF5
+	 ufvDXdEZ5LRmZRj1xoOwlGMhbLiL797zNzfyTwbmAoYdj5DMHRz9EFQ/dBVoaZFDX5FoM
+	 8Pk2aQbkh81ey4B6uFH8jvGCKlhN7lXZKyb7ok8UCzdq97S1YxFAC+38hdTDeXIWciYUE
+	 1raMs7kwUAwWBlDpmH7/bss9G2g/HSHp3+tiTwnkzao5CllPHcFqAovYCC6RepWL4+A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195316;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195318;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=iy1u3+dFMDrnkVzbbtDqodu2N36DjRx9VOyWE7tzxzQ=;
-	b=r3xGmQzoD7PUW2G/w/NWfSiS5Y1JjhX05+si6GxxdNmiJowwqFgZ0qp4IdpQygCRQhN2
-	 zcq3uuOmKGq5ixsCSRGir20rtAMM7fY/rM7ouLYRLVQI+73sLpH12dIZfVokRzNePXS6z
-	 ox8S8eNxSG2Ra5MvH1BNUauDojO6J3SuPK/nq4nkiPJQ94YoltQQLoGr4LUN60pLdy0MK
-	 EVpZab0wfu49b3A8GV+u1O/oy3Kfhk12ZNy6sfSCI6ME0w3n9ZW0yqpuc6Ro85u2UFfYQ
-	 v7AlypWTY2qBRAChswMfkdOM7uqmV/BjwBeZUDKYfND0dgb1NSg53r06cg83HJdqjIg==
+	bh=e45Lmst2zVLRRgQuRR+OUKKJ4pLT6Oi0ahkMpBTiPW8=;
+	b=AV5cylKQILOT0o4YXalqelg+ykVbX9vqeCokxWPGr6dh79rehUKVCazk1G5/dAZPOywH
+	 hUxfB2zZ2AlixNROS7Tq3AbM6wEN8lHkvpe09VdjLxM2yeUd/RV3TcueYpajJRYHPmZaE
+	 5t0gX+bPGUgg2x4lncc2nqhKmqPF2r5j/ad7bGYACA7gTdPbsag8X3/llIkNJfYgCAdsr
+	 bHQ29QuWUzEHaRkeYu7fNFc2STXbpLuJaptOqgKOtAenVhIv/2bEl9KnP9nEp6Q7JAEHX
+	 KJ8cs5bB5vbBOVgirx3/4SNx/51m6ckM6gsUg8PjsWez/tznYztC0bT0tTqwhzPfSAQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=S9ALcKJl;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=HdurqOH4;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1A560A3813
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4F1A560A3813
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931DB60A6F4E
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 931DB60A6F4E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=S9ALcKJl
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=HdurqOH4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195316; x=1826731316;
+  t=1795195317; x=1826731317;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=TZxOBlqrtvgnSWz8BF2TTAMtMNewr0wAgGpPCzAn9vM=;
-  b=S9ALcKJlc7zrqeIcY43/53UReAzO+IQKp0lxG0V4K7LbL1ntAmCHsfbS
-   YPV0lcmzMC5i3CBjkwet/DrhwvFNk3E4HApn+LPhPTb6AAuCm0hTI7nXy
-   xUFrtqGFQ+ylxw4zPVq0R9HGWO+C7KMzrvb49xJSvcg3kPjuMj1cnWXYN
-   Wm9WqobmbutW2FRPG2Q9s5KFXVTLB6u6zncnWIHXQsS2VDL0/n0917jxp
-   a/iZBIU02ZkAlf6qZL+mPqyPXs8lsXv6SOhxenppSsSAyXYIAzyqjh3C4
-   G79Tk5mpZUZC7lm3pRIY6KxecN6V82aLL/MMFS8rxD8bAWAcVKEtADcYY
-   g==;
-X-CSE-ConnectionGUID: +JC7ugqSQuusojc4cZjkdA==
-X-CSE-MsgGUID: IK0xd9o/Q4GHb0kRKHxADg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157562"
+  bh=Pts6JG9+FGLpbzP21b9GAVZnO6zHcnXOWhbooQaGodI=;
+  b=HdurqOH4evHAuxYPMs5gyEWKd0NERXIE3UJAK8Ak7eFegOccwnpOr59P
+   pSzUkKVXVoUTU2TCoad9eldMfwRsDHsWZOj+g20laeVI6L98t/LQvEyFT
+   FBiT6xrfMT2iITCbhSHRgAtYrJO3iO6P6lt6w3/gbWJprn0qIHyKns0z5
+   K7NLhndF/nFMzYDejPno6G/Kg55KIyylMwX//yhTorkVQ/Psc3IMwlZrN
+   u/1vV+r4LFXvVL/VrQpaPu9OyRGLY+IM6tj0LjdRdUzsiLr3vHjnNYThE
+   rNVCf7+oZrmA1e6//SmRdW7Msl2ThoFQGxtPh5TxB0Ll71lcrgMt28IhX
+   w==;
+X-CSE-ConnectionGUID: r2aSEVpkT4iw7+GMBwVJHw==
+X-CSE-MsgGUID: BQ0CRAn4Q42pjYFhxLWgOw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157556"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157562"
+   d="scan'208";a="4157556"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:47 -0800
-X-CSE-ConnectionGUID: GVbYbIGhTE249mfcXBGrHw==
-X-CSE-MsgGUID: Ey5tk66sR9STlGXy5G7bZg==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:44 -0800
+X-CSE-ConnectionGUID: OpGJwTTjTY6WT+59rdMD2Q==
+X-CSE-MsgGUID: m+dFjAx6QEGe1KqDqWXNuQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868235"
+   d="scan'208";a="10868222"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:45 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:42 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
@@ -69,9 +69,9 @@ To: "Rafael J. Wysocki" <rafael@kernel.org>,
 Cc: linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 34/42] ACPICA: events: Fix GPE cleanup return after changing program state
-Date: Fri, 20 Nov 2026 18:18:55 +0100
-Message-ID: <d6f41b8bc2c8cd92f93af27bce2634d07270bc8b.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 33/42] ACPICA: events: Fix AcpiEvClearGpeDispatchByOwner handler type processing
+Date: Fri, 20 Nov 2026 18:18:54 +0100
+Message-ID: <36e3df265cf6a5e85d108268c28eb4d7c4e7ab38.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -86,97 +86,154 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If a GPE dispatch method or notify is currently getting executed or is
-set to polling etc. its table can't be freed. However the original
-commit ("ACPICA: Events: Clear GPE dispatch by owner during table
-unload") that tried to fix this problem would check this condition while
-some GPE methods already got disabled.
+GPEs can have different callbacks tied to them - methods, notifies and
+handlers. Handlers, usually being functions called from C drivers,
+override methods, but they save the pointer to them and restore them
+later when handlers are unloaded.
 
-First parse all the GPE blocks and look if at least one element is
-blocked from being freed. If so abort the cleanup operation.
+Check and clear the methods hidden under the handler.
 
-Link: https://github.com/acpica/acpica/commit/97f12aaf72cc
+Link: https://github.com/acpica/acpica/commit/578d52b5d1f4
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/evgpe.c | 49 +++++++++++++++++++++++++++++--------
- 1 file changed, 39 insertions(+), 10 deletions(-)
+ drivers/acpi/acpica/evgpe.c | 103 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 96 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/acpi/acpica/evgpe.c b/drivers/acpi/acpica/evgpe.c
-index d45926ad3261..5c283a2faaf0 100644
+index 578651cde6f3..d45926ad3261 100644
 --- a/drivers/acpi/acpica/evgpe.c
 +++ b/drivers/acpi/acpica/evgpe.c
-@@ -636,6 +636,43 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
+@@ -535,6 +535,67 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
+ }
  
- 	/* Walk all GPE interrupt blocks */
  
-+	gpe_xrupt_info = acpi_gbl_gpe_xrupt_list_head;
-+	while (gpe_xrupt_info) {
-+		gpe_block = gpe_xrupt_info->gpe_block_list_head;
-+		while (gpe_block) {
-+			/*
-+			 * Walk all GPEs in this block to make sure none are blocked from
-+			 * getting cleared with disable_for_dispatch
-+			 */
++/*******************************************************************************
++ *
++ * FUNCTION:    acpi_ev_dispatch_type_hidden_handler
++ *
++ * PARAMETERS:  gpe_event_info  - Struct where GPE dispatch type is stored
++ *              owner_id        - Table owner_id being unloaded that should match
++ *                                the gpe_event_info
++ *
++ * RETURN:      Return the dispatch type if it is either explicitly present or
++ *              hidden behind the handler saved method_node. The GPE has to also
++ *              match the table ID passed through owner_id to this function.
++ *              Return 0 if the above criteria aren't matched.
++ *
++ * DESCRIPTION: Check whether a passed GPE event info is of either DISPATCH,
++ *              NOTIFY or HANDLER type. Then verify it belongs to the table
++ *              ID passed as an argument and that it has a Method Node. Helper
++ *              is used for example with cleaning up after table unloading.
++ *
++ ******************************************************************************/
++static u8
++acpi_ev_dispatch_type_hidden_handler(struct acpi_gpe_event_info *gpe_event_info,
++				     acpi_owner_id owner_id)
++{
++	u8 gpe_dispatch_type = ACPI_GPE_DISPATCH_TYPE(gpe_event_info->flags);
++	struct acpi_gpe_handler_info *handler;
 +
-+			for (gpe_number = 0; gpe_number < gpe_block->gpe_count;
-+			     gpe_number++) {
-+				gpe_event_info =
-+					&gpe_block->event_info[gpe_number];
++	switch (gpe_dispatch_type) {
++	case ACPI_GPE_DISPATCH_METHOD:
++		if (!(gpe_event_info->dispatch.method_node) ||
++		    (gpe_event_info->dispatch.method_node->owner_id !=
++		     owner_id)) {
++			return 0;
++		}
++		break;
++
++	/* Method or Notify can be saved if the handler is present */
++	case ACPI_GPE_DISPATCH_HANDLER:
++	case ACPI_GPE_DISPATCH_RAW_HANDLER:
++		handler = gpe_event_info->dispatch.handler;
++		if (!(handler->method_node)) {
++			return 0;
++		}
++
++		switch (ACPI_GPE_DISPATCH_TYPE(handler->original_flags)) {
++		case ACPI_GPE_DISPATCH_METHOD:
++			if (handler->method_node->owner_id != owner_id) {
++				return 0;
++			}
++			break;
++		default:
++			return 0;
++		}
++
++		break;
++
++	default:
++		return 0;
++	}
++	return gpe_dispatch_type;
++}
++
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ev_clear_gpe_dispatch_by_owner
+@@ -557,6 +618,8 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
+ 	u32 gpe_number;
+ 	acpi_cpu_flags flags;
+ 	acpi_status status = AE_OK;
++	u32 gpe_dispatch_type;
++	struct acpi_gpe_handler_info *handler;
+ 
+ 	ACPI_FUNCTION_TRACE_U32(ev_clear_gpe_dispatch_by_owner, owner_id);
+ 
+@@ -584,13 +647,15 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
+ 				gpe_event_info =
+ 					&gpe_block->event_info[gpe_number];
+ 
+-				if ((ACPI_GPE_DISPATCH_TYPE(
+-					     gpe_event_info->flags) ==
+-				     ACPI_GPE_DISPATCH_METHOD) &&
+-				    (gpe_event_info->dispatch.method_node) &&
+-				    (gpe_event_info->dispatch.method_node
+-					     ->owner_id == owner_id)) {
+-					/* GPE method belongs to table being unloaded */
 +				gpe_dispatch_type =
 +					acpi_ev_dispatch_type_hidden_handler(
 +						gpe_event_info, owner_id);
-+				if ((gpe_dispatch_type ==
-+					     ACPI_GPE_DISPATCH_METHOD ||
-+				     gpe_dispatch_type ==
-+					     ACPI_GPE_DISPATCH_NOTIFY) &&
-+				    gpe_event_info->disable_for_dispatch) {
-+					/* At least one handler is polling or executing, cannot clear */
-+					status = AE_ABORT_METHOD;
-+					acpi_os_release_lock(acpi_gbl_gpe_lock,
-+							     flags);
-+					(void)acpi_ut_release_mutex(
-+						ACPI_MTX_EVENTS);
-+					return_ACPI_STATUS(status);
-+				}
-+			}
-+
-+			gpe_block = gpe_block->next;
-+		}
-+
-+		gpe_xrupt_info = gpe_xrupt_info->next;
-+	}
-+
- 	gpe_xrupt_info = acpi_gbl_gpe_xrupt_list_head;
- 	while (gpe_xrupt_info) {
- 		gpe_block = gpe_xrupt_info->gpe_block_list_head;
-@@ -656,17 +693,10 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
- 					 * GPE method belongs to table being unloaded. Clear
- 					 * only the dispatch type, preserve other flags.
- 					 */
--
--					if (gpe_event_info
--						    ->disable_for_dispatch) {
--						/* Handler is executing, cannot clear */
--						status = AE_ABORT_METHOD;
--					} else {
--						/* Clear only the dispatch type, preserve other flags */
- 						gpe_event_info->flags &=
- 							~ACPI_GPE_DISPATCH_MASK;
--						gpe_event_info->dispatch
--							.method_node = NULL;
-+					gpe_event_info->dispatch.method_node =
-+						NULL;
++				switch (gpe_dispatch_type) {
++				case ACPI_GPE_DISPATCH_METHOD:
++					/*
++					 * GPE method belongs to table being unloaded. Clear
++					 * only the dispatch type, preserve other flags.
++					 */
  
- 						/*
- 						 * Hardware-disable the GPE so a late interrupt
-@@ -676,7 +706,6 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
- 						(void)acpi_hw_low_set_gpe(
+ 					if (gpe_event_info
+ 						    ->disable_for_dispatch) {
+@@ -612,6 +677,30 @@ acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
  							gpe_event_info,
  							ACPI_GPE_DISABLE);
--					}
- 					break;
+ 					}
++					break;
++
++				case ACPI_GPE_DISPATCH_HANDLER:
++				case ACPI_GPE_DISPATCH_RAW_HANDLER:
++
++					handler =
++						gpe_event_info->dispatch.handler;
++					gpe_dispatch_type =
++						ACPI_GPE_DISPATCH_TYPE(
++							handler->original_flags);
++
++					/* Forget the hidden method so handler removal can't restore it */
++					if (gpe_dispatch_type ==
++					    ACPI_GPE_DISPATCH_METHOD) {
++						handler->method_node = NULL;
++						handler->original_flags &=
++							~ACPI_GPE_DISPATCH_MASK; /* -> NONE */
++						handler->originally_enabled =
++							FALSE;
++					}
++					break;
++
++				default:
++					break;
+ 				}
+ 			}
  
- 				case ACPI_GPE_DISPATCH_HANDLER:
 -- 
 2.56.0
 
