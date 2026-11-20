@@ -1,78 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195229;
-	b=vZ4fPtz0aEEB9Y4tmzLEr7xCMjWLaYm9B2bQnokXyveLAUE87A2AfD0iR40aHH6cLy6W
-	 nRsnCQNuv3eKhX5gzVYrcEMLobmwN7BhQIYNOHBRlApkaeyhzMF+cjhWmvKhaezm4A4+I
-	 y134R0rl4WfKad7qqMwreefyieIUXOSee5WLcbLth2kSh/QUCfgRGguHLoMc7y6tSBAPO
-	 lytotpYy7/ZOuO6BTlCSRQKGLk2pxYylRrabaHk6ciraDDqylozI/odQ/FhTA/P4LwmBT
-	 FXILfZcAimWsmajy9CYk2pNvyMoYH0QYR9rZyziVeuivGl7+hjGBIqdIber3GptLBlQ==
+	t=1795195232;
+	b=x7MrHtqSXV88BErB88APbT8YcVvKrHdeBopscPPyM7l5hbqFCTTqIVl9TaW59uEMwAMr
+	 ggxd60gDycBtelT+7YWqaXA9orP5EhxcnX8pHBqVNdSwnaLXIj8kdRPwFaSGRzQYFX9+S
+	 Y99OuLVsvHbZNy1O1Fc4NlwJ4dIp0JaryiW0InNVsZWdzP8eV6OLfo8iLcXKLtYx8EKas
+	 8SuJwPhcIjmsnw+PgBe2J2tVIwmbXJ0bMFFaoFeFvXiGRHwaBetuYMuJQN3rY1668Zm07
+	 sG6EMzlAlNWNFuKgInzzgVCNNwMrwgBE8gUtc+nBnfQYaRK9k/r3V8sESQWUfKH6ImA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195229;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195232;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=tC0y5OPQI+lgwvTV+5FizcoEFO9EStGTpf/MJaL1HrY=;
-	b=MLqq0dAzUQR2FkRBpc2pdm0GZUJU9dd2RQk7MFh+Z26h6fBrjuOYVw/DKGD56AGgWykN
-	 Qweq3qt/zxUuArysQDky8rn3vNmk6QBy58z0bme6brlA9VOjrZlClglKPw9ZvDY+YcmXp
-	 PKglNl+VxxrX9D6kxmK/pNPxsNHQN7fZRJK/fz57l4Sxwi15Z7oHT0m7MVWVKw+DvzbWn
-	 w3NqdsmG2n06kPTo0ok+Zx6AhztJRmpCkH39vpTBRPyiCTpwgFAQJzYl/qDgZ9/lrdRvm
-	 Wi5cNP4zGCyWwLSyszHPCfmO0h4PRy+6LloCo7CLW1Q9CBn3jSejttoSPLkFfNrl37Q==
+	bh=7XX7Fuuc4rBjIs+yejWT+meYBShh7bzSoRAqDM+Q3fM=;
+	b=5ZnUU3L1poV0PetdBIDxkzeCDkNC13SJ4Lu/XcMnTeEwBfRBiAbvSb/4+n4w67QQE5ZJ
+	 GXU9G9hG0vgx918IkL1mKzufI0P7BeZhvEzrzMeUGq1+MkXhGNHnhQLObel8FM7M0tSi2
+	 FmPtT81mi4LWoepkEpKsGUXKyCcbVJLvZIanWTVBhueSeNK859n0f4en9pJShomkRghx/
+	 ONOoHdKtPAxYYpRU5m8yrfzvygEtdwEpnRupDaqNIr2rPhyAJV4DkiAM+QHqta85iQr71
+	 SX4T4ms3a/6cMw7kqbWbUAh78d4utfqVX4v6M/mt3f98ii7xHttP0az1xnYoVZyv6Pw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=If1YAY0o;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="i8p/XLnu";
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB04606A336
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:20:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9EB04606A336
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D349860A2630
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:20:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D349860A2630
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=If1YAY0o
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=i8p/XLnu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195226; x=1826731226;
+  t=1795195230; x=1826731230;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FXDw8y1OPfs5v27YAVnr+SYY4fb37hufK8wKV9W4ylM=;
-  b=If1YAY0o1gqJtdjZn5oa+IKnhte1MERmm0y1qxpM4weCPpfo4WuDUhtC
-   1pdkW+fqCJdHA4b1N84sP6AEoFS56nf3kdoEGXRQgSp2GT0mMhm6+suw/
-   z1NMJwC4Jld1InzT34/Pk9U8fQAUbU3OYV6v69w3LR7pEmEYXilNjvLf6
-   ZkIfkeIaX8ua1jzyyuwYg/mu2jEyrI764LK7NZVM8dx6oT5i3+48lrtIl
-   g3f7kWKdTZbANLaN/WYDonLbZlsFnXwc03xzoE7mf4pmOeXh8vXGjt1eb
-   atmT0gyMg7KAGSQrXzTAK0rVSEFuhvK0POc8gT9Meey98j8C30cMOPakE
-   g==;
-X-CSE-ConnectionGUID: 6+qY+JrXQm6sw9fEGPhpMA==
-X-CSE-MsgGUID: q9ms78QdTzGiRKkf3/95sQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157303"
+  bh=8+j6oCIvnTKM4aA0EdYdluZEoioo4vXDmZR4/Nlk/1E=;
+  b=i8p/XLnuaVBrT+sDejgvjRRgP++ACNfl7VHp24sdtQdtCNvHqt14CjL8
+   LRYXAeRDDKuLUE157HgqIcejjNzYUdQNhoOA8TNRMLicCmbeitFDJW/3C
+   Xki44ZN8u4Pk0ZnESiRgPT/447cNiOto9g2dmxv/4YU7eNJsNE8kAp9Zx
+   SFhz90LDj4DNEGFcQ3X1eYft5UHWk5TAG78Xn6gNopM88RNxFQqDdUJuD
+   Mk0zR2jeZUOt9TaEri2R6ez5ukVoddpdiWgTKjRdmLZru2qeNBnVQD1Bw
+   NHc+MnDGeJpNs4fZPOZJwOYl4+/KCEB9p32qlfQgGPrr54SiL3COhKGc8
+   w==;
+X-CSE-ConnectionGUID: tzVHUBefRR2nbi61nmv6Lw==
+X-CSE-MsgGUID: 6yyTFEy4TKKoodteqUJ+3g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157315"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157303"
+   d="scan'208";a="4157315"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:26 -0800
-X-CSE-ConnectionGUID: vbnLXLy8Q+mVHcHGr9p37g==
-X-CSE-MsgGUID: bPR38W2KS5Ke8YWGIdkzxg==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:29 -0800
+X-CSE-ConnectionGUID: wat9dpSDQ9yqs48+PTbfEQ==
+X-CSE-MsgGUID: iMXILK/SSRawgFeK3/oK9A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10867865"
+   d="scan'208";a="10867900"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:23 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:26 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Len Brown <lenb@kernel.org>
+Cc: ikaros <void0red@gmail.com>,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/42] ACPICA: CEDT: RDPAS: Fix incorrect field positions for RDPAS
-Date: Fri, 20 Nov 2026 18:18:27 +0100
-Message-ID: <24493c0a326677bef5c42fc8ed0f09397b13ddbc.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 07/42] ACPICA: Events: Clear GPE dispatch by owner during table unload
+Date: Fri, 20 Nov 2026 18:18:28 +0100
+Message-ID: <5f7f5a6372c547b5c24d7ca915efdac7151d97dd.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -87,32 +87,181 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Dave Jiang <dave.jiang@intel.com>
+From: ikaros <void0red@gmail.com>
 
-The 'Address' and 'Protocol' fields for RDPAS are reversed.
-Correct them by swapping the positions.
+When a table is unloaded, its GPE method handlers must be cleared to
+prevent use-after-free. Add AcpiEvClearGpeDispatchByOwner() which walks
+all GPE blocks and clears dispatch info for methods owned by the
+unloading table. If a matching GPE is currently dispatching,
+AE_ABORT_METHOD is returned and the unload is aborted.
 
-Link: https://github.com/acpica/acpica/commit/041416c33eab
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Also add a dispatch-type re-check in AcpiEvAsynchExecuteGpeMethod to
+handle the case where dispatch was cleared between scheduling and
+execution.
+
+Link: https://github.com/acpica/acpica/commit/13dcd9b19a46
+Signed-off-by: ikaros <void0red@gmail.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- include/acpi/actbl1.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/acpica/acevents.h |  4 ++
+ drivers/acpi/acpica/evgpe.c    | 97 ++++++++++++++++++++++++++++++++++
+ drivers/acpi/acpica/tbdata.c   | 13 +++++
+ 3 files changed, 114 insertions(+)
 
-diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-index 5b4207af046a..3fa9cd46271f 100644
---- a/include/acpi/actbl1.h
-+++ b/include/acpi/actbl1.h
-@@ -588,8 +588,8 @@ struct acpi_cedt_rdpas {
- 	struct acpi_cedt_header header;
- 	u16 segment;
- 	u16 bdf;
--	u8 protocol;
- 	u64 address;
-+	u8 protocol;
- 	u8 reserved[3];
- };
+diff --git a/drivers/acpi/acpica/acevents.h b/drivers/acpi/acpica/acevents.h
+index ccdc3725c773..4fe26c190c57 100644
+--- a/drivers/acpi/acpica/acevents.h
++++ b/drivers/acpi/acpica/acevents.h
+@@ -122,6 +122,10 @@ acpi_status acpi_ev_gpe_initialize(void);
+ ACPI_HW_DEPENDENT_RETURN_VOID(void
+ 			      acpi_ev_update_gpes(acpi_owner_id table_owner_id))
  
++ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
++				acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id
++								    owner_id))
++
+ acpi_status
+ acpi_ev_match_gpe_method(acpi_handle obj_handle,
+ 			 u32 level, void *context, void **return_value);
+diff --git a/drivers/acpi/acpica/evgpe.c b/drivers/acpi/acpica/evgpe.c
+index 53b52efc7c2b..93e205c0709e 100644
+--- a/drivers/acpi/acpica/evgpe.c
++++ b/drivers/acpi/acpica/evgpe.c
+@@ -489,6 +489,18 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
+ 
+ 	case ACPI_GPE_DISPATCH_METHOD:
+ 
++		/*
++		 * Re-check dispatch type. The table may have been unloaded
++		 * and its GPE dispatch cleared while we were waiting.
++		 */
++		if (ACPI_GPE_DISPATCH_TYPE(gpe_event_info->flags) !=
++		    ACPI_GPE_DISPATCH_METHOD) {
++			ACPI_DEBUG_PRINT(
++				(ACPI_DB_EVENTS,
++				 "GPE method dispatch cleared during wait\n"));
++			goto error_exit;
++		}
++
+ 		/* Allocate the evaluation information block */
+ 
+ 		info = ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_evaluate_info));
+@@ -535,6 +547,91 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
+ }
+ 
+ 
++/*******************************************************************************
++ *
++ * FUNCTION:    acpi_ev_clear_gpe_dispatch_by_owner
++ *
++ * PARAMETERS:  owner_id        - Table owner_id being unloaded
++ *
++ * RETURN:      Status
++ *
++ * DESCRIPTION: Clear GPE dispatch info for methods belonging to the table
++ *              being unloaded. If any matching GPE is currently dispatching,
++ *              it is not cleared and AE_ABORT_METHOD is returned.
++ *
++ ******************************************************************************/
++
++acpi_status acpi_ev_clear_gpe_dispatch_by_owner(acpi_owner_id owner_id)
++{
++	struct acpi_gpe_xrupt_info *gpe_xrupt_info;
++	struct acpi_gpe_block_info *gpe_block;
++	struct acpi_gpe_event_info *gpe_event_info;
++	u32 gpe_number;
++	acpi_cpu_flags flags;
++	acpi_status status = AE_OK;
++
++	ACPI_FUNCTION_TRACE_U32(ev_clear_gpe_dispatch_by_owner, owner_id);
++
++	if (owner_id == 0) {
++		return_ACPI_STATUS(AE_OK);
++	}
++
++	flags = acpi_os_acquire_lock(acpi_gbl_gpe_lock);
++
++	/* Walk all GPE interrupt blocks */
++
++	gpe_xrupt_info = acpi_gbl_gpe_xrupt_list_head;
++	while (gpe_xrupt_info) {
++		gpe_block = gpe_xrupt_info->gpe_block_list_head;
++		while (gpe_block) {
++			/* Walk all GPEs in this block */
++
++			for (gpe_number = 0; gpe_number < gpe_block->gpe_count;
++			     gpe_number++) {
++				gpe_event_info =
++					&gpe_block->event_info[gpe_number];
++
++				if ((ACPI_GPE_DISPATCH_TYPE(
++					     gpe_event_info->flags) ==
++				     ACPI_GPE_DISPATCH_METHOD) &&
++				    (gpe_event_info->dispatch.method_node) &&
++				    (gpe_event_info->dispatch.method_node
++					     ->owner_id == owner_id)) {
++					/* GPE method belongs to table being unloaded */
++
++					if (gpe_event_info
++						    ->disable_for_dispatch) {
++						/* Handler is executing, cannot clear */
++						status = AE_ABORT_METHOD;
++					} else {
++						/* Clear only the dispatch type, preserve other flags */
++						gpe_event_info->flags &=
++							~ACPI_GPE_DISPATCH_MASK;
++						gpe_event_info->dispatch
++							.method_node = NULL;
++
++						/*
++						 * Hardware-disable the GPE so a late interrupt
++						 * cannot fire and land in the "no handler" default
++						 * branch with disable_for_dispatch stuck at TRUE.
++						 */
++						(void)acpi_hw_low_set_gpe(
++							gpe_event_info,
++							ACPI_GPE_DISABLE);
++					}
++				}
++			}
++
++			gpe_block = gpe_block->next;
++		}
++
++		gpe_xrupt_info = gpe_xrupt_info->next;
++	}
++
++	acpi_os_release_lock(acpi_gbl_gpe_lock, flags);
++	return_ACPI_STATUS(status);
++}
++
+ /*******************************************************************************
+  *
+  * FUNCTION:    acpi_ev_asynch_enable_gpe
+diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
+index 07af035aa4de..144f15011eff 100644
+--- a/drivers/acpi/acpica/tbdata.c
++++ b/drivers/acpi/acpica/tbdata.c
+@@ -1059,6 +1059,19 @@ acpi_status acpi_tb_unload_table(u32 table_index)
+ 		acpi_tb_notify_table(ACPI_TABLE_EVENT_UNLOAD, table);
+ 	}
+ 
++#if (!ACPI_REDUCED_HARDWARE)
++	/*
++	 * Clear GPE dispatch for methods owned by the table being unloaded.
++	 * If any matching GPE is currently dispatching, AE_ABORT_METHOD is
++	 * returned and the unload cannot proceed.
++	 */
++	status = acpi_ev_clear_gpe_dispatch_by_owner(
++		acpi_gbl_root_table_list.tables[table_index].owner_id);
++	if (ACPI_FAILURE(status)) {
++		return_ACPI_STATUS(status);
++	}
++#endif /* !ACPI_REDUCED_HARDWARE */
++
+ 	/* Delete the portion of the namespace owned by this table */
+ 
+ 	status = acpi_tb_delete_namespace_by_owner(table_index);
 -- 
 2.56.0
 
