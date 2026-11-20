@@ -1,78 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195216;
-	b=u3Lc+K5+pf9JxgGrXmi3HhZLDhTjlRfqPcKKoGO1hAgLhli59gkdO+23qQmoh7+dOA0B
-	 8/EHrM/xACBZ+zYoWQYGaDuuGtJU6FJomunpnjP6eblQm7NPbFM8cmkxpMbeJEvQVTz/o
-	 NxNloS+A4Vl6WS5tjEXYGW76u8eTXKZaFxinmXqKpRhpbU60E5cM7YNhAFBD3fyvVnVxm
-	 vBefB3+EQTg/gNJGKQlC8e3Km33IvaXCfY/BvFK2iKDhHKZou/zUOtoWCubK4FGKZf5+5
-	 OwV63+l+QH+YzU+uM/7VeNXDUOWzwL4F1BKy7Ql0r0kiXukJJmXxEGCt71Os36+MKsQ==
+	t=1795195219;
+	b=OjCMMGxdN9L1QexSOhjB5DAFXBf9ueTwEJJo4utLBDIWIVeU7MlP0Vw1cj8VbsqHC5fP
+	 NbzmpRhCj1+AU0Bv+a0WohXr++pv4Hpa5cQRZSLd4x2DtmvIs8vmRpxpStmCrRqolTsqA
+	 iyryLzvExGNbdwttO1ytooNoMXLz+J2FVsPwdF3HeqZEfO4ApVJUDzUKoEaZZV01n0que
+	 4YGMPl/+7mw1Apw1jc6abGhVpTg+q/8CDKeZES/fkldvlu75YRe086JVyAnS+ocQ5jE2L
+	 kVYxqGAUr8mtkBih51S+pD3nNQEaBgGoPp0al7wWfwftVTcOv+MLtpseCQB9NFUQz6A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195216;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195219;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=0QiMn17000NUsvX8qXHyNIaeY7PijLjgpeFv+SzE69A=;
-	b=kQpf/IJImLxj+TCuMcfwJxl/yLCtp9F5BzxDBWLTUvafXTBxWZMklif61svwUHhSjLsN
-	 iaIUckciX1LKehTsFIOr3Dm4xpgfjbikM5/hxRyaba/BXt39eB4uuoLNcgNlW2nV03F20
-	 gZRln0AfpFbGeYm8R7R5dSwi6FOM5zywimEl11MewiQuhs9p+dtV09BiKpbV0ZsNXSxin
-	 MPAzjrWKg8IQQ2r9Iieh9flkd/jjZ1upuzcffpUZt4oUfkQmmIqlVD0qeGDzoD49I8seI
-	 jdUMpWdiheubZ3DtQtIIfejHDmkq8SSCiYhjoVefDLNFqh/Udb4I9U+8zK8bTW5EVqw==
+	bh=4Hnxe1Cm4JndOih1erNSVUTLJW3R2JC5LP4xkaz4zsI=;
+	b=MjV+Fto37wMOfRpTj7eU0q0NF6tZAjMwXCS+y4UTt6DBiDEHrSpDLtueX74sz32vAz8c
+	 NW/mdHt+WNlWuPo4/o9cWtqgus8N5+Vl38QPzuOj+4uy3jroUAUUeKES5YgktBoYagBZq
+	 KGB/iKaJITzAuUsGkdvgoMq0bCWUCUNPjrG6aPLbSNk/pmMWxWAI0SWvqAAvQqjo8bzyo
+	 B2o3xUAhUiaoRaNt+RukB38sk3zApU8qqzoAWdYPxuFusD4OeW9fmMBmrvlhD2FR1xw4B
+	 Jx21E6KDLBWYVw1+lnKhF7UJs4R5VIZ3UeM9iqORQBy7U5x1TPpFf+xx9dG/802KOmQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="aUK/mwCl";
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=N+3ZJrtL;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904ED606A33F
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:20:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 904ED606A33F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8234660A260C
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:20:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8234660A260C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=aUK/mwCl
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=N+3ZJrtL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195214; x=1826731214;
+  t=1795195217; x=1826731217;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=guMUblll8HZ9eKegKEyAFptDY7C3KDn0qgsAg8B2Qgs=;
-  b=aUK/mwClKx+32Qj+fHwkji7eEHNhuZIn29HqtaW6GNMRUxS8GPzLWYBF
-   zHeFQbBGk547TMcjJmgZDgWtve1AEwORGyOvPuTY0STQCHbQn7n5aZiHW
-   aAvM8wsi3meO0JteRrgrMpf6ZfNe8Kszmw0hk+u1l3akY0y/r7kDR3gji
-   igwijk75cLpw1S30e2A6/V770eL1Xh/PJFkiEQ9z2mUgUjObIKFMaX4Ba
-   crpdxhJfk2qfmFiQiV1GK2xqdKSumXzoURxg+n/aNePwtZfK4UdBmjIGX
-   hf1EX0FtNn4jwJLL6E6e3JQKSirKZkmklcar6gfm+GPk477S6Iun86T53
-   g==;
-X-CSE-ConnectionGUID: 4AMdPaCzRsi9ZoI+uy28yw==
-X-CSE-MsgGUID: ulwzm1PBSgGUD9DOabuUJg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157256"
+  bh=SjrZPn+dG8keIwWn4sRcbdPByHfMsDiGeA74wXYutxw=;
+  b=N+3ZJrtLUpqlgWrNbtKWKlZRshjixpahNERyV5BW8ULuEBdMo4hGVkUV
+   jOBxP78zFq2DjnoYj8Z1E7OcxWV7548eBq3Q/cRppEAIdHztq2+ndGjcH
+   9XK66c6aqR75OCTJ+rW019MCSd5haD98g+/yB1KAjtgFEA15NFR9v+h70
+   Q7CTtMTc+BPT6yV4OXrebQ2Rqps5jSxPvhZTK02eO2Q+oiud0OrvXrwRT
+   b4Io4GrJmC/yL9jLbmdmFKy5//zTYHhSkJkanZhDHmiI+zbdZGvphVvl0
+   4lE/gwe2W8U34euFgbJjOhG6NPUXVsgrdU1YTOZw3A5ijTEhySewBmuhF
+   Q==;
+X-CSE-ConnectionGUID: bnoHDgjNTuqQdupkdUZcMw==
+X-CSE-MsgGUID: j3KtaWLYSK+NmSlIAdlyOA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157265"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157256"
+   d="scan'208";a="4157265"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:14 -0800
-X-CSE-ConnectionGUID: WosbMIUbQo+Bii2GjtS9aA==
-X-CSE-MsgGUID: 0DvPZiY7S+eVMnxEimDHkg==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:17 -0800
+X-CSE-ConnectionGUID: B9yki4SbTT2xfSx6JES7EQ==
+X-CSE-MsgGUID: THwZ2CqJTiGzDkwnjrxuzA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10867814"
+   d="scan'208";a="10867833"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:12 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:14 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Len Brown <lenb@kernel.org>
-Cc: Colin Ian King <colin.i.king@gmail.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>
+Cc: Himanshu Chauhan <himanshu.chauhan@oss.qualcomm.com>,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 02/42] ACPICA: components: Fix typo: "numer" -> "number"
-Date: Fri, 20 Nov 2026 18:18:23 +0100
-Message-ID: <c47bf6dd3586e8a447a22545ae740e90debf27df.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 03/42] ACPICA: Introduce a new HEST notification type for RISC-V SSE events
+Date: Fri, 20 Nov 2026 18:18:24 +0100
+Message-ID: <59c5e18dfae7a62a7864040083e21b739fd30bb3.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -87,30 +87,33 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Colin Ian King <colin.i.king@gmail.com>
+From: Himanshu Chauhan <himanshu.chauhan@oss.qualcomm.com>
 
-There is a typo in a comment. Fix it.
+The GHES entry's notification structure contains the notification
+to be used for a given error source. For error sources delivering
+events over SSE, it should contain the new SSE notification type.
 
-Link: https://github.com/acpica/acpica/commit/5c8d1e7129f0
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Link: https://github.com/acpica/acpica/commit/f73f39352c11
+Signed-off-by: Himanshu Chauhan <himanshu.chauhan@oss.qualcomm.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/extrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/acpi/actbl1.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpica/extrace.c b/drivers/acpi/acpica/extrace.c
-index 4a6c7fb147d7..27a8e81e4157 100644
---- a/drivers/acpi/acpica/extrace.c
-+++ b/drivers/acpi/acpica/extrace.c
-@@ -152,7 +152,7 @@ acpi_ex_trace_point(acpi_trace_event_type type,
-  * FUNCTION:    acpi_ex_trace_args
-  *
-  * PARAMETERS:  params            - AML method arguments
-- *              count             - numer of method arguments
-+ *              count             - number of method arguments
-  *
-  * RETURN:      None
-  *
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index d824838cb7af..73ebc089e96d 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -1798,7 +1798,8 @@ enum acpi_hest_notify_types {
+ 	ACPI_HEST_NOTIFY_SEI = 9,	/* ACPI 6.1 */
+ 	ACPI_HEST_NOTIFY_GSIV = 10,	/* ACPI 6.1 */
+ 	ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED = 11,	/* ACPI 6.2 */
+-	ACPI_HEST_NOTIFY_RESERVED = 12	/* 12 and greater are reserved */
++	ACPI_HEST_NOTIFY_SSE = 12, /* RISC-V SSE */
++	ACPI_HEST_NOTIFY_RESERVED = 13 /* 13 and greater are reserved */
+ };
+ 
+ /* Values for config_write_enable bitfield above */
 -- 
 2.56.0
 
