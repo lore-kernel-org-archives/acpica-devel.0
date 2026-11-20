@@ -1,66 +1,66 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195261;
-	b=bGrOCIIizX2dHxqd6ys39U24XmWv3/ZEBaM5IKPEpcA0EHeEJyTrtS/iwz6T8xBzYvcZ
-	 lFYdLHrG1rL4XOftdxk2xPRGvTL5aD3CVRTOjdfPPWAZAPG8LlPz1Iuv4AZ2yfQD6Onk2
-	 zotG9D5wwRcwqjcPW/pDMPk3vdZLGm6APWbkXYoVsf4j7sryJb0b4V83clAf0jVw2bCX0
-	 Wyx+BqpWkr4jPJEmUCQAgaAqCr4tMiagZ+txIL6kmlIxkAzHY2BF7lAu2iKs1mYJtqVOz
-	 ZzlfigTbhQdSoQ4SpWUHkk8W82SJud/jNyHb63lQLtfEwCqdldQpgnCWi7TRFEHgDaA==
+	t=1795195264;
+	b=cHBmNWnL7DM1Bn5TrdSztS0Le84U/Bas6chfzA4ecmaV+wtGijL8ARqE6hGoOxj8hMA/
+	 Yy9QStsCc3XFaAPwO0c4yIqDuzkGvTJTi9MdVp1qC6Ze70jCRTdFmnlSdozXbD/M7n7T0
+	 N9P3KZQ3xcQMV+CR744nUWK1VEi8Xmfzc4Vga/tzq0eCwpLAAbK347YZKd30wF4NHaEId
+	 9f/w9JYYiZahFgnXHAcibblzdfq8AU4llkufFm0hRqnwIwXQlK9MabW6x+lTjo8u2XKtB
+	 sA8qPtE5t3YSIYvpzlXAISFHpLViP5j2fE/QEBGilhn/sr9LSG/d3oqr17oxPQid0zg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195261;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195264;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=1EHp1CZ/P5iti1sgnDj2uMDYA3BCoB5xU6p9mUl22nA=;
-	b=RXvNlEzFYouhkwkbjG9KEj5XV7N87cN8XJU3Y6HmybF9zMPnK33imsMMtNubYMXOqdR9
-	 NB/l0V5QIKqY+LMMzzVIdulNXqeOcJdAjEz6pSA3G2Xj/kDvVXMtwXP8K/xDDx2QLBrbM
-	 /M63aq6N1diltqkah4+oZAQ7oe9sU4G9t+Ykd5bmWcDS4LMEeacm/P4SPvweNtlT3Fk1L
-	 bkGg+GygmcY/jA5RTY5OP2u76A/asMMxjKk2N3RFtQKRquMVkY6+K6Ydw/QIbZsgNljlu
-	 Vpqn42XOGVU+LHwTbEiOLgfbc0rWUsSqtqom4nethJeobhWy3ogQNhI2hDwGCMrXhgQ==
+	bh=nIIaj3sqQnfJteZE12ujJn6H9pQzWDcexXx/Al57YXc=;
+	b=EN20v0eaJ5c/niw/RnQpqO9zjm+XjtTBNbgQNgnBYEykXcappLsY76zFz2ObbZkDA5h8
+	 UHc6fqntwjpkd5D0jTD6TfwwEFmu7y+En1aZs2d+wYnfet7U1MOARNZUpB4dokOrYNykJ
+	 +rJzRpyRqk0EAgN5IRcDKrSuiXbn1asfy5OpPqWcBHgCe+BexRYgnzj9nhQAP2Y6b598a
+	 QuT3bqD2TI82Y0TRJcOecwvbl8EzTXKNXSHKWEMWSZusgBSsWUIg4F7p4L4L743GN5H1S
+	 0/PemI3kw3SbL/jhdJHZHVIs51trDe6wyNoYNsU4b6P6OYczllgTVYBwZdMjI1e3NYw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Etv9L3t9;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=lDuKoIwS;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD10660A6F53
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AD10660A6F53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845E760A3818
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 845E760A3818
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Etv9L3t9
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=lDuKoIwS
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195260; x=1826731260;
+  t=1795195263; x=1826731263;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9A0kSsjLuI2P3l/y3J3dVQYc1NYAjlEqe1cNqVlPfgw=;
-  b=Etv9L3t9SoAfhGCJQVaswXDUDQSy/F8GAS7DRC3A/VWTaHqAu+dZl5V4
-   jxzj4MfYOQELP35D4gw9UVuaXJSsEDcSca57WjGsF8JUjnBsHfm2LJNvF
-   +ENHWOMAnJP/Bxbx057/ZSNTZs268fhzkoxByi1XdVswx5sxCEugJHhZr
-   kxYgpHyDBrwC59MeLzugd4Xw+re7KOsy9NagK46DqbCbspJMI5T5PMJ8F
-   3w0L4RhoG7TpETRAlHmmTZOKYpJMZoGsDClzyrXNl5zbgGWLRdm2EuAIC
-   324KeWEvcaeb1TxNGkw9Qlvab+Pl81KhhDVRLQMIyf8VbXXmgCVik0fYu
-   w==;
-X-CSE-ConnectionGUID: AmLQjJI2QDeszlZYorrrdA==
-X-CSE-MsgGUID: qAO/f6CpTvGN795g/4tPhA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157415"
+  bh=VHgojWTTgqHUg9gLX8EIQcohgFrnGm+WjLPweoAYLVU=;
+  b=lDuKoIwSEuW05Z/DJQ0jGA2+hOl6VMH6g4m7uNF7HUM06HcdepZF1lIY
+   Os7PTV4wReHZpW3MoC0ANLxq00IDh2uTDjNkaYNLICm8sXDt6LQLc48lE
+   Wf6beH8Bm4VkV8XezNNP/FOZvwprX0VN9wp7cQhu1QN/9t/zDpF2eKI+t
+   gMO5uG1ui9t+pBYyQWCdYYaYv37oVrTEPaxCj3TbCrW9W+twspK2mHTa6
+   HX8NaS5Nnc1TZyLxqSt62G4e+OrE5odXozSa62ryadS+vxPIGyg9WCrM4
+   2dL1izTH3n4o3fA7kxOgk3doQJr9WVdsoKR4H5zWrkyPGXLR8C9B7be7Q
+   A==;
+X-CSE-ConnectionGUID: wpaZOnsYTI2lffrPT0xzkw==
+X-CSE-MsgGUID: rqzAlraER3OGGU0nLKACHA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157421"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157415"
+   d="scan'208";a="4157421"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:00 -0800
-X-CSE-ConnectionGUID: mk5AdXWwQiKagh6o1jQUMg==
-X-CSE-MsgGUID: 61PemnO/Taqy5O1mRHUwHg==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:03 -0800
+X-CSE-ConnectionGUID: 4GisYBsNSP2Ovo2NUqNJKQ==
+X-CSE-MsgGUID: 4xJsj3aBRFm3++5akp/Xyw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868030"
+   d="scan'208";a="10868038"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:20:58 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:00 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
@@ -69,9 +69,9 @@ To: "Rafael J. Wysocki" <rafael@kernel.org>,
 Cc: linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 18/42] ACPICA: compiler: Add _Ixx GPE object
-Date: Fri, 20 Nov 2026 18:18:39 +0100
-Message-ID: <88365e5ab7928740a1b8ce6369e7b6f44102e869.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 19/42] ACPICA: namespace: Fix possible underflow and NULL pointer dereference
+Date: Fri, 20 Nov 2026 18:18:40 +0100
+Message-ID: <06aed38d0201b7ff7c088058e7b1625660279327.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -86,36 +86,39 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-ACPI 6.6 specification, chapter 5.6.4.3 mentions an _Ixx object (where
-xx is a two-digit hexadecimal number) which presence indicates that the
-corresponding GPE is enabled in the low power S0 idle state.
+AcpiPsGetNextNamestring modifies ParserState.Aml. Since it can take on
+the AmlEnd value, further instruction that do Aml++ can cause underflows
+on pointer arithmetic that's done to calculate AmlLength. Also the
+return value can be NULL which is not checked currently.
 
-Add a new reserved name type to symbolize an object. Since the
-specification mentions that just the presence of the object is required,
-any one of Name(), Method(), Device(), etc. with the _Ixx name should be
-a valid indication.
+Verify that return value is not NULL and check if ParserState.Aml can be
+incremented safely.
 
-Update comments and the disassembler path.
-
-Link: https://github.com/acpica/acpica/commit/7bf643309c2f
-Link: https://github.com/open-acpica/acpica/pull/1223
+Link: https://github.com/acpica/acpica/commit/ff5efd5d4ee3
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/acpredef.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/acpica/nsxfname.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/acpi/acpica/acpredef.h b/drivers/acpi/acpica/acpredef.h
-index 2208dc7aff8d..be44194b0426 100644
---- a/drivers/acpi/acpica/acpredef.h
-+++ b/drivers/acpi/acpica/acpredef.h
-@@ -152,6 +152,7 @@ enum acpi_return_package_types {
-  *              _Qxx EC methods
-  *              _T_x compiler temporary variables
-  *              _Wxx wake events
-+ *              _Ixx indicator for GPEs in low power S0 idle state
-  *
-  *      2) Predefined names that never actually exist within the AML code:
-  *              Predefined resource descriptor field names
+diff --git a/drivers/acpi/acpica/nsxfname.c b/drivers/acpi/acpica/nsxfname.c
+index fcd94947fedb..c0466139fd96 100644
+--- a/drivers/acpi/acpica/nsxfname.c
++++ b/drivers/acpi/acpica/nsxfname.c
+@@ -519,6 +519,14 @@ acpi_status acpi_install_method(u8 *buffer)
+ 	}
+ 	path = acpi_ps_get_next_namestring(&parser_state);
+ 
++	/*
++	 * Path can be NULL, and Aml can be pkg_end which combined with the Aml++
++	 * a few lines below will cause aml_length to underflow.
++	 */
++	if (!path || (parser_state.aml >= parser_state.pkg_end)) {
++		return (AE_AML_PACKAGE_LIMIT);
++	}
++
+ 	method_flags = *parser_state.aml++;
+ 	aml_start = parser_state.aml;
+ 	aml_length = (u32)ACPI_PTR_DIFF(parser_state.pkg_end, aml_start);
 -- 
 2.56.0
 
