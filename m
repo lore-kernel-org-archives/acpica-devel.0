@@ -1,78 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195292;
-	b=Zr0VMzk+K1Vm21D/T8sBbWluR9z0bGJSRKU3xuVPX27K223eGSGYDfGvjcHHA76f9LUp
-	 XQHGXhxW5BbRVm/yiNw1ruBN9geU8OzFzcUCMCKGk/uodYIHtpnIni6dr0MX+x+89Rg9y
-	 5mgLeJPbxQFTS+7mK1QHhFj1nHIk/bo/nendbewCxFkoFYrv/MnUgLJHk1GOZtHQx5pON
-	 QkrCDxTR12l+lSrTcKkRzsCn6ZjwGG/rZcnMO4EsgByAV0tcHCD3i47LGtui46Um2x0ef
-	 rJi0CAqBBrfrKB0ZWMak7sUjQ2ZNvhC6xy9fhZBXrB5D00gTqzkL3QLFqK+1nIY+kng==
+	t=1795195293;
+	b=tvZrGLJWWb5yifj98HOPad1lL9r8dlmn0qrOss1jQrcG8FLBLTFDmqkuDI88OL4YMA2m
+	 bf13nRQwWM7UPHeFEtRmyQbAJgQGDNlvi631QgnPRRTJeegKDf3fk8ioIacqfBge1mGNK
+	 cDSevLQq5uSzu1nij6hARE6146mgjdplxOTuXlAhMLv0mVvrLiSUTnzqUuLQX6cKxTmQo
+	 z0VtLB+F+NqDfwzcnyNZh8PClmI8CVFiL7YMUm5+zJDIPyOaDhmqTyzbs/FSdGuiYqL41
+	 R2AEnHa6K9noZR6PVZMifXWQAuthKA3CRP9Rn6UjbONdFdxNXfPWYES4PZhjzxkcRaQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195292;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195293;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=hKo9oQqUcBiElmRMU75xxTtQbMqGR9T0DnABQus5l9A=;
-	b=O4rRcrvEE07R3CDgNh4fW/711/VzGWYxH6WcggcARBek62Q2J8sdXz9eqOEOsKrKC7tQ
-	 S4Hd3tLNFpIsy4FTC4gS93c5/aT+uFNXTc4JJVQtRzgLKcGC8J9iTuj7vMAa7oBIQxF9M
-	 4Du0I7xIeOWos7jEgvLZiX9D+rpkuYopv6cg0CY7mqzZKDWdT9+IHLeoavnsmekc5bwWe
-	 NQCOqx2w1PQpnfWr2DXCcg4q7iZKHZ5yLzZIAvqetqD0RuGAbxFgoTvdkcQG/uxaoXGT3
-	 Oxfhq2TQAQTphcAFAGQxk2+/pMnFDlaRWGgKhL2eQG1dNA8tfddRNX+oZf47V05AWSA==
+	bh=yiVmhWdOxRcuVb6bzjNYZRjMqrIna0OkaPvestc8YIs=;
+	b=M41mkCqvM6mzSecv+6fe8nI3Zd47q6p4lENilamvd2f1wlwtIZ58Gd70jFoNfRw9uNxs
+	 KdHbP6DYYsVhkr3vJXyfvE44dqLkexxJA1/IblCdsUsM51qmtKdpN9hzZ2nrY2ePT9o7G
+	 OIGRiDFcI+N3k113e+kX9YXSJ36nQR4lKid59CMXmJRuGZ4tvY4aF4oCJV4XccnYTfBP1
+	 MQTtzp9TChmvF9q8F8XD1I1p9PM3RqnUfdETbDZWiDKpKlWr97OHfQA0jjwWWlaffbKZJ
+	 bOqrm/pNElTSQ0ExWc/7MEaexrn1l/3qn4xdkEFuBdPY/Xk+bmCJqYzBuLZHx+Z7vSQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=US4uL3jx;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=KcNva7Up;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87478606A778
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 87478606A778
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E8B60A3803
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56E8B60A3803
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=US4uL3jx
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=KcNva7Up
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195287; x=1826731287;
+  t=1795195290; x=1826731290;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/r2n44oTBiyBypS7ziJQCY2efDXhtPhcvXbxJ6KD4sU=;
-  b=US4uL3jxMA4HTGWdWUY5eaBZ8Sb478M+lW7BXnaF1cQToiBgeaPEdKaV
-   WMUgqbFnMk+KXlas46kIrpljQooZIQ1nBx4mTwCJBNdZlT/Cv49MRevFK
-   ZEisTVcpTQ3XLERC65KPxyNmBGTHpzazI36pnpCW4zVmfTfMCKyEusiXl
-   NoE2kG1pELf7chmnwSJqatlVdQrGPAcLmXBXkoXk+nDtxFfmefkr5VLIq
-   w4S1LU17G0uQQ2yaplUTXZ3vswZlApw+dhp3AzuAX+Uu9NrCAnYTsuQzw
-   lLjy9C8iOXk+FUNio13uJc6cmYq9oLjsimTt1SErb/9ht932aZ5GWfiJ8
-   g==;
-X-CSE-ConnectionGUID: t0cX6EpKQiG9j14fn9NF/w==
-X-CSE-MsgGUID: zfybDuajQQWOqJ5+VPnU9Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157495"
+  bh=HO8kH8Tc3jDa15cRuBWoCLNmfOSUx7pX24eN/y+mHrE=;
+  b=KcNva7Upsgr1eyWpV7tojzE/ZCMOwEcx7qdD73wGcp9zA+lE6Mv/z6cm
+   Fk3nZDzEg9MzAaJRV0T/WtHFfdHIyrEqmyQSO4+LW2dbL8ow1I6/E4UqP
+   grN2PyIiBgPA28Wmy6Tfz3YLNJ4FlbOvNXN19yaFLYLvibAJBDc1T9EE2
+   LjmDwAvtdm7LzzBxmHsMKVQZ4CjKNfNQc/LUmaVsJ1NKZIaHKQoqr7+AF
+   MHnJDlJcI4kPNri/h5jOtXMPtAwPN/P12thoS+r5TlgLqhSl9xiv/aQHa
+   4ucWrv6/YN8M9r/rwRhXIn9tIh11ME45lShiqP2RV0M7sPnh+SOdvO4tC
+   Q==;
+X-CSE-ConnectionGUID: X2/eOTN5Si6L28bSghBIMA==
+X-CSE-MsgGUID: IaP2UkIPQZ2W8ExdpQupAg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157501"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157495"
+   d="scan'208";a="4157501"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:27 -0800
-X-CSE-ConnectionGUID: tqTPscSfTX2Naix5qLPZYg==
-X-CSE-MsgGUID: XwArdKxZTqiYlHidIJJrWw==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:30 -0800
+X-CSE-ConnectionGUID: eTJJoo04TDS4GJewHzJ7CA==
+X-CSE-MsgGUID: ZyKQVSDGRnC9liVauK6Erw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868165"
+   d="scan'208";a="10868175"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:24 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:27 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
 	Pawel Chmielewski <pawel.chmielewski@intel.com>,
 	Len Brown <lenb@kernel.org>
-Cc: Leonard Lausen <leonard@lausen.nl>,
+Cc: Pawel Chmielewski <pawel.chmielewski@linux.intel.com>,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 27/42] ACPICA: Executer: Resolve package index references used as integer operands
-Date: Fri, 20 Nov 2026 18:18:48 +0100
-Message-ID: <1874837cbfb6cf86ad54b4f64fab3a3255521a7e.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 28/42] ACPICA: tables: Fix table buffer leak when Load fails verification
+Date: Fri, 20 Nov 2026 18:18:49 +0100
+Message-ID: <9a8c8831757087b3a9b9e0296677a0caf10678aa.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -87,75 +87,81 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Leonard Lausen <leonard@lausen.nl>
+From: Pawel Chmielewski <pawel.chmielewski@linux.intel.com>
 
-Resolving a Local or Arg retrieves its stored object but does not resolve
-an Index reference stored there to the referenced package element. When
-that reference is used as an integer operand, implicit conversion rejects
-it with AE_AML_OPERAND_TYPE.
+Commit "Improve error handling in table loading process to ensure proper
+cleanup on failure" removed the ACPI_FREE of the table buffer from the
+error path of AcpiExLoadOp, assuming lower layers always release it.
+That holds only when the table was installed and AcpiTbLoadTable failed.
 
-This prevents FAN0._FST on the Samsung Galaxy Book 930XDB from returning
-status whenever the fan is running. The method stores an Index reference
-into its fan-speed table in Local1 and then uses Add (Local1, 10, Local1).
+If AcpiTbVerifyTempTable fails in AcpiTbInstallStandardTable (e.g.
+AE_ALREADY_EXISTS when the table is already loaded), the error path
+calls AcpiTbReleaseTempTable, which is a no-op for
+ACPI_TABLE_ORIGIN_INTERNAL_VIRTUAL. The buffer allocated by the Load
+operator leaks on every failed Load.
 
-Resolve a remaining package Index reference before integer conversion.
-Release the replaced reference inside AcpiExResolveObjectToValue() - it
-seems to be missing there with even a comment mentioning the
-non-existant reference removal. Limit this to integer operands so Store,
-CopyObject and method calls continue to preserve references. Leave
-Increment and Decrement's synthetic operand resolution unchanged; their
-reference-target handling requires a separate fix.
+Make AcpiTbInstallAndLoadTable always consume an INTERNAL_VIRTUAL
+table and free it when AcpiTbInstallStandardTable fails. Document
+this in the function header and fix the comment in AcpiExLoadOp.
+Verified with acpiexec by executing Load twice on the same SSDT buffer.
 
-Add a standalone ASL regression covering local and argument inputs,
-integer conversion, reference preservation, target replacement and invalid
-operands. The extracted fan method also returns the expected status for
-all defined fan states with this change.
-
-Link: https://github.com/acpica/acpica/commit/aaa58f4b62a9
-Link: https://github.com/open-acpica/acpica/issues/908
-Signed-off-by: Leonard Lausen <leonard@lausen.nl>
+Link: https://github.com/acpica/acpica/commit/bc6a09d20be6
+Signed-off-by: Pawel Chmielewski <pawel.chmielewski@linux.intel.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/exresop.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/acpi/acpica/exconfig.c |  8 ++------
+ drivers/acpi/acpica/tbdata.c   | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/acpi/acpica/exresop.c b/drivers/acpi/acpica/exresop.c
-index 8127d4046d0b..87d04b74e13e 100644
---- a/drivers/acpi/acpica/exresop.c
-+++ b/drivers/acpi/acpica/exresop.c
-@@ -375,6 +375,32 @@ acpi_ex_resolve_operands(u16 opcode,
- 			 */
- 		case ARGI_INTEGER:
+diff --git a/drivers/acpi/acpica/exconfig.c b/drivers/acpi/acpica/exconfig.c
+index cb2eed531c67..2354755ce8b3 100644
+--- a/drivers/acpi/acpica/exconfig.c
++++ b/drivers/acpi/acpica/exconfig.c
+@@ -461,12 +461,8 @@ acpi_ex_load_op(union acpi_operand_object *obj_desc,
+ 	acpi_ex_enter_interpreter();
+ 	if (ACPI_FAILURE(status)) {
  
-+			/*
-+			 * Resolving an Arg or Local can leave an Index reference to a
-+			 * package element. Resolve that element before integer conversion,
-+			 * without changing reference-preserving operands such as Store.
-+			 * Leave the synthetic operand resolution used by Increment and
-+			 * Decrement unchanged; those operators also need reference-target
-+			 * handling when writing their result.
-+			 */
-+			if ((walk_state->opcode != AML_INCREMENT_OP) &&
-+			    (walk_state->opcode != AML_DECREMENT_OP) &&
-+			    (obj_desc->common.type ==
-+			     ACPI_TYPE_LOCAL_REFERENCE) &&
-+			    (obj_desc->reference.class ==
-+			     ACPI_REFCLASS_INDEX) &&
-+			    (obj_desc->reference.target_type ==
-+			     ACPI_TYPE_PACKAGE)) {
-+				status = acpi_ex_resolve_to_value(stack_ptr,
-+								  walk_state);
-+				if (ACPI_FAILURE(status)) {
-+					return_ACPI_STATUS(status);
-+				}
+-		/*
+-		 * Table buffer is already freed by acpi_tb_uninstall_table
+-		 * in acpi_tb_install_and_load_table if installation succeeded,
+-		 * or by acpi_tb_uninstall_table in acpi_tb_install_standard_table
+-		 * if verification failed after partial setup.
+-		 */
++		/* Table buffer is already freed by acpi_tb_install_and_load_table */
 +
-+				acpi_ut_remove_reference(obj_desc);
-+				obj_desc = *stack_ptr;
-+			}
-+
- 			/*
- 			 * Need an operand of type ACPI_TYPE_INTEGER, but we can
- 			 * implicitly convert from a STRING or BUFFER.
+ 		return_ACPI_STATUS(status);
+ 	}
+ 
+diff --git a/drivers/acpi/acpica/tbdata.c b/drivers/acpi/acpica/tbdata.c
+index 8185c6f7ce23..c756d34eeb44 100644
+--- a/drivers/acpi/acpica/tbdata.c
++++ b/drivers/acpi/acpica/tbdata.c
+@@ -995,7 +995,9 @@ acpi_tb_load_table(u32 table_index, struct acpi_namespace_node *parent_node)
+  *
+  * RETURN:      Status
+  *
+- * DESCRIPTION: Install and load an ACPI table
++ * DESCRIPTION: Install and load an ACPI table. An internally allocated
++ *              table (ACPI_TABLE_ORIGIN_INTERNAL_VIRTUAL) is always consumed,
++ *              on failure it is freed here.
+  *
+  ******************************************************************************/
+ 
+@@ -1015,6 +1017,14 @@ acpi_tb_install_and_load_table(acpi_physical_address address,
+ 	status = acpi_tb_install_standard_table(address, flags, table, TRUE,
+ 						override, &i);
+ 	if (ACPI_FAILURE(status)) {
++		/*
++		 * Table was not installed (e.g. it is a duplicate or failed
++		 * verification), so nobody else will free an internal buffer
++		 */
++		if ((flags & ACPI_TABLE_ORIGIN_MASK) ==
++		    ACPI_TABLE_ORIGIN_INTERNAL_VIRTUAL) {
++			ACPI_FREE(table);
++		}
+ 		goto exit;
+ 	}
+ 
 -- 
 2.56.0
 
