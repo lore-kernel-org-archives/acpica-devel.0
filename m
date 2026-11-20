@@ -1,164 +1,68 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=2 smtp.remote-ip=40.107.159.58
-ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795085207;
-	b=uegXNMJUAVXOLzAYfla38DOC9V6tjdOizj1fPjSE76TSy6YgoldTEpGamxM64snF/bJD
-	 FcHMqDSGRmX3QRghI9YneuEf3PPLs0yDsQAIbpxneWVSpXjvlBduUoVy0CZJA+taSCV3M
-	 C2osM0NxHZVWeeW3ljuwwib3dzDsnCTHbGCRSXkIuURsO0wN/m78WFfXafCh6nYMtzi/0
-	 ERtXSM9eYCdJxJVv+257YRLzSxGb+SivNazWVbDxihOLCrnTpyNWXMHfgLzE0KdGr4SUF
-	 7EuQMhTYvC2hhTpMo2PtlpwXG3h+2x2ldDFA+1dHWyMs0r8t1mMjtTv2e8NirFcqJpA==
-ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795085207;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:
-	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:
-	 DKIM-Signature:Authentication-Results-Original:Received:Received:
-	 Message-ID:Date:User-Agent:From:Subject:To:Cc:References:
-	 Content-Language:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-ClientProxiedBy:MIME-Version:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-LD-Processed:
-	 x-checkrecipientrouted:NoDisclaimer:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam-Untrusted:
-	 X-Microsoft-Antispam-Message-Info-Original:
-	 X-Forefront-Antispam-Report-Untrusted:X-Exchange-RoutingPolicyChecked:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:
-	 X-EOPAttributedMessage:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
-	 X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=zT6ay0mbRJ+myuyAlaoFbmHgemZeidAL4r+BGUiy5Us=;
-	b=I5nXsilaAto+HoNakGsKAdZyznzVRXgJQQgmVqsCO8ZvlaSQy7R+Gtst6/oHabDdWZ12
-	 ON6Mlh5uKziocNJUPHCfck02yRd9GxrNCliY3c32IUur+qypQ/f2UGqQhG3evPLDVxLLA
-	 BKLoD4+Y6yvJT8Gtt9Gpl7XH0oDvXV7bC/Po1+HNrJDpGGmShD8bcxuWXpr6qY3LbNB/6
-	 gNE2R4/kDUpce1MSdMghs4mbydpTSIP8xCYTtc9DnpxkawmMy9PGPPtFxryh3EOOOSEU/
-	 54OU1xboYX7Fljd1iDcK+JMazh0y0dwseWbNsSg4xCE2SEiDvaCSpEKsRc+V0s+1HIw==
-ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=BDWn91Ae;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=BDWn91Ae;
-	arc=pass header.oldest-pass=2 smtp.remote-ip=40.107.159.58
-Received: from OSPPR02CU001.outbound.protection.outlook.com (mail-norwayeastazon11013058.outbound.protection.outlook.com [40.107.159.58])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF53606A332
-	for <acpica-devel@lists.linux.dev>; Thu, 19 Nov 2026 10:46:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6BF53606A332
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=111.22.67.139
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795155685;
+	b=WYLvuuBvWHArZym2A8XinJRfHxISzsbiOcRmWttPpK1zsqkFw6BGd0MNMWCj6PH8fZAI
+	 OJj0BCawgBb2oj+1kxclYvyKLcaod43fihjObr5pTGGFMJE0WYsareR9VLLF/JmvP8DMq
+	 fZDtMF88bVUbmxPYu5f5rqY9wLBGez1Tpibqvg7wcfMGRdOZL0XwfuHurkXqak9BkKETU
+	 rctFn45aoa2FOFyLtHQpyWfOgvb11yE/F64I8qBdBk/8vjOwe8ctc4sSHyEB34rxSK2TC
+	 GOouwJXWdKbTy/n1nO1X6BUPxRuEF19KHHIhbsxdABPZjJswfPMIEXn9XoP4GEKUlkw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795155685;
+	h=DMARC-Filter:DKIM-Signature:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:
+	 X-RM-TRANSID:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:X-RM-TRANSID:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=r3cd5ig/R4tMhDYHHFyjzzWcQOV/dhUUB6Eem+2QV8I=;
+	b=DdO3ZgBXIFdgp9bhWlOJP9/UY5xNBIcyeAPfX2DayASAKasaQRY72PjDcfVoDuz7kOmO
+	 OA4qzgv3G8K/ji4+e7m8jGC+U6q2Xvi84JdYqoEjr9jJ4smAgzijUbM2UJyG2w9SH8bTI
+	 nU67X/0H1ilvSqDnlCNgUhQT/HWxCSUZ2qPuGX/MMi6XLPOW6nAQVoMJ6vC3U8HSGDG0I
+	 bYcaGiNs4NKZs0m86NEvHmfsYJEYkEeeNKFh0t7gGIKmokP4Crhse2LgHCuREwCvX7wGq
+	 eY0Iwe4SlSbrsh1Pv5P7RHn3n8fnXLuu/HXMhe/MThM0Iw3lKZVnyR7wnY94nE2H/4A==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=cmss.chinamobile.com;
+	spf=pass smtp.mailfrom=cmss.chinamobile.com;
+	dkim=pass header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b="Xty/JveW";
+	arc=none smtp.remote-ip=111.22.67.139
+Received: from cmccmta6.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C9D60A2605
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 06:21:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E7C9D60A2605
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=BDWn91Ae;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=BDWn91Ae
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=p8uCvKO7dng2mZPES7zF6PnYw6KJDecauTb8dvyBkEvP3aIXRR0cx2ARKgmr4wj+CMtHWBri7VUWqNfvAgp1/U/iHPpFX7+m6q7MQMG+L+Z15TZp0RSyHC9OKEmzu8dMO0pPZ7JIzIbnPhURNKNSDacUkouUVlM0R3Gj8t0ClOLG5Mpxlx1y0gT9ahtKeS4f3uOwJlKrj2lhjBiDGFlN7prq/sb2ILV+wxII6EgZBdyDY3mTgjkQQ0oYzMiv7V9hyMQCjHExW+xUX0oKnsZ/YPFvNkY6JrRpcEZJK746+DCTZ+UHXDclRhrGTVrW8AWg+ov/8jNC/mjWljA6BE69Sg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zT6ay0mbRJ+myuyAlaoFbmHgemZeidAL4r+BGUiy5Us=;
- b=WhC7P5nrhz4iv4O7OnAZl8KPqRRuKd66xUm7ep23oeSaaHmT1XtwbrHVELeftOzTFxEG+fHiYD/dnviLydDvcX4ja9DMWXSGsR+GbTLycmdbszFeNlNpBGrehQNSXP2cwgpgP9fp/eVWZtYW/xxbOUqInmQxwD6bSxCAqpOtI8Fi1xXr5bE0vBQp19Sn8iGZ9jfui87fIpv5gNynP3OPKRvnvGMySVogh8rWSc6w2+tQRRzB7FYe5tJRqy7r62IkWZrvRBOxkhHnaHUyWtAhuMGrfuiHk3mXKe4ftop8LbXq0qya+3SCjQwssD4GDQQ2pYtcrPVhTfgqL/krYfjWlA==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=kernel.org smtp.mailfrom=arm.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
- (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zT6ay0mbRJ+myuyAlaoFbmHgemZeidAL4r+BGUiy5Us=;
- b=BDWn91Aema5HfRL0OA5RnFHlqCKAY2rtuISbDn0LoWpkXmu69QBjVPhMg60B7OK8r3GQQE/0AteIbfBw2ZejD69tmwwy4eD0oHcwv4/efTYmdu3LIXxEHkm+blb3210FJb1KHVbknKwEKC84WRkeLmADkWYqKB4gAY5n72Hz9hQ=
-Received: from PR3PR09CA0014.eurprd09.prod.outlook.com (2603:10a6:102:b7::19)
- by DU0PR08MB9080.eurprd08.prod.outlook.com (2603:10a6:10:474::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.10; Thu, 19 Nov
- 2026 10:46:38 +0000
-Received: from ZR1PEPF0000E6AF.eurprd05.prod.outlook.com
- (2603:10a6:102:b7:cafe::a) by PR3PR09CA0014.outlook.office365.com
- (2603:10a6:102:b7::19) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.615.14 via Frontend Transport; Thu,
- 19 Nov 2026 10:46:38 +0000
-X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
- is 4.158.2.129) smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- ZR1PEPF0000E6AF.mail.protection.outlook.com (10.167.241.86) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.639.5
- via Frontend Transport; Thu, 19 Nov 2026 10:46:37 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eLnkFn/8UjoN42v6Niz8y/fAPi8KeZZ4E8tGLsMmzqhHBBLM8fdMYc2ElmuJdNyElqgTkLw+ARX31MIRIKMAtD6QGHihJ8yNZ9nXPJa6cmwvgZZtIokfLe57x7mHRyszSeDajXwHttjvqBlyEMebqvmgviQLQImtBPbxvhA1GXgCbfsHu9I01Owf6BOIRbSPifLiwJ9n4k4yYqHxvcNt/ZzDbWJbxo2tYOLv8mzEfjct198HXBQ4vj/x/fMgKIiuAd/9LI1YZHg2eF+52ZiGgsDxZTj2ioTksJZNxSoi1pGmnyyiuB1kCZVqU+9oYAtDNTvC9efjODQHPMLR3q0Q7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zT6ay0mbRJ+myuyAlaoFbmHgemZeidAL4r+BGUiy5Us=;
- b=dWFfg3kSl2mPxRpK9jKdTpj0P/fX3o/NzutAoMvyGoQQFfHfsqqSR6iFsy9ZcFb1ZlQ1mlnrleJDgpEWFxRz8taR85VoFsHfwIcVbH8FoR0gLvOvTWDLFKXvmUE4SioIz8Gcp6uHv4kfTc8yB0pY6kgg/QUYEDNT754WKIJya46+8JduBe6rd5JXDOZkyKVf6wcCoWGZ1+ZfQ9852Vmb7PBgoRF3NxSTk3jgfLkcIm7LAKufWOdiHbarL89WvWm5XBwoNSoFW/QjChGP/LAgBGq436Q0JaBJB2JGzz/VFiZmtNMsgjs1qg5Kxx5RbM8lFsO63WswK3uCej9Y78kxlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zT6ay0mbRJ+myuyAlaoFbmHgemZeidAL4r+BGUiy5Us=;
- b=BDWn91Aema5HfRL0OA5RnFHlqCKAY2rtuISbDn0LoWpkXmu69QBjVPhMg60B7OK8r3GQQE/0AteIbfBw2ZejD69tmwwy4eD0oHcwv4/efTYmdu3LIXxEHkm+blb3210FJb1KHVbknKwEKC84WRkeLmADkWYqKB4gAY5n72Hz9hQ=
-Authentication-Results-Original: mx.microsoft.com 1; dkim=none (message not
- signed) header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23) by PA4PR08MB6223.eurprd08.prod.outlook.com
- (2603:10a6:102:e8::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.10; Thu, 19 Nov
- 2026 10:46:01 +0000
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62]) by BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62%6]) with mapi id 15.21.0639.010; Thu, 19 Nov 2026
- 10:46:00 +0000
-Message-ID: <5e9f7439-fe57-4802-afab-2c4fd2c15850@arm.com>
-Date: Thu, 19 Nov 2026 11:45:57 +0100
-User-Agent: Mozilla Thunderbird
-From: Pierre Gondois <pierre.gondois@arm.com>
-Subject: Re: [PATCH v1 01/19] x86/APEI: Extract common CPER memory error
- reporting helper
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
- James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Tony Luck <tony.luck@intel.com>, Hanjun Guo <guohanjun@huawei.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Shuai Xue <xueshuai@linux.alibaba.com>,
- Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
- Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
- Pawel Chmielewski <pawel.chmielewski@intel.com>,
- Yazen Ghannam <yazen.ghannam@amd.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
- Radu Rendec <radu@rendec.net>, Avadhut Naik <avadhut.naik@amd.com>,
- Dave Jiang <dave.jiang@intel.com>,
- "Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
- Kai-Heng Feng <kaihengf@nvidia.com>, Breno Leitao <leitao@debian.org>,
- Dan Williams <djbw@kernel.org>, Terry Bowman <terry.bowman@amd.com>,
- linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
- acpica-devel@lists.linux.dev
-References: <20261117111444.4185512-1-pierre.gondois@arm.com>
- <20261117111444.4185512-2-pierre.gondois@arm.com>
- <20261118185406.21700e81@jic23-hlaptop>
-Content-Language: en-US
-In-Reply-To: <20261118185406.21700e81@jic23-hlaptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0210.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:33a::13) To BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23)
+	dkim=pass (1024-bit key) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=Xty/JveW
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=Xty/JveW0erUX/l5CvxaqvVedXUNRtSTv0T3dlnSNS0ywCDTdl6osIKoFsfN0L7NWsKWHA06LtpXG
+	 4kK/9OnKqsImQXREeKc1CrSyj+8UwjHsXmgvfwNtEkjIgjL6KKX1RMTyev97UROmq3K4lV5bjOPpry
+	 bMJz5Tter64csuLM=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee96affe6e0b99-2a5d7;
+	Fri, 20 Nov 2026 14:21:22 +0800 (CST)
+X-RM-TRANSID:2ee96affe6e0b99-2a5d7
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from devin-VMware-Virtual-Platform.localdomain (unknown[10.55.1.71])
+	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36affe6e1c95-31157;
+	Fri, 20 Nov 2026 14:21:22 +0800 (CST)
+X-RM-TRANSID:2ee36affe6e1c95-31157
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
+To: rafael@kernel.org
+Cc: lenb@kernel.org,
+	maciej.wieczor-retman@intel.com,
+	pawel.chmielewski@intel.com,
+	trenn@suse.de,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	Zhu Jun <zhujun2@cmss.chinamobile.com>
+Subject: [PATCH] ACPI: tools: ec: Validate write values before narrowing
+Date: Fri, 20 Nov 2026 14:21:20 +0800
+Message-ID: <20261120062121.98448-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.51.0
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -168,113 +72,48 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	BESPR08MB999898:EE_|PA4PR08MB6223:EE_|ZR1PEPF0000E6AF:EE_|DU0PR08MB9080:EE_
-X-MS-Office365-Filtering-Correlation-Id: 58cbe025-e86f-4ab8-1e0a-08df462a633b
-X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr,ExtAddr
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|23010399003|7416014|376014|366016|1800799024|18002099003|22082099003|4143699003|11063799006|5023799004|10067099003|56012099006|261026121527099003|261021123027099003|261021121427099003|261009223027099003|261102123227099003;
-X-Microsoft-Antispam-Message-Info-Original:
- 3zbcUQHg9YqIWJEpKBR2Ot0kyLBh+oZ/fuGRHeTNh28vgOUyMUvgTD0SNwt9X6IxoCHxw4GIiONX/VYOYKw4kNEJP5kO7nXjiyYfS4oIq3nFDGBtP3w7bU5Qi0j/rWOjO72cMWHTqYUbzSAAYp8ZTrvb8cSYFEOIyLLPmlHHZFQ6lqqV1yNCw1t6lKCD64RqAfOUynQTTFRdKowktVTzdgOrAY8AOiRmg9L1CcIT8eDSXzGPSRXErlS48MCJniAh2k+yYq50pfr+38l2U+FJDoHV6r25vqGZ+A1N5mbupBU8/jAabcOTlvhtc2i3xjJQiNFrYv7255LUxxX1VthhLcHxCpusurpYy66wABEG90as1pw2nvRrI6+i1l9Cic7WAZ2Ru4iaPeCX1XgqjtsXaM/cVIpn4Az2E9Ety1zpzHfOX7l/FwhRbFDHrYjWQmshGEzb2BEFFEoD+FZleQC5LZbvaBkQlMT7pLyyQnas9gO+Q7YCUG7mGEQ9R8JQ29UAT20/FstBcLH0UVjJg1fGxq22dAlWkAJOGTPyYRfZ6bp/u+RqdWz6fv8uL3wRTsQ35TfMIZtQx/EcgsTEIOJ0/w4jYgmcpAJkq/a0rNxIThD9Vt5K/CjyjTdWrqWN7knaRIyEEGmGOuLr7xnluCwxmgV1P+27aZeFsb8nd1q9ll0=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BESPR08MB999898.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(7416014)(376014)(366016)(1800799024)(18002099003)(22082099003)(4143699003)(11063799006)(5023799004)(10067099003)(56012099006)(261026121527099003)(261021123027099003)(261021121427099003)(261009223027099003)(261102123227099003);DIR:OUT;SFP:1101;
-X-Exchange-RoutingPolicyChecked:
- qE+fQydr05tm0K93v+Kp39wIH78CUNmFF1LWIgjMhdbgbJ/KL7er0loEVE2QiACcN5EtoB4xhRhVzhwEx54DhD5U4acOuPtasAzMdABCRa+6iYbcl/1gFAfm0O70aWwbL7xn+T4fBJwf1mDwHSj73mN2nYBTDn9B3sq9roB1Ak3474Jrbi6ZC0vZf7cGUxKDb3SRomJQgcNE5MvsVmKZ7YWXwVkhznyEC1vAF6u7z/YQryrw3zJf+ZN80V1p8U6hE8c/Mno2cLt6t7d9nc6D+XXaXm4JnvmXmPn4c5Wb4atm7eofYADzn/h7ed5pBdV20svPwcB2TYl7buW6OhAa/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB6223
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- ZR1PEPF0000E6AF.eurprd05.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	55cb7ad4-d20e-48c5-9ff3-08df462a4caa
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700016|7416014|376014|35042699022|23010399003|14060799003|18002099003|22082099003|261009223027099003|11063799006|5023799004|56012099006|4143699003|261102123227099003|261026121527099003|261021123027099003|261021121427099003|10067099003;
-X-Microsoft-Antispam-Message-Info:
-	lfu4tzU55LcyHP1kW7moOg8NzV9houPFJojTkKTL6s2/9oFK+Rts2URen8FdnqCU/Ph6lIkmt1Dy1Dq7G85A15lnm8xCWJ2wK+N1gK7lzprNAMEhjL58ejwKBzoKayAgTNtXYskaQjdCdUpvQmUvcHvvYlgoKhCEVVYSFOcNiZTY2XeyA8jz+5bNhx5rEshG+KuwGnfEhHwjembIComiyzbGf+m0sQ56QHV85DGxlO/5Cx9PIl7pkCP9qkCfm4BNllj4nRkjuexYuT5gexJ7NK6JkJqvA3rtTo9LvX1bRQ1yLyF3L920rdnMOuMjzg3AAqRCcyrtuHjJ0whMQB0frfKCfkePWJo6beR4cxmelmcKvKBdxoZUUcFMlzs3RVXOmmPB0SfoQj6OCdPzwM+XdlC8bfR3Zd+r3bJvHBZJG6jj/o7mfIdjbazCa6Zy4r9P5jo8Rn4FhIY8vrdwRg55tncbDo6A1EdfpdNrSnf4wqvk5X0E+Zk9w1TIX67Y0c60Ob28o86ilmD0iXMbP/b2/TEI4GfU2Qc/dJfb28PPZ6wNCi7ii97IAhrG47ZIczFHO1WAuj5f5Wt/EG8qtoAnr5SCmd0Udi++hFJ4isJX/JLgXHjfapYFBKL3Fmpd1iqvTczER3bYYFk1IhudSoyGJ8b+MmRuE2d9yo1tc4mMKKcggUwv/ziCQDWVmm8GNKsb3vcdgmGFw3TSZ++bWp2rTQ==
-X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700016)(7416014)(376014)(35042699022)(23010399003)(14060799003)(18002099003)(22082099003)(261009223027099003)(11063799006)(5023799004)(56012099006)(4143699003)(261102123227099003)(261026121527099003)(261021123027099003)(261021121427099003)(10067099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	WDXhWDErUJrb2BFP7Wn3pZSIBXz25TUznDhd5TKmZptshvDoWkC8wj7z/S34oQqz2bMU4L/0v5sHqX61EXVivSqwcHfvCL9EO/nY/h+1pG7XwgyPom34lx1WpVk1YJkTKXD4K7yAITj6G0UCbrqu2XgUFxUYEv67U21nL3xrBJdWxdF0AG01KGyqJRnW6RcYKXcTTTXc9p6C1yXB7U8mBkRpu/fd9PjJm61h8qgRNxU9tbkMN4jxjEbXxbdUrgfjhJpsp0x6KD6GH4JFqGOl3FdW6EBdirrYCu1pRFn7SwR3nneICOYq68LrobCIsgkxq/ztYlJi81tP7OcjCcH3ztE2bfaj6B96yyearrcL1k6jbiekTYcfnbIHXpiCCixDQolxtZmefUhbK+w7MmwIvHLmb8MUXE0GEDoJIJNQC9kVxSW6/VenOyM9ItQivy8u
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2026 10:46:37.5923
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58cbe025-e86f-4ab8-1e0a-08df462a633b
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	ZR1PEPF0000E6AF.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB9080
+Content-Transfer-Encoding: 8bit
 
-Hello Jonathan,
+ec_access stores the result of strtoul() in a uint8_t before validating
+it. Values such as 0x100 are truncated to zero and accepted, while the
+upper-bound check rejects the valid value 0xff.
 
-Thanks for the complete review !
+Keep the parsed value as an unsigned long until it has been checked
+against the EC byte range. Use an out-of-range initial value so omitting
+-v remains an error, and report the offending value in the diagnostic.
 
-On 11/18/26 19:54, Jonathan Cameron wrote:
-> On Tue, 17 Nov 2026 12:10:11 +0100
-> Pierre Gondois<pierre.gondois@arm.com> wrote:
->
->> Prepare for reporting CPER Memory Error Section 2 records through MCE
->> by extracting apei_mce_report_mem_error_common().
->>
->> No functional change.
->>
->> Signed-off-by: Pierre Gondois<pierre.gondois@arm.com>
-> One curious question + trivial comment inline.
->
-> Otherwise, this is a simple refactor and seems clean to me.
-> Reviewed-by: Jonathan Cameron<jonathan.cameron@oss.qualcomm.com>
->
->> ---
->>   arch/x86/kernel/cpu/mce/apei.c | 31 +++++++++++++++++--------------
->>   1 file changed, 17 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
->> index 0a89947e47bc8..b993ac78a3b36 100644
->> --- a/arch/x86/kernel/cpu/mce/apei.c
->> +++ b/arch/x86/kernel/cpu/mce/apei.c
->> @@ -26,24 +26,15 @@
->>   
->>   #include "internal.h"
->>   
->> -void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
->> +static void apei_mce_report_mem_error_common(int severity, u64 physical_addr,
->> +					     u64 physical_addr_mask)
->>   {
->>   	struct mce_hw_err err;
->>   	struct mce *m;
->>   	int lsb;
->>   
->> -	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
->> -		return;
->> -
->> -	/*
->> -	 * Even if the ->validation_bits are set for address mask,
->> -	 * to be extra safe, check and reject an error radius '0',
->> -	 * and fall back to the default page size.
->> -	 */
->> -	if (mem_err->validation_bits & CPER_MEM_VALID_PA_MASK)
->> -		lsb = find_first_bit((void *)&mem_err->physical_addr_mask, PAGE_SHIFT);
->> -	else
->> -		lsb = PAGE_SHIFT;
->> +	/* Missing or zero masks default to page granularity. */
->> +	lsb = find_first_bit((void *)&physical_addr_mask, PAGE_SHIFT);
-> Silly question.  What stops it being bigger than a page?  I appreciate you
-> aren't changing what is already here but it made me curious.  It's 8 bytes
-> so limiting it to page size seems odd.
->
-> That larger usecase came up last year for how to handle error injection
-> into a VM that was running smaller pages than the host.
->
-> I guess on x86 it simply isn't ever bigger than one page?
+Fixes: d7cddbb07b18 ("ACPI / tools: Introduce ec_access.c - tool to access the EC")
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+---
+ tools/power/acpi/tools/ec/ec_access.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-I also don't really see why we could not operate on multiple pages
-at the same time.
+diff --git a/tools/power/acpi/tools/ec/ec_access.c b/tools/power/acpi/tools/ec/ec_access.c
+index 8bb271b210d8..0b06292bf1d0 100644
+--- a/tools/power/acpi/tools/ec/ec_access.c
++++ b/tools/power/acpi/tools/ec/ec_access.c
+@@ -30,7 +30,7 @@ static int read_mode = -1;
+ static int sleep_time;
+ static int write_byte_offset = -1;
+ static int read_byte_offset = -1;
+-static uint8_t write_value = -1;
++static unsigned long write_value = EC_SPACE_SIZE;
+ 
+ void usage(char progname[], int exit_status)
+ {
+@@ -103,10 +103,9 @@ void parse_opts(int argc, char *argv[])
+ 				write_byte_offset, EC_SPACE_SIZE - 1);
+ 			usage(argv[0], EXIT_FAILURE);
+ 		}
+-		if (write_value < 0 ||
+-		    write_value >= 255) {
+-			fprintf(stderr, "Wrong byte offset 0x%.2x, valid:"
+-				"[0-0xff]\n", write_byte_offset);
++		if (write_value >= EC_SPACE_SIZE) {
++			fprintf(stderr, "Wrong byte value 0x%lx, valid: [0-0xff]\n",
++				write_value);
+ 			usage(argv[0], EXIT_FAILURE);
+ 		}
+ 	}
 
 
