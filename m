@@ -1,77 +1,78 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195275;
-	b=oKnTvJoq2VtMtvuewfteP4eRbaB+C6DoXMDnoh3sci6Owxd2rpiwAy3ihOuLIxoRDzXO
-	 Pt/1CZiZBZF0b1fvua2+N7Vt/BGfVMB5HfvOJslmWGwIf8lGJloBflx/6p/DM2EIlQJdk
-	 5jRqROMbIJugpOXkmcZNV95FuXQa90yOuiQlMMM4hSi9bfEimSAJ62r/+3RxN3vwkVji6
-	 ndD258riMvXUHsfGqFo2uE7ssPq+SqKbGZz8o8yk+W/uVDnhxsQiE3qecaDa6Zt041sNk
-	 Lq7gdQcHJGL18WcMWzpzZeGP9mxeTP6UAOCCOc78qETdirbnbXYVSIOKBj4S1EiGylQ==
+	t=1795195277;
+	b=xuSBwEjdzoAk1M51QlFchzxGBKD0VznFSoj8vohN23cjeDftY8vO0xtY1cyJf2keGO5K
+	 K06OftmdagHfQGpfqe7BuhhL+yfiCDjzcZMBG9JTlodZLP+Px1urM8aIJY33vkbcG+ZTM
+	 nj4TriV6rzg66V0cKrp1P1E1oI203jR+CQ90cZUkjfGiCjUT/qqTK6DYrZ+lKW4PUGzXX
+	 EGuj9w2FdaZeDD/NKrAzQe0JbGbp5/Oc5Qvc+jWCTG3mZZVFYJmL04XjUzw4P00zesxN2
+	 kaFieX1rV5q/6SqsA/eFbHWLfT7mgKvx45EJvO+4nVjATp/lhORVntk6p/Ab8zuAWBw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195275;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195277;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=4U/uwHAE/JCkAiNRCy6w0ySpZQBvAQunkij3nCJiKn0=;
-	b=3a+rbLyL1jNFSJwyxGoPFFO9Qhade/Rqo/6P7O1HBffPK5xQU7KxK2pBDh3t1fv7oES6
-	 ILJnnMDYiBy8OFZmfnYaAivBBHPISGtKxe670JsncXnb3zrIOg7MGJnbpNvZkGnZrmx+/
-	 kLJTiYpJIKqps21zeTzfnVFKAbN6X/wKeiPx0AtbMScqPv+ETpDmTBZ5uocavzVs62c/F
-	 VmmIG2d055o78HpzftwN7xjGCbBwM/YSDq11WrExW7L+HGyCtx6CMM2aCUOSLUNo+OYl8
-	 rk+/g4eTKLqqdedzV0R1vKhJ+GfFmPunGKQPADzCb99OzggP6u+hnqtcliEHWL65jWA==
+	bh=X5t8KSN+BPwewSOUqLYXJa+3yiZf9HW9mxXEcML004g=;
+	b=fadf11pYKi5U/AXq0FGvVv9vLzcYYZDP5dxYKrLrlKccLBr4QLoK+YSLW/xOWjXM0Pr3
+	 JWrJp6iB51CDwiROzCfXgE/THa2PT6EBbyhkzdZJSUzGkQCngU/KaOk4CZG242Hf18QF0
+	 XOCTN286nWGF1aRn9S+ilrJQ8zUxNEUAzbD23sRdrYPTxjgacib+C26C789bt/0nRvPPa
+	 e6Hl5Eh+losJ1HLC1DlI+y0xKBnJoCyqZpDt89iSqgwBbfRdevM8PXFn69IgYkgPWTB02
+	 1vQBZX4ELB/XsN+GrWtMqKn4TMUiW1N/UdFfQEO8fQZYdgWSCblqFBtEtxC1eMAzN3A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=IEVoEDpR;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="H/W/Xp/t";
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A62A60A5BE2
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A62A60A5BE2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4331060A5BFE
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4331060A5BFE
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=IEVoEDpR
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=H/W/Xp/t
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195272; x=1826731272;
+  t=1795195266; x=1826731266;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zFXoZ8Suc98Mn6omUidyPFbF9/WmIqRHVrDQaUVpDGI=;
-  b=IEVoEDpRxgUeUud21EzQn9sYmpYo0JpENKvuilOAuLOVSHY/kOKfs0Wg
-   VwdI9NQSGCMnCcs86TJrFWX7nw0bSzuUCBH9BCnfpTI9mPkZl/uXWTfHl
-   6JKCGQu9AknEa1Hs85mmZ+HIuiGmNPpV9Dm59/1FFNA0VAupNKN635FRM
-   jQ2AJ9+bfcPE9QwbcUz2ouKCm/cxlVmEpfO4l3nMBG2LePYsWf57JK4hj
-   e6/7BdjfSsUEWOzJ8tRnhcyLOu8s0D3RRrIgKqn+zv2NIkSxm8HgID4M+
-   NUjVIGJRg2tfvW9XPZAO+dNCrSTDwx+O7nDkbuj8PzYTSCaJa/T03VDyt
-   Q==;
-X-CSE-ConnectionGUID: yO9ZiRJ7TpyNvdfz9OO7Nw==
-X-CSE-MsgGUID: yQopNXY4QsancAmSB8GqHw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157437"
+  bh=NMeYiLSx7ZE5DNWL3ziK2d2TldZQDmeLoanT6gIxdeE=;
+  b=H/W/Xp/tri34zHCfrJE6NF2BEYMew8EnXY121QzwBUipEciNpc+g/OHr
+   JAoPv5ypPN7M+rLsV7SR+LZO14NT+cjhdUt4S6b+cHWhRL96tXddi1uvD
+   OuKPrT1Hh3LG1ouLjWL2fz3nXDDHQ21XpLtcKgPxodp6isx//MfTgENdx
+   xL8ptmqhthWpDXROYG17n0BPNqrGLTAF1Ge9EduZGxPHcw0Msz49EBNOf
+   8/j/ckpZH8vOaTo90vh3Iftw4/YBJkVgc/OZR0e92K7KjqkvxeKt64HEV
+   /Fda0EFs06UuxCz+kVtqiPeGgwbO6+c/Twi1gZ5dQdT2qpnDnJWs5V2eP
+   w==;
+X-CSE-ConnectionGUID: RV9nJ5b2QRmiWOwZjS37bQ==
+X-CSE-MsgGUID: jh2bovo8Q+aPtB+GsF5V8A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157425"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157437"
+   d="scan'208";a="4157425"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:11 -0800
-X-CSE-ConnectionGUID: IDwwc45DSe6aUYl2+hyJSg==
-X-CSE-MsgGUID: 1/T3D5jSQFGHf/N0GU49WA==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:06 -0800
+X-CSE-ConnectionGUID: 08HTqaASQOOaVqc9MdVi8Q==
+X-CSE-MsgGUID: SRMsZbDnTTyeBZ4F5zfWNg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868104"
+   d="scan'208";a="10868066"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:09 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:03 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>
-Cc: linux-acpi@vger.kernel.org,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Len Brown <lenb@kernel.org>
+Cc: Hanjun Guo <guohanjun@huawei.com>,
+	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 22/42] ACPICA: ACPI 6.5 Add support for the MISC table
-Date: Fri, 20 Nov 2026 18:18:43 +0100
-Message-ID: <e9cc7ab5219926220c7af1e968548bb033366f00.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 20/42] ACPICA: add UBRT (UnifiedBus Root Table) definitions
+Date: Fri, 20 Nov 2026 18:18:41 +0100
+Message-ID: <75d98747303ca235cfcbb374c259492493132969.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -86,70 +87,204 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Pawel Chmielewski <pawel.chmielewski@intel.com>
+From: Hanjun Guo <guohanjun@huawei.com>
 
-ACPI 6.5 Introduces MISC table and the definition for Miscellaneous GUIDed
-Table Entries. This commit adds support for this table, specifically in
-compiler, disassembler and template generator.
-Refer to section 5.2.33. "Miscellaneous GUIDed Table Entries" of ACPI
-6.5 specification for further information.
+Add UBRT table structure definitions as specified in
+"UnifiedBus Root Table (UBRT) Specification Revision 1.0" [1].
 
-Link: https://github.com/acpica/acpica/commit/727cd62d95fc
-Link: https://github.com/open-acpica/acpica/pull/1199
-Signed-off-by: Pawel Chmielewski <pawel.chmielewski@intel.com>
+UBRT table signature was reserved and published in links to ACPI-related
+documents: https://uefi.org/acpi.
+
+The UBRT provides the OS with fundamental configuration and architectural
+information necessary to initialize and manage the UB device.
+
+This includes:
+- UBRT main table structure (ACPI_TABLE_UBRT)
+- UBC (UnifiedBus Bus Controller) information sub-table
+- UMMU (UnifiedBus Memory Management Unit) information sub-table
+- UB Reserved Memory information sub-table
+
+[1]: https://www.unifiedbus.com/en/docs/UB-Root-Table-Spec-1.0-en
+
+Link: https://github.com/acpica/acpica/commit/8565698cefd9
+Link: https://github.com/open-acpica/acpica/pull/1211
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- include/acpi/actbl2.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ include/acpi/actbl2.h | 153 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 153 insertions(+)
 
 diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index dbfea7c8bc00..3f6e093133c7 100644
+index 76e4a5bc79b4..dbfea7c8bc00 100644
 --- a/include/acpi/actbl2.h
 +++ b/include/acpi/actbl2.h
-@@ -38,6 +38,7 @@
- #define ACPI_SIG_MADT           "APIC"	/* Multiple APIC Description Table */
- #define ACPI_SIG_MCFG           "MCFG"	/* PCI Memory Mapped Configuration table */
- #define ACPI_SIG_MCHI           "MCHI"	/* Management Controller Host Interface table */
-+#define ACPI_SIG_MISC           "MISC"	/* Miscellaneous GUIDed Table */
- #define ACPI_SIG_MPAM           "MPAM"	/* Memory System Resource Partitioning and Monitoring Table */
- #define ACPI_SIG_MPST           "MPST"	/* Memory Power State Table */
- #define ACPI_SIG_MRRM           "MRRM"	/* Memory Range and Region Mapping table */
-@@ -1876,6 +1877,35 @@ struct acpi_table_mchi {
- 	u8 pci_function;
+@@ -61,6 +61,7 @@
+ #define ACPI_SIG_SVKL           "SVKL"	/* Storage Volume Key Location Table */
+ #define ACPI_SIG_SWFT           "SWFT"	/* SoundWire File Table */
+ #define ACPI_SIG_TDEL           "TDEL"	/* TD Event Log Table */
++#define ACPI_SIG_UBRT           "UBRT"	/* UnifiedBus Root Table */
+ 
+ /*
+  * All tables must be byte-packed to match the ACPI specification, since
+@@ -3708,6 +3709,158 @@ struct acpi_table_tdel {
+ 	u64 log_area_start_address;
  };
  
 +/*******************************************************************************
 + *
-+ * MISC - Miscellaneous GUIDed Table
++ * UBRT - UnifiedBus Root Table
++ *        Revision 1
 + *
-+ * Conforms to section "Miscellaneous GUIDed Table Entries" of ACPI
-+ * Specification v6.5
++ * Conforms to "UnifiedBus Root Table (UBRT) Specification"
++ * Revision 1.0, Release Date 2026-03-05
 + *
 + ******************************************************************************/
 +
-+struct acpi_misc_guid_entry {
-+	u8 entry_guid[16];
-+	u32 entry_length;
-+	u32 revision;
-+	char producer_id[ACPI_NAMESEG_SIZE] ACPI_NONSTRING; /* ACPI Vendor ID */
-+	u8 data[];
-+};
-+
-+/* Minimum length of a MISC entry (the header fields, without any Data) */
-+
-+#define ACPI_MISC_MIN_ENTRY_LENGTH 28
-+
-+struct acpi_table_misc {
++struct acpi_table_ubrt {
 +	struct acpi_table_header header; /* Common ACPI table header */
-+	/*
-+	 * Immediately followed by one or more variable-length entries:
-+	 * struct acpi_misc_guid_entry Entries[];
-+	 */
++	u32 count; /* Number of sub-tables */
 +};
 +
- /*******************************************************************************
-  *
-  * MPAM - Memory System Resource Partitioning and Monitoring
++/* UBRT sub-table entry (16 bytes) */
++
++struct acpi_ubrt_subtable {
++	u8 type; /* Sub-table type (0=UBC, 1=UMMU, 2=reserved_mem) */
++	u8 reserved[7]; /* Reserved, must be zero */
++	u64 pointer; /* Physical address of the sub-table */
++};
++
++/* Values for Type field above */
++
++#define ACPI_UBRT_TYPE_UBC 0 /* UBC information sub-table */
++#define ACPI_UBRT_TYPE_UMMU 1 /* UMMU information sub-table */
++#define ACPI_UBRT_TYPE_RESERVED_MEM \
++	2 /* UB reserved memory information sub-table */
++
++/*
++ * UBRT Sub-tables, correspond to Type in struct acpi_ubrt_subtable.
++ * These are accessed via the physical Pointer field - not contiguous with UBRT.
++ */
++
++/* Common header for all UBRT sub-tables */
++
++struct acpi_ubrt_header {
++	char name[16]; /* Table name, null-terminated */
++	u32 total_size; /* Total size including header */
++	u8 version; /* Version number */
++	u8 reserved[3]; /* Reserved, must be zero */
++	u32 remaining_size; /* Remaining size of the sub-table */
++	u32 checksum; /* Entire table must sum to zero */
++};
++
++/* Type 0: UBC Information Table */
++
++struct acpi_ubrt_ubc {
++	struct acpi_ubrt_header header; /* Common sub-table header */
++	u32 local_cna_start; /* Start CNA available for local UBPU */
++	u32 local_cna_end; /* End CNA available for local UBPU (included) */
++	u32 local_eid_start; /* Start EID available for local UBPU */
++	u32 local_eid_end; /* End EID available for local UBPU (included) */
++	u8 feature_sets; /* Features enabled for the UBC */
++	u8 reserved[3]; /* Reserved, must be zero */
++	u16 cluster_mode; /* System operating mode */
++	u16 ubc_count; /* Number of UBC structures */
++};
++
++/* Values for feature_sets field above */
++
++#define ACPI_UBRT_UBC_FEAT_MMIO_TOKEN (1 << 0) /* Bit 0: MMIO token value */
++#define ACPI_UBRT_UBC_FEAT_MCTP_UB (1 << 1) /* Bit 1: MCTP over UB */
++
++/* Values for cluster_mode field above */
++
++#define ACPI_UBRT_CLUSTER_MODE_STANDALONE 0
++#define ACPI_UBRT_CLUSTER_MODE_SUPERPOD 1
++
++/* UBC Structure entry (one per ubc_count) */
++
++struct acpi_ubrt_ubc_entry {
++	u32 interrupt_id_start; /* Start interrupt ID */
++	u32 interrupt_id_end; /* End interrupt ID (included) */
++	u64 hpa_base; /* Base address of available HPA */
++	u64 hpa_size; /* Size of available HPA */
++	u8 memory_size_limit; /* Maximum address bit width */
++	u8 dma_cca; /* DMA and cache coherent attribute */
++	u16 ummu_mapping; /* Mapping between UBC and UMMU */
++	u16 proximity_domain; /* NUMA domain sequence number */
++	u16 reserved; /* Reserved, must be zero */
++	u64 msg_queue_base; /* MSG queue register base address */
++	u64 msg_queue_size; /* MSG queue register size */
++	u16 msg_queue_depth; /* MSG queue depth */
++	u16 msg_queue_interrupt; /* MSG queue interrupt ID */
++	u8 msg_queue_interrupt_attr; /* MSG queue interrupt attribute */
++	u8 reserved1[59]; /* Reserved, must be zero */
++	u8 guid[16]; /* UBC GUID */
++	u8 vendor_info[256]; /* Vendor-defined information */
++};
++
++/* Values for dma_cca field above */
++
++#define ACPI_UBRT_UBC_DMA_ONLY 0
++#define ACPI_UBRT_UBC_DMA_CCA 1
++
++/* Values for msg_queue_interrupt_attr field above */
++
++#define ACPI_UBRT_UBC_MSG_INT_LEVEL (0 << 0) /* Bit 0: level-triggered */
++#define ACPI_UBRT_UBC_MSG_INT_EDGE (1 << 0) /* Bit 0: edge-triggered */
++#define ACPI_UBRT_UBC_MSG_INT_HIGH \
++	(0 << 1) /* Bit 1: high level (rising edge) */
++#define ACPI_UBRT_UBC_MSG_INT_LOW (1 << 1) /* Bit 1: low level (falling edge) */
++
++/* Type 1: UMMU Information Table */
++
++struct acpi_ubrt_ummu {
++	struct acpi_ubrt_header header; /* Common sub-table header */
++	u16 ummu_count; /* Number of UMMU structures */
++	u8 reserved[6]; /* Reserved, must be zero */
++};
++
++/* UMMU Structure entry (one per ummu_count) */
++
++struct acpi_ubrt_ummu_entry {
++	u64 base_address; /* Base address of UMMU register */
++	u64 size; /* Size of UMMU register */
++	u32 reserved; /* Reserved, must be zero */
++	u16 proximity_domain; /* NUMA domain sequence number */
++	u16 reserved1; /* Reserved, must be zero */
++	u64 pmu_base_address; /* PMU register base address */
++	u64 pmu_size; /* PMU register size */
++	u32 reserved2; /* Reserved, must be zero */
++	u32 min_token_id; /* Minimum token_ID */
++	u32 max_token_id; /* Maximum token_ID */
++	u8 reserved3[26]; /* Reserved, must be zero */
++	u16 vendor_id; /* Vendor ID */
++	u8 vendor_info[80]; /* Vendor-defined information */
++};
++
++/* Type 2: UB Reserved Memory Information Table */
++
++struct acpi_ubrt_reserved_mem {
++	struct acpi_ubrt_header header; /* Common sub-table header */
++	u16 memory_ranges_count; /* Number of memory ranges */
++	u8 reserved[6]; /* Reserved, must be zero */
++};
++
++/* Memory Range entry (one per memory_ranges_count) */
++
++struct acpi_ubrt_mem_range {
++	u8 flags; /* Memory segment flags */
++	u8 reserved[7]; /* Reserved, must be zero */
++	u64 memory_base; /* Base address of allocated UB memory (64KB aligned) */
++	u64 memory_size; /* Size of allocated UB memory (64KB aligned) */
++};
++
++/* Values for Flags field above */
++
++#define ACPI_UBRT_MEM_FLAG_1_1_MAPPING (1 << 0) /* Bit 0: 1:1 mapped mode */
++
+ /* Reset to default packing */
+ 
+ #pragma pack()
 -- 
 2.56.0
 
