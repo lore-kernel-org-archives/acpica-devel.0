@@ -1,66 +1,66 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795195320;
-	b=DMgvRG2/5fjzlzmsoFS6aH4epwGhFMAGxJVSvrs0o3bz94QxXyMcT7S+b7qpRVLj4kxZ
-	 dr0PNL6kafKQorjDol+pKWNS3iK+vhcwv5EF6QOzUcCyBErnCWsq1HWQkokIGULFKJi5n
-	 aghjfGFh30+/Dh6xwxcpIEgxMz7L+GcXx5cm2TJz2uGMqfZMBtVbUAGtDBiKbW5tL865D
-	 7nWmxxEN4i17wxXVpolzlTZ0Seei5McCnxVad8Kt7HEH2ZPNcK/28Xy128J4SDL10ES0D
-	 6LW5IWyORJH7PzQpTJ/iWCJJ01+u1VJKgBg7ZRvrwMqgt/QffRnvoHSgC7ov4yb0NAg==
+	t=1795195323;
+	b=L/3lT8BHBzej3kp4migkOx9kSoxWurZFrNZjJQhcCMniUh3Jqh1Bsg/W+qgRLw/7Xlsd
+	 n0M2+Obm1q39JZdKdu93HeoR2ejt5GXExgLu9QV2b1sjNMr+vpZuvg9V/raaoi1CApWp+
+	 2VuoZq4qWJ4nBUc73fjQDNF4Ry86EeBa0whp+3vaqvabzbrK6JNuwBV3I8yjG+NkI8u6y
+	 kGuvvKoCOobjWEQ5rHrdN38imPhbvW7RJ4e8HyIMFcvKB+eAqG8sQUawcDgK6v4zkfrpH
+	 wmcskgCDn3+gj8DA9E5RUo/jnH43vAeyWyqkz4Oo4Q/Z2th2IeQQAYrFLbvgqnfhKuQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795195320;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795195323;
 	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
 	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
 	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=sDAxzMJLwYLKpQnKhkHOLT1DIbdkpbhaI7RyWh5mZsw=;
-	b=a5A1oQwr/zfC8lvAQqt/c8RqHliVjn4c2xJLaXE9gW7m7Cj9rNJooHsIG9dfpS2zNiEe
-	 6SDu2WKTiTYHalRavaEHneXWF39199z/woPljdBHKiEL2j30mgF/bQbYaw3aUG37LbAMv
-	 Q5PCnT4eNA077KiB3birdFO4Q3LOzADtSzQ/vDZpCKBz2pIF9COooSiF4gn29/DzOtE6S
-	 PeM/ii8ERZh8fuQwHp5txhhOf2VtZ1oQ6uRDZTKqS6trv2CD38McTu3+llfpM3zVj2wjP
-	 uvo64RKXDgoaN51yNYv3C1XSt1HePQ6GdLFqcOW+aPCupI1lN6RyNICNWu1VbDW/qdQ==
+	bh=0LKEXFrrcZbW1+QLpKx26etI8mlbufN440M5sguwo+w=;
+	b=AZFsG+E3iflB6qw1fj8xZP6IgnQHcSfY3NBTEda28iqiQMBYm6AdtnqhvimusDkq00RA
+	 /DdwpW6ZrWqNViDgzDIv1yrt0+UhHxL+UoBGO+22wt3gcVW7offO/jQ/h3dlukHOY0YVl
+	 MWBSv4GHO4yhPAH9ywDPhETAYNVoPGxMmmhUpwTuXagcX63M15n92VX2C00s6m/05bY7H
+	 5zFSwAe1Dk7s+4m8/Xqlc9AwORxiL787VYjxHwTHmbqXNkU1BVmhaMc/Q6TnH1cKtMQ/J
+	 JKS8KrTp0T29MIyPleoWZLk+J1gTTw5dGGxyJ+xqKxcsEZOSUfh6PBXwxnhHXm7scWw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=intel.com;
 	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="S7/2i6H+";
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=EwgwsY63;
 	arc=none smtp.remote-ip=198.175.65.21
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B6D606B3CF
-	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:21:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 89B6D606B3CF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11641606B3F9
+	for <acpica-devel@lists.linux.dev>; Fri, 20 Nov 2026 17:22:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11641606B3F9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=S7/2i6H+
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=EwgwsY63
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795195319; x=1826731319;
+  t=1795195323; x=1826731323;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zQBiDdB9+4f2VYi2hCZiD/1UsUtaoExoGjwjgyJkhb0=;
-  b=S7/2i6H+/6VR1jnUnTzBj3Gklv46oaoe7fI+1PtZoWz6Z/HnYtoEwJnx
-   AW6VEJsOlbOEoFRaxq9tf/5GFBkK8S1SldGRxIc5DFuRLeYThHZ7VzECt
-   WHCe73XTljaZ/R+w2IEdCZlhK85k2WvpQDplNRSnNMe6L70MOea0bpeZL
-   PJgriiHM+Z4DvPEKNn6kd2PRPn/mRFqv5j+SOhMUuEGYwj6xF1hCTx1HW
-   BgArq5TtL1ODj0UiStxdI8+ZSblonJa6Lc1Invb0oygiZVxov+Sm3bqZd
-   7C/sKFk9rMFZIZpWi2sR9xk4nhQ5T8NPmoxUsA1+VWBBPuwLwA/7t7zr1
-   A==;
-X-CSE-ConnectionGUID: ndbEKR2sQrigNkc4e/EmUA==
-X-CSE-MsgGUID: 1WoABSZgQaa5IuKHMd/rUw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157586"
+  bh=1+dMsLN5Kt4kDicrj1HTOeOb8hIYjWrACVK+Yeit25w=;
+  b=EwgwsY63q6uV3uVwebWupj6j8g2RsDTouXs3xxElAPYvkbWEd5LFx/PX
+   TlbAVBnW8MPue4C0Ey8f2geYdWqj68eGfMdqzavcOpqegNswltbAvJz+x
+   +wzgQsJQkfwFgA1soWLFroR+3u7Esh9lnP3YShRJ5Zu7G40YhQuBZPYV+
+   5U/aPZlLmyl1eUD+CPYTGFL+7z7k5wD49UtG3TUk4QG8z/kCNNP9vSw6+
+   OnsehXUaJ1xql3GKh74uV7V0P7iGjgphGLO6pP3Z9XHYGUtyxgPMD9pwV
+   hmqbE8WUG6311jkTV13F7xJpOv+wOl+TGSH86Ar68lB1FwEoe+h7dWVxi
+   g==;
+X-CSE-ConnectionGUID: CkhEIa8gSFGi4EmmbdIN4A==
+X-CSE-MsgGUID: Bo9AqEYVT6+Mp+aePuM+Dg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4157597"
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4157586"
+   d="scan'208";a="4157597"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:59 -0800
-X-CSE-ConnectionGUID: HyWDqBggTuaIGS1UnKoOQw==
-X-CSE-MsgGUID: N8/l9M/yTnmaA6navHZyBQ==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:22:02 -0800
+X-CSE-ConnectionGUID: uSpSYkXmTLuuLmbG3SA/hA==
+X-CSE-MsgGUID: X3+1Fwh5TXON5OvU+ODs/Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="10868278"
+   d="scan'208";a="10868289"
 Received: from hrotuna-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.245.245.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:55 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 09:21:59 -0800
 From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
@@ -73,9 +73,9 @@ Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 38/42] ACPICA: executer: Fix copying PCC source buffer data
-Date: Fri, 20 Nov 2026 18:18:59 +0100
-Message-ID: <d9d3034be8d2314ffa9829a22ccd14d8bc52ee00.1795194329.git.maciej.wieczor-retman@intel.com>
+Subject: [PATCH v2 39/42] ACPICA: dispatcher: Fix zero size non-NULL PCC buffer pointer
+Date: Fri, 20 Nov 2026 18:19:00 +0100
+Message-ID: <2747c1067c076700bb55a4e9f76a30905ce400ed.1795194329.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.56.0
 In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
 References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
@@ -90,138 +90,43 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Paths leading up to AcpiExWriteDataToField() group Integer, Buffer and
-String together when handling the operand type. In the operand type
-union, the integer's value and buffer's pointer share the same space.
+Zero sized PCC buffers still get allocated, so they pass the null checks
+and can cause writes to unallocated memory.
 
-One issue can be that the number stored in integer.value is interpreted
-as buffer.pointer - which can happen if ACPI_TYPE_INTEGER is the source
-operand type. The following code should result in a memory fault as it
-will read the value as the address, and won't use the address of the
-variable as it should:
+Skip the allocation if the region length is zero or the
+AOPOBJ_DATA_VALID flag is not set as otherwise the disassembler will
+emit warnings on every PCC Field().
 
-    COMD = 0x01
-
-Other problem is if SourceDesc->Buffer.Length is smaller than DataLength
-- then more data will be read from the source operand than planned. For
-example the following ASL code would result in extra data getting read
-from BUF0 to COSP:
-
-    Name (BUF0, Buffer (2) {0x01, 0x02})
-    COSP = BUF0
-
-Fix the first problem by moving the Buffer and BufferLength assignment
-before the PCC buffer code path.
-
-Fix the second problem by copying only as much space as the source
-operand has. If it has less than the destination just zero-extend the
-extra space as similar Field operations do (AcpiExInsertIntoField() for
-example).
-
-Link: https://github.com/acpica/acpica/commit/9ea9025e30bd
+Link: https://github.com/acpica/acpica/commit/0f58983617c2
 Fixes: aa6ec56b574d ("ACPICA: ACPI 6.3: add PCC operation region support for AML interpreter")
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
- drivers/acpi/acpica/exfield.c | 63 ++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 27 deletions(-)
+ drivers/acpi/acpica/dsfield.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/acpi/acpica/exfield.c b/drivers/acpi/acpica/exfield.c
-index 632fc8693f23..2199d054ed58 100644
---- a/drivers/acpi/acpica/exfield.c
-+++ b/drivers/acpi/acpica/exfield.c
-@@ -291,6 +291,7 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
- 	acpi_status status;
- 	u32 buffer_length;
- 	u32 data_length;
-+	u32 copy_length;
- 	void *buffer;
- 
- 	ACPI_FUNCTION_TRACE_PTR(ex_write_data_to_field, obj_desc);
-@@ -338,7 +339,34 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
- 		    acpi_ex_write_serial_bus(source_desc, obj_desc,
- 					     result_desc);
- 		return_ACPI_STATUS(status);
--	} else if ((obj_desc->common.type == ACPI_TYPE_LOCAL_REGION_FIELD) &&
-+	}
+diff --git a/drivers/acpi/acpica/dsfield.c b/drivers/acpi/acpica/dsfield.c
+index 5d0dfe4ff8e8..d091453eea93 100644
+--- a/drivers/acpi/acpica/dsfield.c
++++ b/drivers/acpi/acpica/dsfield.c
+@@ -530,6 +530,18 @@ acpi_ds_create_field(union acpi_parse_object *op,
+ 	if (info.region_node->object->region.space_id ==
+ 	    ACPI_ADR_SPACE_PLATFORM_COMM &&
+ 	    !region_node->object->field.internal_pcc_buffer) {
++		/*
++	   * If AOPOBJ_DATA_VALID flag is not set the region operands is not
++	   * evaluated (e.g. disassembler), nothing to allocate.
++	   * Also avoid a zero-size allocation which may yield a non-NULL pointer
++	   */
 +
-+	/* Get a pointer to the data to be written */
++		if (!(info.region_node->object->common.flags &
++		      AOPOBJ_DATA_VALID) ||
++		    (!info.region_node->object->region.length)) {
++			return_ACPI_STATUS(AE_OK);
++		}
 +
-+	switch (source_desc->common.type) {
-+	case ACPI_TYPE_INTEGER:
-+
-+		buffer = &source_desc->integer.value;
-+		buffer_length = sizeof(source_desc->integer.value);
-+		break;
-+
-+	case ACPI_TYPE_BUFFER:
-+
-+		buffer = source_desc->buffer.pointer;
-+		buffer_length = source_desc->buffer.length;
-+		break;
-+
-+	case ACPI_TYPE_STRING:
-+
-+		buffer = source_desc->string.pointer;
-+		buffer_length = source_desc->string.length;
-+		break;
-+
-+	default:
-+		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
-+	}
-+
-+	if ((obj_desc->common.type == ACPI_TYPE_LOCAL_REGION_FIELD) &&
- 		   (obj_desc->field.region_obj->region.space_id ==
- 		    ACPI_ADR_SPACE_PLATFORM_COMM)) {
- 		/*
-@@ -369,9 +397,15 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
- 			return_ACPI_STATUS(AE_AML_BUFFER_LIMIT);
- 		}
- 
-+		copy_length = ACPI_MIN(data_length, buffer_length);
-+
-+		memset(obj_desc->field.region_obj->field.internal_pcc_buffer +
-+			       obj_desc->field.base_byte_offset,
-+		       0, data_length);
-+
- 		memcpy(obj_desc->field.region_obj->field.internal_pcc_buffer +
- 		       obj_desc->field.base_byte_offset,
--		       source_desc->buffer.pointer, data_length);
-+		       buffer, copy_length);
- 
- 		if (MASTER_SUBSPACE_COMMAND(obj_desc->field.base_byte_offset)) {
- 
-@@ -391,31 +425,6 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
- 		return (AE_OK);
- 	}
- 
--	/* Get a pointer to the data to be written */
--
--	switch (source_desc->common.type) {
--	case ACPI_TYPE_INTEGER:
--
--		buffer = &source_desc->integer.value;
--		buffer_length = sizeof(source_desc->integer.value);
--		break;
--
--	case ACPI_TYPE_BUFFER:
--
--		buffer = source_desc->buffer.pointer;
--		buffer_length = source_desc->buffer.length;
--		break;
--
--	case ACPI_TYPE_STRING:
--
--		buffer = source_desc->string.pointer;
--		buffer_length = source_desc->string.length;
--		break;
--
--	default:
--		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
--	}
--
- 	ACPI_DEBUG_PRINT((ACPI_DB_BFIELD,
- 			  "FieldWrite [FROM]: Obj %p (%s:%X), Buf %p, ByteLen %X\n",
- 			  source_desc,
+ 		region_node->object->field.internal_pcc_buffer =
+ 		    ACPI_ALLOCATE_ZEROED(info.region_node->object->region.
+ 					 length);
 -- 
 2.56.0
 
