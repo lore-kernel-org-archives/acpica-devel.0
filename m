@@ -1,163 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.133
-ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795424535;
-	b=f7xDfp7UWl6CyVRYANoMsh/Yc8PeJUfpPhG4cR4GfLwAeOBsMpXWuiPNGe6H4ABwf1gc
-	 uU7kGrmgEDQBcawkjOmMu5HEV41j2Fxd8Uin9f3qaWWekG5SqMjEOAFxao/MB2yOfrAZv
-	 uc0AqOzBYTJweJoVVb3scCn4quIoPftXFApKpkrutSx0Odo1rTO7TqbrIrtDJW0Y3jSsr
-	 tFFo1sxs3Kglk/17XGqjivln02eyeYV5wbsc1ElufiwFG9zlrC3rqwm+ATsDew/OhKwht
-	 Xp0T+xSKWxNxVVnyxWQOOvSjdeKHVXtikbDcPuSrfOdxI64tEwT1Hyq2hxnhoujwS2Q==
-ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795424535;
-	h=Received:X-Virus-Scanned:X-Spam-Flag:X-Spam-Score:X-Spam-Level:
-	 X-Spam-Status:Received:ARC-Filter:Received-SPF:Received:
-	 DKIM-Signature:Received:Received:X-MS-Exchange-Authentication-Results:
-	 Received-SPF:Received:Received:Received:Received:From:To:CC:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type:X-EOPAttributedMessage:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=bkGDFO70vWBKhUp1LATRTjL4dgwHVoXab95WIO6BG2Y=;
-	b=S9sJPxrkr4fPxxF61uVh9grTNnl9jiOrlDP2c6OETMIhgLaXP6LExHtX7TjlQwYvcG/+
-	 cstn6LZ2lLV9IdJdQ57P5vjLc5uCsOU+padoFGQlz/3vTECYrsCXySvIsDOrYLR9j8ZDc
-	 qqlBaySUhLBg9psBMYRWt66Tb0vhp5mjP7s2AL0QJRhQAIwHOboGvPR708nSA/OCXoIh2
-	 tzsP3vCyYEMwvUJQRbcz0ig292SWwI+8Xs08+jFh8w8sHZJP+ohPLJtl9crY6Y/d9idkh
-	 OX4l0cZEQE7BNvhs6Aa8Xg3KdrLmjAWt5z7o4yiGxdtX+X2Qgask7CRU73OxQcavDbQ==
-ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
-	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b="EnuGc/iS";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=140.211.166.133
-Received: from smtp2.osuosl.org (smtp2.osuosl.org [140.211.166.133])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=65.109.113.108
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795494309;
+	b=5je+nVsoquM2BYTy9pwXMHMq77WypRMe7N2o+96ZD0ysLfWTSZOUy8RQnbH9bOmtmHY7
+	 zBCI5faySs4Ww0A95AruIVTrEBThyC6VHT3zsaSxvglKrmG6fDDG9jQNK0BJfmRpp46NN
+	 eENvrxkwMutw8c5IaPgpeGIx9XHqkU0FQwSjpNgWcCThezxpv5SFjhefS4Uno3bcNQw7v
+	 NliyUi9aeCdg8Xu9IVDFPVK6OWYfHaaHktFHalnD8x/e0CxnynVU/h7i8lGKHRlFz3onX
+	 nBEbeOTiBt6i3eWr5y+MvIe/zPuFteyWinOQv9p8r3UPFss2hxLbYQ+BjK8mATPacpA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795494309;
+	h=DMARC-Filter:Received:X-Virus-Scanned:Received:DKIM-Signature:
+	 Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To;
+	bh=eNWO3EpiPwmHnNO60cMIGuW+yDmktqgkx2JQzl/eU3g=;
+	b=4kJI+SE0g2MkO/iK56tV5DMNesve3LupN6Q6VadBP41/pqJdfDp2FZXMT9VLPsmmytzU
+	 OEZSJkyHiCJqjw1uxGLydSPRJuKXGrQ4DKdJ77OKOGFs0dGUfdOVeEunfy1aXGFky6B2V
+	 6rTy//sBBEY2/pb5PcDP1k7KoukKZYCVwy54iVu8tbpTvaQ6Y/93r/hvSxMdywTlViYwu
+	 1QYr60JaEpWbI6BB81WtWBdnpm+x0x5l+HOhq/Wpr3nnSC/9HcnFtBxLszUSojSmXEj2S
+	 8JrL69Lh8Wjw5HQyQErBfUkXvuKrnjgulfkyKbLqZ3m6iu6JdEL7oW6vpQePXDCCbew==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=alien8.de;
+	spf=pass smtp.mailfrom=alien8.de;
+	dkim=pass header.d=alien8.de header.i=@alien8.de header.a=rsa-sha256 header.s=alien8 header.b=hA4T4ixD;
+	arc=none smtp.remote-ip=65.109.113.108
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7866F606A32E
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 23 Nov 2026 09:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9F8606A321
+	for <acpica-devel@lists.linux.dev>; Tue, 24 Nov 2026 04:25:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BD9F8606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=EnuGc/iS
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.osuosl.org (Postfix) with ESMTP id 2DC6240063
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 23 Nov 2026 09:02:15 +0000 (UTC)
-X-Virus-Scanned: amavis at osuosl.org
-X-Spam-Flag: NO
-X-Spam-Score: -0.353
-X-Spam-Level:
-Received: from smtp2.osuosl.org ([127.0.0.1])
- by localhost (smtp2.osuosl.org [127.0.0.1]) (amavis, port 10024) with ESMTP
- id c0haFcQHr0Ds for <acpica-devel@lists.linuxfoundation.org>;
- Mon, 23 Nov 2026 09:02:14 +0000 (UTC)
-ARC-Filter: OpenARC Filter v1.3.2 smtp2.osuosl.org 4DD0E4005D
-Authentication-Results: smtp2.osuosl.org; arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::1"
-ARC-Seal: i=2; d=osuosl.org; s=arc; a=rsa-sha256; cv=pass; t=1795424534;
-	b=WZTUPUaOTfY6YwHxLhmBaWnvUOIAP4oL1C5w7eECnNqmH2e1lvaSdNWtfY7E232K1M8F
-	 ZnPIJ4uuc7S8zG0pvrhvgv0ZeDVr6YgF8Lked6R8ef1dr+0tOI+g3xeLZH/QZ29caLgng
-	 j23JSb0LpHotbKLH8zNvS2vYUavCdvblLcrO0R22UsjLC8qx/2vGFp0zXQxOXndUxmp4h
-	 g2jOM7LG11F5paJg64E+2TW1uu8nUEmUkNXAG4tsJ3QuclH+2LOietZ0OCX3Y0cBOgTmL
-	 7SR56SOMLc8lddOTX7SujYjU+bVH6KgxU7NRDwxTDbQXeu7PyoOQQBGc7dJrAD7O+Jg==
-ARC-Message-Signature: i=2; d=osuosl.org; s=arc; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795424534;
-	h=Received-SPF:DKIM-Signature:Received:Received:
-	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
-	 Received:Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
-	 Content-Type:X-EOPAttributedMessage:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=bkGDFO70vWBKhUp1LATRTjL4dgwHVoXab95WIO6BG2Y=;
-	b=PU8RbGtmAg6nm/H21Nh++QpMtpmNR0ESLIXf5oGFgQbP+z98vlsrrXA7msXExl9EaXX8
-	 EaH++rTBbwELDSlEozjxijGyC/ejMfRE8uIqnSlA6Dh7hsqC22SmXwfJHSRuLHr2dpe0Z
-	 Pj9fZtoVSXgLfd+LE5nxrs+sL7QVjs6PLizkB5RQwEGJGnerLTxMpirUIWdy8WNgrwhui
-	 HkfZAgIoZ70dxlTFk9B79w8y2znyT6+pKr53A+LxPHGs4eUYkxZm2wSYlRcOTs2quk7D6
-	 rYF135J2i+VADVTpbYGq+Hiv1K/kWLBlRP/QFTqv4hAZhgWOv4ATuTq3KPCWQeQQSjA==
-ARC-Authentication-Results: i=2; smtp2.osuosl.org; 
-	dmarc=pass header.from=amd.com;
-	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b="EnuGc/iS";
-	arc=pass header.oldest-pass=0 smtp.remote-ip="2a01:111:f403:c105::1"
-Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a01:111:f403:c105::1; helo=ch1pr05cu001.outbound.protection.outlook.com; envelope-from=baorui.liu@amd.com; receiver=<UNKNOWN> 
-Authentication-Results: smtp2.osuosl.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp2.osuosl.org;
-	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=EnuGc/iS
-Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazlp170100001.outbound.protection.outlook.com [IPv6:2a01:111:f403:c105::1])
-	by smtp2.osuosl.org (Postfix) with ESMTPS id 4DD0E4005D
-	for <acpica-devel@lists.linuxfoundation.org>; Mon, 23 Nov 2026 09:02:12 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xd7Hfpp2m0aNMv+hYwVXTztiZ1vHqRwsdt5JnLjFnSGbLYcMnkCibiKtx/8fJv5em4RgJNbg5hf+L9w0+Dwtf1g3+4tURUwC/vPJ2Y5cHI4pKbXc3YFnR9Kqt3g9AiHvV+PFeFM/Hs8aDFib73u1bll7bjIW069txJMXxQwwNPlAGEHy7uLasnK86oaZ72bldFOE1PamVXlnadjFNI3uK5jEgdeFgj+FqEl/SPrsI8Axo7g2wlVxgjL3pDdk3zF87EikGOtfkYEa76tZ7FNV4EexaI/tfdOB53PXOv0Ygxl3o+AWNKi5/X60aeG6sq0YAghenSm1XMucNZjZ89DZVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bkGDFO70vWBKhUp1LATRTjL4dgwHVoXab95WIO6BG2Y=;
- b=OzAuDSpmwfsDOxBoS1Y80a8mn+JLSCvxpSl7Lh8Jvgm7ffrsn/DXjCK6GlKFIAJ5VlMowQV1h4F1iEGwcxub2D+pnnovSv7lpC8JweunM/+rmRgklKOGin4QxC3nwxL0qHJrtkqneQY9RWcsUFxth74SygNFBNSO+yHcoO0FjzOkRDT/xz/GP/pK7OEAnyYBPVtGEBapxqkLybKoBTTJ4d8mk83w1k8BnwysbSbexRg86p4IDGGHR1tAsvRCAGBJTEARIheaeb8XHY5lyINqOzvOTHRaf/PyqU48SZ7KBNlHG55xPR9RB5e0+w0LLsIptK6leDIkCgft0yoNBQBMxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bkGDFO70vWBKhUp1LATRTjL4dgwHVoXab95WIO6BG2Y=;
- b=EnuGc/iSMQRxfkdXByUxpLaViiQIjNBRblex5FSCGoIb8kk636YqgEYfBDaRVAm/75jt7wZe2wKODOFvJbx0PX9a15U23sOY6pua+Wz1N28dlRGSE07d/q1MIMFhvRwLM1phvh8A/r6DUvWrFwh2o834U9c0MVRxPFAsPSuSk4w=
-Received: from SJ2PR07CA0010.namprd07.prod.outlook.com (2603:10b6:a03:505::27)
- by SN7PR12MB7155.namprd12.prod.outlook.com (2603:10b6:806:2a6::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.14; Mon, 23 Nov
- 2026 09:02:07 +0000
-Received: from SJ1PEPF0000231F.namprd03.prod.outlook.com
- (2603:10b6:a03:505:cafe::af) by SJ2PR07CA0010.outlook.office365.com
- (2603:10b6:a03:505::27) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.639.14 via Frontend Transport; Mon,
- 23 Nov 2026 09:02:07 +0000
-X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
- is 165.204.84.17) smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- SJ1PEPF0000231F.mail.protection.outlook.com (10.167.242.235) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.639.5 via Frontend Transport; Mon, 23 Nov 2026 09:02:06 +0000
-Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.57; Mon, 23 Nov
- 2026 03:02:06 -0600
-Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
- (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.57; Mon, 23 Nov
- 2026 03:02:06 -0600
-Received: from localhost.amd.com (10.180.168.240) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.57 via Frontend
- Transport; Mon, 23 Nov 2026 03:02:04 -0600
-From: Baorui.Liu <baorliu@amd.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>
-CC: Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, kernel test robot <lkp@intel.com>,
-	"Baorui . Liu" <baorliu@amd.com>
-Subject: Re: [PATCH v8] ACPI: button: Report wakeup key only for power button wakeups
-Date: Mon, 23 Nov 2026 17:02:03 +0800
-Message-ID: <20261123090203.573-1-baorliu@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAJZ5v0gxGtEENP9kBmwFvcrSxPMyguYsYoYKpa6oa7hhvAvN=A@mail.gmail.com>
-References: <CAJZ5v0gxGtEENP9kBmwFvcrSxPMyguYsYoYKpa6oa7hhvAvN=A@mail.gmail.com>
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.a=rsa-sha256 header.s=alien8 header.b=hA4T4ixD
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 847A840E02CC;
+	Tue, 24 Nov 2026 04:25:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id xxH56HNX3bNB; Tue, 24 Nov 2026 04:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1795494302; bh=eNWO3EpiPwmHnNO60cMIGuW+yDmktqgkx2JQzl/eU3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hA4T4ixDuDgZ9yi2/PnIcEMObAR4VAR1hvQ5li4W49rSNbdwWKGkkZq89QtWRQt2p
+	 OVHb5TJT+V6xkJjC7ijoXORjF5bAIHWd28wAICKTtgNJD15UzMSEtIkKcHydqSsQAF
+	 6roG1vdAJC+2YILs4Q4xRMavbUMaC6BDAoVmDfg3+SWP7ZFqKLaRwv+j24CUQcmTd0
+	 u7ts6nv09wWUqePKgwK9gc9JWEtcNkC6MQFc9sR6p7mi5lJJil9ukXsD1O8nrfbmR0
+	 PHGyOdNTYbjwAgdSbssefbrqdaYHDqIbMPBYETtYceAl9JXPa42VAOzcvCbCzadFMU
+	 2y84rcNj88IxZsjj6sR0PmoDXGDWipXcpMyfCOUn5rsmElHmxs7/rGTBDhHfW4lVR+
+	 TRvP71Mu3jB7baCtSb4tpyMye/neeLq6/eOilNQuhG7s3aBhYpNhXfcWXpIOzMVVyI
+	 9eqpKS7fTk+fr87Yc0t122iYwIPoTvvOjwm87E9Fk+VUBbXW3PgQ3CbzbJ4g8Dlf0b
+	 eXzbZqcqZ+rX96uLpW0iN9bCN+DHSHvnsnvpCTLD7uEIn/GnMd7mbb7r6J6jwGMFz3
+	 R8MM4SoTRH9KLrzmP193gwA0OEX4P35wnmURI6Iaqm1SsC6AvetKA7ogBekQ92Pd57
+	 OKYC9Zur7wF3E1q9StArfqZg=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::2b])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7FC8040E02B4;
+	Tue, 24 Nov 2026 04:24:37 +0000 (UTC)
+Date: Mon, 23 Nov 2026 20:24:34 -0800
+From: Borislav Petkov <bp@alien8.de>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
+	James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
+	Dave Jiang <dave.jiang@intel.com>, Breno Leitao <leitao@debian.org>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Terry Bowman <terry.bowman@amd.com>, Dan Williams <djbw@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Morduan Zang <zhangdandan@uniontech.com>,
+	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v4 00/12] CPER: Add Memory Error Section 2 support
+Message-ID: <20261124042434.GMawURgn0Uap26S6US@fat_crate.local>
+References: <20261113132600.3355836-1-pierre.gondois@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -167,60 +94,25 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF0000231F:EE_|SN7PR12MB7155:EE_
-X-MS-Office365-Filtering-Correlation-Id: b9f52c03-d57f-46cc-378d-08df49407345
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|23010399003|82310400026|1800799024|376014|261102123227099003|261026121527099003|261026140227099003|261021121427099003|261028144727099003|261022105027099003|11063799006|56012099006|10067099003|18002099003|22082099003|6133799003|261009223027099003;
-X-Microsoft-Antispam-Message-Info:
-	n7Z4vpLudtUpgXGHObI4QF6/8ABnKhyB3CF/TnfMsa/PRzdQGTs2UjanJMNAGa9yhu8JP4nN4i+t/RQPWqssWrGJzGfjn1BPvQTgL/GccNii9xD/hWol59DqnsSHHn/nZaEOQ1CwRpFvpAlNZ2ICtRLWRg7NWlT2m7WphsU3bFcOaTxrGDPT6BPJFLbv1UIBtHTegbGurqoHI58CKPratfJhLWuVRb/byuPZMgWqoqu70mwO4bKFDt7juu2BhNuCqlmz6S+v5kfXYLf3Bwc9vqOUzAzmbt8XUIijRfH2P4HtAdmf7MlMTSH1FEVmY4J3yLb5EF3+9vf41OX0/EY1g9qfC62SUqvIn/Qg9rV+cBwpSaMhrizAniZPrJ2gdqXxZT7ifPs1LerRm8m+LX49bA5sTVxfiDnXWuB9+ek1PtucU2qpQcQOzru4yni1TzMDQ6x7+IMvtacDxjYp/7A1ajymtrjlaBn7qB6ig3U6nGoGLjBLp0zkcKOrTzOqf9TFl29A0pd5aKX31sA8eE/xnj8kJJftfmCMxZ2y8SANHkT9GVUyDZBeLMMnMsRrlGe2DPPTVK5OHB0GCRiYvLnFj6B/za/DiaF5Svxx6YnT938jJmfEZbhXzr2q0Y2DKGA1utz0B9CpJmPeh5zwH4axQQ==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700016)(23010399003)(82310400026)(1800799024)(376014)(261102123227099003)(261026121527099003)(261026140227099003)(261021121427099003)(261028144727099003)(261022105027099003)(11063799006)(56012099006)(10067099003)(18002099003)(22082099003)(6133799003)(261009223027099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	LGOuj9t+FblZsk+tfHp2FmI2nmpvEPdkh9JBPHfGnp5oFfeVfez15bn35u3vRV7KWZHhW2K3PTQYwsmP7vrb7tc50IUVbnfzUyxeMF/UZ2h1XvhC8USKxPWRXhZvFBfugg9LyBNEcQsBuowFNUopyS6ZPzbU1wEVuG3n07ikzMirF1h237br/zAyL2m07eNEy1HtSeu3lMD1CNGfR61EmZiF4OUD6VgAGPTmur/csYS3/mnzaVRgpqh+CM9T1enfStNPACIP1R5yTbe5R944TYWlodoFzvXofETDEOfIFTH0gNGJuzKRtU1xodj36rHQeeRMiVpiBTsATTfLpC8bsqy88iMIQsX71muS70Lu9Dql/GzLrrYqVaSK3SkcQfuW1Ziez/ZtVFjs9DWlBiIn3cEgp1SwU40sAhgh9KuG0aVaa077brKDj5UxZUiY4Aod
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2026 09:02:06.9816
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9f52c03-d57f-46cc-378d-08df49407345
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF0000231F.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7155
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261113132600.3355836-1-pierre.gondois@arm.com>
 
-On Fri, Nov 20, 2026 at 2:56 PM Rafael J. Wysocki (Intel) wrote:
-> Please let me know what you think about it.
-> Also, if you decide to send a new version, please do so in a new thread.
+On Fri, Nov 13, 2026 at 02:24:42PM +0100, Pierre Gondois wrote:
+> The support is mostly duplicated from Memory Error Section handling.
+> Other than differences coming from the content of  Memory Error
+> Section 1 and 2, differences in the support are:
 
-I agree with the three comments Sashiko kept, and v9 is sent as a new
-thread:
+What in the h*ll is a Memory Error Section 2 record?
 
-https://lore.kernel.org/linux-acpi/20261123085607.476-1-baorliu@amd.com/
+Your RFC doesn't explain it either:
 
-1. The fixed-button flag is consumed before it is combined with
-   wakeup_pending, and only by ACPI_BUS_TYPE_POWER_BUTTON, so a
-   short-circuit cannot leave it set.
+https://lore.kernel.org/all/20260929074659.2587216-1-pierre.gondois@arm.com/#t
 
-2. suspended and wakeup_pending now use SMP barriers, and resume checks
-   wakeup_pending again after clearing suspended.
+so it must be something magical...
 
-3. The commit message has
+-- 
+Regards/Gruss,
+    Boris.
 
-   Fixes: 16f70feaabe9 ("ACPI: button: trigger wakeup key events")
-
-   and the version changelog is below '---'.
-
-I am not changing the three dismissed items: the Signed-off-by name,
-the CONFIG_ACPI_SLEEP guard already in v8, and
-acpi_os_wait_events_complete() in button resume.
-
-Thanks,
-Baorui
+https://people.kernel.org/tglx/notes-about-netiquette
