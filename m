@@ -1,55 +1,123 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795625159;
-	b=JZY6r18W1sn7YemVdQtx+qzsjMQKNXAxTl9w0PYEsyAU6ixpesHl1i7avyyPOG0vsHmy
-	 YAn6vGbVnIos+2Kov1uLoULib5fuwkLnfcLZue4LoCGzK6jNAbXT0MOqtrq73RbhjZ9SF
-	 SKT6kgfrXNtkAFIxzCOI72teuNbUS28IHLfxlIV5Lf/gWaLbF77PLNcEknUG22iNyydDf
-	 i1xkdiS+1MPOxHONTR6LJbY0+D24+NXbCcNdwlwl9QH2Gv+6AN0EsXx+n+lw51MjwlT10
-	 kXbv5jt0fe+cdb/IumtqaUe470andkf0Fwe8+gKqdjazD9XzH8W3OZI3UsLlEghga1Q==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795625159;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=7Ofy+nGZGG5GjSQ/p9hjatkioBWd7QndibG1/NjdTig=;
-	b=3YxvcJ3iuot4Uxuzgw8nNUKPt/yJLYDnOdZPKWVbfhNd9/8Nyy9kBxOdFxvdiC2fLZF2
-	 kAVo1a1K9Glgg4ZmC8CGoAktRykxEaGxQGy9WPax0h9U/7fbplZWru+FeoWevMQRxZJqf
-	 bpELKnF5AeQuq21P+C8jQkJczAI6WS4+Ix5WApaLHsLzx8S1y8lloyLvX5fsLom1Zwep3
-	 HzRQnU5n6rib1L24nk8MkaMMYO8/ft4HGNCSADWtghOzuyEuAOo7KTS8P1wTN3o4KrW8R
-	 tYyLGU9Kbt/o9WYZI362MKHntaCfUT+LY8KpiaI9S8JtCVSV2N+eyPUdDUrOwtfSVzg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FnbISpxn;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=40.93.201.48
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1795625701;
+	b=2UM+g5msdV+9jzXVhnRYxe0iVliiHpDrUdICoZkw4sBTIE9W0Q+B3YFaAeHv2M3tziy5
+	 kDM/mjG3Jul/uCgE2hU4V2gSyGLqKuuqRBA+UYii+PRwVW1sDIEl0WAdUuWjB1p101LX8
+	 +y05CIHoM6Fxmu2WyuC3Mk2BcoDlxaEQDYBBOUmL+8Qx+DcvXjrfgzMjoumDfumu88KRC
+	 RV5UVtEUmgtL6XneSV//wiHTHwlI5E8o7IW4do/X/sJpm6MkZi0OEDa6gP9btxQnWTTPd
+	 m4AQr1nMX2g263VTU4W0gUglRPsOtquLRM38rVt6Oe/gI1dgvq439cB/RXAnS47S/BQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795625701;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=qiFmxAg7uvI2chrtozhWWUzKJEUCjS2xqjlFfyFOdh8=;
+	b=QI9D+xVkrVaI3MqEYcDDNPYFgr2/1bANGFewIw9599QzPJ6SSo33BseTBL46K0Pn7Ovj
+	 QYJ0HeWNxe7twmyFlZH8C7tRSwi6y6yzDwLxWs6XLHx8UhsL+7ZiBzgYT2ThhLt6CloCS
+	 f9jFV0LQf4KnM4MjYDbfYHsf6X/BhsDhsllcgdq2Tb/XzetQ8dXwDjM9IIgWPBVYkS7p0
+	 MYgS6bvSdYxa4EqFcWgIHV7lmr9X2Clw6fT2kgUhwJgYPxpPYM6aVCIMKnFJRXYTTOH0L
+	 2o2LIF3QE3gMqsgeqSWPcaeKuxhqna2ASP9mxFK2G7Y4if3S8Q1K/ceJsJZCixBCWFQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=fail header.from=amd.com;
+	spf=fail smtp.mailfrom=amd.com;
+	dkim=fail reason="signature verification failed" header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=gN4n1cuD;
+	arc=fail smtp.remote-ip=40.93.201.48
+Received: from CY3PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11013048.outbound.protection.outlook.com [40.93.201.48])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A97606A321
-	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88E7606A327
+	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:55:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C88E7606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FnbISpxn
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4371F000E0
-	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795625158;
-	bh=7Ofy+nGZGG5GjSQ/p9hjatkioBWd7QndibG1/NjdTig=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=FnbISpxnsBf8m0U3xd/OLVl7vxIJAa+9YONUmKpGpEnWKMf08r9xzEpHz/jgp+Wy3
-	 hYR8DcSI4C7QgnHZRVTeRA9aG7YpFTOQgXH1pXIwyOSyFwFK5C767S+VcEkIW08ND0
-	 47idpSLK+NeC5zqL5mCSMA7g14tj2hVsBJfvpe1ltsneuxkdau490DpgLtvhx013XE
-	 kDhjEtwauDJ/g0dIqATs0tWCLtpR9E1aj1ZNY7PA0IRgazQTx/XDU4o7GDyyC3KGuq
-	 um/ULeytSQIBUQwk/zXNaYoYOZde63xfl2rgQuHFI6SBJTnyoUMa/R6dphUCShnUWs
-	 nTnEf1w8hLE0A==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5c14470729eso5568029e87.2
-        for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 08:45:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErFHNdIR5yiIOBgYx8SvOJusWxO0fJ8MrjPxDIT8CPfL6v0hjOYUZG6Zpti2JBNwXvroq1Qk85SsNRtPpVs=@lists.linux.dev
-X-Gm-Message-State: APuU4Z+offv2HSPOn4V18noUNpWqZ/E5to06MytrFaRmMd3uojCDb3Mq
-	yWeXOP9Gq8nVESF+2O4ijGG8F4soGcU2cxXKf9YAfmjxJyuS/nDm/QD3SHa5YDw6i5RCeC/RDxB
-	iwJJVxJamoEk65Fvkclx4ur5wwAlIRjQ=
-X-Received: by 2002:a05:6512:401c:b0:5c1:ad4b:4be7 with SMTP id
- 2adb3069b0e04-5c1bc7d00aamr5425949e87.20.1795625156701; Wed, 25 Nov 2026
- 08:45:56 -0800 (PST)
+	dkim=fail reason="signature verification failed" (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=gN4n1cuD
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ltvW+GVBYEtfLcLj6hVa83+Fwwf/dBe3b7ANFGX6FftKEUcjNWZ5w3gjy/1lGQng4ikotujxCv8e2i2LkTOSsYabU3sIjNvS6VANeihhyvCVR3mHCJQ9CfkD1g9gtaoK5mjt4hPr50q9MPGVzED0M/91P3Lzk2BwvSwn6wJGeu2MBrFEhwet+uY9lnQz7rBNut+ImL80aO3/aNYslElqHjKn10dr0zwZBSEpEQDxmEQ2Cy+RSxmMCaQwYMXe3YgtWbd9Uv98k7vO0wN9wl/XOkW0dBEIVodSDX5hAgEibX3EF0Bzeq6AGpdYxVgAKTJhm3IeWZTNsLAFoejQGAxn0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n2BjKrDMr+a+QTobO6ygfTBY+FnJAXtW6hashTaGM/k=;
+ b=tlwc+ScDYP4qh2M05g7PBxfSI1wi9WWnIhUfIvT+NEnXRAQZ8GgZ5ABrLtPYxcU8iCG4M1foS0b6mvCWQhstjLArDKrvaKwRLNTnxtNcFAlby/4gDY/Ol1ufP6ufo+6Asz0qUhFIjPhluuqymP7Auc5AQmPFwS48FL0kz0Yxyhweb1ceShmsFhZm/I5llfolRXvk03U/FiN34jTlwoQxFOpI9j0ZpDTDj/alsxnNKioQjgcQugO+bJu1NI3QQTANgETgzcYtMqU76RAKeMLlt+8xr/2Hvqlec8iEdWggosyHJWDczov6Ze3Xh+qy8Jab6RU2Dl0tZf6Bw8fT4akQ4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n2BjKrDMr+a+QTobO6ygfTBY+FnJAXtW6hashTaGM/k=;
+ b=gN4n1cuDryBEF6cJJVZG9x6whzqdI/LBjMHVHIRDJ3M/bldq6Tcsdo8mdG1Rr3Bb8jOY8b9PQLNePXx9ij5PSe4SqGws/Tqfe/93pSr36xmTwbs9iYNLGkDtC0ZVh8AK1meQSUnX1sSdi7ZaYgL5dar/KQ5zv1dXuYL7MmT1FFM=
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from EAYPR12MB923140.namprd12.prod.outlook.com
+ (2603:10b6:303:2fd::15) by SA1PR12MB8096.namprd12.prod.outlook.com
+ (2603:10b6:806:326::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.12; Wed, 25 Nov
+ 2026 16:54:54 +0000
+Received: from EAYPR12MB923140.namprd12.prod.outlook.com
+ ([fe80::b986:8b81:beda:c167]) by EAYPR12MB923140.namprd12.prod.outlook.com
+ ([fe80::b986:8b81:beda:c167%4]) with mapi id 15.21.0639.012; Wed, 25 Nov 2026
+ 16:54:54 +0000
+Date: Wed, 25 Nov 2026 11:54:41 -0500
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Lukas Wunner <lukas@wunner.de>, linux-kernel@vger.kernel.org,
+	Ashok Raj <ashok.raj@oss.qualcomm.com>,
+	James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	Oliver O'Halloran <oohall@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	Pawel Chmielewski <pawel.chmielewski@intel.com>,
+	Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+	Avadhut Naik <avadhut.naik@amd.com>, Radu Rendec <radu@rendec.net>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Kai-Heng Feng <kaihengf@nvidia.com>,
+	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
+	Breno Leitao <leitao@debian.org>,
+	Terry Bowman <terry.bowman@amd.com>, linux-acpi@vger.kernel.org,
+	linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v1 19/19] PCI/ERR: Avoid NULL bridge pointer
+Message-ID: <20261125165441.GI2156781@yaz-khff2.amd.com>
+References: <20261117111444.4185512-1-pierre.gondois@arm.com>
+ <20261117111444.4185512-20-pierre.gondois@arm.com>
+ <avw_daENKPcY7_04@wunner.de>
+ <28da8229-99f9-47c7-b2d6-d301ae34253f@linux.intel.com>
+ <ba5f649c-f338-40d1-9e85-b666590835ca@arm.com>
+ <20261124160027.GC2156781@yaz-khff2.amd.com>
+ <92f3a4a7-a4be-40ce-b156-c3fbec150e58@arm.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <92f3a4a7-a4be-40ce-b156-c3fbec150e58@arm.com>
+X-ClientProxiedBy: BN9PR03CA0703.namprd03.prod.outlook.com
+ (2603:10b6:408:ef::18) To EAYPR12MB923140.namprd12.prod.outlook.com
+ (2603:10b6:303:2fd::15)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -59,258 +127,128 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
-In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 25 Nov 2026 17:45:42 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0hUQBr0k3GNqf2t118nRZnBS_Chw4NJXA+j501Bf=AEGQ@mail.gmail.com>
-X-Gm-Features: Aa3M54qST7obZ3zrfYaLQiJELeljnYeJDcQKh7-DXwYZlMnrrNHk2B9oFBxFD3s
-Message-ID: <CAJZ5v0hUQBr0k3GNqf2t118nRZnBS_Chw4NJXA+j501Bf=AEGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/42] ACPICA: ACPICA 20260930 with follow-up fixes
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Cc: catalin.marinas@arm.com, pawel.chmielewski@intel.com, 
-	kyle.d.pelton@intel.com, lenb@kernel.org, guohanjun@huawei.com, 
-	maobibo@loongson.cn, lpieralisi@kernel.org, will@kernel.org, 
-	sudeep.holla@kernel.org, erik.kaneda@intel.com, rafael@kernel.org, 
-	robert.moore@intel.com, void0red@gmail.com, superm1@kernel.org, 
-	chenhuacai@kernel.org, acpica-devel@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, loongarch@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: EAYPR12MB923140:EE_|SA1PR12MB8096:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67266ca9-94f1-4bdd-3d24-08df4b14d407
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|7416014|18002099003|22082099003|4143699003|56012099006|11063799006|261026140227099003|261026121527099003|261028144727099003|261022105027099003|261022075727099003|261021121427099003|261009223027099003|261102123227099003|10067099003;
+X-Microsoft-Antispam-Message-Info:
+	p0sSF4ktlg+7C9sgZ4vIDuNJDhbKb9z6AQE3qhJofWeroY1FkCVae4KTTlNvhdrmJ0cHAmIE12Mn8DPeTa4GEAGChfGz5hT/uPlxnk6GDyYQGxvk5cWOznzSGixrHbRNiawxT1uXOszH9//+J3Nr7Rv0lzyhdRDG762KiUXbtRu4PIAwSyVK6yz4lBJn/j9nqYDmuyTSzYXwOkH8MOOwJoqn/WwZmYeoiP+bFJoaRunOQh77DPHHZNXDONMILLOOqun3iyH1daDre4hiTjVkgV3QkdTpU1D8IdDZ13GLp1rmvoM/PfJyBJ9bxBIpj3n4zWcQv583rt7LCQ2Zrb9sMM1+34QancqOos+wajKvOD6BGnscccmSKdjNj9r/qGmfKPKmciuKuy19u33PidVtFVBF4yuymAIPiilZSBzRDGJ6xan80gv7XRVxbBNRE64QOSKvYBuzobwculD7e/YEIoBpw/v5Hm3n9YAxXhIUIRZqPslAo5U/n5610H9CPr4KISAPyUBtpy/0F7iwoDxdQfO/oT4INZ4A/FmPB2VYeUeHncOYRWyu9IWRGJ8Ei0Ez+9EW9W+R6LV/BjQ0m4jJ1rw7y3F2k9194tc5d01+KluvNx5LlrFbQ74vgoRgK9/qKO91v2eCBDX+P3eYtef5M43yzmTpHQcGAI/YqB/dDDw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:EAYPR12MB923140.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(7416014)(18002099003)(22082099003)(4143699003)(56012099006)(11063799006)(261026140227099003)(261026121527099003)(261028144727099003)(261022105027099003)(261022075727099003)(261021121427099003)(261009223027099003)(261102123227099003)(10067099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?iso-8859-1?Q?n3wqqvKlan+wesRdhFPnMYpTFm1qdRiWB5oM/U8aCoZBZM03p8ZIu/QAB+?=
+ =?iso-8859-1?Q?ZveH4PpAQIxmbdY/7SRtw550khUiPgPEwzSyJKNW4SHNcjzidmp8VJdBDB?=
+ =?iso-8859-1?Q?5nMg7SY0dqZsdwWllMcOYOSKHnfcp+I4y34HIsmMFHLVyvaFv1sSgCwZAv?=
+ =?iso-8859-1?Q?8WqwKgTTbs7ZCXm7hZjRdSOhJDrpQuJJ2H5i1CGWMMHcbbvlEGCNRDgYNm?=
+ =?iso-8859-1?Q?oW39ws6Vc4lOIuXpeOEI+xVeOB0gOPNvP+iMZnZvViJe8mrK8hPza0/GUU?=
+ =?iso-8859-1?Q?Y3LDMkeTVn/VEamzaWqZROHA1qmfnlP4yzjXXIbn+1cUAmRKoDqrGbTinH?=
+ =?iso-8859-1?Q?YHoD5PEPtlN1jJRc75LjO4Nj12I6nq3rV/gZNpQ/aCwvbMxfxVWMw2BiEV?=
+ =?iso-8859-1?Q?lzoUxVeZmNVnWw9UxT0JEqkFbzyQAgOYGSGO3gaQ3aNpo6IOGvBGGT9TJS?=
+ =?iso-8859-1?Q?GeSpMApOoLqrA4RfjerToWUjOH9RdB6Ek1TIOTdOu+Im4RAr5raw0yodcv?=
+ =?iso-8859-1?Q?Rs2JfRFRx+p9ivrdUEef+Ga/9LPmbDORnjeWM8+m/8yxUXKR8gm9wvJTlt?=
+ =?iso-8859-1?Q?mkvEF4B91u7NYPoOaHW+XzH5LxFJUWrzSAosbMSO7c/18EOMqf1TU/ZD8m?=
+ =?iso-8859-1?Q?MGLhXoWbYinzRz8QWTlugm9HYMHVMsDCI8N1VoCj4XNA+Yv7clqPTFMjkI?=
+ =?iso-8859-1?Q?ORnvM1qfO2XJJJe0tJkv/D/nDOgsFSTh5k5HK0irniQwOXQhck3afowoDx?=
+ =?iso-8859-1?Q?zQU9gFSEHg1tD4H444eDEG7QD2zu58g47QsA6OZJgRAgWHKkQqEVhT7EJR?=
+ =?iso-8859-1?Q?9wgICfjQlCaDq3iMkjdn0koPSK/i9NqUgsLcwRbAkoMe4CSmRyuZ5juQbl?=
+ =?iso-8859-1?Q?5cQ/zYRjCR3mEhECsHQfoO6KVyGvUzZbEB7e1FOWkOETJwi7yUxCGSh3m8?=
+ =?iso-8859-1?Q?f/sVXPJ+7A34kaG5WnV0CdTmjhfzTq45UDhAQ9m2dv9eRrp4kCzII77r45?=
+ =?iso-8859-1?Q?efc16lYHLRH01g7nZPZeTL7mLNJjwcYeRlPZlVK9tDJYgeIhH9Q2lwZydd?=
+ =?iso-8859-1?Q?u1Nw9pxjTJQBi0nB8e0Cmlr7+dm4s6p5qTrLqIVBdhpnp6O0XDE+feTDYK?=
+ =?iso-8859-1?Q?fPHVUmnBa2aEKxIPvP45dyi+W/nmf0DUTjhoK9jNhMzltjMdEmPedXs8bi?=
+ =?iso-8859-1?Q?5zriWTDLvFcVYzkcTI7Mur+S/wSZyQ1Fle/1zlrwHQfiGbyhf8enVaSm5L?=
+ =?iso-8859-1?Q?gNeJLLAWJSbSDI7WcuurVxJzNfF5farZlC4fzitwOW51L1H08S0Pc1S1vg?=
+ =?iso-8859-1?Q?9XC/RE78Rb5oovaTaRE6mCyWBdTsai/VcwjQbvtMvCimp9GaktswN6CkcO?=
+ =?iso-8859-1?Q?vi9xSZOsq3ZHLyXgzZXqunwlgcLYCnTWEMfGRrXhnBTzFl0Y7PQG4i97Cw?=
+ =?iso-8859-1?Q?KGRX3L3ZeFjMsHE+/wkNunfeayqKTbC5FZVbJ+C6dUvoHIieHuEX1n/Io3?=
+ =?iso-8859-1?Q?QjA4eObUOZv/N/tSabacp5DPFb+qmQeOLEqMSeT1rvVbcWIW4SFWhLQGrL?=
+ =?iso-8859-1?Q?3+bTdKe39RkQTOF6KKlLkZNp5F37w3VcKYnS0GXPPV97zUe3zWo8dLH8z3?=
+ =?iso-8859-1?Q?86biaiWo8ObisXJSyIjWxhSW8KaMBjoy3BwDen2Pp4TiwxCxw+Ak0CuUNI?=
+ =?iso-8859-1?Q?7Uz4evQZKY7Odl89vblSNweAhSz1dk5bN8cXkBFVNgT64PjFrFR7cp7tA5?=
+ =?iso-8859-1?Q?cxJbBIfir7cbBlYuoHYQ8ELLjjukq5sT/YD/3drq/XhaF9?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67266ca9-94f1-4bdd-3d24-08df4b14d407
+X-MS-Exchange-CrossTenant-AuthSource: EAYPR12MB923140.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2026 16:54:53.9996
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G4eNZqaVsr984ciJKYLKPrxpSq65dDcMRcUyJr5CRvTFrPXE04+HfLt3PDL4yspGK0oKAIDubIJW67EzkFc51w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8096
 
-On Fri, Nov 20, 2026 at 6:18=E2=80=AFPM Maciej Wieczor-Retman
-<maciej.wieczor-retman@intel.com> wrote:
->
-> The following patches are ported from upstream ACPICA and contain the 202=
-60930
-> release and some follow up fixes (so generally everything after the 20260=
-408
-> release). Only source files relevant to the Linux kernel are being ported=
-.
->
-> Changes since v1:
-> v1 [1] contained only commits between the 20260408 and 20260930 releases.
-> However sashiko.dev [2] raised some issues that needed to be either appli=
-ed or
-> rejected. Most issues were valid and were resolved in patches that follow=
- the
-> 20260930 release. Things that were rejected were the whole patch [3] due =
-to not
-> being a full solution to a very unlikely, debug only problem. Also the sa=
-shiko
-> comment related to ACPI_GPE_AUTO_ENABLED in patch [4] wasn't applied due =
-to
-> not being realistically possible to happen and consequences were only an =
-odd
-> looking log entry.
->
-> There are non-ACPICA changes related to constants/variable name changes
-> in these patches:
-> - ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
-> - ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
->
-> The base for this patches is upstream kernel v7.4-rc3 and it consists of
-> the following material:
->
-> Andre Przywara (1):
->       ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
->
-> Colin Ian King (2):
->       ACPICA: components: Fix typo "Supress" -> "Suppress"
->       ACPICA: components: Fix typo: "numer" -> "number"
->
-> Dave Jiang (2):
->       ACPICA: CEDT: RDPAS: Add missing reserved field in RDPAS structure
->       ACPICA: CEDT: RDPAS: Fix incorrect field positions for RDPAS
->
-> Hanjun Guo (1):
->       ACPICA: add UBRT (UnifiedBus Root Table) definitions
->
-> Himanshu Chauhan (1):
->       ACPICA: Introduce a new HEST notification type for RISC-V SSE event=
-s
->
-> Iurii Trukhin (1):
->       ACPICA: parser: Fix parse tree memory leak on AML execution error u=
-nwind
->
-> Leonard Lausen (1):
->       ACPICA: Executer: Resolve package index references used as integer =
-operands
->
-> Maciej Strozek (1):
->       ACPICA: Utilities: Fix for AcpiUtVerifyChecksum warning display
->
-> Maciej Wieczor-Retman (17):
->       ACPICA: executer: Fix NULL pointer dereference in AcpiExStoreObject=
-ToIndex()
->       ACPICA: compiler: Add _Ixx GPE object
->       ACPICA: namespace: Fix possible underflow and NULL pointer derefere=
-nce
->       ACPICA: iASL: Fix the truncated count of external control methods
->       ACPICA: release: Update version to 20260930
->       ACPICA: events: Add missing event mutex to AcpiEvClearGpeDispatchBy=
-Owner()
->       ACPICA: events: Remove redundant code
->       ACPICA: events: Fix AcpiEvClearGpeDispatchByOwner handler type proc=
-essing
->       ACPICA: events: Fix GPE cleanup return after changing program state
->       ACPICA: events: Handle GPEs' Notify dispatch type
->       ACPICA: tables: Fix wrong table unload and notify call order
->       ACPICA: tables: Fix global table read missing mutex
->       ACPICA: executer: Fix copying PCC source buffer data
->       ACPICA: dispatcher: Fix zero size non-NULL PCC buffer pointer
->       ACPICA: utilities: Clear NextObject so the outer loop doesn't read =
-it
->       ACPICA: namespace: Fix memory leak around compiler alias flag
->       ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
->
-> Mario Limonciello (AMD) (1):
->       ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
->
-> Pawel Chmielewski (3):
->       ACPICA: ACPI 6.5 Add support for the MISC table
->       ACPICA: iASL: Complete KEYP support
->       ACPICA: tables: Fix table buffer leak when Load fails verification
->
-> Rong Zhang (1):
->       ACPICA: parser: Set AML length for bytelist
->
-> Vidya Sagar (1):
->       ACPICA: IORT: Add Root Complex PASID Flags field
->
-> ikaros (8):
->       ACPICA: Events: Clear GPE dispatch by owner during table unload
->       ACPICA: executer: Add bounds checking for PCC field read access
->       ACPICA: Validate 4-char field names before namespace lookup
->       ACPICA: Improve error handling in table loading process
->       ACPICA: executer: Add bounds checking for PCC field write access
->       ACPICA: tables: Fix heap-buffer-overflow in AcpiTbFindTable
->       ACPICA: Fix object reference update to skip non-local notify types
->       ACPICA: namespace: Recognize alias node types in detach
->
-> purofle (1):
->       ACPICA: fix: build error with gcc 16: unused-but-set-variable
->
-> [1] https://lore.kernel.org/all/20261020141051.2194123-1-pawel.chmielewsk=
-i@intel.com/
-> [2] https://sashiko.dev/#/patchset/20261020141051.2194123-1-pawel.chmiele=
-wski%40intel.com
-> [3] https://sashiko.dev/#/message/20261020141051.2194123-9-pawel.chmielew=
-ski%40intel.com
-> [4] https://sashiko.dev/#/patchset/20261020141051.2194123-1-pawel.chmiele=
-wski%40intel.com?part=3D7
->
-> Andre Przywara (1):
->   ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
->
-> Colin Ian King (2):
->   ACPICA: components: Fix typo "Supress" -> "Suppress"
->   ACPICA: components: Fix typo: "numer" -> "number"
->
-> Dave Jiang (2):
->   ACPICA: CEDT: RDPAS: Add missing reserved field in RDPAS structure
->   ACPICA: CEDT: RDPAS: Fix incorrect field positions for RDPAS
->
-> Hanjun Guo (1):
->   ACPICA: add UBRT (UnifiedBus Root Table) definitions
->
-> Himanshu Chauhan (1):
->   ACPICA: Introduce a new HEST notification type for RISC-V SSE events
->
-> Iurii Trukhin (1):
->   ACPICA: parser: Fix parse tree memory leak on AML execution error
->     unwind
->
-> Leonard Lausen (1):
->   ACPICA: Executer: Resolve package index references used as integer
->     operands
->
-> Maciej Strozek (1):
->   ACPICA: Utilities: Fix for AcpiUtVerifyChecksum warning display
->
-> Maciej Wieczor-Retman (17):
->   ACPICA: executer: Fix NULL pointer dereference in
->     AcpiExStoreObjectToIndex()
->   ACPICA: compiler: Add _Ixx GPE object
->   ACPICA: namespace: Fix possible underflow and NULL pointer dereference
->   ACPICA: iASL: Fix the truncated count of external control methods
->   ACPICA: release: Update version to 20260930
->   ACPICA: events: Add missing event mutex to
->     AcpiEvClearGpeDispatchByOwner()
->   ACPICA: events: Remove redundant code
->   ACPICA: events: Fix AcpiEvClearGpeDispatchByOwner handler type
->     processing
->   ACPICA: events: Fix GPE cleanup return after changing program state
->   ACPICA: events: Handle GPEs' Notify dispatch type
->   ACPICA: tables: Fix wrong table unload and notify call order
->   ACPICA: tables: Fix global table read missing mutex
->   ACPICA: executer: Fix copying PCC source buffer data
->   ACPICA: dispatcher: Fix zero size non-NULL PCC buffer pointer
->   ACPICA: utilities: Clear NextObject so the outer loop doesn't read it
->   ACPICA: namespace: Fix memory leak around compiler alias flag
->   ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
->
-> Mario Limonciello (AMD) (1):
->   ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
->
-> Pawel Chmielewski (3):
->   ACPICA: ACPI 6.5 Add support for the MISC table
->   ACPICA: iASL: Complete KEYP support
->   ACPICA: tables: Fix table buffer leak when Load fails verification
->
-> Rong Zhang (1):
->   ACPICA: parser: Set AML length for bytelist
->
-> Vidya Sagar (1):
->   ACPICA: IORT: Add Root Complex PASID Flags field
->
-> ikaros (8):
->   ACPICA: Events: Clear GPE dispatch by owner during table unload
->   ACPICA: executer: Add bounds checking for PCC field read access
->   ACPICA: Validate 4-char field names before namespace lookup
->   ACPICA: Improve error handling in table loading process
->   ACPICA: executer: Add bounds checking for PCC field write access
->   ACPICA: tables: Fix heap-buffer-overflow in AcpiTbFindTable
->   ACPICA: Fix object reference update to skip non-local notify types
->   ACPICA: namespace: Recognize alias node types in detach
->
-> purofle (1):
->   ACPICA: fix: build error with gcc 16: unused-but-set-variable
->
->  drivers/acpi/acpica/acevents.h  |   4 +
->  drivers/acpi/acpica/acglobal.h  |   2 +-
->  drivers/acpi/acpica/acpredef.h  |   1 +
->  drivers/acpi/acpica/acutils.h   |   3 +
->  drivers/acpi/acpica/dsfield.c   |  24 +++
->  drivers/acpi/acpica/evgpe.c     | 355 ++++++++++++++++++++++++++++++++
->  drivers/acpi/acpica/exconfig.c  |   3 +-
->  drivers/acpi/acpica/exconvrt.c  |   4 +-
->  drivers/acpi/acpica/exfield.c   | 105 +++++++---
->  drivers/acpi/acpica/exresop.c   |  26 +++
->  drivers/acpi/acpica/exstore.c   |  20 +-
->  drivers/acpi/acpica/extrace.c   |   2 +-
->  drivers/acpi/acpica/nsaccess.c  |   2 +-
->  drivers/acpi/acpica/nsobject.c  |   7 +-
->  drivers/acpi/acpica/nsxfname.c  |   8 +
->  drivers/acpi/acpica/psargs.c    |   8 +-
->  drivers/acpi/acpica/psloop.c    |   5 +-
->  drivers/acpi/acpica/psobject.c  |   1 -
->  drivers/acpi/acpica/psparse.c   |  16 +-
->  drivers/acpi/acpica/tbdata.c    |  32 ++-
->  drivers/acpi/acpica/tbfind.c    |  16 +-
->  drivers/acpi/acpica/utcksum.c   |   3 +-
->  drivers/acpi/acpica/utdebug.c   |   9 +-
->  drivers/acpi/acpica/utdelete.c  |   5 +
->  drivers/acpi/arm64/mpam.c       |   6 +-
->  drivers/acpi/loongarch/iovt.c   |   6 +-
->  include/acpi/acpixf.h           |   2 +-
->  include/acpi/actbl1.h           |   6 +-
->  include/acpi/actbl2.h           | 200 +++++++++++++++++-
->  include/acpi/platform/aclinux.h |   1 +
->  30 files changed, 811 insertions(+), 71 deletions(-)
->
-> --
+On Wed, Nov 25, 2026 at 05:30:32PM +0100, Pierre Gondois wrote:
+> 
+> On 11/24/26 17:00, Yazen Ghannam wrote:
+> > On Wed, Nov 18, 2026 at 04:11:48PM +0100, Pierre Gondois wrote:
+> > > Hello Lukas, Kuppuswamy,
+> > > 
+> > > On 11/17/26 19:57, Kuppuswamy Sathyanarayanan wrote:
+> > > > On 11/17/26 03:50, Lukas Wunner wrote:
+> > > > > On Tue, Nov 17, 2026 at 12:10:29PM +0100, Pierre Gondois wrote:
+> > > > > > Return PCI_ERS_RESULT_DISCONNECT when no upstream bridge is available,
+> > > > > > avoiding a NULL pointer dereference in pci_walk_bridge().
+> > > > > How can that happen?  If it can happen (which I doubt), why isn't this
+> > > > > patch tagged for stable?
+> > > > One way I can see is a device without a PCIe capability on a root bus.
+> > > > pci_pcie_type() returns 0, which is PCI_EXP_TYPE_ENDPOINT, and
+> > > > pci_upstream_bridge() returns NULL. Native AER never gets there. Only
+> > > > firmware-first can, through aer_recover_work_func(), and only if
+> > > > firmware reports a PCIe error section for such a device. If that is
+> > > > the case, skipping recovery for !pci_is_pcie(pdev) in
+> > > > aer_recover_work_func() seems a better fit than a check in
+> > > > pcie_do_recovery().
+> > > > 
+> > > > > Why is it at the end of this series?  Does the series somehow make it
+> > > > > possible that there's no upstream bridge?  Which patch does that?
+> > > > > If the preceding patches are not the cause of a potential NULL
+> > > > > pointer deref, why isn't this patch submitted separately from the series?
+> > > To test this serie, I generated and injected synthetic CPER records.
+> > > The PCI device referenced in some synthetic CPER records did not
+> > > actually exist. In such case, the kernel crashes due to a NULL
+> > > pointer deferencement.
+> > > 
+> > > This use case is indeed slightly unsusual and unlikely to happen
+> > > in the real world. The patch was still included in the serie.
+> > > 
+> > > Please let me know if the patch should be either dropped or better
+> > > documented.
+> > It would be good to include these details in the commit message.
+> > 
+> > Also, I agree it is fair to be prepared for, and gracefully handle,
+> > unexpected data from firmware. A platform may report a CPER to OS with
+> > the intention that the data is only for reporting purposes, not recovery
+> > action.
+> > 
+> > **BUT**, we could argue this is a platform bug. CPER serverity is one
+> > item used to decide if recovery should be attempted. The platform should
+> > not report a severity that indicates recovery/action is needed while
+> > giving bogus/incomplete data.
+> > 
+> > If the platform is intending to share data for reporting only, then the
+> > CPER severity should be set appropriately.
+> > 
+> > Otherwise, this should be a big FW_BUG message "Platform reported
+> > recoverable error for unknown device."
+> 
+> I'm not sure to understand. Are you saying that we should
+> try to fetch/resolve the PCI bridge in pci_aer_handle_error()
+> before calling pcie_do_recovery() ?
+> 
 
-Whole series applied as 7.5 material, thanks!
+I'm not sure where the best place is. Your patch adds a generic warning
+in pcie_do_recovery(). It is not clear from this why the bridge is not
+found. Is it because of a major hardware/topology issue or an
+inconsistent error record?
+
+To differentiate these two, you may need to do the check earlier. Or you
+may need to pass in another piece of info indicating the source of the
+report. Maybe a check for "native AER" is enough in this case.
+
+Thanks,
+Yazen
