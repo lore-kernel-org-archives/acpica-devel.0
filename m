@@ -1,162 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=2 smtp.remote-ip=52.101.69.41
-ARC-Seal: i=3; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795624276;
-	b=izl9pf9Lg1c/+KWK806laMEgBp46nLhm3f47EVOl+EfNQHyHvsyt/N2y5MWntxdCe17y
-	 MLH/KZf21aref7Pmg3UlqgI46CtEMsTK7f6BKc5dcq5McVm4N4D+i7OuYCk2VD5EyMZz7
-	 HzmLtIsxqkm9DNBerAtgCPuLABRHXB3xnZ/gefrBpYg5bCQm1xsivUrN9wpmm1YiATiLA
-	 B8QX14su8QJB+q7TwXwhyF4THUe5SpJj6CSjwEABzNUcbHASOSioLKtZGvTCIyXEVGbsb
-	 XKZmZO7ZBsnCQxa4lY91DJeLYL6tZZUbtICYpRaF7YXTkr3mg5CwwQ9Fxe8cLpwP6bw==
-ARC-Message-Signature: i=3; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795624276;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:
-	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:
-	 DKIM-Signature:Authentication-Results-Original:Received:Received:
-	 Message-ID:Date:User-Agent:From:Subject:To:Cc:References:
-	 Content-Language:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-ClientProxiedBy:MIME-Version:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-LD-Processed:
-	 x-checkrecipientrouted:NoDisclaimer:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam-Untrusted:
-	 X-Microsoft-Antispam-Message-Info-Original:
-	 X-Forefront-Antispam-Report-Untrusted:X-Exchange-RoutingPolicyChecked:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:
-	 X-EOPAttributedMessage:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
-	 X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=mQ8WMu294K7ivZV/DoLabS0cFlftdL+h6xSvpm6huHY=;
-	b=aUz8fheZtCcXSSMDt5GiqgDwVEGvmeG53OxgHdYtTaA32/WvUuEEK9y6AI6FVMmZ7M/P
-	 Wv0vuRd3mHeFMBMJUibZEDYpLai1YFgaUtya1HxgSjgr1+yHA93vDvLKpc4o2dLvfL6SY
-	 aIgiFcobsK/t1wdCuXQvMk1S9/kFMQ6c/krk6JJN7r1AmTdxLKoSfRL/2Mslmtbeyq2mp
-	 O5C1084jc12AZ1xj07n3TBnF9hg2zlKuxrQxfj9DkpDC7wL5qiokFVe2yiLpCbKWncuLr
-	 lDPQEXK3jxV8SEgdUh4PzLGitU3PNjxznvQWLNoQhxr1WvbRjj7v5R99I3p4ctQhJ+w==
-ARC-Authentication-Results: i=3; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=arm.com;
-	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=LRhKds8q;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=LRhKds8q;
-	arc=pass header.oldest-pass=2 smtp.remote-ip=52.101.69.41
-Received: from AM0PR83CU005.outbound.protection.outlook.com (mail-westeuropeazon11010041.outbound.protection.outlook.com [52.101.69.41])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795625159;
+	b=JZY6r18W1sn7YemVdQtx+qzsjMQKNXAxTl9w0PYEsyAU6ixpesHl1i7avyyPOG0vsHmy
+	 YAn6vGbVnIos+2Kov1uLoULib5fuwkLnfcLZue4LoCGzK6jNAbXT0MOqtrq73RbhjZ9SF
+	 SKT6kgfrXNtkAFIxzCOI72teuNbUS28IHLfxlIV5Lf/gWaLbF77PLNcEknUG22iNyydDf
+	 i1xkdiS+1MPOxHONTR6LJbY0+D24+NXbCcNdwlwl9QH2Gv+6AN0EsXx+n+lw51MjwlT10
+	 kXbv5jt0fe+cdb/IumtqaUe470andkf0Fwe8+gKqdjazD9XzH8W3OZI3UsLlEghga1Q==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795625159;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=7Ofy+nGZGG5GjSQ/p9hjatkioBWd7QndibG1/NjdTig=;
+	b=3YxvcJ3iuot4Uxuzgw8nNUKPt/yJLYDnOdZPKWVbfhNd9/8Nyy9kBxOdFxvdiC2fLZF2
+	 kAVo1a1K9Glgg4ZmC8CGoAktRykxEaGxQGy9WPax0h9U/7fbplZWru+FeoWevMQRxZJqf
+	 bpELKnF5AeQuq21P+C8jQkJczAI6WS4+Ix5WApaLHsLzx8S1y8lloyLvX5fsLom1Zwep3
+	 HzRQnU5n6rib1L24nk8MkaMMYO8/ft4HGNCSADWtghOzuyEuAOo7KTS8P1wTN3o4KrW8R
+	 tYyLGU9Kbt/o9WYZI362MKHntaCfUT+LY8KpiaI9S8JtCVSV2N+eyPUdDUrOwtfSVzg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FnbISpxn;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80845606A32D
-	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:31:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 80845606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A97606A321
+	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=LRhKds8q;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=selector1 header.b=LRhKds8q
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
- b=eJQrVFGolQE7tF3kUNklv+rmHPk777GnW6acG8nJ+9VPj/t9uoP76/9eEUYNSXk0wozCBNVWsBvSMqLlbP0lT65Sm5z8YUKwRLSaulOPqHtZKK2834HCBm9pQNA11s2L0+4SYdik/q6sWROC+ppF8yYgUeg12N4hsDZFGyLhZDae3bGiFhfvSRQFyQ/TJlRmba48heeDXFdAIv6kcG7zdJiwn5aVyoxJ2QAz4sCcoTJtST1nCTN0aw2ur0P2RxeEIMglefFbSfz3xF8gqKuyGRx9lJqGkmRued/gJygB9i5NU58clyzROSvCHe6w0NV5AjuAR0Kwg+bU7FbKXanGUg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mQ8WMu294K7ivZV/DoLabS0cFlftdL+h6xSvpm6huHY=;
- b=HlC3IUOq/iths0GkcN3y4WqmK+WDRlYpKHYbpOr2lKO3JYUphGxG87dO6jrL8mY3wWe8d5eW/FcXgLMb2KMMM0NNUB//IhVaKxZZW5x5eK5apkbkhSR7bJ3pA08mzalToc+jdNLP+H4j2w5yiGIHPve9aTCD29p7xpZ22u51D6MR6yGIEDxYYkK1iihp/1YNybcsuikpPZqSkIIRh+zxr7ZgZwQSedMnbuqRWA8WTMiD9SiQxhiOuFFNViKMaGI3BSdc2IpHljzp1iyHh3aT0A6WPDlnSUPcGl2RQPCD/b2+FgwJ7c4v7Qtyad+AE7Y4XTWAKb7xwPj5R04Zre9OmQ==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 4.158.2.129) smtp.rcpttodomain=alien8.de smtp.mailfrom=arm.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=arm.com; dkim=pass
- (signature was verified) header.d=arm.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQ8WMu294K7ivZV/DoLabS0cFlftdL+h6xSvpm6huHY=;
- b=LRhKds8qoSqtBcaFdRGQHvoMsKLBKs1rO9qwGeKK57Nhitl53Klx6ZLt2UbuXeRxV8XllH50bhivbZQSZRDbMcmtFNaBDsNaqbhgdMh3h1H4tzomi6ZrqJcCYOGUZop8oICaogxk0pi6OuqC2iTc+/k009A7WXeA2JSA9LO9Ugw=
-Received: from AS9PR06CA0563.eurprd06.prod.outlook.com (2603:10a6:20b:485::28)
- by PAWPR08MB11512.eurprd08.prod.outlook.com (2603:10a6:102:50a::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.14; Wed, 25 Nov
- 2026 16:31:02 +0000
-Received: from AMS1EPF00000097.eurprd02.prod.outlook.com
- (2603:10a6:20b:485:cafe::3a) by AS9PR06CA0563.outlook.office365.com
- (2603:10a6:20b:485::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.662.6 via Frontend Transport; Wed, 25
- Nov 2026 16:31:02 +0000
-X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
- is 4.158.2.129) smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=arm.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 4.158.2.129 as permitted sender) receiver=protection.outlook.com;
- client-ip=4.158.2.129; helo=outbound-uk1.az.dlp.m.darktrace.com; pr=C
-Received: from outbound-uk1.az.dlp.m.darktrace.com (4.158.2.129) by
- AMS1EPF00000097.mail.protection.outlook.com (10.167.242.68) with Microsoft
- SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.662.3
- via Frontend Transport; Wed, 25 Nov 2026 16:31:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mCHL3dCwK+SN97WMaVcQCgaepw4vypOLOMNLSA39MAgl21gAOqhWGqWtHWbH0lXn7zz4cfNyI9KtnRA5uOpWYmYvhBnEHW1rBbSgkTQxWUATv3FeSjeCMc0gcH4/7jCw78IOYeixMq6dA5ku2uxh1I1/6LYZtDb3uQahMMJiGnqeb+BQpXMFRWqeUD1TNyux5nYydnvt53MY61g2e0g+WojLNMWa/zmHvwj9Jqz/RRIros62bCFAsZ3y6/62ngqSDRsxtWZ4IaMIBS1ySLkl0ofJYC884xmELq7ENtMVAmNo3cl18UclZ5c6uwj3cYcNPWkpT85rYfFdAwPKtCvAdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mQ8WMu294K7ivZV/DoLabS0cFlftdL+h6xSvpm6huHY=;
- b=FMb+Bt8P9Oa2VAHpg5p7zG2HX4S9aUpLsLMjiPK5bt2TqdabAFT2iSecEAfbZ7JG8IwzGh9C3+tNB0zi446/muEf9v+v7S0fs83HmQKPNq1PBV3Rye9uvtUxOnKer2dG2zdyaL+o+4iOP5UhFhlAzdH8ahwlI6WkEliLGZ8evuUp2hmv3T8QUvMu6V8Ik4xD1ubd5r80thlLUaTIKG4VP+h1j3iDTwOg52UF4YknYRpFVm5gpbAH3197kxQFqX9qvjpANuTU1XPaEoGiM4q+uFn1iUfgGAIUrBHN6JM6Sg5bOPRj9iZKSiod7UQ0q54m/3jl26d8xguvPEtmy5kXrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arm.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQ8WMu294K7ivZV/DoLabS0cFlftdL+h6xSvpm6huHY=;
- b=LRhKds8qoSqtBcaFdRGQHvoMsKLBKs1rO9qwGeKK57Nhitl53Klx6ZLt2UbuXeRxV8XllH50bhivbZQSZRDbMcmtFNaBDsNaqbhgdMh3h1H4tzomi6ZrqJcCYOGUZop8oICaogxk0pi6OuqC2iTc+/k009A7WXeA2JSA9LO9Ugw=
-Authentication-Results-Original: mx.microsoft.com 1; dkim=none (message not
- signed) header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23) by AMBPR08MB11937.eurprd08.prod.outlook.com
- (2603:10a6:20b:761::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.662.6; Wed, 25 Nov
- 2026 16:30:29 +0000
-Received: from BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62]) by BESPR08MB999898.eurprd08.prod.outlook.com
- ([fe80::d62a:5300:bc89:9f62%6]) with mapi id 15.21.0639.012; Wed, 25 Nov 2026
- 16:30:29 +0000
-Message-ID: <35d6a7b4-8909-4b3e-98ca-0a94081886e3@arm.com>
-Date: Wed, 25 Nov 2026 17:30:26 +0100
-User-Agent: Mozilla Thunderbird
-From: Pierre Gondois <pierre.gondois@arm.com>
-Subject: Re: [PATCH v1 09/19] ACPI: extlog: Report errors independently of RAS
- consumers
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
- James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
- Hanjun Guo <guohanjun@huawei.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>, Shuai Xue <xueshuai@linux.alibaba.com>,
- Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
- Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
- Pawel Chmielewski <pawel.chmielewski@intel.com>,
- Yazen Ghannam <yazen.ghannam@amd.com>, Avadhut Naik <avadhut.naik@amd.com>,
- Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Jonathan Cameron <jic23@kernel.org>,
- "Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
- Dave Jiang <dave.jiang@intel.com>, Kai-Heng Feng <kaihengf@nvidia.com>,
- Breno Leitao <leitao@debian.org>, Terry Bowman <terry.bowman@amd.com>,
- Dan Williams <djbw@kernel.org>, linux-acpi@vger.kernel.org,
- linux-edac@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev
-References: <20261117111444.4185512-1-pierre.gondois@arm.com>
- <20261117111444.4185512-10-pierre.gondois@arm.com>
- <20261124050045.GOawUZ_S5imwUOyh8B@fat_crate.local>
-Content-Language: en-US
-In-Reply-To: <20261124050045.GOawUZ_S5imwUOyh8B@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0504.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:13b::11) To BESPR08MB999898.eurprd08.prod.outlook.com
- (2603:10a6:b10:109::23)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FnbISpxn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4371F000E0
+	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795625158;
+	bh=7Ofy+nGZGG5GjSQ/p9hjatkioBWd7QndibG1/NjdTig=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=FnbISpxnsBf8m0U3xd/OLVl7vxIJAa+9YONUmKpGpEnWKMf08r9xzEpHz/jgp+Wy3
+	 hYR8DcSI4C7QgnHZRVTeRA9aG7YpFTOQgXH1pXIwyOSyFwFK5C767S+VcEkIW08ND0
+	 47idpSLK+NeC5zqL5mCSMA7g14tj2hVsBJfvpe1ltsneuxkdau490DpgLtvhx013XE
+	 kDhjEtwauDJ/g0dIqATs0tWCLtpR9E1aj1ZNY7PA0IRgazQTx/XDU4o7GDyyC3KGuq
+	 um/ULeytSQIBUQwk/zXNaYoYOZde63xfl2rgQuHFI6SBJTnyoUMa/R6dphUCShnUWs
+	 nTnEf1w8hLE0A==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5c14470729eso5568029e87.2
+        for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 08:45:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErFHNdIR5yiIOBgYx8SvOJusWxO0fJ8MrjPxDIT8CPfL6v0hjOYUZG6Zpti2JBNwXvroq1Qk85SsNRtPpVs=@lists.linux.dev
+X-Gm-Message-State: APuU4Z+offv2HSPOn4V18noUNpWqZ/E5to06MytrFaRmMd3uojCDb3Mq
+	yWeXOP9Gq8nVESF+2O4ijGG8F4soGcU2cxXKf9YAfmjxJyuS/nDm/QD3SHa5YDw6i5RCeC/RDxB
+	iwJJVxJamoEk65Fvkclx4ur5wwAlIRjQ=
+X-Received: by 2002:a05:6512:401c:b0:5c1:ad4b:4be7 with SMTP id
+ 2adb3069b0e04-5c1bc7d00aamr5425949e87.20.1795625156701; Wed, 25 Nov 2026
+ 08:45:56 -0800 (PST)
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -166,122 +59,258 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	BESPR08MB999898:EE_|AMBPR08MB11937:EE_|AMS1EPF00000097:EE_|PAWPR08MB11512:EE_
-X-MS-Office365-Filtering-Correlation-Id: 981fc9e1-5919-4c2d-12ac-08df4b117e9b
-X-LD-Processed: f34e5979-57d9-4aaa-ad4d-b122a662184d,ExtAddr,ExtAddr
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted:
- BCL:0;ARA:13230040|1800799024|376014|7416014|23010399003|366016|4143699003|6133799003|261009223027099003|22082099003|18002099003|3023799007|11063799006|56012099006|10067099003|261102123227099003|261028144727099003|261022075727099003|261022105027099003|261026140227099003|261026121527099003|261021123027099003|261021121427099003;
-X-Microsoft-Antispam-Message-Info-Original:
- /JvktHSMhkFjEtPDBuy1SOy2R1HyOEr0I0TKSjLaJUhrOlmvu/lCU49WN7LIkLn+RTHNHI+cZBacscp+z8IqC5jlS8l+/zdIwfDFBYRDCBHgAeDXSJ7Ih8XdXylmxCgR65pQ077dK5w/YhttkrRg1AxvnPJBKu6iK/6eycdGcmvHtKGJxjtrWx9tRXipLA89QrSMhQT7ZhwVlK+wj5lOtWAAWhyt/Nkp83fpjiamOPfRVQ+RBSEG2jhSbNBiEeBvh3ugGwvFY7psnHwIhxNXDd3I6UdR4AK4BVhiUJ4a08ZpR3L8CPe0miUzLih5D/R52pLzbPFhyCAHylhX2MWgdkkcR8Zk33Bo2rjWeY0c6pakqZTgLinBSLXSHi8e+OhWeu/1xv72D+Y2qomnnZ18qNMUfj8R0KjjpLZONn4B1NASoqPCP8zat2ClamDzEB/4CReM0cqiWmf8JlEB6/phNvrCqEWORJjkk7VhK/EvwmPM2kTG321l0E1I6HpNoKhlgxwJZ1WDYDFX7sEGx1CubhD5Y9ENM1Ta1GoGjeozHmmDkx2xt9clH717tNK+eRdj7qQQmVofyqZdOHpfjDXlwBMSDDC72gBzGFHgya5/lkzxKpWvl7eXFF4LwzP1ibL0
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BESPR08MB999898.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(23010399003)(366016)(4143699003)(6133799003)(261009223027099003)(22082099003)(18002099003)(3023799007)(11063799006)(56012099006)(10067099003)(261102123227099003)(261028144727099003)(261022075727099003)(261022105027099003)(261026140227099003)(261026121527099003)(261021123027099003)(261021121427099003);DIR:OUT;SFP:1101;
-X-Exchange-RoutingPolicyChecked:
- ABZDR96MCqvzprOWvU6AKsHfgcqH8Gk8tmuE0IwlUzNE18MPcsgOkk2Qg26ODB1tbqz9ZpgJaYAk0VHZdW8Zj6DjktoBmo/5AN19rsOL37kGdIZQfpdLPz+bx2/IODrmt4qiNXZ8Wz5WnpnfYXWis1qZ4wVQ/DsIvXnDcZQP9WVffmsHMwaLWy3RZUYHZgGkh47QxhRDxiQd40zycOMeHdJ2W2o8ri4/TTIjnxFg0xPVHJvgxtMoERQ08cMZMctzybh25sjqdmlqArjNOi91m2S4t4YPoZmtaqFGKwGk6Ucz53hPPgw/TwoUOqsLDTo/fgkrZXZGIywPjVdUmjqDUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AMBPR08MB11937
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- AMS1EPF00000097.eurprd02.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	71c5ae61-3429-42f4-f0f3-08df4b116b0f
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|35042699022|14060799003|36860700016|23010399003|1800799024|82310400026|376014|7416014|261026121527099003|261028144727099003|261022075727099003|261026140227099003|261022105027099003|261021123027099003|261021121427099003|11063799006|56012099006|10067099003|4143699003|261102123227099003|22082099003|6133799003|261009223027099003|18002099003|3023799007;
-X-Microsoft-Antispam-Message-Info:
-	vp32oVhEDGGEN6BGN4y00WdpC7Hzsb2Wd6PECEsLEIw/nzxIWN83GmGli1IV9wVJM1Xvxt6Y0AL5sRRN6HwRrOTbxQQ9e0NoGkBbYZzFwM+ipJrQobeKP0EkjNGGgRcZlRboFgd4W9zX+v0SQQbFbIQppvEHdg2UHAfMga++XCE1/FIm+bAqmYqkZY1/i4DlecWSy77QMvgayKAzTOVIaNgFBHDMXXw1D/62M59lj2e/8oJyULrZ6DC1iJ4F6ZfEEF6lr5bMUtl1ybC9US+YNyzeoJEftG67nGTrt58j8cohUl+4f/XZ8duAW0hIPZ1f/cWYus1tWVD6xRf8COdiqT6jry5YwrpqU4qibvo9HH3pUoiJ6WP5VaHklqbOvZOXur8Gz/t6fJbV/FuywDJz4w80ApK/9Gr3udd3m9tVw9cLnwoH7P0T8KAnAbm5b3ACxO632/cZQhekBVBBG1ojrkvbPFEjydCy5avxayse02biiKjL0BYo9YXmAg0dWtjt4nRIh9uP/7ODbw22P4buRVbW1ghupS8Pk7HuDkVIgyYGjuRbeR+CuQYSfnkewE8jIF8ZfXSUcQWAOrJ2n3uoeZHRhUEBgLbaUhGa5hDvIAG2HfObmXmOtuY7ETwqa6GEJvTUBlXELPBUhoBlJWPSaUqpb47kmU65bHFLKO7lAHU=
-X-Forefront-Antispam-Report:
-	CIP:4.158.2.129;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:outbound-uk1.az.dlp.m.darktrace.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(35042699022)(14060799003)(36860700016)(23010399003)(1800799024)(82310400026)(376014)(7416014)(261026121527099003)(261028144727099003)(261022075727099003)(261026140227099003)(261022105027099003)(261021123027099003)(261021121427099003)(11063799006)(56012099006)(10067099003)(4143699003)(261102123227099003)(22082099003)(6133799003)(261009223027099003)(18002099003)(3023799007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	x3efhjRI1dD2koAfSIEMZfvJT7dJUIwjgXphri0ahv+SD43yHb3Q710jUe2aherjVy2EkMm7W/SZ6irFsH4sOQcPfT4pliHW8M28vQbM0CYg2E4TcH1ZpQ5FdjtVh3EQgvs7ZEN/+HI9tM7Y6508cCNUb/AWLQzzLCpuBEmKqEgoqCZo7RJ2Yx5g2e8iX8p4OKzzssongNFq83AYOB391NuOpi46FbN8+5I3vgNMgB16Bhef8nLs5obeStaYFVg9OSEwevrlDHmyeznDgAbUeFSFpcNXXQnIvQzCfMMFmwxPT7iPoP30bkdsID5YT9p+R6TQH0mHAhzbcsGsc3iOcroXs91S6h9yLEsb2acNInzH/VjUkBUE+ZMKePjcb46KusFacW/M0PLiRiZS9oA2rfILTadRkrXr5oqrXETukV87wll4G4pdGAvNJ83w547v
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2026 16:31:01.9879
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 981fc9e1-5919-4c2d-12ac-08df4b117e9b
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[4.158.2.129];Helo=[outbound-uk1.az.dlp.m.darktrace.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS1EPF00000097.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB11512
+References: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
+In-Reply-To: <cover.1795194329.git.maciej.wieczor-retman@intel.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Wed, 25 Nov 2026 17:45:42 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hUQBr0k3GNqf2t118nRZnBS_Chw4NJXA+j501Bf=AEGQ@mail.gmail.com>
+X-Gm-Features: Aa3M54qST7obZ3zrfYaLQiJELeljnYeJDcQKh7-DXwYZlMnrrNHk2B9oFBxFD3s
+Message-ID: <CAJZ5v0hUQBr0k3GNqf2t118nRZnBS_Chw4NJXA+j501Bf=AEGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/42] ACPICA: ACPICA 20260930 with follow-up fixes
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Cc: catalin.marinas@arm.com, pawel.chmielewski@intel.com, 
+	kyle.d.pelton@intel.com, lenb@kernel.org, guohanjun@huawei.com, 
+	maobibo@loongson.cn, lpieralisi@kernel.org, will@kernel.org, 
+	sudeep.holla@kernel.org, erik.kaneda@intel.com, rafael@kernel.org, 
+	robert.moore@intel.com, void0red@gmail.com, superm1@kernel.org, 
+	chenhuacai@kernel.org, acpica-devel@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, loongarch@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 11/24/26 06:00, Borislav Petkov wrote:
-> On Tue, Nov 17, 2026 at 12:10:19PM +0100, Pierre Gondois wrote:
->> The RAS consumer check removes:
->> - trace events when no daemon is registered
->> - CPER console report when one is registered
->> This ties tracing, PCIe recovery and CXL protocol delivery to daemon
->> registration, and can hide a fatal record when userspace cannot process
->> its trace event before a reset.
->>
->> Remove the RAS consumer registration condition and:
->> - always emit trace events
->> - print the CPER record only for CPER_SEV_FATAL
->>
->> [1] additionally suggested to have a cmdline parameter to dynamically
->> update the above policy. Keep a simple hard coded policy for now.
->>
->> [1]
->> https://lore.kernel.org/lkml/20240521183913.GGZkzqUSN1hdE-_OEY@fat_crate.local/
->>
->> Signed-off-by: Pierre Gondois<pierre.gondois@arm.com>
->> ---
->>   drivers/acpi/acpi_extlog.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
->> index e09ea571c32f5..16a16b12d8ccf 100644
->> --- a/drivers/acpi/acpi_extlog.c
->> +++ b/drivers/acpi/acpi_extlog.c
->> @@ -208,10 +208,9 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
->>   	if (cper_estatus_len(tmp) > ELOG_ENTRY_LEN || cper_estatus_check(tmp))
->>   		return NOTIFY_DONE;
->>   
->> -	if (!ras_userspace_consumers()) {
->> +	/* Print fatal records regardless of RAS consumer registration. */
->> +	if (tmp->error_severity == CPER_SEV_FATAL)
->>   		print_extlog_rcd(NULL, tmp, cpu);
->> -		goto out;
->> -	}
-> So after rereading that link, we had this conversation back then about
-> reorganizing and reworking RAS error reporting and Dan (may he rest in peace)
-> wanted to unify and dump all the old cruft - especially since
-> ras_userspace_consumers() is not really used anymore. Apparently.
+On Fri, Nov 20, 2026 at 6:18=E2=80=AFPM Maciej Wieczor-Retman
+<maciej.wieczor-retman@intel.com> wrote:
 >
-> But what else uses it?
+> The following patches are ported from upstream ACPICA and contain the 202=
+60930
+> release and some follow up fixes (so generally everything after the 20260=
+408
+> release). Only source files relevant to the Linux kernel are being ported=
+.
 >
-> This is something other luserspace probably relies on and we should probably
-> do our due diligence and slowly deprecate it with a warning splat but not just
-> whack it unceremoniously.
-
-This is effectively slightly abrupt. I was also looking to get some
-guidance on how to proceed for this. A warning message can be added
-in a first place indeed.
-
-
-> And what I'm missing in all that effort is the big picture. What are you even
-> trying to achieve here, what's the point of all that gymnastics?
+> Changes since v1:
+> v1 [1] contained only commits between the 20260408 and 20260930 releases.
+> However sashiko.dev [2] raised some issues that needed to be either appli=
+ed or
+> rejected. Most issues were valid and were resolved in patches that follow=
+ the
+> 20260930 release. Things that were rejected were the whole patch [3] due =
+to not
+> being a full solution to a very unlikely, debug only problem. Also the sa=
+shiko
+> comment related to ACPI_GPE_AUTO_ENABLED in patch [4] wasn't applied due =
+to
+> not being realistically possible to happen and consequences were only an =
+odd
+> looking log entry.
 >
-> Unify GHES and acpi_extlog? That's it?
+> There are non-ACPICA changes related to constants/variable name changes
+> in these patches:
+> - ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
+> - ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
+>
+> The base for this patches is upstream kernel v7.4-rc3 and it consists of
+> the following material:
+>
+> Andre Przywara (1):
+>       ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
+>
+> Colin Ian King (2):
+>       ACPICA: components: Fix typo "Supress" -> "Suppress"
+>       ACPICA: components: Fix typo: "numer" -> "number"
+>
+> Dave Jiang (2):
+>       ACPICA: CEDT: RDPAS: Add missing reserved field in RDPAS structure
+>       ACPICA: CEDT: RDPAS: Fix incorrect field positions for RDPAS
+>
+> Hanjun Guo (1):
+>       ACPICA: add UBRT (UnifiedBus Root Table) definitions
+>
+> Himanshu Chauhan (1):
+>       ACPICA: Introduce a new HEST notification type for RISC-V SSE event=
+s
+>
+> Iurii Trukhin (1):
+>       ACPICA: parser: Fix parse tree memory leak on AML execution error u=
+nwind
+>
+> Leonard Lausen (1):
+>       ACPICA: Executer: Resolve package index references used as integer =
+operands
+>
+> Maciej Strozek (1):
+>       ACPICA: Utilities: Fix for AcpiUtVerifyChecksum warning display
+>
+> Maciej Wieczor-Retman (17):
+>       ACPICA: executer: Fix NULL pointer dereference in AcpiExStoreObject=
+ToIndex()
+>       ACPICA: compiler: Add _Ixx GPE object
+>       ACPICA: namespace: Fix possible underflow and NULL pointer derefere=
+nce
+>       ACPICA: iASL: Fix the truncated count of external control methods
+>       ACPICA: release: Update version to 20260930
+>       ACPICA: events: Add missing event mutex to AcpiEvClearGpeDispatchBy=
+Owner()
+>       ACPICA: events: Remove redundant code
+>       ACPICA: events: Fix AcpiEvClearGpeDispatchByOwner handler type proc=
+essing
+>       ACPICA: events: Fix GPE cleanup return after changing program state
+>       ACPICA: events: Handle GPEs' Notify dispatch type
+>       ACPICA: tables: Fix wrong table unload and notify call order
+>       ACPICA: tables: Fix global table read missing mutex
+>       ACPICA: executer: Fix copying PCC source buffer data
+>       ACPICA: dispatcher: Fix zero size non-NULL PCC buffer pointer
+>       ACPICA: utilities: Clear NextObject so the outer loop doesn't read =
+it
+>       ACPICA: namespace: Fix memory leak around compiler alias flag
+>       ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
+>
+> Mario Limonciello (AMD) (1):
+>       ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
+>
+> Pawel Chmielewski (3):
+>       ACPICA: ACPI 6.5 Add support for the MISC table
+>       ACPICA: iASL: Complete KEYP support
+>       ACPICA: tables: Fix table buffer leak when Load fails verification
+>
+> Rong Zhang (1):
+>       ACPICA: parser: Set AML length for bytelist
+>
+> Vidya Sagar (1):
+>       ACPICA: IORT: Add Root Complex PASID Flags field
+>
+> ikaros (8):
+>       ACPICA: Events: Clear GPE dispatch by owner during table unload
+>       ACPICA: executer: Add bounds checking for PCC field read access
+>       ACPICA: Validate 4-char field names before namespace lookup
+>       ACPICA: Improve error handling in table loading process
+>       ACPICA: executer: Add bounds checking for PCC field write access
+>       ACPICA: tables: Fix heap-buffer-overflow in AcpiTbFindTable
+>       ACPICA: Fix object reference update to skip non-local notify types
+>       ACPICA: namespace: Recognize alias node types in detach
+>
+> purofle (1):
+>       ACPICA: fix: build error with gcc 16: unused-but-set-variable
+>
+> [1] https://lore.kernel.org/all/20261020141051.2194123-1-pawel.chmielewsk=
+i@intel.com/
+> [2] https://sashiko.dev/#/patchset/20261020141051.2194123-1-pawel.chmiele=
+wski%40intel.com
+> [3] https://sashiko.dev/#/message/20261020141051.2194123-9-pawel.chmielew=
+ski%40intel.com
+> [4] https://sashiko.dev/#/patchset/20261020141051.2194123-1-pawel.chmiele=
+wski%40intel.com?part=3D7
+>
+> Andre Przywara (1):
+>   ACPICA: actbl2: MPAM: adapt to MPAM ACPI spec v3.1
+>
+> Colin Ian King (2):
+>   ACPICA: components: Fix typo "Supress" -> "Suppress"
+>   ACPICA: components: Fix typo: "numer" -> "number"
+>
+> Dave Jiang (2):
+>   ACPICA: CEDT: RDPAS: Add missing reserved field in RDPAS structure
+>   ACPICA: CEDT: RDPAS: Fix incorrect field positions for RDPAS
+>
+> Hanjun Guo (1):
+>   ACPICA: add UBRT (UnifiedBus Root Table) definitions
+>
+> Himanshu Chauhan (1):
+>   ACPICA: Introduce a new HEST notification type for RISC-V SSE events
+>
+> Iurii Trukhin (1):
+>   ACPICA: parser: Fix parse tree memory leak on AML execution error
+>     unwind
+>
+> Leonard Lausen (1):
+>   ACPICA: Executer: Resolve package index references used as integer
+>     operands
+>
+> Maciej Strozek (1):
+>   ACPICA: Utilities: Fix for AcpiUtVerifyChecksum warning display
+>
+> Maciej Wieczor-Retman (17):
+>   ACPICA: executer: Fix NULL pointer dereference in
+>     AcpiExStoreObjectToIndex()
+>   ACPICA: compiler: Add _Ixx GPE object
+>   ACPICA: namespace: Fix possible underflow and NULL pointer dereference
+>   ACPICA: iASL: Fix the truncated count of external control methods
+>   ACPICA: release: Update version to 20260930
+>   ACPICA: events: Add missing event mutex to
+>     AcpiEvClearGpeDispatchByOwner()
+>   ACPICA: events: Remove redundant code
+>   ACPICA: events: Fix AcpiEvClearGpeDispatchByOwner handler type
+>     processing
+>   ACPICA: events: Fix GPE cleanup return after changing program state
+>   ACPICA: events: Handle GPEs' Notify dispatch type
+>   ACPICA: tables: Fix wrong table unload and notify call order
+>   ACPICA: tables: Fix global table read missing mutex
+>   ACPICA: executer: Fix copying PCC source buffer data
+>   ACPICA: dispatcher: Fix zero size non-NULL PCC buffer pointer
+>   ACPICA: utilities: Clear NextObject so the outer loop doesn't read it
+>   ACPICA: namespace: Fix memory leak around compiler alias flag
+>   ACPICA: acpica: Fix typo in the IOVT_IOMMU table definitions
+>
+> Mario Limonciello (AMD) (1):
+>   ACPICA: Add ACPI_MSG_DEBUG to set KERN_DEBUG for debug output
+>
+> Pawel Chmielewski (3):
+>   ACPICA: ACPI 6.5 Add support for the MISC table
+>   ACPICA: iASL: Complete KEYP support
+>   ACPICA: tables: Fix table buffer leak when Load fails verification
+>
+> Rong Zhang (1):
+>   ACPICA: parser: Set AML length for bytelist
+>
+> Vidya Sagar (1):
+>   ACPICA: IORT: Add Root Complex PASID Flags field
+>
+> ikaros (8):
+>   ACPICA: Events: Clear GPE dispatch by owner during table unload
+>   ACPICA: executer: Add bounds checking for PCC field read access
+>   ACPICA: Validate 4-char field names before namespace lookup
+>   ACPICA: Improve error handling in table loading process
+>   ACPICA: executer: Add bounds checking for PCC field write access
+>   ACPICA: tables: Fix heap-buffer-overflow in AcpiTbFindTable
+>   ACPICA: Fix object reference update to skip non-local notify types
+>   ACPICA: namespace: Recognize alias node types in detach
+>
+> purofle (1):
+>   ACPICA: fix: build error with gcc 16: unused-but-set-variable
+>
+>  drivers/acpi/acpica/acevents.h  |   4 +
+>  drivers/acpi/acpica/acglobal.h  |   2 +-
+>  drivers/acpi/acpica/acpredef.h  |   1 +
+>  drivers/acpi/acpica/acutils.h   |   3 +
+>  drivers/acpi/acpica/dsfield.c   |  24 +++
+>  drivers/acpi/acpica/evgpe.c     | 355 ++++++++++++++++++++++++++++++++
+>  drivers/acpi/acpica/exconfig.c  |   3 +-
+>  drivers/acpi/acpica/exconvrt.c  |   4 +-
+>  drivers/acpi/acpica/exfield.c   | 105 +++++++---
+>  drivers/acpi/acpica/exresop.c   |  26 +++
+>  drivers/acpi/acpica/exstore.c   |  20 +-
+>  drivers/acpi/acpica/extrace.c   |   2 +-
+>  drivers/acpi/acpica/nsaccess.c  |   2 +-
+>  drivers/acpi/acpica/nsobject.c  |   7 +-
+>  drivers/acpi/acpica/nsxfname.c  |   8 +
+>  drivers/acpi/acpica/psargs.c    |   8 +-
+>  drivers/acpi/acpica/psloop.c    |   5 +-
+>  drivers/acpi/acpica/psobject.c  |   1 -
+>  drivers/acpi/acpica/psparse.c   |  16 +-
+>  drivers/acpi/acpica/tbdata.c    |  32 ++-
+>  drivers/acpi/acpica/tbfind.c    |  16 +-
+>  drivers/acpi/acpica/utcksum.c   |   3 +-
+>  drivers/acpi/acpica/utdebug.c   |   9 +-
+>  drivers/acpi/acpica/utdelete.c  |   5 +
+>  drivers/acpi/arm64/mpam.c       |   6 +-
+>  drivers/acpi/loongarch/iovt.c   |   6 +-
+>  include/acpi/acpixf.h           |   2 +-
+>  include/acpi/actbl1.h           |   6 +-
+>  include/acpi/actbl2.h           | 200 +++++++++++++++++-
+>  include/acpi/platform/aclinux.h |   1 +
+>  30 files changed, 811 insertions(+), 71 deletions(-)
+>
+> --
 
-Actually a big part of this patchset is effectively just trying
-to unify GHES and acpi_extlog reporting (for Mem errors in particular).
-If you prefer to have separate handling as it is right now, I'll go
-in this direction.
-
-
-> I'm sure there's much more to it than just a plain unification.
->
-> Probably CXL-something is going to use this too eventually?
->
-> But I should not be guessing - I should be reading about the big picture
-> somewhere. No?
->
-> Thx.
->
+Whole series applied as 7.5 material, thanks!
