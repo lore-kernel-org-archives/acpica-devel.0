@@ -1,98 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795799343;
-	b=OdRBxMNCVQtxw7n0lO1NOV64/sgqvj4kWmRIFXIkU3MxqhMGPdsfJHYUje8IBkdru70n
-	 u8N0gxZsuARYUZNk0chD8xlRytmOTqNK88jpa6huZPFY3QV6ZJhgao3r08RdIIi9M0LRa
-	 6yIK34g8xKsjrl0ou67bWJpwnEPGaJDZp1nn67Mz4wAEkWegTPCXW9x7pVuENiIzP3oby
-	 JbiVbmvONNO7ga52QtAlsXOGCci5x9Doz3J3aGMmIDfj75EhA+s1iKkL9iQvMW+gIehgC
-	 kHutomBUcOtFa0y73pwHJ7f0lwwQ7PPq3ei9yuzDuaOwYqU4osWcqv1q14hOElAv38Q==
+	t=1795803142;
+	b=w8hFEWQxJ2fFhf4TO1mtJ+l4lIBxIZgWKzSn1VyBbh0D8YofBcmL7cYKLBrdwPrgfjzE
+	 Bd0I4CMW3OR9GZPucwjo0GYxv78Gx8KnCsSeG1wK7DjwCMLnWx4nzCv6Iq6zOZPQLRUhw
+	 CBdb+8evvD2nkL3NGuegewju3wF3Gz6dzEHHlrdw89qTyzopDQAawJTKG0Ju7amZ+TE0b
+	 VEQcptK28wJoyu3BbHcO+7368lwNk5OuSUAlU/xyDM/sI+pWW2C30iRszQ97Qv2RFRquZ
+	 ETJLA/3CVQg8wAiGAF63AnAe0bAt1DbXyxPkBfegE2uNuZrRYb1osjeh0mKx0NKW/tw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795799343;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To;
-	bh=HB0ZTSdDDmOkIsTidMqTBiLshJg4ThGdlzLSWF0DBNU=;
-	b=GdSRxTYhkme49Jq86KpffT65mF503kwZXDpcBrwlb+9Tp9src/FHDuePYkEdrQy+9L1h
-	 9PLDxuNAczUYT8fUlytJP1+H8Y/qZngfTSqL1PcCDQfE4fCK7ZYlBwRobaZDcj4q6fPWL
-	 nJlTQpEu7yVzwKRN6jygbD4eQ98S4tKg770cGM9mI7Jo0s1jSjCWsbM2xDSVWPGCBWHmF
-	 YMbg07XTOu5sNV8qSta4UFZ5jBC1fwzjTtIdyXfdyoqO24k5vPrbKiD6yi/jyW59d+LzV
-	 jlcj5jeqcSxi4hbG785OqXjIFXZoteuH29fcJaCscLohtV3VP5m+HbPXjur0eD3v+5A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795803142;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=NZGcvqBJEfT7g/whVf4ukhs+6BekUU6T21N+nSw//EY=;
+	b=VNtArdYxw3ii703VcMY7pOsqwenvGG4FYaV4+3b1JPCSxmltx9klds/wqLFb2n0lG8nD
+	 R9SYGshawkZwb6plNUC66Oxd/Hj3id7JM5G2Xrya36sMUIauAFcZn0dmXrYiRtCBTxrsP
+	 GANQBPanXKuZSo/7Qfdv6FoRwGvaBB05y4KhTpfMKR+VeQcXNQ8Sc8h3kUOnjbYguINK6
+	 OPTupJImMUAn07zN64bxYc/eT6UcvONIFErTZT+RMYl8FaFwY8aypB0FBeYqoxJ1ox27l
+	 4hI6fGxEKQJnmv/NaVuLulnA4L7DUzgiPzsckL92QELDO8ZXy26PR7vdUe/y9Yc0sAA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=ziepe.ca;
-	spf=pass smtp.mailfrom=ziepe.ca;
-	dkim=pass header.d=ziepe.ca header.i=@ziepe.ca header.a=rsa-sha256 header.s=google header.b=irKHo4aD;
-	arc=none smtp.remote-ip=209.85.222.174
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3661606A324
-	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 17:09:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3661606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=HHc77jFv;
+	arc=none smtp.remote-ip=217.140.110.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C8C606A324
+	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 18:12:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 67C8C606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.a=rsa-sha256 header.s=google header.b=irKHo4aD
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-949664ee41cso840114885a.3
-        for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 09:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1795799341; x=1796404141; darn=lists.linux.dev;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=HB0ZTSdDDmOkIsTidMqTBiLshJg4ThGdlzLSWF0DBNU=;
-        b=irKHo4aDUlqCBkPQaXotDmCeSxggrL4rRsqfGaRAQfF2b7Ay/dhHBgIllPHnEpbypv
-         x2cXSDL8gShG6yRAm/WQvuNjtDzLz0Kki+kNyvJEb4O9tH+XiHyKtiZFlDG2A+eL/W7i
-         lemTsfDK/cMjgbqT3p0tyfxAJ7aNi4I8QYd1wAg8y/GYTDrIBqUOV2fySoS687zhxgdE
-         10VvkZ20JHPDCb5/A610jj9m7eKSuEhmh53AA6UMZzsppWHXqOvgqjjnMvriK9RoKDca
-         yw0LAD3iXTGzZ/HcxmT/m9c+BFIbVgaLWKt32gUso9LB4BdFxTD472uVD7uFrvF8WqS7
-         zimw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795799341; x=1796404141;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=HB0ZTSdDDmOkIsTidMqTBiLshJg4ThGdlzLSWF0DBNU=;
-        b=YwMFthycSo+yzqlnPvC7znvBe8y+Q2VjRISNlawY28bipAI0vE7fSBJLIq90494ARv
-         PAegzZobWs7nJEkYWya3qytkI00sfMp8bHZJ1iLpDqMV/S147198Pj2x3g1q6STE1kwG
-         YHC5SnaNCs+SGVAFgiFVb+4njn1NlXzz+GRfql5b3XXPlGkvy88YYgBd/51aaBFzJIov
-         tgDYOeVjQr3wMkm0CLGVQSq8OixowKxkKYDuMd4lwTI/qeIwSG2qYCr1+aRp3yMugnx3
-         czSMpQ7A719JdOj8Z/TiJWMKm6vLKvQ8xJEFjQ0I58CCUj4BACfO9rM9Ke8UZ/BfEv2U
-         /2mQ==
-X-Forwarded-Encrypted: i=1; AL+hErFQ0cH+mqfmDmQ1vaGmMXIdLwjcLUXOQWkkUdQYfuFGKU7trwtp/uLYlfbQiKHfNH2t+rhwJOUFbmnh2FA=@lists.linux.dev
-X-Gm-Message-State: APuU4Z8++ki/gXzjZ8beLZ5jsTHFdII/uRdHX+YThpBAe/v8tlY+DlNw
-	gHL6/IHvk/3uV1FkLIrnACe7dXhH+Bt5/pKWmJNpZA+BSDcX+/0X4JtqDspozXIuWWQ=
-X-Gm-Gg: AZFdTZfI4ZvS2JLvDyEg3/6QUQQnmENXBvTQlNp/B6ylMIMA0RQTFHm++Du+wg3ofgD
-	lci8bOjjgmDGA45nIZgljXbJuXVs/nc8riLuf0Dld+gD7fc1hMr6iXP9TUCZ8/mt3cdrJPzSL0e
-	//7eHvLQQqGb65n5puqaGgCEQxnXq1um9u6O4AsZuB2rcHORtls7I96t3v2OZByw3mcfPp74GTJ
-	1Cow0DmfyTIhC7PLXDMCwIN0xZYG5Fkl8KmJvRetVIpqGiyAfXuonnwSI34No8kWpxe9dX1gdFZ
-	VQJx6IlS3HFQn1drAzBICH+SWJaZLacQfKz3F9wE6Ezh2an60QC0NGfkZsrQz85xCUvU7DRO8Y3
-	xwLY6czNFiQd+dniujH7A2ocXTqEW/sUVVh2sSkVod8sIeiAsww7D4IRlB2v80dDjTUU1KjUF/3
-	j/uW6/o2p8pRr1UDWHZGHBtdHbCq7VqIBtXkQq1WLML9L1+GCmpOw3rF5Z+7eb6rSD6LnMSLLZc
-	NNR/jkT2/DPNyo4T3eBAHOHeX7SAgZriv2WiyaH7MAG2h8sZa1ZAMqR23SGZufMgxhRhBoF4UG6
-	OnxADA==
-X-Received: by 2002:a05:620a:7206:b0:94a:889:5a33 with SMTP id af79cd13be357-94a08896165mr1311739085a.30.1795799341642;
-        Fri, 27 Nov 2026 09:09:01 -0800 (PST)
-Received: from ziepe.ca ([142.177.118.84])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-949bb41a341sm1875035285a.37.2026.11.27.09.09.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2026 09:09:01 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1xWzRU-000000079ec-2Xcr;
-	Fri, 27 Nov 2026 13:09:00 -0400
-Date: Fri, 27 Nov 2026 13:09:00 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Yeoreum Yun <yeoreum.yun@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=HHc77jFv
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 891F61575;
+	Fri, 27 Nov 2026 10:12:18 -0800 (PST)
+Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBA4E3F86C;
+	Fri, 27 Nov 2026 10:12:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1795803141; bh=BX01zZQ8nHBs4mxff7UBzSukxYsQTZNUpf0gX1VR81o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HHc77jFvjaccfHJE17xqKL/IqiGPQ+BeH6zBI+g2ieHQmh2//J2eW8wELdkkk8hRu
+	 dO/oTl4A3EAMrpugvgDmxQrH2rsSUmToa4UBPRb6Y5gHJGiXiSml4XSNmZSjqEaPjT
+	 FKNykJLuwmnANFhWJPm0cV+aM5RAEJZy25LS3Ack=
+Date: Fri, 27 Nov 2026 18:12:15 +0000
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+To: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Yeoreum Yun <yeoreum.yun@arm.com>, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Suzuki Poulose <suzuki.poulose@arm.com>,
+	Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
 	Steven Price <steven.price@arm.com>,
 	Sami Mujawar <sami.mujawar@arm.com>, thuth@redhat.com,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
@@ -102,12 +60,15 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Shuah Khan <shuah@kernel.org>, Len Brown <lenb@kernel.org>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
-	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC v3 8/8] selftest: attestation: add
- cca_guest_attestation_test selftest
-Message-ID: <20261127170900.GU246011@ziepe.ca>
+	Mark Brown <broonie@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Gavin Shan <gshan@redhat.com>,
+	Sudeep Holla <sudeep.holla@kernel.org>
+Subject: Re: [PATCH RFC v3 3/8] arm64: acpi: Enable ACPI CCEL support
+Message-ID: <awnH_1vFvFXpny-M@e129823.arm.com>
 References: <20261127-arm_cca_mr-v3-0-df3230afce8f@arm.com>
- <20261127-arm_cca_mr-v3-8-df3230afce8f@arm.com>
+ <20261127-arm_cca_mr-v3-3-df3230afce8f@arm.com>
+ <3a46bcc3-33bb-4c9d-a3e5-44144406dbda@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -119,23 +80,56 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261127-arm_cca_mr-v3-8-df3230afce8f@arm.com>
+In-Reply-To: <3a46bcc3-33bb-4c9d-a3e5-44144406dbda@arm.com>
 
-On Fri, Nov 27, 2026 at 03:33:03PM +0000, Yeoreum Yun wrote:
-> Add CCA Realm Guest attestation selftest to test evidence-get, mr_read
-> and mr_extend interfaces.
+On Fri, Nov 27, 2026 at 04:28:01PM +0000, Suzuki K Poulose wrote:
+> On 27/11/2026 15:32, Yeoreum Yun wrote:
+> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > 
+> > Add support for ACPI CCEL by handling the EfiACPIMemoryNVS type memory.
+> > As per UEFI specifications NVS memory is reserved for Firmware use even
+> > after exiting boot services. Thus map the region as read-only.
+> > 
+> > Cc: Sami Mujawar <sami.mujawar@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+> > Cc: Steven Price <steven.price@arm.com>
+> > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > Cc: Gavin Shan <gshan@redhat.com>
+> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
+> > ---
+> >   arch/arm64/kernel/acpi.c | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+> > index 681aa2bbc3995..3d6335db882d3 100644
+> > --- a/arch/arm64/kernel/acpi.c
+> > +++ b/arch/arm64/kernel/acpi.c
+> > @@ -354,6 +354,17 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+> >   			prot = PAGE_KERNEL_RO;
+> >   			break;
+> > +		case EFI_ACPI_MEMORY_NVS:
+> > +			/*
+> > +			 * ACPI NVS marks an area reserved for use by the
+> > +			 * firmware, even after exiting the boot service.
+> > +			 * This may be used by the firmware for sharing dynamic
+> > +			 * tables/data (e.g., ACPI CCEL) with the OS. Map it
+> > +			 * as read-only.
+> > +			 */
+> > +			prot = PAGE_KERNEL_RO;
+> > +			break;
+> > +
 > 
-> Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
-> ---
->  tools/testing/selftests/attestation/.gitignore     |   1 +
->  tools/testing/selftests/attestation/Makefile       |   9 +-
->  .../attestation/cca_guest_attestation_test.c       | 517 +++++++++++++++++++++
->  3 files changed, 524 insertions(+), 3 deletions(-)
+> Unfortunately this breaks some platforms, where the NVS must be mapped
+> R/W. Thats why we dropped this patch.
+> 
+> https://lore.kernel.org/all/20251124103329.363afcc6@foz.lan
 
-FWIW, I really want to have an attestation userspace project and there
-is where stuff like this should end up living..
+Thanks to share. anyway it's enough to read in this series.
+So I'll drop this in the next spin. Thanks!
 
-We haven't got to launching a github for it yet, but that's the plan
-anyhow.
-
-Jason
+-- 
+Sincerely,
+Yeoreum Yun
