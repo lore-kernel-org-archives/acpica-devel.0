@@ -1,51 +1,51 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795793609;
-	b=aTQDWuR8uX41Aer6fsYwDs8GaMpCJQ+cge5a9jeaGmePtRFYHsBj0oUurYH5e+5W9bUC
-	 5+ApZeYF4qrJEpA2B6LYH3ALazr7l0ArwtveyHlje/+yZEWqdg9psNAz03/6i6saZ3CFw
-	 IcPYZZAEt9KLj7ZekzmhrjH/RbZASnBf3GCJ+6lfPCTHaGDy87fv1xD8D98wrF/4txXqW
-	 RntZ3uxZpP++DxVq5fsxsKxtuDrJCzsalyMFPBwlrRzApQCL3E/ekIwgoKV7BTFCCYgt5
-	 j0j0uioiR2aZjSvLZWTTJzL1tQBosBlrODomNzvjnUzCsgS4nhaSp2erVLom1Uq9tIQ==
+	t=1795793605;
+	b=UQNI2Y5UirB/geryjbmKO2qf8UtgslFUwxltU74rj/tbxhp/ajX19cGaYnF1Zg6Rh0Ht
+	 PJ6p6lzRET5PJeSSt7nTkary5UN8aVGDBmAKpiG028f/FfpPN0OmDd7n5kr3gO5bbpSiW
+	 vjeAizl4BFkX0KquJvdWMTTKm1xGiNItu0htvqGsLHYmH4bDg2cDIWr6jtUXnC97wjW6y
+	 SpLYLGahOdU2xqLFDFpYiDo1+1+Zs7Sp0uDB3KedJfjP0FA3SuPcWuEL3ST1wmRLV6pqw
+	 s6yjPQD0bkz8xx3pCJDnIpqmrfRE52WKJsfskKAs4KzcePhjfozIcG91pkIeQMjCcoQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795793609;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795793605;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=UbxRM54/x3gsaWN6jkFOgoIZhRMewegV72A+3q3F3mc=;
-	b=BZfzRbsydE0YHa2/bRkMEuSrwo4tc8jJUX9harFwh/JjtEfXbZpC5ZTET8634GRjbpHW
-	 8Bb+xog95UZQ+lpWJyKRDW1stE2IB/tegZleAZF5KxOXy4yHEZI8RhpbpG5nT3f6rPQ/b
-	 /uEnmCEMJAqhBO76KdWu7w+ZV5PsqPCF5i0Ha9P/DwCLCGOJuJghscFCKguFOoxCaUXiW
-	 yjzBk4wzL8bB3OJ9aRMqHDkxZ1vn07PQDX+OwkNRzGAo7sh37CQAo3UxSnyYch5gbRSaB
-	 nzGwF09Q2t/PF2CcbG9/sOs4P9K9lh4Rm8H63gIlKv4rpyaQh3CbeCUO6w91KZZ/v/Q==
+	bh=oRtgKudCp/VASC+XZuTjAPaIg7QOvB2qmO6nzhhb1yI=;
+	b=CmED4/4qgNKO8MDiF9cBl9EGjvTFfGGTKiKZTpmk7ok+YNTwY5gDpWLp1nMnopi4zWQF
+	 1g47WWHs2PTOkQ7aUotHAmsd6Oz7Ebnr1KQ58PmRhx3XMrqD09YiLQLVjirI6dVBs10Cg
+	 WEkcD3u19PQ60vNxO6pxnnK/84EQvsnfxe9aljAFT6HNloLK1S5Eg8yzfqdv439xcWqn3
+	 ZAJCWqTjQZ5hBu5etH4vqrTwMvX5n4Sf/nQhVtsndyI0zbd6HqQQ+kq667mXLQsmuTUjb
+	 iajTBbHrOVey6nWOKlcguVF9O4aV3rCTgItmBIPAjcusBQGDf5plW+oMXtpLfZvpM7A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=Yg3r4HXa;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=rSJCPZmA;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F24606A335
-	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 15:33:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C7F24606A335
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698EC606A330
+	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 15:33:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 698EC606A330
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=Yg3r4HXa
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=rSJCPZmA
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E2DE1E4D;
-	Fri, 27 Nov 2026 07:33:25 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB4421D70;
+	Fri, 27 Nov 2026 07:33:21 -0800 (PST)
 Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CEB413F632;
-	Fri, 27 Nov 2026 07:33:24 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 366003F632;
+	Fri, 27 Nov 2026 07:33:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1795793607; bh=ZYYAWoxKreiy1oLbAXptBMHxGm45wgu9yoV+MxOg3ow=;
+	t=1795793604; bh=LRigvAJhp+2eLJBX6kefUPGIgYbEzkL9gINj2qEXMik=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Yg3r4HXagVrv3zl20I12s8HoFBmHuH72UcKqi9rQuzUlpUciR7eDUV37XMbjpwrkj
-	 Pc7MewOHm6Z8N6/9OGvMDhLazIxhcNZh25RZcBDsP4UWUrZDTwJHEvRrxF0Pd9VM7i
-	 OtwrHGIegGCxZkSYGCBkkdTYvQ9xm+zuWxwoI7TU=
+	b=rSJCPZmAVLAT6McHtVMqDDZNAWlk36c1D4BkzXv1OrFuevUAlQbVlJbPEGWUFYlOl
+	 c9a4RVnb0n7aYlcqSYAcLpWU4HHrKS9XbUSynUtZ7erovk9Jf6qZD4jPYetKZh29LK
+	 IFrx2faozQTDi9MlxebS7vlc+alv5cDBsOcRTGCw=
 From: Yeoreum Yun <yeoreum.yun@arm.com>
-Date: Fri, 27 Nov 2026 15:32:59 +0000
-Subject: [PATCH RFC v3 4/8] acpi: add CCtype value macros for CCEL table
+Date: Fri, 27 Nov 2026 15:32:58 +0000
+Subject: [PATCH RFC v3 3/8] arm64: acpi: Enable ACPI CCEL support
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -57,7 +57,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261127-arm_cca_mr-v3-4-df3230afce8f@arm.com>
+Message-Id: <20261127-arm_cca_mr-v3-3-df3230afce8f@arm.com>
 References: <20261127-arm_cca_mr-v3-0-df3230afce8f@arm.com>
 In-Reply-To: <20261127-arm_cca_mr-v3-0-df3230afce8f@arm.com>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
@@ -75,48 +75,64 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
  Shuah Khan <shuah@kernel.org>, Len Brown <lenb@kernel.org>, 
  Shuah Khan <skhan@linuxfoundation.org>, 
  Randy Dunlap <rdunlap@infradead.org>, Mark Brown <broonie@kernel.org>, 
- Yeoreum Yun <yeoreum.yun@arm.com>
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Gavin Shan <gshan@redhat.com>, 
+ Yeoreum Yun <yeoreum.yun@arm.com>, Sudeep Holla <sudeep.holla@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=863; i=yeoreum.yun@arm.com;
- h=from:subject:message-id; bh=ZYYAWoxKreiy1oLbAXptBMHxGm45wgu9yoV+MxOg3ow=;
- b=owEB7QES/pANAwAKAW3Vw9FaxTEzAcsmYgBrCaK0gZOUA742VqK9FJfMhVcJaXrr7xKAygARy
- x13Y7F9iu2JAbMEAAEKAB0WIQQtg+CS3QUzuFh1pJ1t1cPRWsUxMwUCawmitAAKCRBt1cPRWsUx
- M8wnC/9VJBXCWG+gOzZuz2ss/tFA4X+la5ksWYTxTfHm5ve+cobHAcb1Zo4GemS5btOdabBxcoh
- 7QbP+39jdw5hj/IOMwOflVHAV+XaW2QWkEcK4chkBa90FX/oZv6/BrrgGLemi+hUkRjJxSP9KeA
- 5zkHNhTIKPjfCqBBwxIBELeW1sMIHqnh5Z8GBTmLLfX6al+BB4w4I97bypqyRuW/4fWZFggzjmz
- NXeNVNr5hmDvVmjTjDfaV3gL/HOtFnUQxXI/VJ71SX7Lp+mYkU9MornF3dqbr0CsaCw918OS6Yn
- zoPv4TDe1n+71g/AIG8I2mkkarcnDFhw2FgZZEU1BCpPWa9HVV1xC33GpOENp2Yn9gQYO6PJ0Aj
- QSMYvXWMZHfHMIQw7+cG4dAllTMdTI1ESVGVNOHEvceR7l9fsMoJRc41UF0e5pOL5QzF+SFQBHH
- CifCMNmWDPNlmDBCOV2n6MeHoH0qt5GjF3EM4faTMg1rjcvy0yVkCfoHYf2p6umzUlpfc=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1464; i=yeoreum.yun@arm.com;
+ h=from:subject:message-id; bh=Y0OSdCtnotPMPPdxEFeJ/K5QTuVjcFwxETs3OgoHwHU=;
+ b=owEB7QES/pANAwAKAW3Vw9FaxTEzAcsmYgBrCaK0QrrxLQz97qermy0wQEP8E7gn26M5bOINn
+ UgzQQ/WVl+JAbMEAAEKAB0WIQQtg+CS3QUzuFh1pJ1t1cPRWsUxMwUCawmitAAKCRBt1cPRWsUx
+ M4f9C/9nSjXn69EzPPM8K6RQUBfOMIwloMkG7YJrYryOPA6cDfPFdBXQ25/PEFaQcSup+8bb4Nw
+ 4+x4uL3xbUC8AhRWTOxCg1GjmcS27c7YHiOvPGoZsOodsBVKKPMWyfeAzKFeH4u9eEv+AzFggCw
+ sRseP1c+bM7A+H/wuCkVXVZ5UG9bM0llrALZ6UQjHVHcEijB/L/wxiDPuJkf1rvvbgXg0nMPGhK
+ /qEoZaLWBqgfULONIvsSKj0ODieQS32ZZ9fQkqRvw+7QoqGkvopVcXWm9ry+jNkn7D6PI0smsRC
+ s35Arw0UiAVaKXOU0zvobWotKX3HuXCwA8p1w+BxpPJ2pXuIMXVqhGvgq5UMUuqZeL9Tp3BZ7hT
+ 93bgAIGg5e02FL0/gKMZHUqTSLdi836xgQwUq4NP7uJSH8bnIP1VxwdPfkkbZ26VpI4HXO5XiMm
+ eurk7irjMBevkbZfjQd732DS+10uukqYTpUAHqnDsE6LxpzOeLPIzQKOWTmAX9gwiwxFA=
 X-Developer-Key: i=yeoreum.yun@arm.com; a=openpgp;
  fpr=2D83E092DD0533B85875A49D6DD5C3D15AC53133
 
-Add CCtype value macros for CCEL table.
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Link: [0] https://github.com/tianocore/edk2/issues/11384
+Add support for ACPI CCEL by handling the EfiACPIMemoryNVS type memory.
+As per UEFI specifications NVS memory is reserved for Firmware use even
+after exiting boot services. Thus map the region as read-only.
+
+Cc: Sami Mujawar <sami.mujawar@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
 ---
- include/acpi/actbl2.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/kernel/acpi.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index 76e4a5bc79b42..44810b9b9ddc5 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -454,6 +454,13 @@ struct acpi_table_ccel {
- 	u64 log_area_start_address;
- };
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index 681aa2bbc3995..3d6335db882d3 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -354,6 +354,17 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+ 			prot = PAGE_KERNEL_RO;
+ 			break;
  
-+/* Values for CCtype */
-+#define ACPI_CCEL_CCTYPE_RESERVED	0
-+#define ACPI_CCEL_CCTYPE_AMD_SEV	1
-+#define ACPI_CCEL_CCTYPE_INTEL_TDX	2
-+#define ACPI_CCEL_CCTYPE_RISCV_AP_TEE	3
-+#define ACPI_CCEL_CCTYPE_ARM_CCA	4
++		case EFI_ACPI_MEMORY_NVS:
++			/*
++			 * ACPI NVS marks an area reserved for use by the
++			 * firmware, even after exiting the boot service.
++			 * This may be used by the firmware for sharing dynamic
++			 * tables/data (e.g., ACPI CCEL) with the OS. Map it
++			 * as read-only.
++			 */
++			prot = PAGE_KERNEL_RO;
++			break;
 +
- /*******************************************************************************
-  *
-  * ERDT - Enhanced Resource Director Technology (ERDT) table
+ 		case EFI_ACPI_RECLAIM_MEMORY:
+ 			/*
+ 			 * ACPI reclaim memory is used to pass firmware tables
 
 -- 
 2.43.0
