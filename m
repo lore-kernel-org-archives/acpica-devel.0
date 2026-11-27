@@ -1,56 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795803142;
-	b=w8hFEWQxJ2fFhf4TO1mtJ+l4lIBxIZgWKzSn1VyBbh0D8YofBcmL7cYKLBrdwPrgfjzE
-	 Bd0I4CMW3OR9GZPucwjo0GYxv78Gx8KnCsSeG1wK7DjwCMLnWx4nzCv6Iq6zOZPQLRUhw
-	 CBdb+8evvD2nkL3NGuegewju3wF3Gz6dzEHHlrdw89qTyzopDQAawJTKG0Ju7amZ+TE0b
-	 VEQcptK28wJoyu3BbHcO+7368lwNk5OuSUAlU/xyDM/sI+pWW2C30iRszQ97Qv2RFRquZ
-	 ETJLA/3CVQg8wAiGAF63AnAe0bAt1DbXyxPkBfegE2uNuZrRYb1osjeh0mKx0NKW/tw==
+	t=1795803872;
+	b=TWP6eMGsN1AP3U+H22wno5LSh+NilVVBxZGTcN4V6xyhK8LgAp93hCAKI6J7TZKRT37H
+	 AaibT8FaD87CCyT9EUJ1YtogtIeXU4WTPRy2zwiJ/8O/nh7m0cCKuzRDBwP84/KZuu3qz
+	 4VYWL9CFBj+xq+Tm15yh9HFhwCtlCYJhU4Jj6/JMMXQKUgrEZ9x7p1VxzkNBQJ1h6nmuX
+	 Lx2R3Qxk6ASQFEpQmytYf4Y9xP1pI12/OGMqEX81iSxDZRjocfpRlF58fLLonWaP/XUN8
+	 b9Q2EmvikJIHd3E4k14hfCGdgB5L9EARVuLLewFSwKB26EEszfQWSaiWeeGcU70ejmg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795803142;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795803872;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
 	 Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=NZGcvqBJEfT7g/whVf4ukhs+6BekUU6T21N+nSw//EY=;
-	b=VNtArdYxw3ii703VcMY7pOsqwenvGG4FYaV4+3b1JPCSxmltx9klds/wqLFb2n0lG8nD
-	 R9SYGshawkZwb6plNUC66Oxd/Hj3id7JM5G2Xrya36sMUIauAFcZn0dmXrYiRtCBTxrsP
-	 GANQBPanXKuZSo/7Qfdv6FoRwGvaBB05y4KhTpfMKR+VeQcXNQ8Sc8h3kUOnjbYguINK6
-	 OPTupJImMUAn07zN64bxYc/eT6UcvONIFErTZT+RMYl8FaFwY8aypB0FBeYqoxJ1ox27l
-	 4hI6fGxEKQJnmv/NaVuLulnA4L7DUzgiPzsckL92QELDO8ZXy26PR7vdUe/y9Yc0sAA==
+	bh=nPX0jKAZGslc2s414W7GnzS0L4XLdhKncic17g8wWB8=;
+	b=ZoQKF1FyH+LA9nzFZeT+6XDx4GVqu9Wor9xwxZyQXTFab4Z+DSSVr2fL6SLtJXgKgxOw
+	 ky3i4npmQqNBLNqZB+wMdsadfsbo6+UnHHOcGJd1TfSeLto9jyyXmarPHqgoU37CJnzHa
+	 ZZqh9CBOYjaKutOQCAjXd583Z2JcDPyaA3PtgBZIU92A7uJctMyMT4Ynet3cEqKlmfcy4
+	 74zJ9D6gnDfh14mXkS5ef8uGvy/PPiRpIZSQ6aa37kzARmNgDlQ74sC6gtc2hFxx0KmI+
+	 r6qM75gI+sXSymzuklZK4M6mJZdZSMKEqwUMGYX1m3AxZ0EBFUH5op8dL0sCAdbiybw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=arm.com;
 	spf=pass smtp.mailfrom=arm.com;
-	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=HHc77jFv;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=LBSQKh+U;
 	arc=none smtp.remote-ip=217.140.110.172
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C8C606A324
-	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 18:12:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 67C8C606A324
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67987606A31E
+	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 18:24:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 67987606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=HHc77jFv
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=LBSQKh+U
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 891F61575;
-	Fri, 27 Nov 2026 10:12:18 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F1A51575;
+	Fri, 27 Nov 2026 10:24:28 -0800 (PST)
 Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBA4E3F86C;
-	Fri, 27 Nov 2026 10:12:17 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 957C33F86C;
+	Fri, 27 Nov 2026 10:24:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1795803141; bh=BX01zZQ8nHBs4mxff7UBzSukxYsQTZNUpf0gX1VR81o=;
+	t=1795803871; bh=tLEGXyc06QuVymTp9AwMRLhn4C3VvPR79JGgV7rqNd0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HHc77jFvjaccfHJE17xqKL/IqiGPQ+BeH6zBI+g2ieHQmh2//J2eW8wELdkkk8hRu
-	 dO/oTl4A3EAMrpugvgDmxQrH2rsSUmToa4UBPRb6Y5gHJGiXiSml4XSNmZSjqEaPjT
-	 FKNykJLuwmnANFhWJPm0cV+aM5RAEJZy25LS3Ack=
-Date: Fri, 27 Nov 2026 18:12:15 +0000
+	b=LBSQKh+UnuZvEmzVBMoqvxhxLlX4y9VCVIQ06t73ABXPt10R9qy/X5Y6ugaS7NPOo
+	 d1AuoDSzKGcEpaQ259M2A/qNGnaky9MIv0reMcaXWdUmoiyfRYZaurw1lOYjN/TUTF
+	 DBomwlpBErcMcNrZvxnSsO5JZUxKZNTysnK2dpM0=
+Date: Fri, 27 Nov 2026 18:24:25 +0000
 From: Yeoreum Yun <yeoreum.yun@arm.com>
-To: Suzuki K Poulose <suzuki.poulose@arm.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Yeoreum Yun <yeoreum.yun@arm.com>, linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
 	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
 	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Will Deacon <will@kernel.org>,
+	Suzuki Poulose <suzuki.poulose@arm.com>,
 	Steven Price <steven.price@arm.com>,
 	Sami Mujawar <sami.mujawar@arm.com>, thuth@redhat.com,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
@@ -60,15 +61,13 @@ Cc: Yeoreum Yun <yeoreum.yun@arm.com>, linux-arm-kernel@lists.infradead.org,
 	Shuah Khan <shuah@kernel.org>, Len Brown <lenb@kernel.org>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
-	Mark Brown <broonie@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	Gavin Shan <gshan@redhat.com>,
-	Sudeep Holla <sudeep.holla@kernel.org>
-Subject: Re: [PATCH RFC v3 3/8] arm64: acpi: Enable ACPI CCEL support
-Message-ID: <awnH_1vFvFXpny-M@e129823.arm.com>
+	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC v3 7/8] attestation: providers: introduce CCA Guest
+ attestation provider
+Message-ID: <awnK2c3kMq8p2a_7@e129823.arm.com>
 References: <20261127-arm_cca_mr-v3-0-df3230afce8f@arm.com>
- <20261127-arm_cca_mr-v3-3-df3230afce8f@arm.com>
- <3a46bcc3-33bb-4c9d-a3e5-44144406dbda@arm.com>
+ <20261127-arm_cca_mr-v3-7-df3230afce8f@arm.com>
+ <20261127170722.GT246011@ziepe.ca>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -80,55 +79,89 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3a46bcc3-33bb-4c9d-a3e5-44144406dbda@arm.com>
+In-Reply-To: <20261127170722.GT246011@ziepe.ca>
 
-On Fri, Nov 27, 2026 at 04:28:01PM +0000, Suzuki K Poulose wrote:
-> On 27/11/2026 15:32, Yeoreum Yun wrote:
-> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > 
-> > Add support for ACPI CCEL by handling the EfiACPIMemoryNVS type memory.
-> > As per UEFI specifications NVS memory is reserved for Firmware use even
-> > after exiting boot services. Thus map the region as read-only.
-> > 
-> > Cc: Sami Mujawar <sami.mujawar@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-> > Cc: Steven Price <steven.price@arm.com>
-> > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > Cc: Gavin Shan <gshan@redhat.com>
-> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
-> > ---
-> >   arch/arm64/kernel/acpi.c | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-> > index 681aa2bbc3995..3d6335db882d3 100644
-> > --- a/arch/arm64/kernel/acpi.c
-> > +++ b/arch/arm64/kernel/acpi.c
-> > @@ -354,6 +354,17 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-> >   			prot = PAGE_KERNEL_RO;
-> >   			break;
-> > +		case EFI_ACPI_MEMORY_NVS:
-> > +			/*
-> > +			 * ACPI NVS marks an area reserved for use by the
-> > +			 * firmware, even after exiting the boot service.
-> > +			 * This may be used by the firmware for sharing dynamic
-> > +			 * tables/data (e.g., ACPI CCEL) with the OS. Map it
-> > +			 * as read-only.
-> > +			 */
-> > +			prot = PAGE_KERNEL_RO;
-> > +			break;
+Hi Jason,
+
+[...]
+
+> Similarly the TCG log should work the same way.
+> 
+> I'm also wondering if too much code is leaking into to drivers to
+> implement the uAPI. We should take a look at this vs the TDX one and
+> make sure we have the right level of helpers and abstraction.
+>
+> I also can't help but notice there isn't a single comment in any of
+> this, it should be a bit more descriptive why some of these things are
+> in here.
+
+Okay. might next around, try to add comments.
+
 > > +
+> > +static const struct attestation_evidence_format cca_attestation_token_formats[] = {
+> > +	{ .vendor = true, .value = CTLV_ATTESTATION_CCA_GUEST_EVIDENCE_VENDOR_FORMAT_CCA_ATTESTATION_TOKEN },
+> > +};
 > 
-> Unfortunately this breaks some platforms, where the NVS must be mapped
-> R/W. Thats why we dropped this patch.
-> 
-> https://lore.kernel.org/all/20251124103329.363afcc6@foz.lan
+> should be the generic EAT token type
 
-Thanks to share. anyway it's enough to read in this series.
-So I'll drop this in the next spin. Thanks!
+Is there? but the content seems to be different according to vendor,
+So would it be better to keep it as vendor type format?
+
+[...]
+
+> > +static long cca_guest_get_max_token_size(void)
+> > +{
+> > +	u8 dummy[RSI_ATTEST_CHALLENGE_MAX_SIZE] = { 0x00, };
+> > +
+> > +	return rsi_attestation_token_init(dummy, RSI_ATTEST_CHALLENGE_MAX_SIZE);
+> > +}
+> > +
+> > +static int cca_guest_get_attest_tokens(const struct cca_guest_attestation *cca_guest_att,
+> > +				       const void *challenge, size_t challenge_size,
+> > +				       u8 *token, size_t *token_size)
+> > +{
+> > +	int ret;
+> > +	long max_token_size;
+> > +	void *buf;
+> > +	unsigned long granule, offset, len, rsi_ret;
+> > +
+> > +	guard(migrate)();
+> > +
+> > +	max_token_size = rsi_attestation_token_init(challenge, challenge_size);
+> > +	if (max_token_size <= 0)
+> > +		return -EINVAL;
+> > +
+> > +	if (max_token_size != cca_guest_att->max_token_size)
+> > +		return -ESTALE;
+> 
+> What is this and the related work? That isn't making sense to
+> me. If the token size is not absolutely fixed when the driver starts
+> then it should be fully dynamic and this just streams the variable
+> sized token.
+> 
+> Ideally directly into user memory so we don't need to allocate a kvmalloc.
+
+In case of live-activation. I think in that case CCA-Realm token could be
+different by activating the new RMM.
+But, in this round might we can drop this part.
+
+[...]
+
+> 
+> > +static const struct arm_smccc_device_id cca_guest_attest_id_table[] = {
+> > +	{ .func_id = SMC_RSI_ABI_VERSION, },
+> > +	{ },
+> > +};
+> > +MODULE_DEVICE_TABLE(arm_smccc, cca_guest_attest_id_table);
+> 
+> This isn't OK.. We only get one struct device per RSI and it gets to
+> bind to only one driver. Given there are other drivers that will need
+> to use the RSI, like the TSM and others, this needs some other
+> solution?
+
+Currently, this attestation driver is enabled when !ARM_CCA_GUEST only
+(IOW, when this driver can be built only when TSM arm-cca-guest
+disabled).
 
 -- 
 Sincerely,
