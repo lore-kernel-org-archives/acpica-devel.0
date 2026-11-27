@@ -1,107 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.46.52
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795625905;
-	b=srpTZcFFY5mLGpIQqkPW0COB4njy2wR4NPGZa+GWz1VomDvcz6/e044BZK7PNO/0atNG
-	 FbhgEMwLmU6bkwaOlJTgM6aPt0NIUeRgJTZ+Ss+iBZKhg514pG/4jsWyZOtepvjk7OjTo
-	 ABbtVtV7BFm1WnBKQESEkYiHEWSK1bDwt6SzjMeF/MbTSOof5a/mfQFLSLABGDYGMxQqu
-	 3otoej2moZH/JJtBk+XKTn+BPlNRdUvSVO6dvYzTVrk6JarX7vJZci79L0LYjUb6Yj0Ip
-	 rjF4bu5t1cALDbNrAGnhE4vQmXfsjyLrpkFQ6dPKzFTfseCu0WZIUwFZw4thcxlpuJA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795625905;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:Content-Type:Content-Disposition:
-	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=yw8X0xsCD/nVoc0Ako6fX3haYJYsGyI1Pr+OPG88vnY=;
-	b=rGgpXC+iybk6CjULjhgu5DyNpyh7xT020YYE+aJQ8q9nWXtwy5f7OkWY60IvszdL5oAF
-	 3i5n0c5+7aeu6xZ9qRJn9ACEEIZ4z534kC/BBBJCVWlNBsqIVR2AsTUZLtxO4IvAU3udw
-	 wKf5jDtrXj+QWEsNKQ2a1O7QMFNEfGtAivEp/eMSN38rLN7u8p5jQY3ehSpgEwcMi1dRy
-	 kOSvy8uXVzqtoA9I3Et1u9zUH2egwSbVgMLDU0BmYprSz6pWqMtlU0CgDjw6X0V2fAQlw
-	 Bd4u8cUZF7s/HWoKE3f0APEcKgY8Jj+2VMSaE7O9GfdPKYJQj3rZHwOqQd8AC/TziHg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=amd.com;
-	spf=fail smtp.mailfrom=amd.com;
-	dkim=pass header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=KOf4iWaY;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.46.52
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010052.outbound.protection.outlook.com [52.101.46.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F83606A321
-	for <acpica-devel@lists.linux.dev>; Wed, 25 Nov 2026 16:58:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 34F83606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=217.140.110.172
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795793596;
+	b=Dxirgh/TET5kYcoWKDgie6fGtp5Ye2QgEj7dcynrDfg8mQ0VJmFAhYwTOpl8i6S4wf7w
+	 mcDnva5r0s1EP/K8LeRH6xkY72FLMdkC9Tb28yXNJgfwtYszqS0lR2+2d4odPOF9yhCeN
+	 FKWGGWYeWJlmw6u1Gjcb6YCC2tOROP6ypF41lZ9XAbgw0eHTg62vcEyDhRYgFrvMWiEYC
+	 HVQwu+N6b1IoxVXSpwk/wRbAX/4wWUtVEcWGtETLNciG6h8iI9xoi2b7S636uuZVSq5vx
+	 R6Y/sokHw+Qo8O5u0l3/y9acmA72m74rZKxbmjcZIH88UH40ocEv8WNHpsclT9G082w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795793596;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Subject:Date:
+	 Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
+	bh=0E5oFbfWv4al6ZhXYQB+Fc2jmPL18RQBBfOHqivCMnU=;
+	b=F0qL/iHb3GLg6nSywojiQNQnUY5kXrJ3mFmhq5Y7Bw3KWvEiHTaisONDq4YozE6ywSsq
+	 IlmySrXB523IppuaJOF4PaxOGeQjQ4S3Ob9K/2yP90Z9u8mXZURhiKptMhDad7ebp1jE0
+	 sXZ/wGFS+lmVjQDbR0VOzbs7fgWhohMcIjRPdxYK5w3buwZVt2RrAKuRa1wyRIzWp1Cac
+	 q45AzTRRR5rOEfDjc4oHA1XLrABRSdbDqIZaYw4/eIu0N5wX9AzXXgO8JJ1CFKBrY6Z7w
+	 AFxw1VDSf+rlzUYQDXgklhKhui3ZkxilFMVyVq2DsIKmkVJUxueQEZAFYg29fHcYr5Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=arm.com;
+	spf=pass smtp.mailfrom=arm.com;
+	dkim=pass header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=bNYggG6W;
+	arc=none smtp.remote-ip=217.140.110.172
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F89B606A31E
+	for <acpica-devel@lists.linux.dev>; Fri, 27 Nov 2026 15:33:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7F89B606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256 header.s=selector1 header.b=KOf4iWaY
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ZNxmbn2qc3WARXrWf48qmJZzKzg2pyQhxpcTGsddbwDxATC/bRYe+T3qdZAtddqWcQkZeHwUcSdg/ubwtdQQwVuJxmNvhgMIQnvi7c2Ls02YUpXCr3BCkEkL5Qi6rXlCTXbl56hW56FsFlNTU2/KMgyMBy6hu330dl+mDIHPJrEZPP2ViZtBCmTf40WSor8R4+iiupVMtaz9AXFcymfiRKECM+/TOFL2we169e2DfMC/9Mg5kwKbVgy2mIfK+M51lQvFcrz7CLyfv6W/o+S1KdunelIO50mEtcNaP9m4pJDmLlOH3xLdhq0w2ILDpgY+YEvOrG7OmEqIr+Lee9WyiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yw8X0xsCD/nVoc0Ako6fX3haYJYsGyI1Pr+OPG88vnY=;
- b=ydckxXz6h8vT8/qkdM/dc4mb9p8s8NzNg0+WgUYJqXdNot7f4oMUCK77RcIuVTSsSqSouyVP0Q8W1FW3vrZLyLHvg9gSaurvmqDiPefbhD/X1sx8DPMFd6GQM2to+vX+JE8NhcvwR6CpGEnFYITMaEhhFW+F3kMu+GTy3lyK78xVhRMc8Lje5gJoBKXcXE0o7Xo7ChmQKdr75zyMZ18Ks5T8l9FwnVa6qwVDxIHokuFX2tR4qMykYdipVdTJMnwdMZ4T43ZDoq7IygryHL8qXnhgvX8TD+/O53kyiFf8sIuEYvrnQhoSsXO+gC+LW8zERnR0k8zvF9CMuVAkrOdtAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yw8X0xsCD/nVoc0Ako6fX3haYJYsGyI1Pr+OPG88vnY=;
- b=KOf4iWaYiXdkeGDnDbV2dSUCfuoxEvxWgDL78/YO3nvfUnXkNvHw28R5076pAtwJ9qljXbj7b+sKLQehkeji4fB4uf/Nzw6ix8ibGEnbyJ+1FKAOS8j1cbkEPJ93/x4xhO/eF47l6RZ+vuk0pm437Xog9Ni29aqRIjCFycBOLcc=
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from EAYPR12MB923140.namprd12.prod.outlook.com
- (2603:10b6:303:2fd::15) by CH3PR12MB9218.namprd12.prod.outlook.com
- (2603:10b6:610:19f::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.662.6; Wed, 25 Nov
- 2026 16:58:12 +0000
-Received: from EAYPR12MB923140.namprd12.prod.outlook.com
- ([fe80::b986:8b81:beda:c167]) by EAYPR12MB923140.namprd12.prod.outlook.com
- ([fe80::b986:8b81:beda:c167%4]) with mapi id 15.21.0639.012; Wed, 25 Nov 2026
- 16:58:12 +0000
-Date: Wed, 25 Nov 2026 11:58:06 -0500
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, Ashok Raj <ashok.raj@oss.qualcomm.com>,
-	James Morse <james.morse@arm.com>, Mark Brown <broonie@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	Borislav Petkov <bp@alien8.de>, Hanjun Guo <guohanjun@huawei.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Jonathan Cameron <jonathan.cameron@oss.qualcomm.com>,
-	Dave Jiang <dave.jiang@intel.com>, Breno Leitao <leitao@debian.org>,
-	"Fabio M. De Francesco" <fabio.m.de.francesco@linux.intel.com>,
-	Terry Bowman <terry.bowman@amd.com>, Dan Williams <djbw@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Morduan Zang <zhangdandan@uniontech.com>,
-	linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v4 00/12] CPER: Add Memory Error Section 2 support
-Message-ID: <20261125165806.GJ2156781@yaz-khff2.amd.com>
-References: <20261113132600.3355836-1-pierre.gondois@arm.com>
- <20261124151417.GB2156781@yaz-khff2.amd.com>
- <7288ecda-6a1b-4b3d-9e2f-8bdbf935efc4@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7288ecda-6a1b-4b3d-9e2f-8bdbf935efc4@arm.com>
-X-ClientProxiedBy: BN0PR10CA0013.namprd10.prod.outlook.com
- (2603:10b6:408:143::17) To EAYPR12MB923140.namprd12.prod.outlook.com
- (2603:10b6:303:2fd::15)
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.a=rsa-sha256 header.s=foss header.b=bNYggG6W
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9F16169E;
+	Fri, 27 Nov 2026 07:33:11 -0800 (PST)
+Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 422B03F632;
+	Fri, 27 Nov 2026 07:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1795793594; bh=CREZT/iY5Maoixa1IibuDtoXUQI0xrQeRjPWVOFSKwA=;
+	h=From:Subject:Date:To:Cc:From;
+	b=bNYggG6W7pYvzbEvPWfcDMwAR0kUCLZHnsj/qbFyAnIGNAE1k/FTdOUVO+MbIjUiL
+	 Bt1iz4axqpaEidiwhz0tkxHw5/CCUg00sNrmBm+0qsIqKgqBJYBWbhCTjyGgHbe/HS
+	 FPT3VzxkYqeqpvRJs428DDnng4TvXLls3+uYj/yE=
+From: Yeoreum Yun <yeoreum.yun@arm.com>
+Subject: [PATCH RFC v3 0/8] attestation: provider: add CCA Realm Guest
+ provider
+Date: Fri, 27 Nov 2026 15:32:55 +0000
+Message-Id: <20261127-arm_cca_mr-v3-0-df3230afce8f@arm.com>
 X-Mailing-List: acpica-devel@lists.linux.dev
 List-Id: <acpica-devel.lists.linux.dev>
 List-Post: <mailto:acpica-devel@lists.linux.dev>
@@ -111,163 +56,153 @@ List-Unsubscribe: <mailto:acpica-devel+unsubscribe@lists.linux.dev>
 List-Owner: <mailto:acpica-devel+owner@lists.linux.dev>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: EAYPR12MB923140:EE_|CH3PR12MB9218:EE_
-X-MS-Office365-Filtering-Correlation-Id: dfeae5b3-76c0-47dc-2508-08df4b154a83
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|7416014|376014|1800799024|366016|18002099003|22082099003|56012099006|4143699003|11063799006|5023799004|261009223027099003|261102123227099003|261021121427099003|261022113327099003|10067099003|261026140227099003|261022105027099003|261022075727099003|261026121527099003|261028144727099003|6133799003;
-X-Microsoft-Antispam-Message-Info:
-	DHUKXZwYfUzeIKMGvzX09LlbzDpp+0ctV3VkXVfsffNZB2vn3gftTulZsy0xkHCbAiU1KR5IRKz3Md8UeLNaU4fxRQ44AFYEEQbmjMp0scCIu27NNzTPveDhGDy7aOyTXOgxEIpiS0yZpCX6NpqQvrjqejI0UHCkQZ266KN/TaqevLidZxV8jKJndj3zGeiCAeaDHPGe3iKGleU3ou81awNb/LKvJ5RV7ZhPyJngyr/s0w5Lj4Bv6w4t7x1PyXq3KHjNWkW8WjSMvyDaos+ei3bEEev+mShKQ4okgR2PkyWxtGj2MireddnsovjErMws+cP/h4n3e3kyQ/Rlvnn3PFKZemUsY3qfeMAZV+a+2lMe1YDYFtUCZvIcPlf0Ghafko5tTuvqeObfYl9rq0QzJ1uTdyT0te5Fm4k6OGA642P1zx1ImaIZ9dvfPybJPcJpWF4M3Y/nRnrO3t+3CqRC+8j/rtqHAFn0GnocOJPLNKH2TQHcYzTt3BNKgWSwoWmcmit4v8XFZ/W1uHXtSW1JcdGmGJ6sRXaCek2kymWbOYjZJWyEqmIlGn+XjRXiT6zoSUmSWpg+OT3ktnrHy8lCSEyrist/uJxYC7zHFTvdOyv1pMlft5+g5Zk9zzYYY0KN
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:EAYPR12MB923140.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(7416014)(376014)(1800799024)(366016)(18002099003)(22082099003)(56012099006)(4143699003)(11063799006)(5023799004)(261009223027099003)(261102123227099003)(261021121427099003)(261022113327099003)(10067099003)(261026140227099003)(261022105027099003)(261022075727099003)(261026121527099003)(261028144727099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ltH/hjZ/azNPVNtyyl8B7Oj/zCfcPSVn/vrtY935MCPjzPCj7Y0xj5Gkihr/?=
- =?us-ascii?Q?cpdVJlhjAWsNaqMWSPiJDNT6prklwX8tHg42kNYZa0S02n3S4HBvfxB0ERvZ?=
- =?us-ascii?Q?vFx1JL52jUNNDvUmjAjJpk97MWkqSoglC4I+URhVtiSVHuWOtw6ytttCQywg?=
- =?us-ascii?Q?FrBqFzeRUpnUXMjsXpHsa/n1sQfF9Tho9P3zKAPGAjM1MwlohUHm3cNCIcaS?=
- =?us-ascii?Q?TowooUvXf//F+IagZMrTP5KmmKjJhdCW1S4Qg4bUKPnUT2wpe2q75EHZsTBc?=
- =?us-ascii?Q?kzyia9FLLace7aoF0uLKp9T1dSBBSaQxoncDr2GdIWm7WIT1d4m0n2W+CbRb?=
- =?us-ascii?Q?0RGcnOyr0FM2Y02R6/MxP2lBgMyCCDtyBgta3JJAwCTqs8kEFvsvaZtfZfuN?=
- =?us-ascii?Q?XQri8AWwk0/AsexVh7CT8HIJGicD6TfEgLWGZyRBhSTuB9sTZgynkh6EExYe?=
- =?us-ascii?Q?+d9rd8wqEdPNFrXcA29Q5gO0cCCkQPRkURrZUr0YqNFGLZwevfhDbR7E8SrZ?=
- =?us-ascii?Q?IrvDXpMIdZNgUVhyjrUrz2d7sCZoZI0Ec8bejqDduhXKPOBnq5uj9KO90N4i?=
- =?us-ascii?Q?RsJoBzVeYKHCkKUZvOyHQ2n+wPz/hUqH0ycC8VhtI4cLwp0KBr0QCRv0nzxn?=
- =?us-ascii?Q?LMIumvA3TtEvNvMrrjjlHX5aZJObymJsKcjDR6w9mSOYqjpvq2wJw5id8/hf?=
- =?us-ascii?Q?BpcMNogTdOk1ES/H442sAc32USv9r3mAZwacKy1XmmFyQ1CM2dxRFl3HRtUi?=
- =?us-ascii?Q?uoH1JwGGFxTIuoDtOvjTHJGb9eaylSuE7ddjkhuSs1XEAFbV5mFxc9SaX3UE?=
- =?us-ascii?Q?nvdemN+ZbzQUs2A8K2pSXnTHjJN3QaDQEfKhCMNfkSAaHINoglVsIJbEBAXO?=
- =?us-ascii?Q?JA2Qp4+Nw0qNQyavxgtpEOwCmLcPssoiD+3OGECkOkvx9FeLosdXJ/IbujYC?=
- =?us-ascii?Q?ork24jGITjMe6CLFDMMPPW1XPb6dQpg7BNSlo2QVX/dvlZmM5wY731ERsiCM?=
- =?us-ascii?Q?OlLad2ZVKXI+dCsY9RJPt4XCkZgayXf18RWrFwmNusiYi0XQvqJRlT6gD1lb?=
- =?us-ascii?Q?57O+bkHRGpeUZtoZf9GsSdkNXTHcem5EX9vAhidkJ4CYOTtIMMFe3orIT68A?=
- =?us-ascii?Q?paIhf4HKPsOzKa6SuWg9Q2f/rvAaRk5PHFzeAfQyFI24nM/zxEJPHo74kvjU?=
- =?us-ascii?Q?rbSBVLW6HOAh+EH+fU8hA//Z6dEuTZAUa3oP/EGvHVVX0lt6YFt46oOGbvtg?=
- =?us-ascii?Q?3JqxBpxujmxIjxEOxrRO2oKcGl51cOiQCPMn+qrIAoHNg00U2Af86/Y53aMy?=
- =?us-ascii?Q?WJabg1FtvuWIzrdC7LVYb2XQiFGNxyKtmitavsduKS9kTJaDl0sIl9YzBnKq?=
- =?us-ascii?Q?N6iJkz1kFVdLqg8YJDT5vIXEmGlt4WLShf6SRxsW0u7gMuvg0VxT7z6EOzgo?=
- =?us-ascii?Q?xNmS110BpG1T3lkqPI9/WTwnfWRyN69mUcY36LilaKbKuJgcUrE2Ov/Ilrnb?=
- =?us-ascii?Q?BAJlc7oNze6yZpqoW5KWK8dpygCCnr5yVKzJVWo7DHivQ5l8ihWUrb2gYCUJ?=
- =?us-ascii?Q?bV0CvrZdJPVmd1Pc2j3kBUjI92ujx1zQSTuGOSl3hhRx4irnGm9FIUm+JkCf?=
- =?us-ascii?Q?3hXJ2fUR9KTpPuIa4VQEFlOuKIjz9RP2S+D+rUwvIlEEpoQXuWv9etZ/RsIH?=
- =?us-ascii?Q?sCIrlSa7ZqFt2NI/B/7wdmi1gyq8MBMPJ178w4Uq+0r/f+wl?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfeae5b3-76c0-47dc-2508-08df4b154a83
-X-MS-Exchange-CrossTenant-AuthSource: EAYPR12MB923140.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2026 16:58:12.7539
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +XDODMetp/BOOJp05rW/5MgrsymLYk2TTOErJEQXPXFAqvIXl/qP+Z7hYJKwrAPSfxnbeTSW6A9ykv/a0+MG2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9218
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKiiCWsC/22NywrCMBREf6XctZHkKrZxJQh+gFspJY9bm0UaS
+ SQoJf9uyNrlzGHObJAoOkpw7jaIlF1yYa3hsOvALGp9EnO2ZkCOJy5RMhX9ZIyafGRKyKNGkmh
+ ED3XwijS7T5M94H67wljLxaV3iN92kLGhf66MjDNh5aC1EkM/20uFexM8jKWUH8uK1lOnAAAA
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, linux-acpi@vger.kernel.org, 
+ acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Suzuki Poulose <suzuki.poulose@arm.com>, 
+ Steven Price <steven.price@arm.com>, Sami Mujawar <sami.mujawar@arm.com>, 
+ thuth@redhat.com, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, 
+ Pawel Chmielewski <pawel.chmielewski@intel.com>, 
+ Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <shuah@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, Mark Brown <broonie@kernel.org>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Gavin Shan <gshan@redhat.com>, 
+ Yeoreum Yun <yeoreum.yun@arm.com>, Sudeep Holla <sudeep.holla@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4966; i=yeoreum.yun@arm.com;
+ h=from:subject:message-id; bh=CREZT/iY5Maoixa1IibuDtoXUQI0xrQeRjPWVOFSKwA=;
+ b=owEB7QES/pANAwAKAW3Vw9FaxTEzAcsmYgBrCaKyr1sL7I3GjufUXjAqUdNumg4Eu4t6MmqHp
+ tAOy6CS0BiJAbMEAAEKAB0WIQQtg+CS3QUzuFh1pJ1t1cPRWsUxMwUCawmisgAKCRBt1cPRWsUx
+ M/DnDACUjQ9s+JwuutCXoESK7Y3sUXsaRo4m18QvFHFWdANC8ghLblUcU2RbSsyopDlIC4GHgS6
+ 3o8yvxhAQUlaN9p4PY1Tf1JdklJSW7hGM89MCOFo9sfffrbHdjc/cHxEv9+I+qqVJ7mUBeLkMkQ
+ 6TiH5pDeXFZDFg14WE5H2C3XlQJmzwdD8HA3GA1MYq7NY4OmYSD1xmdZU1k1bc8VNOL9dGidfsB
+ xQMXxlY1YIG4lxIVNL+tbU7ZBR+66zsMB1+bkuZ74j/+H4aWIxFbail6XTCD6yBdpQeleTUymbS
+ JR5D090Qdxj8biSqS9Tx/OgdaFrsgFLzf7FxCAeggOK9kDfUCF3r3YoCMwrlBplw/aX/GBpXWM6
+ sSZ7Z6nhzocO8wMYU9rSt0Aqz90ARhYLbgQCkkkQ33Zx7I9PQcO8UR1PtHmJScFk0SWSlWhgngX
+ 9kkMuWVDVyFPjKIqlwpGRVcZYHoLv7JaJpjGHSUrmGgG+Q04OeBWS5PjrzsKLRrSLbTZ8=
+X-Developer-Key: i=yeoreum.yun@arm.com; a=openpgp;
+ fpr=2D83E092DD0533B85875A49D6DD5C3D15AC53133
 
-On Wed, Nov 25, 2026 at 05:30:18PM +0100, Pierre Gondois wrote:
-> Hello Yazen,
-> 
-> On 11/24/26 16:14, Yazen Ghannam wrote:
-> > On Fri, Nov 13, 2026 at 02:24:42PM +0100, Pierre Gondois wrote:
-> > > The support is mostly duplicated from Memory Error Section handling.
-> > > Other than differences coming from the content of  Memory Error
-> > > Section 1 and 2, differences in the support are:
-> > > 
-> > > - v2 do not rely on a compact "struct cper_mem_err_compact" struct.
-> > > This structure was used to support older versions of the Memory
-> > > Error Section (1). This is not needed for the new structure.
-> > > 
-> > > - The compact version is also used by the tracing framework.
-> > > To avoid relying and propagating a non-standard record format,
-> > > through trace event (cf. extlog_mem event) the new trace event
-> > > prints each field individually.
-> > > 
-> > > The last patch of the serie was only build-tested due to the
-> > > absence of relevant hardware. apei_mce_report_mem_error() and
-> > > arch_apei_report_mem_error() implementations were also removed since
-> > > last version.
-> > > 
-> > > It will also require a proper handling from the rasdaemon. Applying
-> > > this last patch without rasdaemon support will silent the reports of
-> > > Memory Error Section 2 error, cf. ras_userspace_consumers() check.
-> > > 
-> > > Future:
-> > > - _OSC support (if agreed)
-> > > - Addition of arm64 tracepoints
-> > > https://lore.kernel.org/lkml/20261023170405.000060b8@oss.qualcomm.com/
-> > > - Emission of lossy CPER Mem error v1 tracepoints for legacy userspace
-> > >    tools
-> > > https://lore.kernel.org/lkml/at0rs4parlHFGI7k@hu-ashoraj-lv.qualcomm.com/
-> > > 
-> > > 
-> > > RFC:https://lore.kernel.org/all/20260929074659.2587216-1-pierre.gondois@arm.com/#t
-> > > V1:https://lore.kernel.org/all/20261019145643.1877246-1-pierre.gondois@arm.com/
-> > > - Corrections from Jonathan's review
-> > > - New patch:
-> > >      [PATCH v2 4/6] EDAC/ghes: Extract error report initialization
-> > > - Last patch not in RFC as it has been reviewed by Jonathan@
-> > >      [PATCH v2 6/6] ACPI: extlog: add Memory Error Section 2 trace event
-> > > V2:
-> > > - Updated ghes_edac_init_error() to ghes_edac_init_error_desc(),
-> > >    which now only acts on the input "struct edac_raw_error_desc"
-> > >    + added lockdep_assert_held() to ghes_edac_init_error_desc()
-> > > - Accumulate failures with "queued |=" in ghes_do_proc()
-> > > - New PATCH:
-> > >    [PATCH v3 5/7] ACPI: APEI: Extract common memory failure handling
-> > > 
-> > > V3:
-> > > - Added <linux/bits.h> include
-> > > - Used pr_warn_rate_limited()
-> > > - Removed one warn for smbios handle overflow
-> > > - Replaced __string() -> __string_len() in trace event
-> > > 
-> > > Added patch to us scnprintf():
-> > > - cper: Return actual bytes written by DIMM location helpers
-> > > Added patches to increase buffer size and prevent overflows:
-> > > - EDAC/ghes: Small buffer fixes for mem other_detail helpers
-> > > - efi/cper: Pass buffer length to memory location helpers
-> > > - efi/cper: Pass buffer length to DIMM location helpers
-> > > 
-> > > Pierre Gondois (12):
-> > >    cper: use BIT_ULL() for processor and memory validation bits
-> > >    cper: add Memory Error Section 2 structures
-> > >    cper: add helpers to handle Memory Error Section 2
-> > >    cper: Return actual bytes written by DIMM location helpers
-> > Why not use 'efi/cper' for these ^^^ ?
-> > 
-> Right, I'll update it
-> 
-> 
-> > >    EDAC/ghes: Extract error report initialization
-> > >    ACPI: APEI: Extract common memory failure handling
-> > >    ACPI: APEI: add separate Memory Error Section 2 handlers
-> > >    ACPI: extlog: add Memory Error Section 2 trace event
-> > >    efi/cper: Pass buffer length to DIMM location helpers
-> > >    efi/cper: Pass buffer length to memory location helpers
-> > >    EDAC/ghes: Small buffer fixes for mem other_detail helpers
-> > >    efi/cper: Increase memory error location and detail buffer sizes
-> > > 
-> > Boris already mentioned having fixes go first. I think the common
-> > convention is to have "fixes > refactoring > new feature" order. I asked
-> > an LLM assistant to propose a new patch order (copied at the end). Some
-> > patches would need to be split/reworked, so it's not a strict 1-to-1
-> > reordering. I hope this helps.
-> 
-> I thought sending fixes/refactor/new features separately would
-> make it more difficult to understand where the patchset wanted
-> to go, as the refactoring part is usually preparing for the new
-> feature. E.g. B2 +B3 only make sense if v4.7 ("ACPI: APEI: add separate
-> Memory Error Section 2 handlers") is applied.
-> 
-> But if you both prefer it in split series I can do it sure.
-> 
+This series adds support for Arm Confidential Compute Architecture (CCA)
+measurement registers in the Linux kernel, enabling guest Realms to
+access, extend, and expose measurement values for attestation and runtime
+integrity tracking.
 
-I didn't mean to split the series necessarily. Though you could do that.
-That may make more sense for any independent fixes.
+The Realm Management Monitor (RMM) defines a set of measurement registers
+consisting of a Realm Initial Measurement (RIM) and a number of Realm
+Extensible Measurements (REMs). This series introduces the necessary
+infrastructure to interact with these registers via the RSI interface
+and exposes them to userspace through CTLV attestation subsystem.
 
-I meant that some of the individual patches may need to be broken up and
-rearranged into new patches.
+Also, this seires includes the CCA attesation token generation interface
+and CCEL event-log exposure through CTLV attestation subsystem.
 
-Thanks,
-Yazen
+At a high level, the series includes:
+ - Helper interfaces for reading and extending measurement
+   registers via RSI
+ - Definitions for Realm hash algorithms as defined by the
+   RMM specification
+ - Support CCEL table in arm64
+ - Integration with attestation subsystem by introducing CCA Realm Guest
+   provider
+
+After applying this series, measurement registers and relative interface
+will be exposed ctlv interfaces.
+
+This patch based on arm64/for-next/smccc-bus, attestation branch[0-2] and
+firme patch-series [3].
+
+To: linux-arm-kernel@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+To: linux-security-module@vger.kernel.org
+To: linux-doc@vger.kernel.org
+To: linux-kselftest@vger.kernel.org
+To: linux-acpi@vger.kernel.org
+To: acpica-devel@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Suzuki Poulose <suzuki.poulose@arm.com>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Sami Mujawar <sami.mujawar@arm.com>
+Cc: thuth@redhat.com
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Cc: Pawel Chmielewski <pawel.chmielewski@intel.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mark Brown <broonie@kernel.org>
+
+Link: [0] https://github.com/jpirko/linux_mlxsw/tree/wip_attestation_all_2
+Link: [1] https://lore.kernel.org/all/20261113155515.2510194-1-jiri@resnulli.us/
+Link: [2] https://lore.kernel.org/all/20261113160838.2512652-1-jiri@resnulli.us/
+Link: [3] https://lore.kernel.org/all/20261127-firme_interface-v2-0-ab88b2d0b4e0@arm.com/
+---
+Changes in v3:
+- rebase to attestation subsystem.
+- Link to v2: https://lore.kernel.org/r/20260929-arm_cca_mr-v2-0-1d98bba187fd@arm.com
+
+Changes in v2:
+- rebase to arm64 tree's for-next/smccc-bus
+- Link to v1: https://lore.kernel.org/all/20260413084957.327661-1-sami.mujawar@arm.com/
+
+---
+Sami Mujawar (2):
+      arm64: rsi: Add helpers for Arm CCA measurement register operations
+      arm64: rsi: Add realm hash algorithm defines
+
+Suzuki K Poulose (1):
+      arm64: acpi: Enable ACPI CCEL support
+
+Yeoreum Yun (5):
+      acpi: add CCtype value macros for CCEL table
+      Documentation/ctlv: introduce ctlv-attestation-cca-guest family
+      ctlv: add auto-generated files for ctlv-attestation-cca-guest
+      attestation: providers: introduce CCA Guest attestation provider
+      selftest: attestation: add cca_guest_attestation_test selftest
+
+ .../ctlv/abi/ctlv-attestation-cca-guest.yaml       |   19 +
+ Documentation/ctlv/abi/families.registry.yaml      |    1 +
+ Documentation/ctlv/families.yaml                   |    1 +
+ Documentation/ctlv/generated-files.yaml            |   11 +
+ .../ctlv/specs/ctlv-attestation-cca-guest.yaml     |   20 +
+ arch/arm64/kernel/acpi.c                           |   11 +
+ drivers/attestation/Kconfig                        |   10 +
+ drivers/attestation/Makefile                       |    5 +
+ .../generated/ctlv_attestation_cca_guest_gen.c     |   64 +
+ .../generated/ctlv_attestation_cca_guest_gen.h     |   40 +
+ drivers/attestation/providers/cca_guest.c          |  582 ++++++++
+ include/acpi/actbl2.h                              |    7 +
+ include/linux/arm-rsi-cmds.h                       |  118 +-
+ include/linux/arm-smccc-rsi.h                      |    8 +
+ include/uapi/ctlv/ctlv_attestation_cca_guest_gen.h |   34 +
+ include/uapi/ctlv/ctlv_families_gen.h              |    1 +
+ tools/testing/selftests/attestation/.gitignore     |    1 +
+ tools/testing/selftests/attestation/Makefile       |    9 +-
+ .../attestation/cca_guest_attestation_test.c       |  517 +++++++
+ .../ctlv_attestation_cca_guest_user_gen.c          | 1547 ++++++++++++++++++++
+ .../ctlv_attestation_cca_guest_user_gen.h          |   49 +
+ 21 files changed, 3051 insertions(+), 4 deletions(-)
+---
+base-commit: 55e9f5a2188b97fd2e3ef949b0e52910aa77d940
+change-id: 20260929-arm_cca_mr-a194b2e92c17
+
+Best regards,
+-- 
+Sincerely,
+Yeoreum Yun
+
